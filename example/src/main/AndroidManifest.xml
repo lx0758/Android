@@ -45,6 +45,9 @@
         <activity android:name=".boxing.BoxingActivity"
             android:label="Boxing"/>
 
+        <activity android:name=".downloader.DownloaderActivity"
+            android:label="Downloader"/>
+
         <activity android:name=".glide.GlideActivity"
             android:label="Glide"/>
 
