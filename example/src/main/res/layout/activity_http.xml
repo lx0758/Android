@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <com.liux.android.view.HVScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        app:fillViewportH="true"
+        app:fillViewportV="true">
+
+        <TextView
+            android:id="@+id/tv_log"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top|left"
+            android:editable="false"/>
+
+    </com.liux.android.view.HVScrollView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/et_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Retorfit"/>
+
+                    <Button
+                        android:id="@+id/btn_retorfit_get"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="GET"/>
+
+                    <Button
+                        android:id="@+id/btn_retorfit_post_body"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="POST(BODY)"/>
+
+                    <Button
+                        android:id="@+id/btn_retorfit_post_form"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="POST(FORM)"/>
+
+                    <Button
+                        android:id="@+id/btn_retorfit_post_multipart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="POST(MULTIPART)"/>
+
+                    <Button
+                        android:id="@+id/btn_retorfit_base_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="BASE-HEADER"/>
+
+                    <Button
+                        android:id="@+id/btn_retorfit_base_header_rule"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="BASE-HEADER-RULE" />
+
+                    <Button
+                        android:id="@+id/btn_retorfit_base_global"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="BASE-GLOBAL" />
+
+                    <Button
+                        android:id="@+id/btn_retorfit_base_global_root"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="BASE-GLOBAL(ROOT)"/>
+
+                    <Button
+                        android:id="@+id/btn_retorfit_timeout_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="TIMEOUT-HEADER"/>
+
+                    <Button
+                        android:id="@+id/btn_retorfit_timeout_global"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="TIMEOUT-GLOBAL"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Request"/>
+
+                    <Button
+                        android:id="@+id/btn_request_get"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="GET"/>
+
+                    <Button
+                        android:id="@+id/btn_request_post_body"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="POST(BODY)"/>
+
+                    <Button
+                        android:id="@+id/btn_request_post_form"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="POST(FORM)"/>
+
+                    <Button
+                        android:id="@+id/btn_request_post_multipart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="POST(MULTIPART)"/>
+
+                    <Button
+                        android:id="@+id/btn_request_timeout_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="TIMEOUT-HEADER"/>
+
+                    <Button
+                        android:id="@+id/btn_request_timeout_global"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12dp"
+                        android:text="TIMEOUT-GLOBAL"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

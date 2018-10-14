@@ -1,0 +1,56 @@
+buildscript {
+    repositories {
+        flatDir { dirs '../aarlibs' }
+        maven { url 'http://maven.aliyun.com/repository/public/' }
+        maven { url 'http://maven.6xyun.cn/' }
+        //google()
+        //jcenter()
+        //mavenLocal()
+        //mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects{
+    repositories {
+        flatDir { dirs '../aarlibs' }
+        maven { url 'http://maven.aliyun.com/repository/public/' }
+        maven { url 'http://maven.6xyun.cn/' }
+        //google()
+        //jcenter()
+        //mavenLocal()
+        //mavenCentral()
+    }
+    // 设置全局代码编码
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+    // 设置全局文档编码
+    tasks.withType(Javadoc) {
+        options {
+            encoding "UTF-8"
+            charSet 'UTF-8'
+            links "http://docs.oracle.com/javase/7/docs/api"
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+static def getLibraryGroupId() {
+    return 'com.liux.android'
+}
+static def getLibraryVCSUrl() {
+    return 'https://github.com/lx0758/Android-Librarys.git'
+}
+static def getLibraryLicense() {
+    return 'MIT'
+}

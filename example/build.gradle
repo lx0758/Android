@@ -1,0 +1,80 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion COMPILE_SDK_VERSION as int
+    buildToolsVersion BUILD_TOOLS_VERSION as String
+    signingConfigs {
+        config {
+            Properties properties = new Properties()
+            InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
+            properties.load(inputStream)
+            def key_keyAlias = properties.getProperty('keyAlias')
+            def key_keyPassword = properties.getProperty('keyPassword')
+            def key_storePassword = properties.getProperty('storePassword')
+            inputStream.close()
+
+            keyAlias key_keyAlias
+            keyPassword key_keyPassword
+            storePassword key_storePassword
+            storeFile file('./public.jks')
+        }
+    }
+    defaultConfig {
+        applicationId "com.liux.android.example"
+        minSdkVersion MIN_SDK_VERSION as int
+        targetSdkVersion TARGET_SDK_VERSION as int
+        versionCode 1_00_00
+        versionName "1.0.0.0000"
+        multiDexEnabled true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters 'armeabi-v7a', 'x86'
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.config
+        }
+        release {
+            debuggable false
+            jniDebuggable false
+            minifyEnabled true
+            shrinkResources true
+            zipAlignEnabled true
+            renderscriptDebuggable false
+            signingConfig signingConfigs.config
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(':abstracts')
+    implementation project(':banner')
+    implementation project(':boxing')
+    implementation project(':glide')
+    implementation project(':http')
+    implementation project(':list')
+    implementation project(':tool')
+    implementation project(':pay')
+    implementation project(':permission')
+    implementation project(':qrcode')
+    implementation project(':rx')
+    implementation project(':util')
+    implementation project(':view')
+
+    implementation ('com.jakewharton:butterknife:8.8.1', {
+        exclude group: 'com.android.support',module: 'appcompat-v7'
+    })
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}

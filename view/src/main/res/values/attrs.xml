@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="CircleImageView">
+        <attr name="civ_border_width" format="dimension|reference" />
+        <attr name="civ_border_color" format="color|reference" />
+        <attr name="civ_border_overlay" format="boolean" />
+        <attr name="civ_fill_color" format="color|reference" />
+    </declare-styleable>
+
+    <declare-styleable name="ClearEditText">
+        <attr name="cet_clear" format="reference"/>
+        <attr name="cet_cancel" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="FlowLayout">
+        <attr name="flow_horizontal" format="dimension|reference" />
+        <attr name="flow_vertical" format="dimension|reference" />
+    </declare-styleable>
+
+    <declare-styleable name="NumberPickerView">
+        <!--set number of item displayed, default is 3-->
+        <attr name="npv_ShowCount" format="reference|integer" />
+        <!--set if show divider, default is true-->
+        <attr name="npv_ShowDivider" format="reference|boolean" />
+        <attr name="npv_DividerColor" format="reference|color" />
+        <attr name="npv_DividerMarginLeft" format="reference|dimension" />
+        <attr name="npv_DividerMarginRight" format="reference|dimension" />
+        <attr name="npv_DividerHeight" format="reference|dimension" />
+        <attr name="npv_TextColorNormal" format="reference|color" />
+        <attr name="npv_TextColorSelected" format="reference|color" />
+        <attr name="npv_TextColorHint" format="reference|color" />
+        <attr name="npv_TextSizeNormal" format="reference|dimension" />
+        <attr name="npv_TextSizeSelected" format="reference|dimension" />
+        <attr name="npv_TextSizeHint" format="reference|dimension" />
+        <attr name="npv_TextArray" format="reference" />
+        <attr name="npv_MinValue" format="reference|integer" />
+        <attr name="npv_MaxValue" format="reference|integer" />
+        <attr name="npv_WrapSelectorWheel" format="reference|boolean" />
+        <attr name="npv_RespondChangeOnDetached" format="reference|boolean" />
+        <attr name="npv_HintText" format="reference|string" />
+        <attr name="npv_EmptyItemHint" format="reference|string" />
+        <attr name="npv_MarginStartOfHint" format="reference|dimension" />
+        <attr name="npv_MarginEndOfHint" format="reference|dimension" />
+        <attr name="npv_ItemPaddingHorizontal" format="reference|dimension" />
+        <attr name="npv_ItemPaddingVertical" format="reference|dimension" />
+        <attr name="npv_RespondChangeInMainThread" format="reference|boolean" />
+        <attr name="npv_TextEllipsize" format="reference|string" />
+        <!--just used to measure maxWidth for wrap_content without hint,
+            the string array will never be displayed.
+            you can set this attr if you want to keep the wraped numberpickerview
+            width unchanged when alter the content list-->
+        <attr name="npv_AlternativeTextArrayWithMeasureHint" format="reference|string" />
+        <attr name="npv_AlternativeTextArrayWithoutMeasureHint" format="reference|string" />
+        <!--the max length of hint content-->
+        <attr name="npv_AlternativeHint" format="reference|string" />
+    </declare-styleable>
+
+    <declare-styleable name="PasswordInputView">
+        <attr name="piv_size" format="dimension|reference"/>
+        <attr name="piv_color" format="color|reference"/>
+        <attr name="piv_drawable" format="color|reference"/>
+        <attr name="piv_interval" format="dimension|reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="SquareRelativeLayout">
+        <attr name="srl_align_width" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ShadowLayout">
+        <attr name="sl_size" format="dimension|reference"/>
+        <attr name="sl_color" format="color|reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="AuthCodeEditText">
+        <attr name="acet_drawable" format="color|reference"/>
+        <attr name="acet_drawable_input" format="color|reference"/>
+        <attr name="acet_interval" format="dimension|reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="HVScrollView">
+        <!--水平内容宽度是否充满，默认false自适应-->
+        <attr name="fillViewportH" format="boolean" />
+        <!--垂直内容高度是否充满，默认false自适应-->
+        <attr name="fillViewportV" format="boolean" />
+        <!--滚动方向，默认both双向滚动-->
+        <attr name="scrollOrientation">
+            <enum name="none" value="0" />
+            <enum name="horizontal" value="1" />
+            <enum name="vertical" value="2" />
+            <enum name="both" value="3" />
+        </attr>
+        <!--内容是否居中显示，默认右上角对齐-->
+        <attr name="childLayoutCenter" format="boolean" />
+    </declare-styleable>
+
+</resources>

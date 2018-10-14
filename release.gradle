@@ -1,0 +1,116 @@
+// https://github.com/bintray/gradle-bintray-plugin
+// https://github.com/bintray/gradle-bintray-plugin#Getting_Started_Using_the_Plugin
+
+// 打包某个库到JCenter
+// ..\gradlew.bat clean build assemble bintrayUpload -PbintrayUser=Liux -PbintrayKey=xxxxx -PdryRun=false
+// 打包某个库到本地
+// ..\gradlew.bat clean build assemble publishToMavenLocal
+// 打包某个库到私服
+// ..\gradlew.bat clean build assemble uploadArchives
+
+// Library 升级快速验证方法:
+// 1. 升级/修复/优化代码
+// 2. 改变版本为快照版(x.y.z-SNAPSHOT)
+// 3. 发布到本地 Maven 仓库
+// 4. 测试项目开启仓库(mavenLocal)并引用快照版本
+// 5. 测试项目先刷新文件系统,再执行 Gradle 依赖刷新(点击按钮)
+// 6. 视情况,如果测试项目出现引用不正确(查看源码IDE会提醒源码对不上class文件)则删除测试项目".idea"文件夹下的"libraries"文件夹,关闭再重新打开项目即可
+
+// 当项目作为 submodule 时则不执行下面的代码
+if (rootProject.projectDir != project.projectDir.parentFile) return
+
+// release to JCenter
+apply plugin: "maven-publish"
+apply plugin: 'com.jfrog.bintray'
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : null
+    key = project.hasProperty('bintrayKey') ? project.property('bintrayKey') : null
+    dryRun = project.hasProperty('dryRun') ? project.property('dryRun') : false
+    publish = project.hasProperty('publish') ? project.property('publish') : false
+    override = project.hasProperty('override') ? project.property('override') : false
+    publications = ['jcenter']
+    pkg {
+        repo = 'android'
+        name = 'lib-' + project.getLibraryArtifactId()
+        vcsUrl = rootProject.getLibraryVCSUrl()
+        licenses = [rootProject.getLibraryLicense()]
+        version {
+            name = project.getLibraryVersionName()
+        }
+    }
+}
+publishing {
+    publications {
+        jcenter(MavenPublication) {
+            groupId rootProject.getLibraryGroupId()
+            artifactId project.getLibraryArtifactId()
+            version project.getLibraryVersionName()
+
+            artifact ("$buildDir/outputs/aar/"+ project.name +"-release.aar")
+            artifact androidSourcesJar
+            artifact androidJavaDocJar
+        }
+    }
+}
+
+// release to Maven Repositories
+apply plugin: 'maven'
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: 'http://maven.6xyun.cn/artifactory/android/') {
+                Properties properties = new Properties()
+                InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
+                properties.load(inputStream)
+                def uploadName = properties.getProperty('uploadUser')
+                def uploadPassword = properties.getProperty('uploadPassword')
+                inputStream.close()
+
+                authentication(userName:uploadName, password:uploadPassword)
+            }
+            pom.project {
+                groupId = rootProject.getLibraryGroupId()
+                artifactId = project.getLibraryArtifactId()
+                version = project.getLibraryVersionName()
+
+                name project.name
+                packaging 'aar'
+
+                scm {
+                    url rootProject.getLibraryVCSUrl()
+                }
+
+                licenses {
+                    license {
+                        name rootProject.getLibraryLicense()
+                    }
+                }
+            }
+        }
+    }
+}
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.sourceFiles
+}
+task androidJavaDoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    options.encoding "UTF-8"
+    options.charSet 'UTF-8'
+    options.author true
+    options.version true
+    failOnError false
+}
+task androidJavaDocJar(type: Jar, dependsOn: androidJavaDoc) {
+    classifier = 'javadoc'
+    from androidJavaDoc.destinationDir
+}
+task copyDoc(type: Copy) {
+    from "${buildDir}/docs/"
+    into "docs"
+}
+artifacts {
+    archives androidSourcesJar
+    archives androidJavaDocJar
+}
