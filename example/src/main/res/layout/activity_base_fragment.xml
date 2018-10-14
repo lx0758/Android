@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <RadioGroup
+        android:id="@+id/rg_select"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_one"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="45dp"
+            android:button="@null"
+            android:gravity="center"
+            android:textColor="@color/activity_base_fragment"
+            android:text="One"/>
+
+        <RadioButton
+            android:id="@+id/rb_two"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="45dp"
+            android:button="@null"
+            android:gravity="center"
+            android:textColor="@color/activity_base_fragment"
+            android:text="Two"/>
+
+        <RadioButton
+            android:id="@+id/rb_three"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="45dp"
+            android:button="@null"
+            android:gravity="center"
+            android:textColor="@color/activity_base_fragment"
+            android:text="Three"/>
+
+        <RadioButton
+            android:id="@+id/rb_four"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="45dp"
+            android:button="@null"
+            android:gravity="center"
+            android:textColor="@color/activity_base_fragment"
+            android:text="Four"/>
+
+    </RadioGroup>
+
+</LinearLayout>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.liux.android.example">
+
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+    <application
+        android:name=".ApplocationInstance"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <activity
+            android:name=".MainActivity"
+            android:label="Example">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".banner.BannerActivity"
+            android:label="Banner"/>
+
+        <activity android:name=".abstracts.AbstractsActivity"
+            android:label="Base"/>
+
+        <activity android:name=".abstracts.TransparentTitleBarActivity"
+            android:label="TransparentTitleBar"/>
+        <activity android:name=".abstracts.DefaultTitleBarActivity"
+            android:label="DefaultTitleBar"/>
+        <activity android:name=".abstracts.WhiteTitleBarActivity"
+            android:label="WhiteTitleBar"/>
+        <activity android:name=".abstracts.NoTitleBarActivity"
+            android:label="NoTitleBar"/>
+        <activity android:name=".abstracts.FragmentActivity"
+            android:label="Fragment"/>
+        <activity android:name=".abstracts.DialogActivity"
+            android:label="Dialog"/>
+
+        <activity android:name=".boxing.BoxingActivity"
+            android:label="Boxing"/>
+
+        <activity android:name=".glide.GlideActivity"
+            android:label="Glide"/>
+
+        <activity android:name=".http.HTTPActivity"
+            android:label="HTTP"/>
+
+        <activity android:name=".list.ListActivity"
+            android:label="List"/>
+
+        <activity android:name=".pay.PayActivity"
+            android:label="Pay"/>
+
+        <activity android:name=".permission.PermissionActivity"
+            android:label="Permission"/>
+
+        <activity
+            android:name=".qrcode.QRCodeActivity"
+            android:label="QRCode"/>
+        <activity
+            android:name=".qrcode.QRCodeCustomizeScanningActivity"
+            android:label="QRCodeCustomizeScanning"/>
+        <activity
+            android:name=".qrcode.QRCodeGenerateActivity"
+            android:label="QRCodeGenerate"/>
+
+        <activity android:name=".rx.RXActivity"
+            android:label="RX"/>
+
+        <activity android:name=".other.ToolActivity"
+            android:label="Other"/>
+
+        <activity android:name=".util.UtilActivity"
+            android:label="Util"/>
+
+        <activity android:name=".view.ViewActivity"
+            android:label="View"/>
+
+    </application>
+
+</manifest>
