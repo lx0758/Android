@@ -3,6 +3,8 @@
 
     <application>
 
+        <service android:name=".service.DownloaderService"/>
+
     </application>
 
 </manifest>

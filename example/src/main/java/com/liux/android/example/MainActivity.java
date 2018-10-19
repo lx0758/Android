@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         add("Banner", "一个支持Adapter的Banner封装", BannerActivity.class);
         add("Abstracts", "对于Activity和Fragment的封装", AbstractsActivity.class);
         add("Boxing", "基于Boxing封装的图片选择/预览库", BoxingActivity.class);
-        add("Downloader", "全局/多线程/断点续传下载器实现", DownloaderActivity.class);
+        add("Downloader", "全局/单线程/断点续传下载器实现", DownloaderActivity.class);
         add("Glide", "基于Glide4实现自定义加载过程", GlideActivity.class);
         add("HTTP", "基于Retorfit/OkHttp的封装", HTTPActivity.class);
         add("List", "基于RecycleView的封装", ListActivity.class);

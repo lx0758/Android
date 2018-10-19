@@ -47,6 +47,10 @@
 
         <activity android:name=".downloader.DownloaderActivity"
             android:label="Downloader"/>
+        <activity android:name=".downloader.SingleTaskDownloaderActivity"
+            android:label="SingleTaskDownloader"/>
+        <activity android:name=".downloader.MultiTaskDownloaderActivity"
+            android:label="MultiTaskDownloader"/>
 
         <activity android:name=".glide.GlideActivity"
             android:label="Glide"/>
