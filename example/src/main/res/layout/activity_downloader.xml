@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="单任务"
-        android:onClick="oneTask"/>
+        android:onClick="onSingleTask"/>
 
     <View
         android:layout_width="0dp"
@@ -22,6 +22,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="多任务"
-        android:onClick="moreTask"/>
+        android:onClick="onMultiTask"/>
 
 </LinearLayout>

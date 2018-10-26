@@ -27,11 +27,11 @@ public class DownloaderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_downloader);
     }
 
-    public void oneTask(View view) {
+    public void onSingleTask(View view) {
         startActivity(new Intent(this, SingleTaskDownloaderActivity.class));
     }
 
-    public void moreTask(View view) {
+    public void onMultiTask(View view) {
         startActivity(new Intent(this, MultiTaskDownloaderActivity.class));
     }
 }
