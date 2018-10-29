@@ -49,11 +49,11 @@ public class Downloader {
 
     }
 
-    public static void registerTaskCallback(TaskCallback taskCallback) {
+    public static void registerTaskCallback(DownloaderCallback downloaderCallback) {
 
     }
 
-    public static void unregisterTaskCallback(TaskCallback taskCallback) {
+    public static void unregisterTaskCallback(DownloaderCallback downloaderCallback) {
 
     }
 }

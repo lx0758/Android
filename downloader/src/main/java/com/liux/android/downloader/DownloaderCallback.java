@@ -1,6 +1,6 @@
 package com.liux.android.downloader;
 
-public interface TaskCallback {
+public interface DownloaderCallback {
 
     /**
      * 任务创建完毕
