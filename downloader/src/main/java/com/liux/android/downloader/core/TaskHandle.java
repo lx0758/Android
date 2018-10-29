@@ -1,4 +1,4 @@
-package com.liux.android.downloader;
+package com.liux.android.downloader.core;
 
 public interface TaskHandle {
 

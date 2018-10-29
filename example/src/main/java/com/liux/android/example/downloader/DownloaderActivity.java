@@ -18,7 +18,7 @@ public class DownloaderActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Downloader.config(Config.builder(getApplicationContext())
+        Downloader.init(Config.builder(getApplicationContext())
                 .connectFactory(new OKHttpConnectFactory())
                 .rootDirectory(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS))
                 .maxTaskCount(3)

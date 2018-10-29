@@ -1,5 +1,7 @@
 package com.liux.android.downloader;
 
+import com.liux.android.downloader.core.Task;
+
 public interface DownloaderCallback {
 
     /**

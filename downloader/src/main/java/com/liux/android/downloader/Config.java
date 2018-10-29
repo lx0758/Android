@@ -4,6 +4,10 @@ import android.content.Context;
 import android.os.Environment;
 
 import com.liux.android.downloader.network.ConnectFactory;
+import com.liux.android.downloader.storage.DataStorage;
+import com.liux.android.downloader.storage.DefaultDataStorage;
+import com.liux.android.downloader.storage.DefaultFileStorage;
+import com.liux.android.downloader.storage.FileStorage;
 
 import java.io.File;
 
@@ -19,6 +23,10 @@ public class Config {
     private int maxTaskCount;
     // 默认存储文件根目录
     private File rootDirectory;
+    // 文件写入实例
+    private FileStorage fileStorage;
+    // 数据存储实例
+    private DataStorage dataStorage;
     // 连接工厂实例
     private ConnectFactory connectFactory;
 
@@ -50,6 +58,8 @@ public class Config {
         Builder newBuilder = new Builder(config.context);
         newBuilder.maxTaskCount = config.maxTaskCount;
         newBuilder.rootDirectory = config.rootDirectory;
+        newBuilder.fileStorage = config.fileStorage;
+        newBuilder.dataStorage = config.dataStorage;
         newBuilder.connectFactory = config.connectFactory;
         return newBuilder;
     }
@@ -59,6 +69,8 @@ public class Config {
         private Context context;
         private int maxTaskCount;
         private File rootDirectory;
+        private FileStorage fileStorage;
+        private DataStorage dataStorage;
         private ConnectFactory connectFactory;
 
         private Builder(Context context) {
@@ -72,6 +84,16 @@ public class Config {
 
         public Builder rootDirectory(File rootDirectory) {
             this.rootDirectory = rootDirectory;
+            return this;
+        }
+
+        public Builder fileStorage(FileStorage fileStorage) {
+            this.fileStorage = fileStorage;
+            return this;
+        }
+
+        public Builder dataStorage(DataStorage dataStorage) {
+            this.dataStorage = dataStorage;
             return this;
         }
 
@@ -105,6 +127,9 @@ public class Config {
                 rootDirectory.mkdirs();
             }
             config.rootDirectory = rootDirectory;
+
+            if (fileStorage == null) fileStorage = new DefaultFileStorage();
+            if (dataStorage == null) dataStorage = new DefaultDataStorage();
 
             if (connectFactory == null) throw new NullPointerException("connectFactory cannot be empty");
             config.connectFactory = connectFactory;

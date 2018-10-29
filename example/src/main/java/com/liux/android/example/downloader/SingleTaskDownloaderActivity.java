@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.liux.android.downloader.Downloader;
 import com.liux.android.downloader.OnStatusListener;
-import com.liux.android.downloader.Task;
+import com.liux.android.downloader.core.Task;
 import com.liux.android.example.R;
 
 public class SingleTaskDownloaderActivity extends AppCompatActivity {
