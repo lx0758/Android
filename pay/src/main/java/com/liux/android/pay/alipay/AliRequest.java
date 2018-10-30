@@ -2,7 +2,7 @@ package com.liux.android.pay.alipay;
 
 import com.alipay.sdk.app.EnvUtils;
 import com.alipay.sdk.app.PayTask;
-import com.liux.android.pay.PayTool;
+import com.liux.android.pay.Payer;
 import com.liux.android.pay.Request;
 
 public abstract class AliRequest extends Request<String, AliResult> {
@@ -30,12 +30,12 @@ public abstract class AliRequest extends Request<String, AliResult> {
     protected AliRequest(String bill, boolean sandbox) {
         super(bill);
         this.sandbox = sandbox;
-        PayTool.println("创建支付宝支付实例:" + bill);
+        Payer.println("创建支付宝支付实例:" + bill);
     }
 
     @Override
     protected void start() {
-        PayTool.println("开始支付宝支付:" + bill);
+        Payer.println("开始支付宝支付:" + bill);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -44,9 +44,9 @@ public abstract class AliRequest extends Request<String, AliResult> {
 
                 PayTask alipay = new PayTask(activity);
                 final String result = alipay.pay(bill, true);
-                PayTool.println("支付宝支付结果:" + result);
+                Payer.println("支付宝支付结果:" + result);
 
-                PayTool.println("回调支付结果");
+                Payer.println("回调支付结果");
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

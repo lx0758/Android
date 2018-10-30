@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.liux.android.pay.PayTool;
+import com.liux.android.pay.Payer;
 import com.unionpay.UPPayAssistEx;
 
 /**
@@ -101,9 +101,9 @@ public class UnionPayActivity extends Activity {
     }
 
     private void callCallback(String result, String data) {
-        PayTool.println("银联支付结果:" + result);
+        Payer.println("银联支付结果:" + result);
 
-        PayTool.println("回调支付结果");
+        Payer.println("回调支付结果");
         UnionRequest unionRequest = UnionRequest.getUnionRequest(mOrderInfo);
         if (unionRequest != null) {
             unionRequest.callback(new UnionResult(result, data));

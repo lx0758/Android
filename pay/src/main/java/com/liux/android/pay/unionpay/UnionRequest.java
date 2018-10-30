@@ -2,7 +2,7 @@ package com.liux.android.pay.unionpay;
 
 import android.content.Intent;
 
-import com.liux.android.pay.PayTool;
+import com.liux.android.pay.Payer;
 import com.liux.android.pay.Request;
 import com.unionpay.UPPayAssistEx;
 
@@ -29,14 +29,14 @@ public abstract class UnionRequest extends Request<String, UnionResult> {
 
     protected UnionRequest(String orderInfo) {
         super(orderInfo);
-        PayTool.println("创建银联支付实例:" + bill);
+        Payer.println("创建银联支付实例:" + bill);
     }
 
     @Override
     protected void start() {
         if (!checkConfig()) return;
 
-        PayTool.println("开始银联支付:" + bill.toString());
+        Payer.println("开始银联支付:" + bill.toString());
         UnionRequest.putUnionRequest(bill, this);
         Intent intent = new Intent(activity, UnionPayActivity.class);
         intent.putExtra(UnionPayActivity.PARAM_PAY_BILL, bill);
@@ -52,7 +52,7 @@ public abstract class UnionRequest extends Request<String, UnionResult> {
     }
 
     private boolean checkConfig() {
-        PayTool.println("银联支付预检查:" + bill);
+        Payer.println("银联支付预检查:" + bill);
 
         if (bill == null || bill.length() < 10) {
             checkFailure("请求参数自检失败,请检查银联支付orderInfo(TN)参数是否正确");
@@ -60,17 +60,17 @@ public abstract class UnionRequest extends Request<String, UnionResult> {
         }
 
         if (!UPPayAssistEx.checkInstalled(activity)) {
-            PayTool.println("检测到银联支付控件未安装,可以通过链接下载并安装 http://mobile.unionpay.com/getclient?platform=android&type=securepayplugin");
+            Payer.println("检测到银联支付控件未安装,可以通过链接下载并安装 http://mobile.unionpay.com/getclient?platform=android&type=securepayplugin");
         }
 
-        PayTool.println("银联支付预检查完毕:" + bill);
+        Payer.println("银联支付预检查完毕:" + bill);
         return true;
     }
 
     private void checkFailure(String msg) {
-        PayTool.println("银联支付预检查失败:" + msg);
-        PayTool.println("终止银联支付:" + bill);
-        PayTool.println("回调支付结果");
+        Payer.println("银联支付预检查失败:" + msg);
+        Payer.println("终止银联支付:" + bill);
+        Payer.println("回调支付结果");
         callback(new UnionResult(RESULT_FAILURE, null));
     }
 }

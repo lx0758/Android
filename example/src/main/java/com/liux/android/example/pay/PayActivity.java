@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.liux.android.example.R;
-import com.liux.android.pay.PayTool;
+import com.liux.android.pay.Payer;
 import com.liux.android.pay.alipay.AliRequest;
 import com.liux.android.pay.alipay.AliResult;
 import com.liux.android.pay.unionpay.UnionRequest;
@@ -31,14 +31,14 @@ public class PayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pay);
         ButterKnife.bind(this);
 
-        PayTool.DEBUG = true;
+        Payer.DEBUG = true;
     }
 
     @OnClick({R.id.btn_ali, R.id.btn_wx, R.id.btn_union})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_ali:
-                PayTool.with(this)
+                Payer.with(this)
                         .request(new AliRequest("") {
                             @Override
                             public void callback(AliResult aliResult) {
@@ -77,7 +77,7 @@ public class PayActivity extends AppCompatActivity {
                 PayReq payReq = new PayReq();
                 payReq.extData = "我是附加数据,可以随便写;";
 
-                PayTool.with(this)
+                Payer.with(this)
                         .request(new WxRequest(payReq) {
                             @Override
                             public void callback(PayResp payResp) {
@@ -116,7 +116,7 @@ public class PayActivity extends AppCompatActivity {
                         .pay();
                 break;
             case R.id.btn_union:
-                PayTool.with(this)
+                Payer.with(this)
                         .request(new UnionRequest("") {
                             @Override
                             public void callback(UnionResult unionResult) {
