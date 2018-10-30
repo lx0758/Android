@@ -3,7 +3,8 @@ package com.liux.android.downloader.storage;
 import android.content.Context;
 
 import java.io.File;
-import java.io.OutputStream;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 public class DefaultFileStorage implements FileStorage {
 
@@ -16,10 +17,21 @@ public class DefaultFileStorage implements FileStorage {
     }
 
     @Override
-    public OutputStream onOpen(File dir, String fileName) {
+    public boolean isExist(File dir, String fileName) {
+        File file = getFile(dir, fileName);
+        return file.exists() && file.isFile();
+    }
+
+    @Override
+    public RandomAccessFile onOpen(File dir, String fileName) throws IOException {
+        File file = getFile(dir, fileName);
+        return new RandomAccessFile(file, "rw");
+    }
+
+    private File getFile(File dir, String fileName) {
         if (dir == null) dir = rootDir;
         dir.mkdirs();
 
-        return null;
+        return new File(dir.getAbsolutePath() + File.separator + fileName);
     }
 }

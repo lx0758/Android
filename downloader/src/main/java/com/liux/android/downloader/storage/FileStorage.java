@@ -3,7 +3,8 @@ package com.liux.android.downloader.storage;
 import android.content.Context;
 
 import java.io.File;
-import java.io.OutputStream;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 public interface FileStorage {
 
@@ -11,5 +12,5 @@ public interface FileStorage {
 
     boolean isExist(File dir, String fileName);
 
-    OutputStream onOpen(File dir, String fileName);
+    RandomAccessFile onOpen(File dir, String fileName) throws IOException;
 }
