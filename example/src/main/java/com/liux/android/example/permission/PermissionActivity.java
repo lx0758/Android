@@ -12,7 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.liux.android.boxing.CameraTool;
+import com.liux.android.boxing.Cameraer;
 import com.liux.android.example.R;
 import com.liux.android.glide.GlideApp;
 import com.liux.android.permission.Continue;
@@ -115,8 +115,8 @@ public class PermissionActivity extends AppCompatActivity {
                             @Override
                             public void onRuntimePermission(List<String> allow, List<String> reject, List<String> prohibit) {
                                 if (allow.contains(Manifest.permission.CAMERA)) {
-                                    CameraTool.setAuthority(UriUtil.getAuthority(PermissionActivity.this));
-                                    CameraTool.start(PermissionActivity.this, new CameraTool.OnCameraListener() {
+                                    Cameraer.setAuthority(UriUtil.getAuthority(PermissionActivity.this));
+                                    Cameraer.start(PermissionActivity.this, new Cameraer.OnCameraListener() {
                                         @Override
                                         public void onSucceed(File file) {
                                             GlideApp.with(ivPreview)
@@ -172,8 +172,8 @@ public class PermissionActivity extends AppCompatActivity {
                                 }
 
                                 if (allow.contains(Manifest.permission.CAMERA)) {
-                                    CameraTool.setAuthority(UriUtil.getAuthority(PermissionActivity.this));
-                                    CameraTool.start(PermissionActivity.this, new CameraTool.OnCameraListener() {
+                                    Cameraer.setAuthority(UriUtil.getAuthority(PermissionActivity.this));
+                                    Cameraer.start(PermissionActivity.this, new Cameraer.OnCameraListener() {
                                         @Override
                                         public void onSucceed(File file) {
                                             GlideApp.with(ivPreview)

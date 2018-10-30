@@ -12,7 +12,7 @@ import com.bilibili.boxing.BoxingCrop;
 import com.bilibili.boxing.BoxingMediaLoader;
 import com.bilibili.boxing.model.entity.impl.ImageMedia;
 import com.liux.android.boxing.BoxingGlideLoader;
-import com.liux.android.boxing.BoxingTool;
+import com.liux.android.boxing.Boxinger;
 import com.liux.android.boxing.BoxingUcrop;
 import com.liux.android.boxing.OnSingleSelectListener;
 import com.liux.android.example.R;
@@ -71,7 +71,7 @@ public class QRCodeActivity extends AppCompatActivity {
                 break;
             case R.id.btn_bitmap_decode:
                 // FIXME: memory overflow may occur here
-                BoxingTool.startSingle(this, true, false, new OnSingleSelectListener() {
+                Boxinger.startSingle(this, true, false, new OnSingleSelectListener() {
                     @Override
                     public void onSingleSelect(ImageMedia imageMedia) {
                         File file = new File(imageMedia.getPath());
@@ -89,7 +89,7 @@ public class QRCodeActivity extends AppCompatActivity {
                 });
                 break;
             case R.id.btn_bytes_decode:
-                BoxingTool.startSingle(this, true, false, new OnSingleSelectListener() {
+                Boxinger.startSingle(this, true, false, new OnSingleSelectListener() {
                     @Override
                     public void onSingleSelect(ImageMedia imageMedia) {
                         File file = new File(imageMedia.getPath());
@@ -120,7 +120,7 @@ public class QRCodeActivity extends AppCompatActivity {
                 });
                 break;
             case R.id.btn_file_decode:
-                BoxingTool.startSingle(this, true, false, new OnSingleSelectListener() {
+                Boxinger.startSingle(this, true, false, new OnSingleSelectListener() {
                     @Override
                     public void onSingleSelect(ImageMedia imageMedia) {
                         File file = new File(imageMedia.getPath());
@@ -131,7 +131,7 @@ public class QRCodeActivity extends AppCompatActivity {
                 });
                 break;
             case R.id.btn_file_descriptor_decode:
-                BoxingTool.startSingle(this, true, false, new OnSingleSelectListener() {
+                Boxinger.startSingle(this, true, false, new OnSingleSelectListener() {
                     @Override
                     public void onSingleSelect(ImageMedia imageMedia) {
                         File file = new File(imageMedia.getPath());
@@ -153,7 +153,7 @@ public class QRCodeActivity extends AppCompatActivity {
                 });
                 break;
             case R.id.btn_input_stream_decode:
-                BoxingTool.startSingle(this, true, false, new OnSingleSelectListener() {
+                Boxinger.startSingle(this, true, false, new OnSingleSelectListener() {
                     @Override
                     public void onSingleSelect(ImageMedia imageMedia) {
                         File file = new File(imageMedia.getPath());

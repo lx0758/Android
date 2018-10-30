@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
  * Created by Liux on 2017/11/13.
  */
 
-public class BoxingTool {
+public class Boxinger {
     private static String CACHE_DIR;
     private static Map<BoxingFragment, Object> BOXINGS = new HashMap<>();
 
@@ -132,7 +132,7 @@ public class BoxingTool {
         FragmentManager manager = activity.getFragmentManager();
         manager
                 .beginTransaction()
-                .add(fragment, "BoxingTool")
+                .add(fragment, "Boxinger")
                 .commitAllowingStateLoss();
         manager.executePendingTransactions();
         Boxing.of(config).withIntent(fragment.getActivity(), BoxingActivity.class).start(fragment, requestCode);

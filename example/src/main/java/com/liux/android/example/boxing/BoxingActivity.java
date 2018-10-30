@@ -14,7 +14,7 @@ import com.bilibili.boxing.model.entity.BaseMedia;
 import com.bilibili.boxing.model.entity.impl.ImageMedia;
 import com.bilibili.boxing.model.entity.impl.VideoMedia;
 import com.liux.android.boxing.BoxingGlideLoader;
-import com.liux.android.boxing.BoxingTool;
+import com.liux.android.boxing.Boxinger;
 import com.liux.android.boxing.BoxingUcrop;
 import com.liux.android.boxing.OnMultiSelectListener;
 import com.liux.android.boxing.OnSingleSelectListener;
@@ -71,7 +71,7 @@ public class BoxingActivity extends AppCompatActivity {
                             public void onClick(View v) {
                                 String[] medias = new String[mMultipleAdapter.getData().size()];
                                 mMultipleAdapter.getData().toArray(medias);
-                                BoxingTool.startPreview(BoxingActivity.this, medias, position);
+                                Boxinger.startPreview(BoxingActivity.this, medias, position);
                             }
                         });
                     }
@@ -87,7 +87,7 @@ public class BoxingActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_select_pic:
-                BoxingTool.startSingle(this, true, false, new OnSingleSelectListener() {
+                Boxinger.startSingle(this, true, false, new OnSingleSelectListener() {
                     @Override
                     public void onSingleSelect(ImageMedia imageMedia) {
                         mMultipleAdapter.getData().clear();
@@ -97,7 +97,7 @@ public class BoxingActivity extends AppCompatActivity {
                 });
                 break;
             case R.id.btn_select_pic_clip:
-                BoxingTool.startSingle(this, true, true, new OnSingleSelectListener() {
+                Boxinger.startSingle(this, true, true, new OnSingleSelectListener() {
                     @Override
                     public void onSingleSelect(ImageMedia imageMedia) {
                         mMultipleAdapter.getData().clear();
@@ -107,7 +107,7 @@ public class BoxingActivity extends AppCompatActivity {
                 });
                 break;
             case R.id.btn_select_pics:
-                BoxingTool.startMulti(this, 5, true, new OnMultiSelectListener() {
+                Boxinger.startMulti(this, 5, true, new OnMultiSelectListener() {
                     @Override
                     public void onMultiSelect(List<ImageMedia> imageMedias) {
                         mMultipleAdapter.getData().clear();
@@ -119,7 +119,7 @@ public class BoxingActivity extends AppCompatActivity {
                 });
                 break;
             case R.id.btn_select_video:
-                BoxingTool.startVideo(this, new OnVideoSelectListener() {
+                Boxinger.startVideo(this, new OnVideoSelectListener() {
                     @Override
                     public void onVideoSelect(VideoMedia videoMedia) {
                         mMultipleAdapter.getData().clear();
