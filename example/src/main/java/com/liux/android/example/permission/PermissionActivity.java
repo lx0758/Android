@@ -15,11 +15,11 @@ import android.widget.ImageView;
 import com.liux.android.boxing.Cameraer;
 import com.liux.android.example.R;
 import com.liux.android.glide.GlideApp;
+import com.liux.android.permission.Authorizer;
 import com.liux.android.permission.Continue;
 import com.liux.android.permission.OnContinueListener;
 import com.liux.android.permission.floats.OnFloatPermissionListener;
 import com.liux.android.permission.runtime.OnRuntimePermissionListener;
-import com.liux.android.permission.PermissionTool;
 import com.liux.android.util.UriUtil;
 import com.liux.android.tool.TT;
 
@@ -52,7 +52,7 @@ public class PermissionActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_call:
-                PermissionTool.with(this)
+                Authorizer.with(this)
                         .requestRuntime(Manifest.permission.CALL_PHONE)
                         .listener(new OnContinueListener() {
                             @Override
@@ -89,7 +89,7 @@ public class PermissionActivity extends AppCompatActivity {
                         .request();
                 break;
             case R.id.btn_camera:
-                PermissionTool.with(this)
+                Authorizer.with(this)
                         .requestRuntime(Manifest.permission.CAMERA)
                         .listener(new OnContinueListener() {
                             @Override
@@ -138,7 +138,7 @@ public class PermissionActivity extends AppCompatActivity {
                         .request();
                 break;
             case R.id.btn_call_camera:
-                PermissionTool.with(this)
+                Authorizer.with(this)
                         .requestRuntime(Manifest.permission.CALL_PHONE, Manifest.permission.CAMERA)
                         .listener(new OnContinueListener() {
                             @Override
@@ -195,7 +195,7 @@ public class PermissionActivity extends AppCompatActivity {
                         .request();
                 break;
             case R.id.btn_floats:
-                PermissionTool.with(this)
+                Authorizer.with(this)
                         .requestFloat()
                         .listener(new OnContinueListener() {
                             @Override

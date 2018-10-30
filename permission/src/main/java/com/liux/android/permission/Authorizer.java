@@ -7,8 +7,8 @@ import android.app.Fragment;
  * Created by Liux on 2017/8/7.
  */
 
-public class PermissionTool {
-    public static final String TAG = "PermissionTool";
+public class Authorizer {
+    public static final String TAG = "Authorizer";
 
     public static Prepare with(Activity activity) {
         return new Prepare(activity);
