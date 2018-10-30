@@ -7,6 +7,7 @@ public class Record {
 
     private long id;
     private String url;
+    private String method;
     private String headers;
     private String dir;
     private String fileName;
@@ -32,6 +33,15 @@ public class Record {
 
     public Record setUrl(String url) {
         this.url = url;
+        return this;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public Record setMethod(String method) {
+        this.method = method;
         return this;
     }
 

@@ -39,7 +39,12 @@ public enum  Status {
     /**
      * 完成状态
      */
-    COMPLETE(60);
+    COMPLETE(60),
+
+    /**
+     * 删除状态
+     */
+    DELETE(70);
 
     private int code;
 

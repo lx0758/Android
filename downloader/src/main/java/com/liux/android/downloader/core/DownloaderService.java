@@ -42,6 +42,26 @@ public class DownloaderService implements TaskDispatch {
         this.threadPoolExecutor = new DownloaderPoolExecutor(config.getMaxTaskCount(), new LinkedBlockingQueue<Runnable>());
     }
 
+    @Override
+    public void start(Task task) {
+
+    }
+
+    @Override
+    public void stop(Task task) {
+
+    }
+
+    @Override
+    public void reset(Task task) {
+
+    }
+
+    @Override
+    public void delete(Task task) {
+
+    }
+
     /**
      * 创建一个任务,可重复创建
      * @param url

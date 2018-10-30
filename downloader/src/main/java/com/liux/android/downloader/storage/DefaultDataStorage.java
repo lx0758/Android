@@ -79,6 +79,7 @@ public class DefaultDataStorage implements DataStorage {
                     "CREATE TABLE 'main'.'" + tableName + "' (\n" +
                             "'id' integer NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
                             "'url' text NOT NULL,\n" +
+                            "'method' text,\n" +
                             "'headers' text,\n" +
                             "'dir' text NOT NULL,\n" +
                             "'fileName' text,\n" +
