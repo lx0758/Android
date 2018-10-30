@@ -6,11 +6,14 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 下载任务线程池
+ */
 class DownloaderPoolExecutor extends ThreadPoolExecutor {
 
-    private Collection<DownloaderRunnable> collection = new LinkedList<>();
+    private Collection<DownloaderTask> runningTasks = new LinkedList<>();
 
-    DownloaderPoolExecutor(int maxTaskCount, BlockingQueue<Runnable> blockingQueue) {
+    public DownloaderPoolExecutor(int maxTaskCount, BlockingQueue<Runnable> blockingQueue) {
         super(
                 maxTaskCount,
                 maxTaskCount,
@@ -23,22 +26,22 @@ class DownloaderPoolExecutor extends ThreadPoolExecutor {
     @Override
     protected void beforeExecute(Thread t, Runnable r) {
         super.beforeExecute(t, r);
-        if (r instanceof DownloaderRunnable) collection.add((DownloaderRunnable) r);
+        if (r instanceof DownloaderTask) runningTasks.add((DownloaderTask) r);
     }
 
     @Override
     protected void afterExecute(Runnable r, Throwable t) {
         super.afterExecute(r, t);
-        if (collection.contains(r)) collection.remove(r);
+        runningTasks.remove(r);
     }
 
     @Override
     protected void terminated() {
         super.terminated();
-        collection.clear();
+        runningTasks.clear();
     }
 
-    protected Collection<DownloaderRunnable> getRunningRunnables() {
-        return collection;
+    protected Collection<DownloaderTask> getRunningTasks() {
+        return runningTasks;
     }
 }

@@ -4,6 +4,9 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 连接器返回实例
+ */
 public class ConnectResult {
 
     private InputStream inputStream;

@@ -7,6 +7,9 @@ import android.text.TextUtils;
 
 import java.util.List;
 
+/**
+ * 默认任务信息存储实现
+ */
 public class DefaultDataStorage implements DataStorage {
     private static final int VERSION_100 = 100;
 
@@ -37,8 +40,8 @@ public class DefaultDataStorage implements DataStorage {
     }
 
     @Override
-    public void onCreate(Record record) {
-
+    public Record onCreate(String url, String method, String headers, String dir, String fileName, int status) {
+        return null;
     }
 
     @Override
@@ -77,13 +80,14 @@ public class DefaultDataStorage implements DataStorage {
                             "'id' integer NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
                             "'url' text NOT NULL,\n" +
                             "'headers' text,\n" +
-                            "'path' text NOT NULL,\n" +
+                            "'dir' text NOT NULL,\n" +
+                            "'fileName' text,\n" +
                             "'etag' text,\n" +
                             "'completed' integer,\n" +
                             "'total' integer,\n" +
                             "'status' integer,\n" +
-                            "'create_time' timestamp,\n" +
-                            "'update_time' timestamp\n" +
+                            "'createTime' timestamp,\n" +
+                            "'updateTime' timestamp\n" +
                             ");"
             );
         }

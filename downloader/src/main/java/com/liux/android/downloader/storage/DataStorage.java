@@ -4,17 +4,20 @@ import android.content.Context;
 
 import java.util.List;
 
+/**
+ * 任务信息存储
+ */
 public interface DataStorage {
 
     void onInit(Context context);
 
-    void onCreate(Record record);
+    Record onCreate(String url, String method, String headers, String dir, String fileName, int status);
+
+    List<Record> onQueryAll();
 
     void onDelete(Record record);
 
     void onUpdate(Record record);
 
     void onQuery(Record record);
-
-    List<Record> onQueryAll();
 }

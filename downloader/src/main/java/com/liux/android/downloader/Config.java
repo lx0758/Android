@@ -11,6 +11,9 @@ import com.liux.android.downloader.storage.FileStorage;
 
 import java.io.File;
 
+/**
+ * 下载器配置实体
+ */
 public class Config {
     // 最小同时进行任务数
     private static final int MIN_TASK_COUNT = 1;
@@ -44,6 +47,14 @@ public class Config {
 
     public File getRootDirectory() {
         return rootDirectory;
+    }
+
+    public FileStorage getFileStorage() {
+        return fileStorage;
+    }
+
+    public DataStorage getDataStorage() {
+        return dataStorage;
     }
 
     public ConnectFactory getConnectFactory() {

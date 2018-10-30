@@ -1,40 +1,74 @@
 package com.liux.android.downloader;
 
+/**
+ * 任务状态枚举
+ */
 public enum  Status {
 
     /**
-     * 未知状态
+     * 新建状态
      */
-    NONE,
+    NEW(0),
 
     /**
      * 等待状态
      */
-    WAIT,
+    WAIT(10),
 
     /**
      * 连接状态
      */
-    CONN,
+    CONN(20),
 
     /**
      * 下载状态
      */
-    START,
+    START(30),
 
     /**
      * 停止状态
      */
-    STOP,
+    STOP(40),
 
     /**
      * 出错状态
      *
      */
-    ERROR,
+    ERROR(50),
 
     /**
      * 完成状态
      */
-    COMPLETE
+    COMPLETE(60);
+
+    private int code;
+
+    Status(int code) {
+        this.code = code;
+    }
+
+    public int code() {
+        return code;
+    }
+
+    public static Status codeOf(int code) {
+        switch (code) {
+            case 0:
+                return NEW;
+            case 100:
+                return WAIT;
+            case 200:
+                return CONN;
+            case 300:
+                return START;
+            case 400:
+                return STOP;
+            case 500:
+                return ERROR;
+            case 600:
+                return COMPLETE;
+            default:
+                return NEW;
+        }
+    }
 }

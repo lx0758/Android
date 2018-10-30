@@ -6,6 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+/**
+ * 下载数据存储
+ */
 public interface FileStorage {
 
     void onInit(Context context, File rootDir);

@@ -1,16 +1,21 @@
 package com.liux.android.downloader.storage;
 
+/**
+ * 下载信息记录实体
+ */
 public class Record {
+
     private long id;
     private String url;
     private String headers;
-    private String path;
+    private String dir;
+    private String fileName;
     private String etag;
     private long completed;
     private long total;
     private int status;
-    private long create_time;
-    private long update_time;
+    private long createTime;
+    private long updateTime;
 
     public long getId() {
         return id;
@@ -39,12 +44,21 @@ public class Record {
         return this;
     }
 
-    public String getPath() {
-        return path;
+    public String getDir() {
+        return dir;
     }
 
-    public Record setPath(String path) {
-        this.path = path;
+    public Record setDir(String dir) {
+        this.dir = dir;
+        return this;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public Record setFileName(String fileName) {
+        this.fileName = fileName;
         return this;
     }
 
@@ -84,21 +98,21 @@ public class Record {
         return this;
     }
 
-    public long getCreate_time() {
-        return create_time;
+    public long getCreateTime() {
+        return createTime;
     }
 
-    public Record setCreate_time(long create_time) {
-        this.create_time = create_time;
+    public Record setCreateTime(long createTime) {
+        this.createTime = createTime;
         return this;
     }
 
-    public long getUpdate_time() {
-        return update_time;
+    public long getUpdateTime() {
+        return updateTime;
     }
 
-    public Record setUpdate_time(long update_time) {
-        this.update_time = update_time;
+    public Record setUpdateTime(long updateTime) {
+        this.updateTime = updateTime;
         return this;
     }
 }

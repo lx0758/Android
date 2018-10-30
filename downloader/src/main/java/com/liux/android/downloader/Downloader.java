@@ -1,62 +1,56 @@
 package com.liux.android.downloader;
 
-import com.liux.android.downloader.core.DownloaderProxy;
+import com.liux.android.downloader.core.DownloaderService;
 import com.liux.android.downloader.core.Task;
 
 import java.util.List;
-import java.util.Map;
 
+/**
+ * 下载器封装工具类
+ */
 public class Downloader {
 
     public static void init(Config config) {
-        DownloaderProxy.get().init(config);
+        DownloaderService.init(config);
     }
 
     public static Task createTask(String url) {
-        return createTask(url, "GET", null);
+        return new TaskBuilder(url).build();
     }
 
-    public static Task createTask(String url, String method) {
-        return createTask(url, method, null);
-    }
-
-    public static Task createTask(String url, Map<String, List<String>> header) {
-        return createTask(url, "GET", header);
-    }
-
-    public static Task createTask(String url, String method, Map<String, List<String>> header) {
-        return DownloaderProxy.get().createTask(url, method, header);
+    public static TaskBuilder createTaskBuilder(String url) {
+        return new TaskBuilder(url);
     }
 
     public static Task getTask(long taskId) {
-        return DownloaderProxy.get().getTask(taskId);
+        return DownloaderService.get().getTask(taskId);
     }
 
     public static List<Task> getAllTasks() {
-        return DownloaderProxy.get().getAllTasks();
+        return DownloaderService.get().getAllTasks();
     }
 
     public static void startAllTasks() {
-        DownloaderProxy.get().startAllTasks();
+        DownloaderService.get().startAllTasks();
     }
 
     public static void stopAllTasks() {
-        DownloaderProxy.get().stopAllTasks();
+        DownloaderService.get().stopAllTasks();
     }
 
     public static void resetAllTasks() {
-        DownloaderProxy.get().resetAllTasks();
+        DownloaderService.get().resetAllTasks();
     }
 
     public static void deleteAllTasks() {
-        DownloaderProxy.get().deleteAllTasks();
+        DownloaderService.get().deleteAllTasks();
     }
 
     public static void registerTaskCallback(DownloaderCallback downloaderCallback) {
-        DownloaderProxy.get().registerTaskCallback(downloaderCallback);
+        DownloaderService.get().registerTaskCallback(downloaderCallback);
     }
 
     public static void unregisterTaskCallback(DownloaderCallback downloaderCallback) {
-        DownloaderProxy.get().unregisterTaskCallback(downloaderCallback);
+        DownloaderService.get().unregisterTaskCallback(downloaderCallback);
     }
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 定义一个网络连接
+ * 网络连接器
  */
 public interface Connect {
 

@@ -6,6 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+/**
+ * 默认下载数据存储实现
+ */
 public class DefaultFileStorage implements FileStorage {
 
     private File rootDir;

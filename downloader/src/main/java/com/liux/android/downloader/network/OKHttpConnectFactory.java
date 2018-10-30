@@ -11,6 +11,9 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+/**
+ * OKHttp 连接工厂&连接器实现
+ */
 public class OKHttpConnectFactory implements ConnectFactory {
 
     private Call.Factory factory;

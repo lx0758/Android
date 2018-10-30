@@ -9,6 +9,10 @@ import com.liux.android.downloader.OnStatusListener;
 import com.liux.android.downloader.core.Task;
 import com.liux.android.example.R;
 
+import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
+
 public class SingleTaskDownloaderActivity extends AppCompatActivity {
 
     private Task task;
@@ -19,7 +23,14 @@ public class SingleTaskDownloaderActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_downloader_single);
 
-        task = Downloader.createTask("");
+        File dir = new File("");
+        List<String> header = new LinkedList<>();
+        task = Downloader.createTaskBuilder("")
+                .method("")
+                .header("", header)
+                .dir(dir)
+                .fileName("")
+                .build();
         task.bindStatusListener(new OnStatusListener() {
             @Override
             public void onBind() {
@@ -29,7 +40,7 @@ public class SingleTaskDownloaderActivity extends AppCompatActivity {
             @Override
             public void onUpdate() {
                 switch (task.getStatus()) {
-                    case NONE:
+                    case NEW:
                         break;
                     case WAIT:
                         break;

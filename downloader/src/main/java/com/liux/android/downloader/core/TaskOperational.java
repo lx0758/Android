@@ -1,6 +1,9 @@
 package com.liux.android.downloader.core;
 
-public interface TaskHandle {
+/**
+ * 任务操作接口
+ */
+public interface TaskOperational {
 
     void start();
 

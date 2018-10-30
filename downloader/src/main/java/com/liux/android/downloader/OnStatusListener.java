@@ -1,5 +1,8 @@
 package com.liux.android.downloader;
 
+/**
+ * 任务状态监听器
+ */
 public interface OnStatusListener {
 
     /**

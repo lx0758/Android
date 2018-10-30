@@ -2,6 +2,9 @@ package com.liux.android.downloader;
 
 import com.liux.android.downloader.core.Task;
 
+/**
+ * 下载器任务状态回调(主要用来处理关联业务)
+ */
 public interface DownloaderCallback {
 
     /**
