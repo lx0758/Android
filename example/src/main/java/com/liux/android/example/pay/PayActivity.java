@@ -75,7 +75,7 @@ public class PayActivity extends AppCompatActivity {
                 break;
             case R.id.btn_wx:
                 PayReq payReq = new PayReq();
-                payReq.extData = "我是附加数据,可以随便写;";
+                payReq.extData = "附加数据可以随便写";
 
                 Payer.with(this)
                         .request(new WxRequest(payReq) {

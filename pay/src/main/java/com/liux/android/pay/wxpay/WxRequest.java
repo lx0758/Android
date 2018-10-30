@@ -80,26 +80,37 @@ public abstract class WxRequest extends Request<PayReq, PayResp> {
         Payer.println("微信支付预检查:" + getBillString());
 
         String WX_ACTIVITY = activity.getPackageName() + ".wxapi.WXPayEntryActivity";
+
         // 检验支付参数
         if (bill == null || !bill.checkArgs()) {
             checkFailure(ERR_PARAM, "请求参数自检失败,请检查微信支付请求参数是否正确");
             return false;
         }
-        // 检验Activity类文件
+
+        // 检验 WXPayEntryActivity 类
+        Object object;
         try {
-            boolean find = false;
-            Object object = Class.forName(WX_ACTIVITY).newInstance();
-            if (object instanceof WxPayActivity) {
-                find = true;
+            object = Class.forName(WX_ACTIVITY).newInstance();
+            if (!(object instanceof Activity)) {
+                checkFailure(ERR_CONFIG, "类 [" + WX_ACTIVITY + "] 未继承于 [android.app.Activity]");
+                return false;
             }
-            if (!find) {
-                throw new Exception();
-            }
-        } catch (Exception e) {
-            checkFailure(ERR_CONFIG, "未能加载 [WXPayEntryActivity] 或未继承于 [WxPayActivity] (注意检查 applicationId 和包名是否一致,微信回调以 applicationId 为准) " + WX_ACTIVITY);
-            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            checkFailure(ERR_CONFIG, "未检测到类 [" + WX_ACTIVITY + "] (注意检查 applicationId 和该类所在包名是否一致, 微信回调以 applicationId 为准)");
+            return false;
+        } catch (IllegalAccessException e) {
+            checkFailure(ERR_CONFIG, "检测到类 [" + WX_ACTIVITY + "] 不能被实例化, 请检查该类的权限修饰符和构造函数权限修饰符是否正确");
+            return false;
+        } catch (InstantiationException e) {
+            checkFailure(ERR_CONFIG, "检测到类 [" + WX_ACTIVITY + "] 不能被实例化, 请检查该类的权限修饰符和构造函数权限修饰符是否正确");
             return false;
         }
+
+        // 检验是否继承类
+        if (!(object instanceof WxPayActivity)) {
+            Payer.println("[警告]检测到类 [" + WX_ACTIVITY + "] 未继承于 [" + WxPayActivity.class.getPackage().getName() + ".WxPayActivity], 请注意在 [com.tencent.mm.opensdk.openapi.IWXAPIEventHandler.onResp(BaseResp)] 回调方法中静态调用 [" + WxRequest.class.getPackage().getName() + ".WxRequest.onResp(BaseResp)] 方法");
+        }
+
         // 检验清单描述文件
         try {
             boolean find = false;
@@ -114,9 +125,8 @@ public abstract class WxRequest extends Request<PayReq, PayResp> {
                 checkFailure(ERR_CONFIG, "清单文件未注册或者未导出 " + WX_ACTIVITY);
                 return false;
             }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        } catch (PackageManager.NameNotFoundException ignore) {}
+
         // 检验客户端
         if (mIWXAPI.getWXAppSupportAPI() < Build.PAY_SUPPORTED_SDK_INT) {
             checkFailure(ERR_VERSION, "未安装微信或版本过低");

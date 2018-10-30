@@ -13,7 +13,7 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 /**
  * ① 集成此 Activity ,并在清单文件中注册; 注意一定要导出
- * activity android:name=".wxapi.WXPayEntryActivity"
+ * android:name=".wxapi.WXPayEntryActivity"
  * android:exported="true"
  *
  * ② 自行实现 Activity, 在 {@link IWXAPIEventHandler#onResp(BaseResp)} 回调 {@link  WxRequest#onResp(BaseResp)}
