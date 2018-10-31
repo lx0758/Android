@@ -23,13 +23,10 @@ public class SingleTaskDownloaderActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_downloader_single);
 
-        File dir = new File("");
-        List<String> header = new LinkedList<>();
-        task = Downloader.createTaskBuilder("")
-                .method("")
-                .header("", header)
-                .dir(dir)
-                .fileName("")
+        task = Downloader.createTaskBuilder("http://html.6xyun.cn/media/mp3?t=123")
+                .method("GET")
+                .dir(null)
+                .fileName("temp")
                 .build();
         task.bindStatusListener(new OnStatusListener() {
             @Override
@@ -54,21 +51,11 @@ public class SingleTaskDownloaderActivity extends AppCompatActivity {
                         break;
                     case COMPLETE:
                         break;
+                    case DELETE:
+                        break;
                 }
             }
         });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        task.start();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        task.stop();
     }
 
     @Override

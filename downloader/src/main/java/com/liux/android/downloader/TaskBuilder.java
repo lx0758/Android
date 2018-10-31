@@ -1,5 +1,7 @@
 package com.liux.android.downloader;
 
+import android.text.TextUtils;
+
 import com.liux.android.downloader.core.DownloaderService;
 import com.liux.android.downloader.core.Task;
 
@@ -29,6 +31,7 @@ public class TaskBuilder {
     }
 
     public TaskBuilder header(String name, List<String> values) {
+        if (TextUtils.isEmpty(name)) return this;
         if (headers == null) headers = new HashMap<>();
         headers.put(name, values);
         return this;

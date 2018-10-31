@@ -140,7 +140,10 @@ public class Config {
             config.rootDirectory = rootDirectory;
 
             if (fileStorage == null) fileStorage = new DefaultFileStorage();
+            config.fileStorage = fileStorage;
+
             if (dataStorage == null) dataStorage = new DefaultDataStorage();
+            config.dataStorage = dataStorage;
 
             if (connectFactory == null) throw new NullPointerException("connectFactory cannot be empty");
             config.connectFactory = connectFactory;

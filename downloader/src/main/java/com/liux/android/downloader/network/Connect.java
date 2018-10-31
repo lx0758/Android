@@ -9,13 +9,25 @@ import java.util.Map;
  */
 public interface Connect {
 
-    void load(String url, String method, Map<String, List<String>> header);
+    /**
+     * 是否已经链接
+     * @return
+     */
+    boolean isConnect();
 
-    boolean isExecuted();
+    /**
+     * 链接某个资源
+     * @param url
+     * @param method
+     * @param headers
+     * @param needBody
+     * @return
+     * @throws IOException
+     */
+    ConnectResponse connect(String url, String method, Map<String, List<String>> headers, boolean needBody) throws IOException;
 
-    ConnectResult execute() throws IOException;
-
-    boolean isCanceled();
-
-    void cancel();
+    /**
+     * 关闭链接
+     */
+    void close();
 }

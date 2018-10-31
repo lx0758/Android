@@ -18,6 +18,7 @@ public class DownloaderUtil {
      * @return
      */
     public static String headers2json(Map<String, List<String>> map) {
+        if (map == null) return null;
         return new JSONObject(map).toString();
     }
 
@@ -27,6 +28,7 @@ public class DownloaderUtil {
      * @return
      */
     public static Map<String, List<String>> json2headers(String string) {
+        if (string == null) return null;
         Map<String, List<String>> headers = null;
         try {
             JSONObject jsonObject = new JSONObject(string);

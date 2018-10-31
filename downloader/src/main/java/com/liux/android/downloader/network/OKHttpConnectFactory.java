@@ -1,11 +1,11 @@
 package com.liux.android.downloader.network;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
-import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -31,69 +31,75 @@ public class OKHttpConnectFactory implements ConnectFactory {
 
     @Override
     public Connect create() {
-        return new HttpConnect(factory);
+        return new OkHttpConnect(factory);
     }
 
-    private static class HttpConnect implements Connect {
+    /**
+     * OKHttp 连接器实现
+     */
+    private static class OkHttpConnect implements Connect {
 
-        private Call call;
         private Call.Factory factory;
 
-        public HttpConnect(Call.Factory factory) {
+        private Call call;
+        private InputStream inputStream;
+
+        public OkHttpConnect(Call.Factory factory) {
             this.factory = factory;
         }
 
         @Override
-        public void load(String url, String method, Map<String, List<String>> headers) {
-            Headers.Builder builder = new Headers.Builder();
+        public boolean isConnect() {
+            return call != null || inputStream != null;
+        }
+
+        @Override
+        public ConnectResponse connect(String url, String method, Map<String, List<String>> headers, boolean needBody) throws IOException {
+            Request.Builder builder = new Request.Builder()
+                    .url(url)
+                    .method(method, null);
             if (headers != null) {
                 for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
                     String name = entry.getKey();
                     List<String> values = entry.getValue();
-
                     if (values == null || values.isEmpty()) continue;
                     for (String value : values) {
-                        builder.add(name, value);
+                        builder.header(name, value);
                     }
                 }
             }
-            Request request = new Request.Builder()
-                    .url(url)
-                    .method(method, null)
-                    .headers(builder.build())
-                    .build();
-            call = factory.newCall(request);
-        }
 
-        @Override
-        public boolean isExecuted() {
-            return call != null && call.isExecuted();
-        }
-
-        @Override
-        public ConnectResult execute() throws IOException {
+            Call call = factory.newCall(builder.build());
             Response response = call.execute();
-            if (!response.isSuccessful()) throw new IOException("execute failure");
 
-            ResponseBody responseBody = response.body();
-            if (responseBody == null) throw new IOException("body is null");
+            if (needBody) {
+                ResponseBody responseBody = response.body();
+                if (responseBody == null) throw new IOException("body is null");
 
-            return ConnectResult.create(
-                    responseBody.byteStream(),
-                    response.headers().toMultimap()
+                this.call = call;
+                this.inputStream = responseBody.byteStream();
+            }
+            return ConnectResponse.create(
+                    this,
+                    response.code(),
+                    response.headers().toMultimap(),
+                    inputStream
             );
         }
 
         @Override
-        public boolean isCanceled() {
-            return call == null || call.isCanceled();
-        }
+        public void close() {
+            if (call != null && !call.isCanceled()) {
+                call.cancel();
+                call = null;
+            }
 
-
-        @Override
-        public void cancel() {
-            if (call == null) return;
-            call.cancel();
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (Exception ignore) {}
+                inputStream = null;
+            }
         }
     }
 }

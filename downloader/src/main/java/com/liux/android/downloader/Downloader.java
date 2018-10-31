@@ -10,12 +10,16 @@ import java.util.List;
  */
 public class Downloader {
 
+    public static boolean isInit() {
+        return DownloaderService.isInit();
+    }
+
     public static void init(Config config) {
         DownloaderService.init(config);
     }
 
     public static Task createTask(String url) {
-        return new TaskBuilder(url).build();
+        return createTaskBuilder(url).build();
     }
 
     public static TaskBuilder createTaskBuilder(String url) {

@@ -18,8 +18,22 @@ import java.util.Map;
  */
 class DownloaderTask implements Task, Runnable {
 
-    DownloaderTask(Record record, File rootDirectory, DataStorage dataStorage, FileStorage fileStorage, ConnectFactory connectFactory, TaskDispatch taskDispatch, DownloaderCallback downloaderCallback) {
+    private Record record;
+    private File rootDirectory;
+    private DataStorage dataStorage;
+    private FileStorage fileStorage;
+    private ConnectFactory connectFactory;
+    private TaskDispatch taskDispatch;
+    private DownloaderCallback downloaderCallback;
 
+    public DownloaderTask(Record record, File rootDirectory, DataStorage dataStorage, FileStorage fileStorage, ConnectFactory connectFactory, TaskDispatch taskDispatch, DownloaderCallback downloaderCallback) {
+        this.record = record;
+        this.rootDirectory = rootDirectory;
+        this.dataStorage = dataStorage;
+        this.fileStorage = fileStorage;
+        this.connectFactory = connectFactory;
+        this.taskDispatch = taskDispatch;
+        this.downloaderCallback = downloaderCallback;
     }
 
     @Override
