@@ -22,7 +22,7 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    api "com.bilibili:boxing-impl:1.0.3"
+    api "com.bilibili:boxing-impl:1.0.4"
     api ("com.chensl.rotatephotoview:rotatephotoview:1.0.5") {
         exclude group: 'com.android.support', module: 'support-v4'
     }
@@ -40,7 +40,7 @@ static def getLibraryArtifactId() {
     return 'boxing'
 }
 static def getLibraryVersionName() {
-    return '0.1.0'
+    return '0.1.2'
 }
 static def getLibraryVersionCode() {
     def versions = getLibraryVersionName().split("\\.")

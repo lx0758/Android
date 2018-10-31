@@ -15,14 +15,14 @@ public class PermissionUtil {
      */
     public static PermissionFragment getPermissionFragment(Activity activity) {
         PermissionFragment fragment;
-        fragment = (PermissionFragment) activity.getFragmentManager().findFragmentByTag(PermissionTool.TAG);
+        fragment = (PermissionFragment) activity.getFragmentManager().findFragmentByTag(Authorizer.TAG);
         if (fragment != null) return fragment;
 
         fragment = new PermissionFragment();
         FragmentManager manager = activity.getFragmentManager();
         manager
                 .beginTransaction()
-                .add(fragment, PermissionTool.TAG)
+                .add(fragment, Authorizer.TAG)
                 .commitAllowingStateLoss();
         manager.executePendingTransactions();
         return fragment;

@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 
-import com.liux.android.pay.PayTool;
+import com.liux.android.pay.Payer;
 import com.liux.android.pay.Request;
 import com.tencent.mm.opensdk.constants.Build;
+import com.tencent.mm.opensdk.constants.ConstantsAPI;
+import com.tencent.mm.opensdk.modelbase.BaseResp;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.modelpay.PayResp;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -31,6 +33,20 @@ public abstract class WxRequest extends Request<PayReq, PayResp> {
         WX_REQUESTS.put(key, wxRequest);
     }
 
+    public static void onResp(BaseResp baseResp) {
+        if (baseResp.getType() != ConstantsAPI.COMMAND_PAY_BY_WX) return;
+        PayResp payResp = (PayResp) baseResp;
+
+        Payer.println("微信支付结果:" + "[prepayId=" + payResp.prepayId + ",errCode=" + baseResp.errCode + "]");
+
+        String key = payResp.prepayId;
+        WxRequest wxPay = WxRequest.getWxRequest(key);
+        if (wxPay != null) {
+            Payer.println("回调支付结果");
+            wxPay.callback(payResp);
+        }
+    }
+
     public static final int ERR_PARAM = -101;
     public static final int ERR_CONFIG = -102;
     public static final int ERR_VERSION = -103;
@@ -39,7 +55,7 @@ public abstract class WxRequest extends Request<PayReq, PayResp> {
 
     protected WxRequest(PayReq bill) {
         super(bill);
-        PayTool.println("创建微信支付实例:" + getBillString());
+        Payer.println("创建微信支付实例:" + getBillString());
     }
 
     @Override
@@ -47,43 +63,54 @@ public abstract class WxRequest extends Request<PayReq, PayResp> {
         super.init(activity);
         mIWXAPI = WXAPIFactory.createWXAPI(activity, null);
         boolean succeed = mIWXAPI.registerApp(bill.appId);
-        PayTool.println("初始化微信支付实例:" + "[" + succeed + "]");
+        Payer.println("初始化微信支付实例:" + "[" + succeed + "]");
     }
 
     @Override
     protected void start() {
         if (!checkConfig()) return;
 
-        PayTool.println("开始微信支付:" + getBillString());
+        Payer.println("开始微信支付:" + getBillString());
         String key = bill.prepayId;
         putWxRequest(key, this);
         mIWXAPI.sendReq(bill);
     }
 
     private boolean checkConfig() {
-        PayTool.println("微信支付预检查:" + getBillString());
+        Payer.println("微信支付预检查:" + getBillString());
 
         String WX_ACTIVITY = activity.getPackageName() + ".wxapi.WXPayEntryActivity";
+
         // 检验支付参数
         if (bill == null || !bill.checkArgs()) {
             checkFailure(ERR_PARAM, "请求参数自检失败,请检查微信支付请求参数是否正确");
             return false;
         }
-        // 检验Activity类文件
+
+        // 检验 WXPayEntryActivity 类
+        Object object;
         try {
-            boolean find = false;
-            Object object = Class.forName(WX_ACTIVITY).newInstance();
-            if (object instanceof WxPayActivity) {
-                find = true;
+            object = Class.forName(WX_ACTIVITY).newInstance();
+            if (!(object instanceof Activity)) {
+                checkFailure(ERR_CONFIG, "类 [" + WX_ACTIVITY + "] 未继承于 [android.app.Activity]");
+                return false;
             }
-            if (!find) {
-                throw new Exception();
-            }
-        } catch (Exception e) {
-            checkFailure(ERR_CONFIG, "未能加载 [WXPayEntryActivity] 或未继承于 [WxPayActivity] (注意检查 applicationId 和包名是否一致,微信回调以 applicationId 为准) " + WX_ACTIVITY);
-            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            checkFailure(ERR_CONFIG, "未检测到类 [" + WX_ACTIVITY + "] (注意检查 applicationId 和该类所在包名是否一致, 微信回调以 applicationId 为准)");
+            return false;
+        } catch (IllegalAccessException e) {
+            checkFailure(ERR_CONFIG, "检测到类 [" + WX_ACTIVITY + "] 不能被实例化, 请检查该类的权限修饰符和构造函数权限修饰符是否正确");
+            return false;
+        } catch (InstantiationException e) {
+            checkFailure(ERR_CONFIG, "检测到类 [" + WX_ACTIVITY + "] 不能被实例化, 请检查该类的权限修饰符和构造函数权限修饰符是否正确");
             return false;
         }
+
+        // 检验是否继承类
+        if (!(object instanceof WxPayActivity)) {
+            Payer.println("[警告]检测到类 [" + WX_ACTIVITY + "] 未继承于 [" + WxPayActivity.class.getPackage().getName() + ".WxPayActivity], 请注意在 [com.tencent.mm.opensdk.openapi.IWXAPIEventHandler.onResp(BaseResp)] 回调方法中静态调用 [" + WxRequest.class.getPackage().getName() + ".WxRequest.onResp(BaseResp)] 方法");
+        }
+
         // 检验清单描述文件
         try {
             boolean find = false;
@@ -98,16 +125,15 @@ public abstract class WxRequest extends Request<PayReq, PayResp> {
                 checkFailure(ERR_CONFIG, "清单文件未注册或者未导出 " + WX_ACTIVITY);
                 return false;
             }
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        } catch (PackageManager.NameNotFoundException ignore) {}
+
         // 检验客户端
         if (mIWXAPI.getWXAppSupportAPI() < Build.PAY_SUPPORTED_SDK_INT) {
             checkFailure(ERR_VERSION, "未安装微信或版本过低");
             return false;
         }
 
-        PayTool.println("微信支付预检查完毕:" + getBillString());
+        Payer.println("微信支付预检查完毕:" + getBillString());
         return true;
     }
 
@@ -115,9 +141,9 @@ public abstract class WxRequest extends Request<PayReq, PayResp> {
         PayResp resp = new PayResp();
         resp.errCode = code;
         resp.prepayId = bill.prepayId;
-        PayTool.println("微信支付预检查失败:" + msg);
-        PayTool.println("终止微信支付:" + getBillString());
-        PayTool.println("回调支付结果");
+        Payer.println("微信支付预检查失败:" + msg);
+        Payer.println("终止微信支付:" + getBillString());
+        Payer.println("回调支付结果");
         callback(resp);
     }
 

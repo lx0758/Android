@@ -18,5 +18,8 @@ implementation 'com.liux.android:permission:x.y.z'
 ### x.y.z_201x-xx-xx
     1.
 
+### 0.1.2_2018-10-31
+    1.调整工具类主类名
+
 ### 0.1.0_2018-10-14
     1.发布0.1.0版本

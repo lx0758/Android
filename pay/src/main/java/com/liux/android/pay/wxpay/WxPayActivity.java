@@ -5,19 +5,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.liux.android.pay.PayTool;
-import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
-import com.tencent.mm.opensdk.modelpay.PayResp;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 /**
- * 集成此 Activity ,并在清单文件中注册; 注意一定要导出
- * activity android:name=".wxapi.WXPayEntryActivity"
+ * ① 集成此 Activity ,并在清单文件中注册; 注意一定要导出
+ * android:name=".wxapi.WXPayEntryActivity"
  * android:exported="true"
+ *
+ * ② 自行实现 Activity, 在 {@link IWXAPIEventHandler#onResp(BaseResp)} 回调 {@link  WxRequest#onResp(BaseResp)}
  */
 public abstract class WxPayActivity extends Activity implements IWXAPIEventHandler{
 
@@ -54,16 +53,6 @@ public abstract class WxPayActivity extends Activity implements IWXAPIEventHandl
 
     @Override
     public void onResp(BaseResp baseResp) {
-        if (baseResp.getType() != ConstantsAPI.COMMAND_PAY_BY_WX) return;
-        PayResp payResp = (PayResp) baseResp;
-
-        PayTool.println("微信支付结果:" + "[prepayId=" + payResp.prepayId + ",errCode=" + baseResp.errCode + "]");
-
-        String key = payResp.prepayId;
-        WxRequest wxPay = WxRequest.getWxRequest(key);
-        if (wxPay != null) {
-            PayTool.println("回调支付结果");
-            wxPay.callback(payResp);
-        }
+        WxRequest.onResp(baseResp);
     }
 }

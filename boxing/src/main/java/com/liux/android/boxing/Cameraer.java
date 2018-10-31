@@ -22,7 +22,7 @@ import java.io.File;
  * Created by Liux on 2018/09/07.
  */
 
-public class CameraTool {
+public class Cameraer {
     /* 没有找到应用程序 */
     public static final int ERROR_INTENT = 1;
     /* 没有拍照权限 */
