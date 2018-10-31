@@ -17,20 +17,16 @@ import java.util.concurrent.LinkedBlockingQueue;
  * 下载库类核心类
  */
 public class DownloaderService implements TaskDispatch {
-    private static volatile DownloaderService instance;
+    private static volatile DownloaderService downloaderService;
+    static void setService(DownloaderService service) {
+        downloaderService = service;
+    }
+    static DownloaderService getService() {
+        return downloaderService;
+    }
     public static DownloaderService get() {
-        if (instance == null) throw new NullPointerException("DownloaderService has not been initialized");
-        return instance;
-    }
-    public static boolean isInit() {
-        return instance != null;
-    }
-    public static void init(Config config) {
-        if (instance != null) return;
-        synchronized(DownloaderService.class) {
-            if (instance != null) return;
-            instance = new DownloaderService(config);
-        }
+        if (downloaderService == null) throw new NullPointerException("DownloaderService has not been initialized");
+        return downloaderService;
     }
 
     private DownloaderPoolExecutor threadPoolExecutor;
@@ -39,7 +35,7 @@ public class DownloaderService implements TaskDispatch {
     private List<Task> tasks;
     private DownloaderCallbackDispense downloaderCallbackDispense;
 
-    private DownloaderService(Config config) {
+    DownloaderService(Config config) {
         this.config = config;
         this.tasks = new LinkedList<>();
         this.downloaderCallbackDispense = new DownloaderCallbackDispense();
@@ -89,11 +85,14 @@ public class DownloaderService implements TaskDispatch {
             int end = url.length();
             int find = -1;
             if ((find = url.indexOf("?", begin)) != -1) {
-                end = find + 1;
+                end = find;
             } else if ((find = url.indexOf("#", begin)) != -1) {
-                end = find + 1;
+                end = find;
             }
-            fileName = url.substring(begin, end);
+            if (end > begin) {
+                fileName = url.substring(begin, end);
+            }
+            if (TextUtils.isEmpty(fileName)) fileName = "file-" + System.currentTimeMillis();
         }
 
         Record record = config.getDataStorage().onCreate(url, method, DownloaderUtil.headers2json(headers), dir.getAbsolutePath(), fileName, Status.NEW.code());

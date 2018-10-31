@@ -1,5 +1,6 @@
 package com.liux.android.downloader;
 
+import com.liux.android.downloader.core.DownloaderCreator;
 import com.liux.android.downloader.core.DownloaderService;
 import com.liux.android.downloader.core.Task;
 
@@ -9,13 +10,22 @@ import java.util.List;
  * 下载器封装工具类
  */
 public class Downloader {
+    public static final String TAG = "[Downloader]";
 
     public static boolean isInit() {
-        return DownloaderService.isInit();
+        return DownloaderCreator.isInit();
     }
 
     public static void init(Config config) {
-        DownloaderService.init(config);
+        DownloaderCreator.init(config);
+    }
+
+    public static void registerInitCallback(InitCallback initCallback) {
+        DownloaderCreator.registerInitCallback(initCallback);
+    }
+
+    public static void unregisterInitCallback(InitCallback initCallback) {
+        DownloaderCreator.unregisterInitCallback(initCallback);
     }
 
     public static Task createTask(String url) {
