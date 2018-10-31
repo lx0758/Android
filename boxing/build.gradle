@@ -40,7 +40,7 @@ static def getLibraryArtifactId() {
     return 'boxing'
 }
 static def getLibraryVersionName() {
-    return '0.1.0'
+    return '0.1.2'
 }
 static def getLibraryVersionCode() {
     def versions = getLibraryVersionName().split("\\.")

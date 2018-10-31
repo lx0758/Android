@@ -16,6 +16,9 @@ implementation 'com.liux.android:boxing:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
+    1.
+
+### 0.1.2_2018-10-31
     1.更新Boxing依赖版本
     2.调整库类主类名称
 
