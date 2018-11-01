@@ -1,5 +1,6 @@
 package com.liux.android.downloader.core;
 
+import com.liux.android.downloader.Downloader;
 import com.liux.android.downloader.DownloaderCallback;
 import com.liux.android.downloader.OnStatusListener;
 import com.liux.android.downloader.Status;
@@ -151,6 +152,6 @@ class DownloaderTask implements Task, TaskInfoSeter, Runnable {
 
     @Override
     public void run() {
-
+        System.out.println(Downloader.TAG + "Thread " + Thread.currentThread().getName() + " Running...");
     }
 }

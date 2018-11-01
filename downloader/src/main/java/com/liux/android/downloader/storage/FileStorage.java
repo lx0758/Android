@@ -16,4 +16,6 @@ public interface FileStorage {
     boolean isExist(File dir, String fileName);
 
     RandomAccessFile onOpen(File dir, String fileName) throws IOException;
+
+    void onDelete(File dir, String fileName);
 }

@@ -1,5 +1,8 @@
 package com.liux.android.downloader.core;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import com.liux.android.downloader.Config;
 import com.liux.android.downloader.InitCallback;
 
@@ -23,20 +26,23 @@ public class DownloaderCreator {
         if (DownloaderService.getService() != null) return;
         synchronized(DownloaderCreator.class) {
             if (DownloaderService.getService() != null) return;
-
-
+            final Handler handler = new Handler(Looper.myLooper());
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     DownloaderService.setService(
                             new DownloaderService(config)
                     );
-
-                    for (WeakReference<InitCallback> weakReference : onInitListeners) {
-                        InitCallback listener = weakReference.get();
-                        if (listener != null) listener.onInitialized();
-                    }
-                    onInitListeners.clear();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (WeakReference<InitCallback> weakReference : onInitListeners) {
+                                InitCallback listener = weakReference.get();
+                                if (listener != null) listener.onInitialized();
+                            }
+                            onInitListeners.clear();
+                        }
+                    });
                 }
             }).start();
         }

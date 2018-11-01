@@ -43,6 +43,9 @@ public class DownloaderService implements TaskDispatch {
 
         this.threadPoolExecutor = new DownloaderPoolExecutor(config.getMaxTaskCount(), new LinkedBlockingQueue<Runnable>());
 
+        config.getDataStorage().onInit(config.getContext());
+        config.getFileStorage().onInit(config.getContext(), config.getRootDirectory());
+
         downloaderTasks.addAll(restoreTasksFromDataStorage(
                 config,
                 this,
@@ -118,7 +121,7 @@ public class DownloaderService implements TaskDispatch {
             if (TextUtils.isEmpty(fileName)) fileName = "file-" + System.currentTimeMillis();
         }
 
-        Record record = config.getDataStorage().onCreate(url, method, DownloaderUtil.headers2json(headers), dir.getAbsolutePath(), fileName, Status.NEW.code());
+        Record record = config.getDataStorage().onInsert(url, method, DownloaderUtil.headers2json(headers), dir.getAbsolutePath(), fileName, Status.NEW.code());
 
         DownloaderTask downloaderTask = createDownloaderTask(
                 record,
@@ -205,6 +208,8 @@ public class DownloaderService implements TaskDispatch {
         List<DownloaderTask> tasks = new LinkedList<>();
 
         List<Record> records = config.getDataStorage().onQueryAll();
+        if (records == null) return tasks;
+
         for (Record record : records) {
             if (Status.CONN.code() == record.getStatus() || Status.START.code() == record.getStatus()) {
                 record.setStatus(Status.WAIT.code());

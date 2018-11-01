@@ -33,6 +33,7 @@ public class Record {
 
     public Record setUrl(String url) {
         this.url = url;
+        refreshUpdateTime();
         return this;
     }
 
@@ -42,6 +43,7 @@ public class Record {
 
     public Record setMethod(String method) {
         this.method = method;
+        refreshUpdateTime();
         return this;
     }
 
@@ -51,6 +53,7 @@ public class Record {
 
     public Record setHeaders(String headers) {
         this.headers = headers;
+        refreshUpdateTime();
         return this;
     }
 
@@ -60,6 +63,7 @@ public class Record {
 
     public Record setDir(String dir) {
         this.dir = dir;
+        refreshUpdateTime();
         return this;
     }
 
@@ -69,6 +73,7 @@ public class Record {
 
     public Record setFileName(String fileName) {
         this.fileName = fileName;
+        refreshUpdateTime();
         return this;
     }
 
@@ -78,6 +83,7 @@ public class Record {
 
     public Record setEtag(String etag) {
         this.etag = etag;
+        refreshUpdateTime();
         return this;
     }
 
@@ -87,6 +93,7 @@ public class Record {
 
     public Record setCompleted(long completed) {
         this.completed = completed;
+        refreshUpdateTime();
         return this;
     }
 
@@ -96,6 +103,7 @@ public class Record {
 
     public Record setTotal(long total) {
         this.total = total;
+        refreshUpdateTime();
         return this;
     }
 
@@ -105,6 +113,7 @@ public class Record {
 
     public Record setStatus(int status) {
         this.status = status;
+        refreshUpdateTime();
         return this;
     }
 
@@ -114,6 +123,7 @@ public class Record {
 
     public Record setCreateTime(long createTime) {
         this.createTime = createTime;
+        refreshUpdateTime();
         return this;
     }
 
@@ -123,6 +133,29 @@ public class Record {
 
     public Record setUpdateTime(long updateTime) {
         this.updateTime = updateTime;
+        //refreshUpdateTime();
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "Record{" +
+                "id=" + id +
+                ", url='" + url + '\'' +
+                ", method='" + method + '\'' +
+                ", headers='" + headers + '\'' +
+                ", dir='" + dir + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", etag='" + etag + '\'' +
+                ", completed=" + completed +
+                ", total=" + total +
+                ", status=" + status +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                '}';
+    }
+
+    private void refreshUpdateTime() {
+        this.updateTime = System.currentTimeMillis();
     }
 }

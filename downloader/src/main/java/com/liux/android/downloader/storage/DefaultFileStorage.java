@@ -31,6 +31,12 @@ public class DefaultFileStorage implements FileStorage {
         return new RandomAccessFile(file, "rw");
     }
 
+    @Override
+    public void onDelete(File dir, String fileName) {
+        File file = getFile(dir, fileName);
+        file.delete();
+    }
+
     private File getFile(File dir, String fileName) {
         if (dir == null) dir = rootDir;
         dir.mkdirs();

@@ -11,7 +11,7 @@ public interface DataStorage {
 
     void onInit(Context context);
 
-    Record onCreate(String url, String method, String headers, String dir, String fileName, int status);
+    Record onInsert(String url, String method, String headers, String dir, String fileName, int status);
 
     List<Record> onQueryAll();
 

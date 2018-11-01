@@ -57,23 +57,9 @@ public enum  Status {
     }
 
     public static Status codeOf(int code) {
-        switch (code) {
-            case 0:
-                return NEW;
-            case 100:
-                return WAIT;
-            case 200:
-                return CONN;
-            case 300:
-                return START;
-            case 400:
-                return STOP;
-            case 500:
-                return ERROR;
-            case 600:
-                return COMPLETE;
-            default:
-                return NEW;
+        for (Status status : values()) {
+            if (code == status.code()) return status;
         }
+        return NEW;
     }
 }
