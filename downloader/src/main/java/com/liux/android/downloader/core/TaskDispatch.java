@@ -3,29 +3,29 @@ package com.liux.android.downloader.core;
 /**
  * 任务调度器抽象接口
  */
-public interface TaskDispatch {
+interface TaskDispatch {
 
     /**
      * 开始一个任务
-     * @param task
+     * @param downloaderTask
      */
-    void start(Task task);
+    void start(DownloaderTask downloaderTask);
 
     /**
      * 停止一个任务
-     * @param task
+     * @param downloaderTask
      */
-    void stop(Task task);
+    void stop(DownloaderTask downloaderTask);
 
     /**
      * 重置一个任务
-     * @param task
+     * @param downloaderTask
      */
-    void reset(Task task);
+    void reset(DownloaderTask downloaderTask);
 
     /**
      * 删除一个任务
-     * @param task
+     * @param downloaderTask
      */
-    void delete(Task task);
+    void delete(DownloaderTask downloaderTask);
 }

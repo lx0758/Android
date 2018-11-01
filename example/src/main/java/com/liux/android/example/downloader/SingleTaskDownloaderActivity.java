@@ -33,6 +33,18 @@ public class SingleTaskDownloaderActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        task.start();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        task.stop();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         task.delete();
@@ -73,5 +85,6 @@ public class SingleTaskDownloaderActivity extends AppCompatActivity {
                 }
             }
         });
+        task.start();
     }
 }

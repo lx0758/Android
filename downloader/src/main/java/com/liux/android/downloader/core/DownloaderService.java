@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -32,35 +33,57 @@ public class DownloaderService implements TaskDispatch {
     private DownloaderPoolExecutor threadPoolExecutor;
 
     private Config config;
-    private List<Task> tasks;
+    private List<DownloaderTask> downloaderTasks;
     private DownloaderCallbackDispense downloaderCallbackDispense;
 
     DownloaderService(Config config) {
         this.config = config;
-        this.tasks = new LinkedList<>();
+        this.downloaderTasks = new LinkedList<>();
         this.downloaderCallbackDispense = new DownloaderCallbackDispense();
 
         this.threadPoolExecutor = new DownloaderPoolExecutor(config.getMaxTaskCount(), new LinkedBlockingQueue<Runnable>());
+
+        downloaderTasks.addAll(restoreTasksFromDataStorage(
+                config,
+                this,
+                downloaderCallbackDispense
+        ));
+
+        schedulingTask();
     }
 
     @Override
-    public void start(Task task) {
-
+    public void start(DownloaderTask downloaderTask) {
+        if (downloaderTask == null) return;
+        switch (downloaderTask.getStatus()) {
+            case NEW:
+            case STOP:
+            case ERROR:
+                downloaderTask.setStatus(Status.WAIT);
+                schedulingTask();
+                break;
+            case WAIT:
+            case CONN:
+            case START:
+            case COMPLETE:
+            case DELETE:
+                break;
+        }
     }
 
     @Override
-    public void stop(Task task) {
-
+    public void stop(DownloaderTask downloaderTask) {
+        downloaderTask.setStatus(Status.STOP);
     }
 
     @Override
-    public void reset(Task task) {
-
+    public void reset(DownloaderTask downloaderTask) {
+        downloaderTask.setStatus(Status.NEW);
     }
 
     @Override
-    public void delete(Task task) {
-
+    public void delete(DownloaderTask downloaderTask) {
+        downloaderTask.setStatus(Status.DELETE);
     }
 
     /**
@@ -97,8 +120,13 @@ public class DownloaderService implements TaskDispatch {
 
         Record record = config.getDataStorage().onCreate(url, method, DownloaderUtil.headers2json(headers), dir.getAbsolutePath(), fileName, Status.NEW.code());
 
-        DownloaderTask downloaderTask = createDownloaderTask(record, config, downloaderCallbackDispense);
-        tasks.add(downloaderTask);
+        DownloaderTask downloaderTask = createDownloaderTask(
+                record,
+                config,
+                this,
+                downloaderCallbackDispense
+        );
+        downloaderTasks.add(downloaderTask);
 
         return downloaderTask;
     }
@@ -109,7 +137,7 @@ public class DownloaderService implements TaskDispatch {
      * @return
      */
     public Task getTask(long taskId) {
-        for (Task task : tasks) {
+        for (Task task : downloaderTasks) {
             if (task.getId() == taskId) return task;
         }
         return null;
@@ -120,6 +148,8 @@ public class DownloaderService implements TaskDispatch {
      * @return
      */
     public List<Task> getAllTasks() {
+        List<Task> tasks = new LinkedList<>();
+        tasks.addAll(downloaderTasks);
         return tasks;
     }
 
@@ -168,21 +198,54 @@ public class DownloaderService implements TaskDispatch {
     }
 
     /**
+     * 从本地数据库中恢复任务
+     * 会将 {@link Status#CONN} 和 {@link Status#START} 的任务重置为 {@link Status#WAIT} 状态
+     */
+    private List<DownloaderTask> restoreTasksFromDataStorage(Config config, TaskDispatch taskDispatch, DownloaderCallback downloaderCallback) {
+        List<DownloaderTask> tasks = new LinkedList<>();
+
+        List<Record> records = config.getDataStorage().onQueryAll();
+        for (Record record : records) {
+            if (Status.CONN.code() == record.getStatus() || Status.START.code() == record.getStatus()) {
+                record.setStatus(Status.WAIT.code());
+            }
+            DownloaderTask downloaderTask = createDownloaderTask(record, config, taskDispatch, downloaderCallback);
+            tasks.add(downloaderTask);
+        }
+        return tasks;
+    }
+
+    /**
      * 构建一个任务实例
      * @param record
      * @param config
      * @param downloaderCallback
      * @return
      */
-    private DownloaderTask createDownloaderTask(Record record, Config config, DownloaderCallback downloaderCallback) {
+    private DownloaderTask createDownloaderTask(Record record, Config config, TaskDispatch taskDispatch, DownloaderCallback downloaderCallback) {
         return new DownloaderTask(
                 record,
                 config.getRootDirectory(),
                 config.getDataStorage(),
                 config.getFileStorage(),
                 config.getConnectFactory(),
-                this,
+                taskDispatch,
                 downloaderCallback
         );
+    }
+
+    /**
+     * 调度任务,扫描所有任务,将所有 {@link Status#WAIT} 的任务加入线程池队列
+     */
+    private synchronized void schedulingTask() {
+        if (downloaderTasks.isEmpty()) return;
+
+        BlockingQueue<Runnable> blockingQueue = threadPoolExecutor.getQueue();
+
+        for (DownloaderTask downloaderTask : downloaderTasks) {
+            if (Status.WAIT != downloaderTask.getStatus()) continue;
+            if (blockingQueue.contains(downloaderTask)) continue;
+            threadPoolExecutor.submit(downloaderTask);
+        }
     }
 }

@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * 任务信息获取接口
  */
-public interface TaskInfo {
+interface TaskInfoGeter {
 
     /**
      * 获取任务ID
@@ -34,7 +34,7 @@ public interface TaskInfo {
      * 获取任务请求头
      * @return
      */
-    Map<String, List<Status>> getHeaders();
+    Map<String, List<String>> getHeaders();
 
     /**
      * 获取任务存储文件

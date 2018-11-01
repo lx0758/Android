@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * 下载任务实例
  */
-class DownloaderTask implements Task, Runnable {
+class DownloaderTask implements Task, TaskInfoSeter, Runnable {
 
     private Record record;
     private File rootDirectory;
@@ -25,6 +25,8 @@ class DownloaderTask implements Task, Runnable {
     private ConnectFactory connectFactory;
     private TaskDispatch taskDispatch;
     private DownloaderCallback downloaderCallback;
+
+    private File writeFile;
 
     public DownloaderTask(Record record, File rootDirectory, DataStorage dataStorage, FileStorage fileStorage, ConnectFactory connectFactory, TaskDispatch taskDispatch, DownloaderCallback downloaderCallback) {
         this.record = record;
@@ -48,77 +50,103 @@ class DownloaderTask implements Task, Runnable {
 
     @Override
     public void start() {
-
+        taskDispatch.start(this);
     }
 
     @Override
     public void stop() {
-
+        taskDispatch.stop(this);
     }
 
     @Override
     public void reset() {
-
+        taskDispatch.reset(this);
     }
 
     @Override
     public void delete() {
-
+        taskDispatch.delete(this);
     }
 
     @Override
     public long getId() {
-        return 0;
+        return record.getId();
     }
 
     @Override
     public String getUrl() {
-        return null;
+        return record.getUrl();
     }
 
     @Override
     public String getMethod() {
-        return null;
+        return record.getMethod();
     }
 
     @Override
-    public Map<String, List<Status>> getHeaders() {
-        return null;
+    public Map<String, List<String>> getHeaders() {
+        return DownloaderUtil.json2headers(record.getHeaders());
     }
 
     @Override
     public File getFile() {
-        return null;
+        return writeFile;
     }
 
     @Override
     public long getCompleted() {
-        return 0;
+        return record.getCompleted();
     }
 
     @Override
     public long getTotal() {
-        return 0;
+        return record.getTotal();
     }
 
+    private long speedLast, speedLastSize, speedLastTime;
     @Override
     public long getSpeed() {
-        return 0;
+        // 第一次统计
+        if (speedLastSize <= 0 || speedLastTime <= 0) {
+            speedLastSize = getCompleted();
+            speedLastTime = System.currentTimeMillis();
+            return 0;
+        }
+
+        // 异常原因导致统计错误
+        long differenceSize = getCompleted() - speedLastSize;
+        long differenceTime = System.currentTimeMillis() - speedLastTime;
+        if (differenceSize <= 0 || differenceTime <= 0) return 0;
+
+        // 防止间隔时间太短造成统计失真
+        if (differenceTime < 500) return speedLast;
+
+        // 单位时间内下载量 * 1秒出现间隔时间的倍数
+        speedLast = (long) (differenceSize * (1000.0f / differenceTime));
+        speedLastSize = getCompleted();
+        speedLastTime = System.currentTimeMillis();
+
+        return speedLast;
     }
 
     @Override
     public Status getStatus() {
-        return null;
+        return Status.codeOf(record.getStatus());
     }
 
     @Override
     public Date getCreateTime() {
-        return null;
+        return new Date(record.getCreateTime());
     }
 
     @Override
     public Date getUpdateTime() {
-        return null;
+        return new Date(record.getCreateTime());
+    }
+
+    @Override
+    public void setStatus(Status status) {
+
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.liux.android.downloader.core;
 /**
  * 任务操作接口
  */
-public interface TaskOperational {
+interface TaskOperational {
 
     /**
      * 开始自己

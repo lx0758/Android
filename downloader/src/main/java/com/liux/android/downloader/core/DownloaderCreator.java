@@ -23,10 +23,14 @@ public class DownloaderCreator {
         if (DownloaderService.getService() != null) return;
         synchronized(DownloaderCreator.class) {
             if (DownloaderService.getService() != null) return;
+
+
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    DownloaderService.setService(new DownloaderService(config));
+                    DownloaderService.setService(
+                            new DownloaderService(config)
+                    );
 
                     for (WeakReference<InitCallback> weakReference : onInitListeners) {
                         InitCallback listener = weakReference.get();
