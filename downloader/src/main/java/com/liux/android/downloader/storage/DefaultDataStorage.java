@@ -98,6 +98,7 @@ public class DefaultDataStorage implements DataStorage {
         contentValues.put("headers", record.getHeaders());
         contentValues.put("dir", record.getDir());
         contentValues.put("fileName", record.getFileName());
+        contentValues.put("fileNameFinal", record.getFileNameFinal());
         contentValues.put("etag", record.getEtag());
         contentValues.put("completed", record.getCompleted());
         contentValues.put("total", record.getTotal());
@@ -116,7 +117,7 @@ public class DefaultDataStorage implements DataStorage {
     public void onQuery(Record record) {
         Cursor cursor = sqliteDatabase.query(
                 tableName,
-                new String[]{"id", "url", "method", "headers", "dir", "fileName", "etag", "completed", "total", "status", "createTime", "updateTime"},
+                new String[]{"id", "url", "method", "headers", "dir", "fileName", "fileNameFinal", "etag", "completed", "total", "status", "createTime", "updateTime"},
                 "id=?",
                 new String[]{String.valueOf(record.getId())},
                 null,
@@ -135,7 +136,7 @@ public class DefaultDataStorage implements DataStorage {
         List<Record> records = new LinkedList<>();
         Cursor cursor = sqliteDatabase.query(
                 tableName,
-                new String[]{"id", "url", "method", "headers", "dir", "fileName", "etag", "completed", "total", "status", "createTime", "updateTime"},
+                new String[]{"id", "url", "method", "headers", "dir", "fileName", "fileNameFinal", "etag", "completed", "total", "status", "createTime", "updateTime"},
                 null,
                 null,
                 null,
@@ -164,12 +165,13 @@ public class DefaultDataStorage implements DataStorage {
         record.setHeaders(cursor.getString(3));
         record.setDir(cursor.getString(4));
         record.setFileName(cursor.getString(5));
-        record.setEtag(cursor.getString(6));
-        record.setCompleted(cursor.getLong(7));
-        record.setTotal(cursor.getLong(8));
-        record.setStatus(cursor.getInt(9));
-        record.setCreateTime(cursor.getLong(10));
-        record.setUpdateTime(cursor.getLong(11));
+        record.setFileNameFinal(cursor.getString(6));
+        record.setEtag(cursor.getString(7));
+        record.setCompleted(cursor.getLong(8));
+        record.setTotal(cursor.getLong(9));
+        record.setStatus(cursor.getInt(10));
+        record.setCreateTime(cursor.getLong(11));
+        record.setUpdateTime(cursor.getLong(12));
     }
 
     private class DownloaderSQLiteOpenHelper extends SQLiteOpenHelper {
@@ -191,6 +193,7 @@ public class DefaultDataStorage implements DataStorage {
                             "'headers' TEXT,\n" +
                             "'dir' TEXT NOT NULL,\n" +
                             "'fileName' TEXT,\n" +
+                            "'fileNameFinal' TEXT,\n" +
                             "'etag' TEXT,\n" +
                             "'completed' INTEGER,\n" +
                             "'total' INTEGER,\n" +

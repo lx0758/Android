@@ -34,8 +34,9 @@ public interface DownloaderCallback {
     /**
      * 任务已经失败
      * @param task
+     * @param errorInfo
      */
-    void onTaskFailed(Task task);
+    void onTaskFailed(Task task, Throwable errorInfo);
 
     /**
      * 任务删除完毕

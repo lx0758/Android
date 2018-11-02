@@ -5,17 +5,31 @@ package com.liux.android.downloader.storage;
  */
 public class Record {
 
+    // 任务ID
     private long id;
+    // 任务URL
     private String url;
+    // 任务请求方法
     private String method;
+    // 任务请求头
     private String headers;
+    // 任务存储目录
     private String dir;
+    // 任务存储文件名
     private String fileName;
+    // 任务实际存储文件名(已生成文件,且可能与 fileName 不同)
+    private String fileNameFinal;
+    // 任务已记录的 ETAG 缓存标志
     private String etag;
+    // 任务已完成量
     private long completed;
+    // 任务总量
     private long total;
+    // 任务状态
     private int status;
+    // 任务创建时间
     private long createTime;
+    // 任务最后更新时间
     private long updateTime;
 
     public long getId() {
@@ -73,6 +87,16 @@ public class Record {
 
     public Record setFileName(String fileName) {
         this.fileName = fileName;
+        refreshUpdateTime();
+        return this;
+    }
+
+    public String getFileNameFinal() {
+        return fileNameFinal;
+    }
+
+    public Record setFileNameFinal(String fileNameFinal) {
+        this.fileNameFinal = fileNameFinal;
         refreshUpdateTime();
         return this;
     }
@@ -146,6 +170,7 @@ public class Record {
                 ", headers='" + headers + '\'' +
                 ", dir='" + dir + '\'' +
                 ", fileName='" + fileName + '\'' +
+                ", fileNameFinal='" + fileNameFinal + '\'' +
                 ", etag='" + etag + '\'' +
                 ", completed=" + completed +
                 ", total=" + total +

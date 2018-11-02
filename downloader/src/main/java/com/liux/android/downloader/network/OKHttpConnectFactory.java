@@ -24,7 +24,11 @@ public class OKHttpConnectFactory implements ConnectFactory {
 
     public OKHttpConnectFactory(Call.Factory factory) {
         if (factory == null) {
-            factory = new OkHttpClient.Builder().build();
+            factory = new OkHttpClient.Builder()
+                    .retryOnConnectionFailure(true)
+                    .followSslRedirects(true)
+                    .followRedirects(true)
+                    .build();
         }
         this.factory = factory;
     }
@@ -42,15 +46,15 @@ public class OKHttpConnectFactory implements ConnectFactory {
         private Call.Factory factory;
 
         private Call call;
-        private InputStream inputStream;
+        private Response response;
 
-        public OkHttpConnect(Call.Factory factory) {
+        OkHttpConnect(Call.Factory factory) {
             this.factory = factory;
         }
 
         @Override
         public boolean isConnect() {
-            return call != null || inputStream != null;
+            return call != null || response != null;
         }
 
         @Override
@@ -72,34 +76,41 @@ public class OKHttpConnectFactory implements ConnectFactory {
             Call call = factory.newCall(builder.build());
             Response response = call.execute();
 
+            InputStream inputStream = null;
             if (needBody) {
                 ResponseBody responseBody = response.body();
                 if (responseBody == null) throw new IOException("body is null");
 
+                inputStream = responseBody.byteStream();
+
                 this.call = call;
-                this.inputStream = responseBody.byteStream();
+                this.response = response;
             }
-            return ConnectResponse.create(
+            ConnectResponse connectResponse =  ConnectResponse.create(
                     this,
                     response.code(),
                     response.headers().toMultimap(),
                     inputStream
             );
+
+            if (!needBody) {
+                call.cancel();
+                response.close();
+            }
+
+            return connectResponse;
         }
 
         @Override
         public void close() {
             if (call != null && !call.isCanceled()) {
                 call.cancel();
-                call = null;
             }
-
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (Exception ignore) {}
-                inputStream = null;
+            call = null;
+            if (response != null) {
+                response.close();
             }
+            response = null;
         }
     }
 }

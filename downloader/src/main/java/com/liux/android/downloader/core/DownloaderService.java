@@ -87,6 +87,7 @@ public class DownloaderService implements TaskDispatch {
     @Override
     public void delete(DownloaderTask downloaderTask) {
         downloaderTask.setStatus(Status.DELETE);
+        downloaderTasks.remove(downloaderTask);
     }
 
     /**
@@ -106,6 +107,8 @@ public class DownloaderService implements TaskDispatch {
 
         if (dir == null) dir = config.getRootDirectory();
 
+        // 保证文件名不能为空
+        // 首先尝试截取URL中的文件名,如果失败则设置默认值
         if (TextUtils.isEmpty(fileName)) {
             int begin = url.lastIndexOf('/') + 1;
             int end = url.length();
@@ -214,7 +217,12 @@ public class DownloaderService implements TaskDispatch {
             if (Status.CONN.code() == record.getStatus() || Status.START.code() == record.getStatus()) {
                 record.setStatus(Status.WAIT.code());
             }
-            DownloaderTask downloaderTask = createDownloaderTask(record, config, taskDispatch, downloaderCallback);
+            DownloaderTask downloaderTask = createDownloaderTask(
+                    record,
+                    config,
+                    taskDispatch,
+                    downloaderCallback
+            );
             tasks.add(downloaderTask);
         }
         return tasks;
@@ -230,7 +238,6 @@ public class DownloaderService implements TaskDispatch {
     private DownloaderTask createDownloaderTask(Record record, Config config, TaskDispatch taskDispatch, DownloaderCallback downloaderCallback) {
         return new DownloaderTask(
                 record,
-                config.getRootDirectory(),
                 config.getDataStorage(),
                 config.getFileStorage(),
                 config.getConnectFactory(),

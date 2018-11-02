@@ -41,9 +41,9 @@ public class DownloaderCallbackDispense implements DownloaderCallback {
     }
 
     @Override
-    public void onTaskFailed(Task task) {
+    public void onTaskFailed(Task task, Throwable errorInfo) {
         for (DownloaderCallback downloaderCallback : downloaderCallbacks) {
-            downloaderCallback.onTaskFailed(task);
+            downloaderCallback.onTaskFailed(task, errorInfo);
         }
     }
 

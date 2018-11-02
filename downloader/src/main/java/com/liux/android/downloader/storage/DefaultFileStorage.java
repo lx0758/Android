@@ -20,27 +20,27 @@ public class DefaultFileStorage implements FileStorage {
     }
 
     @Override
-    public boolean isExist(File dir, String fileName) {
+    public boolean isExist(String dir, String fileName) {
         File file = getFile(dir, fileName);
         return file.exists() && file.isFile();
     }
 
     @Override
-    public RandomAccessFile onOpen(File dir, String fileName) throws IOException {
+    public RandomAccessFile onOpen(String dir, String fileName) throws IOException {
         File file = getFile(dir, fileName);
         return new RandomAccessFile(file, "rw");
     }
 
     @Override
-    public void onDelete(File dir, String fileName) {
+    public void onDelete(String dir, String fileName) {
         File file = getFile(dir, fileName);
         file.delete();
     }
 
-    private File getFile(File dir, String fileName) {
-        if (dir == null) dir = rootDir;
-        dir.mkdirs();
+    private File getFile(String dir, String fileName) {
+        File dirFile = (dir == null) ? rootDir : new File(dir);
+        dirFile.mkdirs();
 
-        return new File(dir.getAbsolutePath() + File.separator + fileName);
+        return new File(dirFile.getAbsolutePath() + File.separator + fileName);
     }
 }

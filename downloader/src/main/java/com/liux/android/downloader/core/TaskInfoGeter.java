@@ -77,4 +77,10 @@ interface TaskInfoGeter {
      * @return
      */
     Date getUpdateTime();
+
+    /**
+     * 获取出错时的错误信息
+     * @return
+     */
+    Throwable getErrorInfo();
 }

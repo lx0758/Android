@@ -1,5 +1,7 @@
 package com.liux.android.downloader.network;
 
+import android.text.TextUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -28,19 +30,50 @@ public class ConnectResponse {
         this.inputStream = inputStream;
     }
 
-    public int getCode() {
+    public int code() {
         return code;
     }
 
-    public Map<String, List<String>> getHeaders() {
+    public boolean isSuccessful() {
+        return code >= 200 && code < 300;
+    }
+
+    /**
+     * 检查headers是否包含某个header,且一定内容有不为空的值
+     * @param name
+     * @return
+     */
+    public boolean hasHeader(String name) {
+        if (name == null) return false;
+        if (headers == null) return false;
+        for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+            if (!name.toUpperCase().equals(entry.getKey().toUpperCase())) continue;
+            if (entry.getValue() == null || entry.getValue().isEmpty()) continue;
+            if (!TextUtils.isEmpty(entry.getValue().get(0))) return true;
+        }
+        return false;
+    }
+
+    public List<String> header(String name) {
+        if (headers == null) return null;
+        for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+            if (name.toUpperCase().equals(entry.getKey().toUpperCase())) return entry.getValue();
+        }
+        return null;
+    }
+
+    public Map<String, List<String>> headers() {
         return headers;
     }
 
-    public InputStream getInputStream() {
+    public InputStream inputstream() {
         return inputStream;
     }
 
     public void close() {
         connect.close();
+        try {
+            inputStream.close();
+        } catch (IOException ignore) {}
     }
 }
