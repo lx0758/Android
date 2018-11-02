@@ -5,7 +5,7 @@ import com.liux.android.downloader.OnStatusListener;
 /**
  * 任务实例抽象接口
  */
-public interface Task extends TaskInfoGeter, TaskOperational {
+public interface Task extends TaskStatus, TaskInfoGeter, TaskOperational {
 
     void bindStatusListener(OnStatusListener onStatusListener);
 

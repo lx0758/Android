@@ -15,12 +15,7 @@ public abstract class UIStatusListener implements OnStatusListener {
 
     @Override
     public void onBind(final Task task) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                onUIBind(task);
-            }
-        });
+        onUpdate(task);
     }
 
     @Override
@@ -32,8 +27,6 @@ public abstract class UIStatusListener implements OnStatusListener {
             }
         });
     }
-
-    protected abstract void onUIBind(Task task);
 
     protected abstract void onUIUpdate(Task task);
 }

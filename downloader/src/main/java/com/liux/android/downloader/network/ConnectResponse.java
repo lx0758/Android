@@ -73,7 +73,7 @@ public class ConnectResponse {
     public void close() {
         connect.close();
         try {
-            inputStream.close();
+            if (inputStream != null) inputStream.close();
         } catch (IOException ignore) {}
     }
 }

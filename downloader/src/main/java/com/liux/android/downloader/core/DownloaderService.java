@@ -11,8 +11,6 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * 下载库类核心类
@@ -30,7 +28,7 @@ public class DownloaderService implements TaskDispatch {
         return downloaderService;
     }
 
-    private DownloaderPoolExecutor threadPoolExecutor;
+    private DownloaderPoolExecutor downloaderPoolExecutor;
 
     private Config config;
     private List<DownloaderTask> downloaderTasks;
@@ -41,7 +39,7 @@ public class DownloaderService implements TaskDispatch {
         this.downloaderTasks = new LinkedList<>();
         this.downloaderCallbackDispense = new DownloaderCallbackDispense();
 
-        this.threadPoolExecutor = new DownloaderPoolExecutor(config.getMaxTaskCount(), new LinkedBlockingQueue<Runnable>());
+        this.downloaderPoolExecutor = DownloaderPoolExecutor.create(config.getMaxTaskCount());
 
         config.getDataStorage().onInit(config.getContext());
         config.getFileStorage().onInit(config.getContext(), config.getRootDirectory());
@@ -82,6 +80,7 @@ public class DownloaderService implements TaskDispatch {
     @Override
     public void reset(DownloaderTask downloaderTask) {
         downloaderTask.setStatus(Status.NEW);
+        downloaderCallbackDispense.onTaskReset(downloaderTask);
     }
 
     @Override
@@ -97,9 +96,10 @@ public class DownloaderService implements TaskDispatch {
      * @param headers
      * @param dir 自定义存储目录,若为 null,则使用全局配置
      * @param fileName 自定义文件名.若为null,则下载链接时自动配置
+     * @param single
      * @return
      */
-    public Task createTask(String url, String method, Map<String, List<String>> headers, File dir, String fileName) {
+    public Task createTask(String url, String method, Map<String, List<String>> headers, File dir, String fileName, boolean single) {
         if (TextUtils.isEmpty(url)) throw new NullPointerException();
 
         if (TextUtils.isEmpty(method)) method = "GET";
@@ -124,7 +124,7 @@ public class DownloaderService implements TaskDispatch {
             if (TextUtils.isEmpty(fileName)) fileName = "file-" + System.currentTimeMillis();
         }
 
-        Record record = config.getDataStorage().onInsert(url, method, DownloaderUtil.headers2json(headers), dir.getAbsolutePath(), fileName, Status.NEW.code());
+        Record record = config.getDataStorage().onInsert(url, method, DownloaderUtil.headers2json(headers), dir.getAbsolutePath(), fileName, single, Status.NEW.code());
 
         DownloaderTask downloaderTask = createDownloaderTask(
                 record,
@@ -133,6 +133,8 @@ public class DownloaderService implements TaskDispatch {
                 downloaderCallbackDispense
         );
         downloaderTasks.add(downloaderTask);
+
+        downloaderCallbackDispense.onTaskCreated(downloaderTask);
 
         return downloaderTask;
     }
@@ -252,12 +254,9 @@ public class DownloaderService implements TaskDispatch {
     private synchronized void schedulingTask() {
         if (downloaderTasks.isEmpty()) return;
 
-        BlockingQueue<Runnable> blockingQueue = threadPoolExecutor.getQueue();
-
         for (DownloaderTask downloaderTask : downloaderTasks) {
             if (Status.WAIT != downloaderTask.getStatus()) continue;
-            if (blockingQueue.contains(downloaderTask)) continue;
-            threadPoolExecutor.submit(downloaderTask);
+            downloaderPoolExecutor.submitTask(downloaderTask);
         }
     }
 }

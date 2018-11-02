@@ -31,6 +31,8 @@ public class Record {
     private long createTime;
     // 任务最后更新时间
     private long updateTime;
+    // 是否是单任务模式
+    private boolean single;
 
     public long getId() {
         return id;
@@ -161,6 +163,16 @@ public class Record {
         return this;
     }
 
+    public boolean getSingle() {
+        return single;
+    }
+
+    public Record setSingle(boolean single) {
+        this.single = single;
+        refreshUpdateTime();
+        return this;
+    }
+
     @Override
     public String toString() {
         return "Record{" +
@@ -177,6 +189,7 @@ public class Record {
                 ", status=" + status +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
+                ", single=" + single +
                 '}';
     }
 

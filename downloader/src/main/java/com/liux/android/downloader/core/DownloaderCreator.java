@@ -26,7 +26,11 @@ public class DownloaderCreator {
         if (DownloaderService.getService() != null) return;
         synchronized(DownloaderCreator.class) {
             if (DownloaderService.getService() != null) return;
-            final Handler handler = new Handler(Looper.myLooper());
+
+            Looper looper = Looper.myLooper();
+            if (looper == null) looper = Looper.getMainLooper();
+            final Handler handler = new Handler(looper);
+
             new Thread(new Runnable() {
                 @Override
                 public void run() {

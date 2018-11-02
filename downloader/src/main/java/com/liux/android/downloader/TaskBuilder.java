@@ -20,6 +20,7 @@ public class TaskBuilder {
     private Map<String, List<String>> headers;
     private File dir;
     private String fileName;
+    private boolean single = false;
 
     public TaskBuilder(String url) {
         this.url = url;
@@ -47,7 +48,12 @@ public class TaskBuilder {
         return this;
     }
 
+    public TaskBuilder single(boolean single) {
+        this.single = single;
+        return this;
+    }
+
     public Task build() {
-        return DownloaderService.get().createTask(url, method, headers, dir, fileName);
+        return DownloaderService.get().createTask(url, method, headers, dir, fileName, single);
     }
 }

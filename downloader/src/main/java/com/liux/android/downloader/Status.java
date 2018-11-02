@@ -6,7 +6,7 @@ package com.liux.android.downloader;
 public enum  Status {
 
     /**
-     * 新建状态
+     * 新建或重置状态
      */
     NEW(0),
 

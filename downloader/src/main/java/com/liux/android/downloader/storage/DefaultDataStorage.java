@@ -43,7 +43,7 @@ public class DefaultDataStorage implements DataStorage {
     }
 
     @Override
-    public Record onInsert(String url, String method, String headers, String dir, String fileName, int status) {
+    public Record onInsert(String url, String method, String headers, String dir, String fileName, boolean single, int status) {
         long time = System.currentTimeMillis();
         ContentValues contentValues = new ContentValues();
         contentValues.put("url", url);
@@ -54,6 +54,7 @@ public class DefaultDataStorage implements DataStorage {
         contentValues.put("status", status);
         contentValues.put("createTime", time);
         contentValues.put("updateTime", time);
+        contentValues.put("single", Boolean.toString(single));
         sqliteDatabase.insert(tableName, null, contentValues);
         Cursor cursor = sqliteDatabase.query(
                 tableName,
@@ -77,7 +78,8 @@ public class DefaultDataStorage implements DataStorage {
                 .setFileName(fileName)
                 .setStatus(status)
                 .setCreateTime(time)
-                .setUpdateTime(time);
+                .setUpdateTime(time)
+                .setSingle(single);
     }
 
     @Override
@@ -105,6 +107,7 @@ public class DefaultDataStorage implements DataStorage {
         contentValues.put("status", record.getStatus());
         contentValues.put("createTime", record.getCreateTime());
         contentValues.put("updateTime", record.getUpdateTime());
+        contentValues.put("single", Boolean.toString(record.getSingle()));
         sqliteDatabase.update(
                 tableName,
                 contentValues,
@@ -117,7 +120,7 @@ public class DefaultDataStorage implements DataStorage {
     public void onQuery(Record record) {
         Cursor cursor = sqliteDatabase.query(
                 tableName,
-                new String[]{"id", "url", "method", "headers", "dir", "fileName", "fileNameFinal", "etag", "completed", "total", "status", "createTime", "updateTime"},
+                new String[]{"id", "url", "method", "headers", "dir", "fileName", "fileNameFinal", "etag", "completed", "total", "status", "createTime", "updateTime", "single"},
                 "id=?",
                 new String[]{String.valueOf(record.getId())},
                 null,
@@ -136,7 +139,7 @@ public class DefaultDataStorage implements DataStorage {
         List<Record> records = new LinkedList<>();
         Cursor cursor = sqliteDatabase.query(
                 tableName,
-                new String[]{"id", "url", "method", "headers", "dir", "fileName", "fileNameFinal", "etag", "completed", "total", "status", "createTime", "updateTime"},
+                new String[]{"id", "url", "method", "headers", "dir", "fileName", "fileNameFinal", "etag", "completed", "total", "status", "createTime", "updateTime", "single"},
                 null,
                 null,
                 null,
@@ -172,6 +175,7 @@ public class DefaultDataStorage implements DataStorage {
         record.setStatus(cursor.getInt(10));
         record.setCreateTime(cursor.getLong(11));
         record.setUpdateTime(cursor.getLong(12));
+        record.setSingle(Boolean.valueOf(cursor.getString(13)));
     }
 
     private class DownloaderSQLiteOpenHelper extends SQLiteOpenHelper {
@@ -199,7 +203,8 @@ public class DefaultDataStorage implements DataStorage {
                             "'total' INTEGER,\n" +
                             "'status' INTEGER,\n" +
                             "'createTime' TIMESTAMP,\n" +
-                            "'updateTime' TIMESTAMP\n" +
+                            "'updateTime' TIMESTAMP,\n" +
+                            "'single' TEXT\n" +
                             ");"
             );
         }

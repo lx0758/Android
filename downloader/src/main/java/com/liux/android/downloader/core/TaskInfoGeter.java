@@ -79,6 +79,12 @@ interface TaskInfoGeter {
     Date getUpdateTime();
 
     /**
+     * 是否是单任务
+     * @return
+     */
+    boolean getSingle();
+
+    /**
      * 获取出错时的错误信息
      * @return
      */
