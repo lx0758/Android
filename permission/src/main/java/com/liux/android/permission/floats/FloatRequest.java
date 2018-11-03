@@ -77,7 +77,7 @@ public class FloatRequest extends Request<FloatRequest> {
             }
 
             @Override
-            public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults) {
+            public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
             }
         });

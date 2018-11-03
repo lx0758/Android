@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 
 import com.liux.android.permission.floats.FloatRequest;
+import com.liux.android.permission.install.InstallRequest;
 import com.liux.android.permission.runtime.RuntimeRequest;
 
 public class Prepare {
@@ -28,5 +29,9 @@ public class Prepare {
 
     public FloatRequest requestFloat() {
         return new FloatRequest(target);
+    }
+
+    public InstallRequest requestInstall() {
+        return new InstallRequest(target);
     }
 }

@@ -47,7 +47,7 @@ public class PermissionFragment extends Fragment {
 
         Task task = taskSparseArray.get(requestCode);
         if (task != null) {
-            task.onRequestPermissionsResult(permissions, grantResults);
+            task.onRequestPermissionsResult(requestCode, permissions, grantResults);
             taskSparseArray.remove(requestCode);
         }
     }

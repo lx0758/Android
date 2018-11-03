@@ -111,7 +111,7 @@ public class RuntimeRequest extends Request<RuntimeRequest> {
             }
 
             @Override
-            public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults) {
+            public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
                 checkAcceptPermissions();
                 onRuntimePermissionListener.onRuntimePermission(allow, reject, prohibit);
             }

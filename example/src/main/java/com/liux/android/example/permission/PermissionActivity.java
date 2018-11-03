@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -19,6 +20,7 @@ import com.liux.android.permission.Authorizer;
 import com.liux.android.permission.Continue;
 import com.liux.android.permission.OnContinueListener;
 import com.liux.android.permission.floats.OnFloatPermissionListener;
+import com.liux.android.permission.install.OnInstallPermissionListener;
 import com.liux.android.permission.runtime.OnRuntimePermissionListener;
 import com.liux.android.util.UriUtil;
 import com.liux.android.tool.TT;
@@ -48,7 +50,7 @@ public class PermissionActivity extends AppCompatActivity {
     }
 
     @SuppressLint("MissingPermission")
-    @OnClick({R.id.btn_call, R.id.btn_camera, R.id.btn_call_camera, R.id.btn_floats})
+    @OnClick({R.id.btn_call, R.id.btn_camera, R.id.btn_call_camera, R.id.btn_floats, R.id.btn_install})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_call:
@@ -82,7 +84,7 @@ public class PermissionActivity extends AppCompatActivity {
                                     intent.setData(Uri.parse("tel:10010"));
                                     startActivity(intent);
                                 } else {
-                                    TT.makeText(PermissionActivity.this, "没有拨号权限", TT.LENGTH_SHORT).show();
+                                    TT.show(PermissionActivity.this, "没有拨号权限", TT.LENGTH_SHORT);
                                 }
                             }
                         })
@@ -131,7 +133,7 @@ public class PermissionActivity extends AppCompatActivity {
                                         }
                                     });
                                 } else {
-                                    TT.makeText(PermissionActivity.this, "没有拍照权限", TT.LENGTH_SHORT).show();
+                                    TT.show(PermissionActivity.this, "没有拍照权限", TT.LENGTH_SHORT);
                                 }
                             }
                         })
@@ -168,7 +170,7 @@ public class PermissionActivity extends AppCompatActivity {
                                     intent.setData(Uri.parse("tel:10010"));
                                     startActivity(intent);
                                 } else {
-                                    TT.makeText(PermissionActivity.this, "没有拨号权限", TT.LENGTH_SHORT).show();
+                                    TT.show(PermissionActivity.this, "没有拨号权限", TT.LENGTH_SHORT);
                                 }
 
                                 if (allow.contains(Manifest.permission.CAMERA)) {
@@ -188,7 +190,7 @@ public class PermissionActivity extends AppCompatActivity {
                                         }
                                     });
                                 } else {
-                                    TT.makeText(PermissionActivity.this, "没有拍照权限", TT.LENGTH_SHORT).show();
+                                    TT.show(PermissionActivity.this, "没有拍照权限", TT.LENGTH_SHORT);
                                 }
                             }
                         })
@@ -220,13 +222,53 @@ public class PermissionActivity extends AppCompatActivity {
                         .listener(new OnFloatPermissionListener() {
                             @Override
                             public void onSucceed() {
-                                TT.makeText(PermissionActivity.this, "成功获取悬浮窗权限", TT.LENGTH_SHORT).show();
+                                TT.show(PermissionActivity.this, "成功获取悬浮窗权限", TT.LENGTH_SHORT);
                                 new FloatWindow(getApplicationContext()).showFloatWindow();
                             }
 
                             @Override
                             public void onFailure() {
-                                TT.makeText(PermissionActivity.this, "没有悬浮窗权限", TT.LENGTH_SHORT).show();
+                                TT.show(PermissionActivity.this, "没有悬浮窗权限", TT.LENGTH_SHORT);
+                            }
+                        })
+                        .request();
+                break;
+            case R.id.btn_install:
+                Authorizer.with(this)
+                        .requestInstall()
+                        .listener(new OnContinueListener() {
+                            @Override
+                            public void onContinue(final Continue aContinue) {
+                                new AlertDialog.Builder(PermissionActivity.this)
+                                        .setMessage("我需要安装应用权限?")
+                                        .setNegativeButton("好的", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                aContinue.onContinue();
+                                            }
+                                        })
+                                        .setPositiveButton("不给", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                aContinue.onCancel();
+                                            }
+                                        })
+                                        .show();
+                            }
+                        })
+                        .listener(new OnInstallPermissionListener() {
+                            @Override
+                            public void onSucceed() {
+                                boolean install = true;
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    install = getPackageManager().canRequestPackageInstalls();
+                                }
+                                TT.show(PermissionActivity.this, "成功获取安装应用权限,检测结果:" + install, TT.LENGTH_SHORT);
+                            }
+
+                            @Override
+                            public void onFailure() {
+                                TT.show(PermissionActivity.this, "没有安装应用权限", TT.LENGTH_SHORT);
                             }
                         })
                         .request();
