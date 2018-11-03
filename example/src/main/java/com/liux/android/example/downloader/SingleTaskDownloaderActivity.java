@@ -55,6 +55,6 @@ public class SingleTaskDownloaderActivity extends AppCompatActivity {
                 .fileName(name)
                 .single(true)
                 .build();
-        new DownloaderDialog(this, task).show();
+        new SingleTaskDownloaderDialog(this, task).show();
     }
 }

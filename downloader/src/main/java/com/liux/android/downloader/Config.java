@@ -126,11 +126,11 @@ public class Config {
             if (rootDirectory == null) {
                 String path;
                 if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                    path = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getPath();
+                    path = context.getExternalFilesDir("download").getPath();
                 } else {
-                    path = context.getDir(Environment.DIRECTORY_DOWNLOADS, Context.MODE_PRIVATE).getPath();
+                    path = context.getDir("download", Context.MODE_PRIVATE).getPath();
                 }
-                rootDirectory = new File(path + File.separator);
+                rootDirectory = new File(path);
             }
             if (rootDirectory.exists()) {
                 if (!rootDirectory.isDirectory()) throw new NullPointerException("rootDirectory not a directory");

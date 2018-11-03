@@ -103,9 +103,9 @@
 
         <TextView
             android:id="@+id/tv_percentage"
-            android:layout_width="60dp"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="right"
             tools:text="0%"/>
 
     </LinearLayout>

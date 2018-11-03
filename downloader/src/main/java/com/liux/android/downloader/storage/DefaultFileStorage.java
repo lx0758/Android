@@ -41,6 +41,6 @@ public class DefaultFileStorage implements FileStorage {
         File dirFile = (dir == null) ? rootDir : new File(dir);
         dirFile.mkdirs();
 
-        return new File(dirFile.getAbsolutePath() + File.separator + fileName);
+        return new File(dirFile, fileName);
     }
 }

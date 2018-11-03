@@ -2,6 +2,7 @@ package com.liux.android.example.downloader;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.liux.android.downloader.OnStatusListener;
 import com.liux.android.downloader.Status;
 import com.liux.android.downloader.UIStatusListener;
 import com.liux.android.downloader.core.Task;
@@ -23,7 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class DownloaderDialog extends Dialog {
+public class SingleTaskDownloaderDialog extends Dialog {
 
     @BindView(R.id.tv_id)
     TextView tvId;
@@ -47,8 +49,35 @@ public class DownloaderDialog extends Dialog {
     Button btnClose;
 
     private Task task;
+    private OnStatusListener onStatusListener = new UIStatusListener() {
+        @Override
+        protected void onUIUpdate(Task task) {
+            tvId.setText(String.valueOf(task.getId()));
+            tvUrl.setText(task.getUrl());
+            tvName.setText(task.getFile().getName());
+            String state = task.getStatus().name();
+            if (task.getStatus() == Status.ERROR) {
+                state += "-" + task.getErrorInfo().getMessage();
+            }
+            tvState.setText(state);
+            int progress;
+            if (task.getTotal() == 0) {
+                progress = 0;
+            } else {
+                progress = (int) (task.getCompleted() / (task.getTotal() + 0.0) * 100);
+            }
+            tvPercentage.setText(progress + "%");
+            tvSpeed.setText(
+                    (task.getSpeed() / 1024) + "kb/s"
+            );
+            tvProgress.setText(
+                    (task.getCompleted() / 1024) + "kb/" + (task.getTotal() / 1024) + "kb"
+            );
+            pbProgress.setProgress(progress);
+        }
+    };
 
-    public DownloaderDialog(Context context, Task task) {
+    public SingleTaskDownloaderDialog(Context context, Task task) {
         super(context);
         this.task = task;
     }
@@ -56,36 +85,17 @@ public class DownloaderDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_downloader);
+        setContentView(R.layout.dialog_downloader_single);
         ButterKnife.bind(this);
 
         setCancelable(false);
 
-        task.bindStatusListener(new UIStatusListener() {
+        task.bindStatusListener(onStatusListener);
+
+        setOnDismissListener(new OnDismissListener() {
             @Override
-            protected void onUIUpdate(Task task) {
-                tvId.setText(String.valueOf(task.getId()));
-                tvUrl.setText(task.getUrl());
-                tvName.setText(task.getFile().getName());
-                String state = task.getStatus().name();
-                if (task.getStatus() == Status.ERROR) {
-                    state += "-" + task.getErrorInfo().getMessage();
-                }
-                tvState.setText(state);
-                int progress;
-                if (task.getTotal() == 0) {
-                    progress = 0;
-                } else {
-                    progress = (int) (task.getCompleted() / (task.getTotal() + 0.0) * 100);
-                }
-                tvPercentage.setText(progress + "%");
-                tvSpeed.setText(
-                        (task.getSpeed() / 1024) + "kb/s"
-                );
-                tvProgress.setText(
-                        (task.getCompleted() / 1024) + "kb/" + (task.getTotal() / 1024) + "kb"
-                );
-                pbProgress.setProgress(progress);
+            public void onDismiss(DialogInterface dialog) {
+                task.unbindStatusListener(onStatusListener);
             }
         });
     }
@@ -114,8 +124,10 @@ public class DownloaderDialog extends Dialog {
 
     private void openFile(File file) {
         Intent intent = new Intent();
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setAction(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         intent.setDataAndType(UriUtil.getProviderUri(getContext(), file), HttpUtil.getMimeType(file).toString());
         try {
             getContext().startActivity(intent);

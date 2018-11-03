@@ -48,7 +48,7 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
     private File writeFile;
     private Throwable errorInfo;
     private Handler callUpdateTimer;
-    private List<WeakReference<OnStatusListener>> onStatusListeners = new LinkedList<>();
+    private List<OnStatusListener> onStatusListeners = new LinkedList<>();
 
     DownloaderTask(Record record, DataStorage dataStorage, FileStorage fileStorage, ConnectFactory connectFactory, TaskDispatch taskDispatch, DownloaderCallback downloaderCallback) {
         this.record = record;
@@ -64,7 +64,7 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
         } else {
             fileName = record.getFileNameFinal();
         }
-        writeFile = new File(this.record.getDir() + File.separator + fileName);
+        writeFile = new File(this.record.getDir(), fileName);
 
         callUpdateTimer = new Handler(Looper.getMainLooper(), new Handler.Callback() {
             @Override
@@ -89,7 +89,7 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
             record.setFileNameFinal(fileNameFinal);
             dataStorage.onUpdate(record);
 
-            writeFile = new File(record.getDir() + File.separator + record.getFileNameFinal());
+            writeFile = new File(record.getDir(), record.getFileNameFinal());
         }
         callStatusListenerUpdate();
 
@@ -138,9 +138,11 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
             // 下载资源
             setStatus(Status.START);
             // 检测文件和数据库记录是否一致
-            //if (randomAccessFile.length() < record.getCompleted()) {
-            //    throw new IOException("File status and database record status are inconsistent");
-            //}
+            if (randomAccessFile.length() < record.getCompleted()) {
+                // throw new IOException("File status and database record status are inconsistent");
+                record.setCompleted(randomAccessFile.length());
+                dataStorage.onUpdate(record);
+            }
             // 处理下载 headers,加入断点续传参数
             Map<String, List<String>> downloadHeaders = getHeaders();
             if (downloadHeaders == null) downloadHeaders = new HashMap<>();
@@ -200,16 +202,15 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
     @Override
     public void bindStatusListener(OnStatusListener onStatusListener) {
         if (onStatusListener == null) return;
-        if (findOnStatusListener(onStatusListener) != null) return;
-        onStatusListeners.add(new WeakReference<>(onStatusListener));
+        if (onStatusListeners.contains(onStatusListener)) return;
+        onStatusListeners.add(onStatusListener);
         onStatusListener.onBind(this);
     }
 
     @Override
     public void unbindStatusListener(OnStatusListener onStatusListener) {
         if (onStatusListener == null) return;
-        Iterator iterator;
-        if ((iterator = findOnStatusListener(onStatusListener)) != null) iterator.remove();
+        onStatusListeners.remove(onStatusListener);
     }
 
     @Override
@@ -434,24 +435,6 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
     }
 
     /**
-     * 在弱引用集合内查找持有某个 listener 的弱引用
-     * @param listener
-     * @return
-     */
-    private Iterator findOnStatusListener(OnStatusListener listener) {
-        Iterator<WeakReference<OnStatusListener>> iterator = onStatusListeners.iterator();
-        while (iterator.hasNext()) {
-            OnStatusListener onStatusListener = iterator.next().get();
-            if (onStatusListener == null) {
-                iterator.remove();
-                continue;
-            }
-            if (listener == onStatusListener) return iterator;
-        }
-        return null;
-    }
-
-    /**
      * 根据原始文件名获取新的文件名
      * temp        => temp(i)
      * temp.tar.gz => temp.tar(i).gz
@@ -472,13 +455,7 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
      * 回调所有状态监听器
      */
     private void callStatusListenerUpdate() {
-        Iterator<WeakReference<OnStatusListener>> iterator = onStatusListeners.iterator();
-        while (iterator.hasNext()) {
-            OnStatusListener onStatusListener = iterator.next().get();
-            if (onStatusListener == null) {
-                iterator.remove();
-                continue;
-            }
+        for (OnStatusListener onStatusListener : onStatusListeners) {
             onStatusListener.onUpdate(this);
         }
     }

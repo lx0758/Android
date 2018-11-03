@@ -5,17 +5,25 @@ import com.liux.android.downloader.core.Task;
 /**
  * 任务状态监听器
  */
-public interface OnStatusListener {
+public abstract class OnStatusListener {
+
+    private Task task;
 
     /**
      * 绑定监听器之后的回调
      * @param task
      */
-    void onBind(Task task);
+    public final void onBind(Task task) {
+        if (this.task != null && this.task != task) {
+            this.task.unbindStatusListener(this);
+        }
+        this.task = task;
+        onUpdate(task);
+    }
 
     /**
      * 状态变更之后的回调
      * @param task
      */
-    void onUpdate(Task task);
+    public abstract void onUpdate(Task task);
 }

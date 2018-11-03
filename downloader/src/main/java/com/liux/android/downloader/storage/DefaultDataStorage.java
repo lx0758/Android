@@ -147,12 +147,14 @@ public class DefaultDataStorage implements DataStorage {
                 "createTime ASC",
                 null
         );
-        if (!cursor.moveToFirst()) return records;
-        while (cursor.moveToNext()) {
-            Record record = new Record();
-            cursor2record(cursor, record);
-            records.add(record);
+        if (cursor.moveToFirst()) {
+            do {
+                Record record = new Record();
+                cursor2record(cursor, record);
+                records.add(record);
+            } while (cursor.moveToNext());
         }
+        cursor.close();
         return records;
     }
 

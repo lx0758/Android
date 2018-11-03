@@ -7,7 +7,15 @@ import com.liux.android.downloader.OnStatusListener;
  */
 public interface Task extends TaskStatus, TaskInfoGeter, TaskOperational {
 
+    /**
+     * 绑定任务状态监听器回调
+     * @param onStatusListener
+     */
     void bindStatusListener(OnStatusListener onStatusListener);
 
+    /**
+     * 解除绑定任务状态监听器回调
+     * @param onStatusListener
+     */
     void unbindStatusListener(OnStatusListener onStatusListener);
 }
