@@ -15,6 +15,7 @@ import android.provider.Settings;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.Locale;
 
 /**
  * IntentUtil
@@ -35,7 +36,7 @@ public class IntentUtil {
     public static void startGeneralMapNavigator(Context context, double lat, double lng) {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(String.format("geo:%f,%f", lat, lng)));
+            intent.setData(Uri.parse(String.format(Locale.CHINA, "geo:%f,%f", lat, lng)));
             context.startActivity(intent);
         } catch (Exception e) {
             Toast.makeText(context, "您尚未安装地图软件或无权限调用.", Toast.LENGTH_LONG).show();
@@ -54,7 +55,7 @@ public class IntentUtil {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setPackage("com.baidu.BaiduMap");
-            intent.setData(Uri.parse(String.format("baidumap://map/direction?destination=latlng:%f,%f|name:%s&mode=driving", lat, lng, name)));
+            intent.setData(Uri.parse(String.format(Locale.CHINA, "baidumap://map/direction?destination=latlng:%f,%f|name:%s&mode=driving", lat, lng, name)));
             context.startActivity(intent);
         } catch (Exception e) {
             Toast.makeText(context, "您尚未安装百度地图软件或无权限调用.", Toast.LENGTH_LONG).show();
@@ -73,7 +74,7 @@ public class IntentUtil {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             // intent.setPackage("com.autonavi.minimap");
-            intent.setData(Uri.parse(String.format("androidamap://route?sourceApplication=Back&dlat=%f&dlon=%f&dname=%s&dev=0&m=0&t=2", lat, lng, name)));
+            intent.setData(Uri.parse(String.format(Locale.CHINA, "androidamap://route?sourceApplication=Back&dlat=%f&dlon=%f&dname=%s&dev=0&m=0&t=2", lat, lng, name)));
             context.startActivity(intent);
         } catch (Exception e) {
             Toast.makeText(context, "您尚未安装高德地图软件或无权限调用.", Toast.LENGTH_LONG).show();
@@ -92,7 +93,7 @@ public class IntentUtil {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setPackage("com.tencent.map");
-            intent.setData(Uri.parse(String.format("http://apis.map.qq.com/uri/v1/routeplan?type=drive&to=%s&tocoord=%f,%f&coord_type=1&referer=Back", name, lat, lng)));
+            intent.setData(Uri.parse(String.format(Locale.CHINA, "http://apis.map.qq.com/uri/v1/routeplan?type=drive&to=%s&tocoord=%f,%f&coord_type=1&referer=Back", name, lat, lng)));
             context.startActivity(intent);
         } catch (Exception e) {
             Toast.makeText(context, "您尚未安装腾讯地图软件或无权限调用.", Toast.LENGTH_LONG).show();
@@ -111,7 +112,7 @@ public class IntentUtil {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setPackage("com.google.android.apps.maps");
-            intent.setData(Uri.parse(String.format("http://ditu.google.cn/maps?f=d&source=s_d&daddr=%f,%f&hl=zh", lat, lng)));
+            intent.setData(Uri.parse(String.format(Locale.CHINA, "http://ditu.google.cn/maps?f=d&source=s_d&daddr=%f,%f&hl=zh", lat, lng)));
             context.startActivity(intent);
         } catch (Exception e) {
             Toast.makeText(context, "您尚未安装谷歌地图软件或无权限调用.", Toast.LENGTH_LONG).show();
@@ -191,28 +192,6 @@ public class IntentUtil {
     }
 
     /**
-     * 设置MIUI的神隐模式
-     *
-     * @param context
-     * @param pkgname 自定义包名,为空代表自己
-     * @param appname 自定义应用名,为空代表自己
-     * @return 返回结果
-     */
-    public static boolean setMIUIPowerKeeper(Context context, String pkgname, String appname) {
-        if (!AppUtil.isMIUI()) return false;
-        try {
-            Intent intent = new Intent("miui.intent.action.HIDDEN_APPS_CONFIG_ACTIVITY");
-            intent.putExtra("package_name", pkgname != null ? pkgname : AppUtil.getPackageName(context));
-            intent.putExtra("package_label", appname != null ? appname : AppUtil.getApplicationName(context));
-            context.startActivity(intent);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    /**
      * 安装Apk文件
      *
      * @param context
@@ -246,7 +225,7 @@ public class IntentUtil {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         } catch (Exception e) {
-            Toast.makeText(context, "没有找到程序安装器,软件安装\\卸载失败!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "没有找到程序安装器,软件安装/卸载失败!", Toast.LENGTH_SHORT).show();
         }
     }
 

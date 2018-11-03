@@ -3,9 +3,10 @@ package com.liux.android.util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Locale;
 
 /**
- * Created by WangPing on 2018/1/12.
+ * Created by Liux on 2018/1/12.
  */
 
 public class IDVerificationUtil {
@@ -73,7 +74,7 @@ public class IDVerificationUtil {
                 return "身份证日期验证无效！";
             }
 
-            Hashtable secondary = getSecondary();
+            Hashtable<String, String> secondary = getSecondary();
             if (secondary.get(idString.substring(0, 2)) == null) {
                 return "身份证地区编码错误!";
             } else if (!getCalculateBit((CharSequence) idString).equals(String.valueOf(idString.charAt(17)))) {
@@ -118,8 +119,10 @@ public class IDVerificationUtil {
      * 获取地址信息
      * @return
      */
+    private static Hashtable<String, String> secondary;
     private static Hashtable<String, String> getSecondary() {
-        Hashtable secondary = new Hashtable();
+        if (secondary != null) return secondary;
+        Hashtable<String, String> secondary = new Hashtable<>();
         secondary.put("11", "北京");
         secondary.put("12", "天津");
         secondary.put("13", "河北");
@@ -166,9 +169,8 @@ public class IDVerificationUtil {
     private static Date verifyBirthday(String idStr) {
         try {
             return getDateFromat().parse(getBirthday(idStr));
-        } catch (Exception e) {
-            throw new RuntimeException("身份证的出生日期无效");
-        }
+        } catch (Exception ignore) {}
+        return null;
     }
 
     /**
@@ -176,7 +178,7 @@ public class IDVerificationUtil {
      * @return
      */
     private static SimpleDateFormat getDateFromat() {
-        return new SimpleDateFormat("yyyyMMdd");
+        return new SimpleDateFormat("yyyyMMdd", Locale.CHINA);
     }
 
     /**

@@ -23,6 +23,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,33 +37,28 @@ public class ImageUtil {
      * 使用ContentProvider读取SD卡最近图片。
      */
     public static List<String> getAllImagePaths(Context context, int maxCount) {
-        Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
         String key_MIME_TYPE = MediaStore.Images.Media.MIME_TYPE;
         String key_DATA = MediaStore.Images.Media.DATA;
 
         ContentResolver mContentResolver = context.getContentResolver();
 
-        Cursor cursor = mContentResolver.query(mImageUri, new String[]{key_DATA},
+        Cursor cursor = mContentResolver.query(uri, new String[]{key_DATA},
                 key_MIME_TYPE + "=? or " + key_MIME_TYPE + "=? or " + key_MIME_TYPE + "=? or " + key_MIME_TYPE + "=?",
                 new String[]{"image/jpg", "image/jpeg", "image/png", "image/bmp"},
                 MediaStore.Images.Media.DATE_MODIFIED);
 
-        List<String> paths = new ArrayList();
-        if (cursor != null) {
-            if (cursor.moveToLast()) {
-                paths = new ArrayList();
-
-                while (true) {
-                    String path = cursor.getString(0);
-                    paths.add(path);
-
-                    if (!cursor.moveToPrevious()) break;
-                    if (maxCount != 0 && paths.size() >= maxCount) break;
-                }
-            }
-            cursor.close();
+        List<String> paths = new ArrayList<>();
+        if (cursor == null) return paths;
+        if (cursor.moveToFirst()) {
+            do {
+                String path = cursor.getString(0);
+                paths.add(path);
+                if (maxCount != 0 && paths.size() >= maxCount) break;
+            } while (cursor.moveToNext());
         }
+        cursor.close();
         return paths;
     }
 
@@ -72,9 +68,9 @@ public class ImageUtil {
     public static List<String> getFolderImagePaths(Context context, String folder) {
         List<String> paths = getAllImagePaths(context, Integer.MAX_VALUE);
 
-        List<String> result = new ArrayList();
+        List<String> result = new ArrayList<>();
         for (String path : paths) {
-            if (path.startsWith(folder) && path.replace(folder + "/", "").indexOf("/") == -1) {
+            if (path.startsWith(folder) && !path.replace(folder + "/", "").contains("/")) {
                 result.add(path);
             }
         }
@@ -82,23 +78,24 @@ public class ImageUtil {
     }
 
     /**
-     * 保存Bitmap至Uri
+     * 保存Bitmap至File
      * @param bitmap
-     * @param uri
+     * @param file
      * @return
      */
-    public static boolean saveBitmap(Bitmap bitmap, Uri uri) {
-        File file = new File(uri.getPath());
+    public static boolean saveBitmap(Bitmap bitmap, File file) {
+        OutputStream outputStream = null;
         try {
             if (file.exists()) file.delete();
-            FileOutputStream fos = new FileOutputStream(file);
-            BufferedOutputStream out = new BufferedOutputStream(fos);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, out);
-            out.flush();
-            out.close();
+            outputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, outputStream);
+            outputStream.flush();
         } catch (IOException e) {
-            e.printStackTrace();
             return false;
+        } finally {
+            try {
+                if (outputStream != null) outputStream.close();
+            } catch (IOException ignore) {}
         }
         return true;
     }
