@@ -124,7 +124,7 @@ public class ListActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_add_string:
-                mMultipleAdapter.getData().add(DateUtil.date2string5(new Date()));
+                mMultipleAdapter.getData().add(DateUtil.date2string(new Date(), "MM-dd HH:mm"));
                 break;
             case R.id.btn_add_long:
                 mMultipleAdapter.getData().add(new Date().getTime());

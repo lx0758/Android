@@ -26,7 +26,7 @@ public class TextUtil {
             digest.update(decript.getBytes());
             byte messageDigest[] = digest.digest();
             // Create Hex String
-            StringBuffer hexString = new StringBuffer();
+            StringBuilder hexString = new StringBuilder();
             // 字节数组转换为 十六进制 数
             for (int i = 0; i < messageDigest.length; i++) {
                 String shaHex = Integer.toHexString(messageDigest[i] & 0xFF);
@@ -49,7 +49,7 @@ public class TextUtil {
             digest.update(decript.getBytes());
             byte messageDigest[] = digest.digest();
             // Create Hex String
-            StringBuffer hexString = new StringBuffer();
+            StringBuilder hexString = new StringBuilder();
             // 字节数组转换为 十六进制 数
             for (int i = 0; i < messageDigest.length; i++) {
                 String shaHex = Integer.toHexString(messageDigest[i] & 0xFF);
@@ -75,7 +75,7 @@ public class TextUtil {
             // 获得密文
             byte[] md = mdInst.digest();
             // 把密文转换成十六进制的字符串形式
-            StringBuffer hexString = new StringBuffer();
+            StringBuilder hexString = new StringBuilder();
             // 字节数组转换为 十六进制 数
             for (int i = 0; i < md.length; i++) {
                 String shaHex = Integer.toHexString(md[i] & 0xFF);
@@ -108,19 +108,8 @@ public class TextUtil {
             Cipher cipher = Cipher.getInstance("AES");// 创建密码器
             byte[] byteContent = content.getBytes("utf-8");
             cipher.init(Cipher.ENCRYPT_MODE, key);// 初始化
-            byte[] result = cipher.doFinal(byteContent);
-            return result; // 加密
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
+            return cipher.doFinal(byteContent); // 加密
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -142,17 +131,8 @@ public class TextUtil {
             SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
             Cipher cipher = Cipher.getInstance("AES");// 创建密码器
             cipher.init(Cipher.DECRYPT_MODE, key);// 初始化
-            byte[] result = cipher.doFinal(content);
-            return result; // 加密
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
+            return cipher.doFinal(content); // 加密
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -199,22 +179,22 @@ public class TextUtil {
      * 字符串转换unicode
      */
     public static String string2Unicode(String string) {
-        StringBuffer unicode = new StringBuffer();
+        StringBuilder stringBuilder = new StringBuilder();
 
         for (int i = 0; i < string.length(); i++) {
             // 取出每一个字符
             char c = string.charAt(i);
             // 转换为unicode
-            unicode.append("\\u" + Integer.toHexString(c));
+            stringBuilder.append("\\u").append(Integer.toHexString(c));
         }
-        return unicode.toString();
+        return stringBuilder.toString();
     }
 
     /**
      * unicode 转字符串
      */
     public static String unicode2String(String unicode) {
-        StringBuffer string = new StringBuffer();
+        StringBuilder string = new StringBuilder();
 
         String[] hex = unicode.split("\\\\u");
 
@@ -234,40 +214,40 @@ public class TextUtil {
      * @return
      */
     public static String string2Json(String s) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             switch (c) {
                 case '\"':
-                    sb.append("\\\"");
+                    stringBuilder.append("\\\"");
                     break;
                 case '\\':
-                    sb.append("\\\\");
+                    stringBuilder.append("\\\\");
                     break;
                 case '/':
-                    sb.append("\\/");
+                    stringBuilder.append("\\/");
                     break;
                 case '\b':
-                    sb.append("\\b");
+                    stringBuilder.append("\\b");
                     break;
                 case '\f':
-                    sb.append("\\f");
+                    stringBuilder.append("\\f");
                     break;
                 case '\n':
-                    sb.append("\\n");
+                    stringBuilder.append("\\n");
                     break;
                 case '\r':
-                    sb.append("\\r");
+                    stringBuilder.append("\\r");
                     break;
                 case '\t':
-                    sb.append("\\t");
+                    stringBuilder.append("\\t");
                     break;
                 default:
-                    sb.append(c);
+                    stringBuilder.append(c);
                     break;
             }
         }
-        return sb.toString();
+        return stringBuilder.toString();
     }
 
     /**
@@ -296,37 +276,37 @@ public class TextUtil {
      */
     public static String getCHString(int intInput) {
         String si = String.valueOf(intInput);
-        String sd = "";
+        String ss = "";
         if (si.length() == 1) { // 个
-            sd += getCH(intInput);
-            return sd;
+            ss += getCH(intInput);
+            return ss;
         } else if (si.length() == 2) { // 十
             if (si.substring(0, 1).equals("1")) {
-                sd += "十";
+                ss += "十";
             } else {
-                sd += (getCH(intInput / 10) + "十");
+                ss += (getCH(intInput / 10) + "十");
             }
-            sd += getCHString(intInput % 10);
+            ss += getCHString(intInput % 10);
         } else if (si.length() == 3) { // 百
-            sd += (getCH(intInput / 100) + "百");
+            ss += (getCH(intInput / 100) + "百");
             if (String.valueOf(intInput % 100).length() < 2) {
-                sd += "零";
+                ss += "零";
             }
-            sd += getCHString(intInput % 100);
+            ss += getCHString(intInput % 100);
         } else if (si.length() == 4) { // 千
-            sd += (getCH(intInput / 1000) + "千");
+            ss += (getCH(intInput / 1000) + "千");
             if (String.valueOf(intInput % 1000).length() < 3) {
-                sd += "零";
+                ss += "零";
             }
-            sd += getCHString(intInput % 1000);
+            ss += getCHString(intInput % 1000);
         } else if (si.length() == 5) { // 万
-            sd += (getCH(intInput / 10000) + "万");
+            ss += (getCH(intInput / 10000) + "万");
             if (String.valueOf(intInput % 10000).length() < 4) {
-                sd += "零";
+                ss += "零";
             }
-            sd += getCHString(intInput % 10000);
+            ss += getCHString(intInput % 10000);
         }
-        return sd;
+        return ss;
     }
 
     /**
@@ -350,38 +330,38 @@ public class TextUtil {
     }
 
     private static String getCH(int input) {
-        String sd = "";
+        String string = "";
         switch (input) {
             case 1:
-                sd = "一";
+                string = "一";
                 break;
             case 2:
-                sd = "二";
+                string = "二";
                 break;
             case 3:
-                sd = "三";
+                string = "三";
                 break;
             case 4:
-                sd = "四";
+                string = "四";
                 break;
             case 5:
-                sd = "五";
+                string = "五";
                 break;
             case 6:
-                sd = "六";
+                string = "六";
                 break;
             case 7:
-                sd = "七";
+                string = "七";
                 break;
             case 8:
-                sd = "八";
+                string = "八";
                 break;
             case 9:
-                sd = "九";
+                string = "九";
                 break;
             default:
                 break;
         }
-        return sd;
+        return string;
     }
 }
