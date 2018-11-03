@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         add("HTTP", "基于Retorfit/OkHttp的封装", HTTPActivity.class);
         add("List", "基于RecycleView的封装", ListActivity.class);
         add("Pay", "封装支付宝/微信/银联支付过程", PayActivity.class);
-        add("Permission", "运行时权限申请过程封装", PermissionActivity.class);
+        add("Permission", "运行时/悬浮窗/安装权限申请过程封装", PermissionActivity.class);
         //add("Player", "基于ijkplayer封装的播放器", PlayerActivity.class);
         add("QRCode", "基于ZXing的一个二维码扫描/生成库", QRCodeActivity.class);
         add("RX", "基于ReactiveX的RxJava2全家桶部分成员", RXActivity.class);
