@@ -1,8 +1,6 @@
 package com.liux.android.permission;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.Build;
 import android.support.annotation.NonNull;
 
 public interface Task {
@@ -23,8 +21,9 @@ public interface Task {
 
     /**
      * 权限申请的回调
+     * @param requestCode
      * @param permissions
      * @param grantResults
      */
-    void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults);
+    void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
 }

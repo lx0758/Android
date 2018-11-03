@@ -55,7 +55,7 @@ repositories {
 
 [permission](/permission/README.md)
 ---
-	封装链式调用的权限申请工具类
+	封装链式调用的运行时/悬浮窗/安装权限申请工具类
 
 [qrcode](/qrcode/README.md)
 ---

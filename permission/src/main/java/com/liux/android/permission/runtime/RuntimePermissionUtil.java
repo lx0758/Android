@@ -34,13 +34,11 @@ public class RuntimePermissionUtil {
     }
 
     /**
-     * 跳转到应用权限设置页面
+     * 获取跳转到应用权限设置页面的 Intent
      *
      * @param context 上下文对象
-     * @param newTask 是否使用新的任务栈启动
      */
-    public static void gotoPermissionSetting(Context context, boolean newTask) {
-
+    public static Intent getPermissionSettingIntent(Context context) {
         Intent intent;
         if (MARK.contains("huawei")) {
             intent = getHuaweiIntent(context);
@@ -55,17 +53,9 @@ public class RuntimePermissionUtil {
         } else {
             intent = getGoogleIntent(context);
         }
+        if (hasIntent(context, intent)) return intent;
 
-        if (newTask) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        }
-
-        try {
-            context.startActivity(intent);
-        } catch (Exception e) {
-            intent = getGoogleIntent(context);
-            context.startActivity(intent);
-        }
+        return getGoogleIntent(context);
     }
 
     private static Intent getHuaweiIntent(Context context) {
@@ -130,6 +120,6 @@ public class RuntimePermissionUtil {
     }
 
     private static boolean hasIntent(Context context, Intent intent) {
-        return context.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0;
+        return !context.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).isEmpty();
     }
 }

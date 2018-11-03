@@ -78,7 +78,7 @@ public abstract class RecursiveFileObserver extends FileObserver {
 
         @Override
         public void onEvent(int event, String path) {
-            String newPath = mPath + File.pathSeparator + path;
+            String newPath = mPath + File.separator + path;
             if ((event & ALL_EVENTS) == CREATE) {
                 ChildFileObserver observer = new ChildFileObserver(mRecursiveFileObserver, mChildFileObservers, newPath, mMask);
                 observer.startWatching();

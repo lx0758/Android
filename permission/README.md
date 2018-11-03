@@ -18,6 +18,9 @@ implementation 'com.liux.android:permission:x.y.z'
 ### x.y.z_201x-xx-xx
     1.
 
+### 0.1.4_2018-11-03
+    1.添加安装应用权限请求能力
+
 ### 0.1.2_2018-10-31
     1.调整工具类主类名
 
