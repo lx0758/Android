@@ -79,8 +79,8 @@ public class DownloaderService implements TaskDispatch {
 
     @Override
     public void reset(DownloaderTask downloaderTask) {
+        if (downloaderTask.getStatus() == Status.DELETE) return;
         downloaderTask.setStatus(Status.NEW);
-        downloaderCallbackDispense.onTaskReset(downloaderTask);
     }
 
     @Override

@@ -16,17 +16,19 @@ public class ConnectResponse {
 
     private int code;
     private Map<String, List<String>> headers;
+    private String message;
 
     private InputStream inputStream;
 
-    public static ConnectResponse create(Connect connect, int code, Map<String, List<String>> headers, InputStream inputStream) {
-        return new ConnectResponse(connect, code, headers, inputStream);
+    public static ConnectResponse create(Connect connect, int code, Map<String, List<String>> headers, String message, InputStream inputStream) {
+        return new ConnectResponse(connect, code, headers, message, inputStream);
     }
 
-    public ConnectResponse(Connect connect, int code, Map<String, List<String>> headers, InputStream inputStream) {
+    public ConnectResponse(Connect connect, int code, Map<String, List<String>> headers, String message, InputStream inputStream) {
         this.connect = connect;
         this.code = code;
         this.headers = headers;
+        this.message = message;
         this.inputStream = inputStream;
     }
 
@@ -64,6 +66,10 @@ public class ConnectResponse {
 
     public Map<String, List<String>> headers() {
         return headers;
+    }
+
+    public String message() {
+        return message;
     }
 
     public InputStream inputstream() {

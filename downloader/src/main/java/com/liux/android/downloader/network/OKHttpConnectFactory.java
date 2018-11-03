@@ -90,6 +90,7 @@ public class OKHttpConnectFactory implements ConnectFactory {
                     this,
                     response.code(),
                     response.headers().toMultimap(),
+                    response.message(),
                     inputStream
             );
 

@@ -114,7 +114,7 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
             connectResponse = connect.connect(getUrl(), "HEAD", connectHeaders, false);
             if (Thread.currentThread().isInterrupted()) return;
             // 检查是否成功
-            if (!connectResponse.isSuccessful()) throw new ConnectException();
+            if (!connectResponse.isSuccessful()) throw new ConnectException(connectResponse.message());
             // 获取是否支持续传
             if (!connectResponse.hasHeader("content-range") && !connectResponse.hasHeader("accept-ranges")) {
                 needRestart = true;
@@ -159,7 +159,7 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
             connectResponse = connect.connect(getUrl(), getMethod(), downloadHeaders, true);
             if (Thread.currentThread().isInterrupted()) return;
             // 检查是否成功
-            if (!connectResponse.isSuccessful()) throw new ConnectException();
+            if (!connectResponse.isSuccessful()) throw new ConnectException(connectResponse.message());
             // 开始传输
             InputStream inputStream = connectResponse.inputstream();
             int length;
@@ -390,6 +390,7 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
                 record.setFileNameFinal(null);
                 record.setStatus(status.code());
                 dataStorage.onUpdate(record);
+                downloaderCallback.onTaskReset(this);
                 break;
             case WAIT:
                 checkAndStopTask();
@@ -420,9 +421,11 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
                 break;
             case DELETE:
                 checkAndStopTask();
+                if (!TextUtils.isEmpty(record.getFileNameFinal())) {
+                    fileStorage.onDelete(record.getDir(), record.getFileNameFinal());
+                }
                 record.setStatus(status.code());
                 dataStorage.onDelete(record);
-                fileStorage.onDelete(record.getDir(), record.getFileNameFinal());
                 downloaderCallback.onTaskDeleted(this);
                 break;
         }
