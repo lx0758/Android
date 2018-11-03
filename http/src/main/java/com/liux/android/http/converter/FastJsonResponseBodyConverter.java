@@ -1,5 +1,7 @@
 package com.liux.android.http.converter;
 
+import android.support.annotation.NonNull;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.parser.Feature;
 import com.alibaba.fastjson.parser.ParserConfig;
@@ -11,14 +13,14 @@ import okhttp3.ResponseBody;
 import retrofit2.Converter;
 
 public class FastJsonResponseBodyConverter<T> implements Converter<ResponseBody, T> {
-    private static final Feature[] EMPTY_SERIALIZER_FEATURES = new Feature[0];
+    private static final Feature[] EMPTY_FEATURES = new Feature[0];
 
     private Type type;
     private ParserConfig config;
     private int featureValues;
     private Feature[] features;
 
-    public FastJsonResponseBodyConverter(Type type, ParserConfig config, int featureValues, Feature... features) {
+    FastJsonResponseBodyConverter(Type type, ParserConfig config, int featureValues, Feature... features) {
         this.type = type;
         this.config = config;
         this.featureValues = featureValues;
@@ -26,7 +28,7 @@ public class FastJsonResponseBodyConverter<T> implements Converter<ResponseBody,
     }
 
     @Override
-    public T convert(ResponseBody responseBody) throws IOException {
+    public T convert(@NonNull ResponseBody responseBody) throws IOException {
         T t;
         try {
             t = JSON.parseObject(
@@ -34,7 +36,7 @@ public class FastJsonResponseBodyConverter<T> implements Converter<ResponseBody,
                     this.type,
                     this.config,
                     this.featureValues,
-                    this.features != null ? this.features : EMPTY_SERIALIZER_FEATURES
+                    this.features != null ? this.features : EMPTY_FEATURES
             );
         } finally {
             responseBody.close();

@@ -1,5 +1,7 @@
 package com.liux.android.http.converter;
 
+import android.support.annotation.NonNull;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
@@ -12,6 +14,7 @@ import okhttp3.RequestBody;
 import retrofit2.Converter;
 
 public class FastJsonRequestBodyConverter<T> implements Converter<T, RequestBody> {
+    private static final SerializerFeature[] EMPTY_SERIALIZER_FEATURES = new SerializerFeature[0];
     private static final MediaType MEDIA_TYPE_TEXT = MediaType.parse("text/plain; charset=UTF-8");
     private static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=UTF-8");
 
@@ -19,14 +22,14 @@ public class FastJsonRequestBodyConverter<T> implements Converter<T, RequestBody
     private SerializeConfig serializeConfig;
     private SerializerFeature[] serializerFeatures;
 
-    public FastJsonRequestBodyConverter(Type type, SerializeConfig config, SerializerFeature... features) {
+    FastJsonRequestBodyConverter(Type type, SerializeConfig config, SerializerFeature... features) {
         this.type = type;
         this.serializeConfig = config;
         this.serializerFeatures = features;
     }
 
     @Override
-    public RequestBody convert(T value) throws IOException {
+    public RequestBody convert(@NonNull T value) throws IOException {
         byte[] content;
         MediaType mediaType;
 
@@ -39,12 +42,12 @@ public class FastJsonRequestBodyConverter<T> implements Converter<T, RequestBody
                 if(this.serializerFeatures != null) {
                     content = JSON.toJSONBytes(value, this.serializeConfig, this.serializerFeatures);
                 } else {
-                    content = JSON.toJSONBytes(value, this.serializeConfig, new SerializerFeature[0]);
+                    content = JSON.toJSONBytes(value, this.serializeConfig, EMPTY_SERIALIZER_FEATURES);
                 }
             } else if(this.serializerFeatures != null) {
                 content = JSON.toJSONBytes(value, this.serializerFeatures);
             } else {
-                content = JSON.toJSONBytes(value, new SerializerFeature[0]);
+                content = JSON.toJSONBytes(value, EMPTY_SERIALIZER_FEATURES);
             }
         }
 

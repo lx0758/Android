@@ -1,5 +1,14 @@
 Http
 ===
+基于 OkHttp3 封装的Http客户端
+0. 全局单例模式
+1. GET/HEAD/POST/DELETE/PUT/PATCH六种方法的同步/异步访问调用
+2. Retorfit2 + RxJava2 支持
+3. 数据解析使用 FastJson
+4. 请求头/请求参数回调
+5. 超时时间/BaseUrl/UserAgent灵活设置
+6. 请求数据进度回调支持
+7. 流传输能力
 
 使用说明
 ---
@@ -103,7 +112,7 @@ implementation 'com.liux.android:http:x.y.z'
       }
       
       详情参见:
-      https://github.com/lx0758/Java_Demo/tree/master/Server
+      https://github.com/lx0758/Java-Demo/tree/master/api
       
     3.参数拦截器处理 MultipartBody 时,会将 text 类型的文本参数逆解析
       此动作可能会导致 Part 某些自定义的 Header 丢失,详情请看源码
@@ -111,7 +120,7 @@ implementation 'com.liux.android:http:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
-    1.
+    1.优化完善代码
 
 ### 0.1.0_2018-10-14
     1.发布0.1.0版本

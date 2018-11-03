@@ -1,6 +1,4 @@
-// https://android.googlesource.com/platform/libcore/+/master/luni/src/main/java/libcore/net/MimeUtils.java
-// https://android.googlesource.com/platform/libcore/+/android-8.0.0_r34/luni/src/main/java/libcore/net/MimeUtils.java
-
+// https://android.googlesource.com/platform/libcore/+/android-9.0.0_r12/luni/src/main/java/libcore/net/MimeUtils.java
 /*
  * Copyright (C) 2010 The Android Open Source Project
  *
@@ -16,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.liux.android.http;
+package libcore.net;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -110,6 +108,7 @@ public final class MimeUtils {
         add("application/vnd.sun.xml.writer.global", "sxg");
         add("application/vnd.sun.xml.writer.template", "stw");
         add("application/vnd.visio", "vsd");
+        add("application/vnd.youtube.yt", "yt");
         add("application/x-abiword", "abw");
         add("application/x-apple-diskimage", "dmg");
         add("application/x-bcpio", "bcpio");
