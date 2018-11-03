@@ -93,7 +93,7 @@ public class Cameraer {
         public void start(Activity activity, OnCameraListener onCameraListener) {
             this.onCameraListener = onCameraListener;
 
-            file = new File(activity.getCacheDir().getAbsolutePath() + File.separator + "camera_" + String.valueOf(System.currentTimeMillis()));
+            file = new File(activity.getCacheDir().getAbsolutePath(), "camera_" + String.valueOf(System.currentTimeMillis()));
 
             if (!isAdded()) addSelf(activity);
 
