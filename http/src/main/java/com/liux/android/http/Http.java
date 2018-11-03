@@ -29,12 +29,15 @@ import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
 
 /**
- * 基于 Retrofit2 和 OkHttp3 实现的HttpClient <br>
+ * 基于 OkHttp3 封装的Http客户端 <br>
  * 0.全局单例模式 <br>
- * 1.GET/POST/POST二进制三种模式的同步/异步访问方式 <br>
- * 2.基于 RxJava2 封装 <br>
- * 3.数据解析默认使用 FastJson <br>
- * 4.添加定制请求头和参数的统一接口
+ * 1.GET/HEAD/POST/DELETE/PUT/PATCH六种方法的同步/异步访问调用 <br>
+ * 2.Retorfit2 + RxJava2 支持 <br>
+ * 3.数据解析使用 FastJson <br>
+ * 4.请求头/请求参数回调 <br>
+ * 5.超时时间/BaseUrl/UserAgent灵活设置 <br>
+ * 6.请求数据进度回调支持 <br>
+ * 7.流传输能力 <br>
  * @author Liux
  */
 
@@ -44,7 +47,6 @@ public class Http {
         if (mInstance == null) throw new NullPointerException("Http has not been initialized");
         return mInstance;
     }
-
     public static boolean isInit() {
         synchronized(Http.class) {
             return mInstance != null;
@@ -392,11 +394,11 @@ public class Http {
                 .addConverterFactory(FastJsonConverterFactory.create());
 
         CallAdapter.Factory factory;
-        factory = HttpUtil.getRxJavaCallAdapterFactory();
+        factory = HttpUtil.getRxJava2CallAdapterFactory();
         if (factory != null) {
             retrofitBuilder.addCallAdapterFactory(factory);
         }
-        factory = HttpUtil.getRxJava2CallAdapterFactory();
+        factory = HttpUtil.getRxJavaCallAdapterFactory();
         if (factory != null) {
             retrofitBuilder.addCallAdapterFactory(factory);
         }

@@ -45,12 +45,12 @@ public class FastJsonConverterFactory extends Factory {
 
     @Override
     public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
-        return new FastJsonResponseBodyConverter(type, this.parserConfig, this.featureValues, this.features);
+        return new FastJsonResponseBodyConverter<>(type, this.parserConfig, this.featureValues, this.features);
     }
 
     @Override
     public Converter<?, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations, Annotation[] methodAnnotations, Retrofit retrofit) {
-        return new FastJsonRequestBodyConverter(type, this.serializeConfig, this.serializerFeatures);
+        return new FastJsonRequestBodyConverter<>(type, this.serializeConfig, this.serializerFeatures);
     }
 
     @Override

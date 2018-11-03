@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import libcore.net.MimeUtils;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -375,22 +376,6 @@ public class HttpUtil {
     }
 
     /**
-     * 尝试获取 RxJava 的Retrofit适配器
-     * @return
-     */
-    public static CallAdapter.Factory getRxJavaCallAdapterFactory() {
-        try {
-            Class check = Class.forName("rx.Observable");
-            Class clazz = Class.forName("retrofit2.adapter.rxjava.RxJavaCallAdapterFactory");
-            Object factory = clazz.getMethod("create").invoke(null);
-            return (CallAdapter.Factory) factory;
-        } catch (Exception e) {
-
-        }
-        return null;
-    }
-
-    /**
      * 尝试获取 RxJava2 的Retrofit适配器
      * @return
      */
@@ -400,9 +385,21 @@ public class HttpUtil {
             Class clazz = Class.forName("retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory");
             Object factory = clazz.getMethod("create").invoke(null);
             return (CallAdapter.Factory) factory;
-        } catch (Exception e) {
+        } catch (Exception ignore) {}
+        return null;
+    }
 
-        }
+    /**
+     * 尝试获取 RxJava 的Retrofit适配器
+     * @return
+     */
+    public static CallAdapter.Factory getRxJavaCallAdapterFactory() {
+        try {
+            Class check = Class.forName("rx.Observable");
+            Class clazz = Class.forName("retrofit2.adapter.rxjava.RxJavaCallAdapterFactory");
+            Object factory = clazz.getMethod("create").invoke(null);
+            return (CallAdapter.Factory) factory;
+        } catch (Exception ignore) {}
         return null;
     }
 }
