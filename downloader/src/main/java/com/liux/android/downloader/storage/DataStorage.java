@@ -11,13 +11,13 @@ public interface DataStorage {
 
     void onInit(Context context);
 
-    Record onInsert(String url, String method, String headers, String dir, String fileName, boolean single, int status);
+    Record onInsert(String url, String method, String headers, String dir, String fileName, int status);
 
-    List<Record> onQueryAll();
-
-    void onDelete(Record... records);
+    void onDelete(Record record);
 
     void onUpdate(Record record);
 
     void onQuery(Record record);
+
+    List<Record> onQueryAll();
 }

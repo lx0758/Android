@@ -221,7 +221,7 @@ public class MultiTaskDownloaderActivity extends AppCompatActivity {
                                 Task task = Downloader.createTaskBuilder(url)
                                         .method(method)
                                         .fileName(fileName)
-                                        .single(true)
+                                        .temporary(true)
                                         .build();
                                 new SingleTaskDownloaderDialog(MultiTaskDownloaderActivity.this, task).show();
                             }

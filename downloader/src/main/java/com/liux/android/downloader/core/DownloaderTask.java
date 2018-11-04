@@ -14,6 +14,7 @@ import com.liux.android.downloader.network.ConnectResponse;
 import com.liux.android.downloader.storage.DataStorage;
 import com.liux.android.downloader.storage.FileStorage;
 import com.liux.android.downloader.storage.Record;
+import com.liux.android.downloader.storage.TempDataStorage;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,25 +77,27 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
 
     @Override
     public void run() {
-        // 新任务初始化
-        if (TextUtils.isEmpty(record.getFileNameFinal())) {
-            int index = 1;
-            String fileNameFinal = record.getFileName();
-            while (fileStorage.isExist(record.getDir(), fileNameFinal)) {
-                fileNameFinal = getNewFileName(record.getFileName(), index);
-                index ++;
-            }
-            record.setFileNameFinal(fileNameFinal);
-            dataStorage.onUpdate(record);
-
-            writeFile = new File(record.getDir(), record.getFileNameFinal());
-        }
-        callStatusListenerUpdate();
-
         Connect connect = null;
         ConnectResponse connectResponse = null;
         RandomAccessFile randomAccessFile = null;
         try {
+            // 新任务初始化
+            if (TextUtils.isEmpty(record.getFileNameFinal())) {
+                int index = 1;
+                String fileNameFinal = record.getFileName();
+                while (fileStorage.isExist(record.getDir(), fileNameFinal)) {
+                    fileNameFinal = getNewFileName(record.getFileName(), index);
+                    index ++;
+                }
+                record.setFileNameFinal(fileNameFinal);
+                dataStorage.onUpdate(record);
+
+                writeFile = new File(record.getDir(), record.getFileNameFinal());
+            }
+            // 打开文件
+            randomAccessFile = fileStorage.onOpen(record.getDir(), record.getFileNameFinal());
+            callStatusListenerUpdate();
+
             // 获取一个连接器
             connect = connectFactory.create();
 
@@ -131,21 +134,15 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
             connectResponse.close();
             dataStorage.onUpdate(record);
 
-            // 打开文件
-            randomAccessFile = fileStorage.onOpen(record.getDir(), record.getFileNameFinal());
-
             // 下载资源
             setStatus(Status.START);
             // 检测文件和数据库记录是否一致
             if (randomAccessFile.length() < record.getCompleted()) {
-                // 第一种方案 直接抛错
-                // throw new IOException("File status and database record status are inconsistent");
-
-                // 第二种方案 以文件为准
+                // 调整进度
                 record.setCompleted(randomAccessFile.length());
                 dataStorage.onUpdate(record);
-
-                // 第三种方案 重新下载
+                // 抛出错误 或者 重新开始下载
+                //throw new IOException("File status and database record status are inconsistent");
                 //needRestartDownload = true;
             }
             // 处理下载 headers,加入断点续传参数
@@ -153,8 +150,8 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
             if (downloadHeaders == null) downloadHeaders = new HashMap<>();
             if (needRestartDownload) {
                 record.setCompleted(0);
-                randomAccessFile.seek(0);
                 callStatusListenerUpdate();
+                randomAccessFile.seek(0);
                 downloadHeaders.put("Range", Collections.singletonList("bytes=0-"));
             } else {
                 randomAccessFile.seek(record.getCompleted());
@@ -366,8 +363,8 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
     }
 
     @Override
-    public boolean getSingle() {
-        return record.getSingle();
+    public boolean getTemporary() {
+        return dataStorage instanceof TempDataStorage;
     }
 
     @Override

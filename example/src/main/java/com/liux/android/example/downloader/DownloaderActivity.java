@@ -22,7 +22,7 @@ public class DownloaderActivity extends AppCompatActivity {
                 .maxTaskCount(3)
                 .runUndoneForStart(false)
                 .connectFactory(new OKHttpConnectFactory())
-                .rootDirectory(getExternalFilesDir("download"))
+                .defaultDirectory(getExternalFilesDir("download"))
                 .build());
 
         setContentView(R.layout.activity_downloader);

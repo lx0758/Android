@@ -54,12 +54,12 @@ public class Downloader {
     }
 
     /**
-     * 创建单任务
+     * 创建临时任务
      * @param url
      * @return
      */
-    public static Task createSingleTask(String url) {
-        return createTaskBuilder(url).single(true).build();
+    public static Task createTemporaryTask(String url) {
+        return createTaskBuilder(url).temporary(true).build();
     }
 
     /**

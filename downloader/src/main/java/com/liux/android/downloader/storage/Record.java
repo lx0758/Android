@@ -5,6 +5,31 @@ package com.liux.android.downloader.storage;
  */
 public class Record {
 
+    /**
+     * 创建 Record 的模板方法
+     * @param id
+     * @param url
+     * @param method
+     * @param headers
+     * @param dir
+     * @param fileName
+     * @param status
+     * @param time
+     * @return
+     */
+    public static Record create(long id, String url, String method, String headers, String dir, String fileName, int status, long time) {
+        return new Record()
+                .setId(id)
+                .setUrl(url)
+                .setMethod(method)
+                .setHeaders(headers)
+                .setDir(dir)
+                .setFileName(fileName)
+                .setStatus(status)
+                .setCreateTime(time)
+                .setUpdateTime(time);
+    }
+
     // 任务ID
     private long id;
     // 任务URL
@@ -31,8 +56,6 @@ public class Record {
     private long createTime;
     // 任务最后更新时间
     private long updateTime;
-    // 是否是单任务模式
-    private boolean single;
 
     public long getId() {
         return id;
@@ -163,16 +186,6 @@ public class Record {
         return this;
     }
 
-    public boolean getSingle() {
-        return single;
-    }
-
-    public Record setSingle(boolean single) {
-        this.single = single;
-        refreshUpdateTime();
-        return this;
-    }
-
     @Override
     public String toString() {
         return "Record{" +
@@ -189,7 +202,6 @@ public class Record {
                 ", status=" + status +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
-                ", single=" + single +
                 '}';
     }
 

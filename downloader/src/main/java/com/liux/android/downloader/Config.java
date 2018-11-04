@@ -26,8 +26,10 @@ public class Config {
     private boolean runUndoneForStart;
     // 最大同时允许下载数量
     private int maxTaskCount;
-    // 默认存储文件根目录
-    private File rootDirectory;
+    // 默认存储文件存储目录
+    private File defaultDirectory;
+    // 临时下载文件存储目录
+    private File tempDirectory;
     // 文件写入实例
     private FileStorage fileStorage;
     // 数据存储实例
@@ -51,8 +53,12 @@ public class Config {
         return maxTaskCount;
     }
 
-    public File getRootDirectory() {
-        return rootDirectory;
+    public File getDefaultDirectory() {
+        return defaultDirectory;
+    }
+
+    public File getTempDirectory() {
+        return tempDirectory;
     }
 
     public FileStorage getFileStorage() {
@@ -75,7 +81,7 @@ public class Config {
         Builder newBuilder = new Builder(config.context);
         newBuilder.runUndoneForStart = config.runUndoneForStart;
         newBuilder.maxTaskCount = config.maxTaskCount;
-        newBuilder.rootDirectory = config.rootDirectory;
+        newBuilder.defaultDirectory = config.defaultDirectory;
         newBuilder.fileStorage = config.fileStorage;
         newBuilder.dataStorage = config.dataStorage;
         newBuilder.connectFactory = config.connectFactory;
@@ -87,7 +93,8 @@ public class Config {
         private Context context;
         private boolean runUndoneForStart = false;
         private int maxTaskCount = 3;
-        private File rootDirectory;
+        private File defaultDirectory;
+        private File tempDirectory;
         private FileStorage fileStorage;
         private DataStorage dataStorage;
         private ConnectFactory connectFactory;
@@ -106,8 +113,13 @@ public class Config {
             return this;
         }
 
-        public Builder rootDirectory(File rootDirectory) {
-            this.rootDirectory = rootDirectory;
+        public Builder defaultDirectory(File defaultDirectory) {
+            this.defaultDirectory = defaultDirectory;
+            return this;
+        }
+
+        public Builder tempDirectory(File tempDirectory) {
+            this.tempDirectory = tempDirectory;
             return this;
         }
 
@@ -138,21 +150,37 @@ public class Config {
             if (maxTaskCount > MAX_TASK_COUNT) maxTaskCount = MAX_TASK_COUNT;
             config.maxTaskCount = maxTaskCount;
 
-            if (rootDirectory == null) {
+            if (defaultDirectory == null) {
                 String path;
                 if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
                     path = context.getExternalFilesDir("download").getPath();
                 } else {
                     path = context.getDir("download", Context.MODE_PRIVATE).getPath();
                 }
-                rootDirectory = new File(path);
+                defaultDirectory = new File(path);
             }
-            if (rootDirectory.exists()) {
-                if (!rootDirectory.isDirectory()) throw new NullPointerException("rootDirectory not a directory");
+            if (defaultDirectory.exists()) {
+                if (!defaultDirectory.isDirectory()) throw new NullPointerException("defaultDirectory not a directory");
             } else {
-                rootDirectory.mkdirs();
+                defaultDirectory.mkdirs();
             }
-            config.rootDirectory = rootDirectory;
+            config.defaultDirectory = defaultDirectory;
+
+            if (tempDirectory == null) {
+                String path;
+                if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                    path = context.getExternalCacheDir().getPath();
+                } else {
+                    path = context.getCacheDir().getPath();
+                }
+                tempDirectory = new File(path);
+            }
+            if (tempDirectory.exists()) {
+                if (!tempDirectory.isDirectory()) throw new NullPointerException("defaultDirectory not a directory");
+            } else {
+                tempDirectory.mkdirs();
+            }
+            config.tempDirectory = tempDirectory;
 
             if (fileStorage == null) fileStorage = new DefaultFileStorage();
             config.fileStorage = fileStorage;

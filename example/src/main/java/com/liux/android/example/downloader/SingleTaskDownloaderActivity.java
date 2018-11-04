@@ -53,7 +53,7 @@ public class SingleTaskDownloaderActivity extends AppCompatActivity {
         String name = etName.getText().toString();
         Task task = Downloader.createTaskBuilder(url)
                 .fileName(name)
-                .single(true)
+                .temporary(true)
                 .build();
         new SingleTaskDownloaderDialog(this, task).show();
     }

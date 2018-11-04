@@ -5,7 +5,11 @@ import android.text.TextUtils;
 import com.liux.android.downloader.Config;
 import com.liux.android.downloader.DownloaderCallback;
 import com.liux.android.downloader.Status;
+import com.liux.android.downloader.network.ConnectFactory;
+import com.liux.android.downloader.storage.DataStorage;
+import com.liux.android.downloader.storage.FileStorage;
 import com.liux.android.downloader.storage.Record;
+import com.liux.android.downloader.storage.TempDataStorage;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -42,7 +46,7 @@ public class DownloaderService implements TaskDispatch {
         this.downloaderThreadPoolExecutor = DownloaderThreadPoolExecutor.create(config.getMaxTaskCount());
 
         config.getDataStorage().onInit(config.getContext());
-        config.getFileStorage().onInit(config.getContext(), config.getRootDirectory());
+        config.getFileStorage().onInit(config.getContext(), config.getDefaultDirectory());
 
         downloaderTasks.addAll(restoreTasksFromDataStorage(
                 config,
@@ -101,16 +105,16 @@ public class DownloaderService implements TaskDispatch {
      * @param headers
      * @param dir 自定义存储目录,若为 null,则使用全局配置
      * @param fileName 自定义文件名.若为null,则下载链接时自动配置
-     * @param single
+     * @param temporary
      * @return
      */
-    public Task createTask(String url, String method, Map<String, List<String>> headers, File dir, String fileName, boolean single) {
+    public Task createTask(String url, String method, Map<String, List<String>> headers, File dir, String fileName, boolean temporary) {
         if (TextUtils.isEmpty(url)) throw new NullPointerException();
 
         if (TextUtils.isEmpty(method)) method = "GET";
         method = method.toUpperCase();
 
-        if (dir == null) dir = config.getRootDirectory();
+        if (dir == null) dir = !temporary ? config.getDefaultDirectory() : config.getTempDirectory();
 
         // 保证文件名不能为空
         // 首先尝试截取URL中的文件名,如果失败则设置默认值
@@ -129,11 +133,21 @@ public class DownloaderService implements TaskDispatch {
             if (TextUtils.isEmpty(fileName)) fileName = "file-" + System.currentTimeMillis();
         }
 
-        Record record = config.getDataStorage().onInsert(url, method, DownloaderUtil.headers2json(headers), dir.getAbsolutePath(), fileName, single, Status.NEW.code());
+        Record record;
+        DataStorage dataStorage;
+        if (!temporary) {
+            record = config.getDataStorage().onInsert(url, method, DownloaderUtil.headers2json(headers), dir.getAbsolutePath(), fileName, Status.NEW.code());
+            dataStorage = config.getDataStorage();
+        } else {
+            record = Record.create(-1, url, method, DownloaderUtil.headers2json(headers), dir.getAbsolutePath(), fileName, Status.NEW.code(), System.currentTimeMillis());
+            dataStorage = TempDataStorage.get();
+        }
 
         DownloaderTask downloaderTask = createDownloaderTask(
                 record,
-                config,
+                dataStorage,
+                config.getFileStorage(),
+                config.getConnectFactory(),
                 this,
                 downloaderCallbackDispense
         );
@@ -238,13 +252,7 @@ public class DownloaderService implements TaskDispatch {
         List<Record> records = config.getDataStorage().onQueryAll();
         if (records == null) return generalTasks;
 
-        List<Record> singleRecords = new LinkedList<>();
         for (Record record : records) {
-            if (record.getSingle()) {
-                singleRecords.add(record);
-                continue;
-            }
-
             if (Status.WAIT.code() == record.getStatus() || Status.CONN.code() == record.getStatus() || Status.START.code() == record.getStatus()) {
                 if (config.getRunUndoneForStart()) {
                     record.setStatus(Status.WAIT.code());
@@ -254,47 +262,34 @@ public class DownloaderService implements TaskDispatch {
             }
             DownloaderTask downloaderTask = createDownloaderTask(
                     record,
-                    config,
+                    config.getDataStorage(),
+                    config.getFileStorage(),
+                    config.getConnectFactory(),
                     taskDispatch,
                     downloaderCallback
             );
             generalTasks.add(downloaderTask);
         }
 
-        clearSingleRecords(config, singleRecords);
-
         return generalTasks;
-    }
-
-    /**
-     * 清理数据库记录的单任务数据库和文件
-     * @param config
-     * @param singleRecords
-     */
-    private static void clearSingleRecords(Config config, List<Record> singleRecords) {
-        for (Record record : singleRecords) {
-            if (!TextUtils.isEmpty(record.getFileNameFinal())) {
-                config.getFileStorage().onDelete(record.getDir(), record.getFileNameFinal());
-            }
-        }
-        Record[] records = new Record[singleRecords.size()];
-        singleRecords.toArray(records);
-        config.getDataStorage().onDelete(records);
     }
 
     /**
      * 构建一个任务实例
      * @param record
-     * @param config
+     * @param dataStorage
+     * @param fileStorage
+     * @param connectFactory
+     * @param taskDispatch
      * @param downloaderCallback
      * @return
      */
-    private static DownloaderTask createDownloaderTask(Record record, Config config, TaskDispatch taskDispatch, DownloaderCallback downloaderCallback) {
+    private static DownloaderTask createDownloaderTask(Record record, DataStorage dataStorage, FileStorage fileStorage, ConnectFactory connectFactory, TaskDispatch taskDispatch, DownloaderCallback downloaderCallback) {
         return new DownloaderTask(
                 record,
-                config.getDataStorage(),
-                config.getFileStorage(),
-                config.getConnectFactory(),
+                dataStorage,
+                fileStorage,
+                connectFactory,
                 taskDispatch,
                 downloaderCallback
         );
