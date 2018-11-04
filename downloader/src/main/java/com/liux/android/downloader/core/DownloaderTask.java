@@ -321,7 +321,7 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
     @Override
     public long getSpeed() {
         if (isCompleted()) return speedLast;
-        if (!isStarted()) return speedLast;
+        if (!isStarted()) return 0;
 
         // 第一次统计
         if (speedLastSize <= 0 || speedLastTime <= 0) {
@@ -330,9 +330,12 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
             return 0;
         }
 
+        long size = getCompleted();;
+        long time = System.currentTimeMillis();
+
         // 异常原因导致统计错误
-        long differenceSize = getCompleted() - speedLastSize;
-        long differenceTime = System.currentTimeMillis() - speedLastTime;
+        long differenceSize = size - speedLastSize;
+        long differenceTime = time - speedLastTime;
         if (differenceSize <= 0 || differenceTime <= 0) return 0;
 
         // 防止间隔时间太短造成统计失真
@@ -341,8 +344,8 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
         // 单位时间内下载量 * 1秒出现间隔时间的倍数
         // differenceSize * (1000.0f / differenceTime) => differenceSize * 1000.0f / differenceTime
         speedLast = (long) (differenceSize * 1000.0f / differenceTime);
-        speedLastSize = getCompleted();
-        speedLastTime = System.currentTimeMillis();
+        speedLastSize = size;
+        speedLastTime = time;
 
         return speedLast;
     }

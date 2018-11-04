@@ -105,7 +105,7 @@ public class DownloadTaskDialog extends Dialog {
         switch (view.getId()) {
             case R.id.btn_operate:
                 if (task.isCompleted()) {
-                    openFile(task.getFile());
+                    DownloaderActivity.openFile(getOwnerActivity(), task.getFile());
                 } else if (!task.isStarted()) {
                     task.start();
                 } else {
@@ -117,20 +117,6 @@ public class DownloadTaskDialog extends Dialog {
                 task.delete();
                 dismiss();
                 break;
-        }
-    }
-
-    private void openFile(File file) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        intent.setDataAndType(UriUtil.getProviderUri(getContext(), file), HttpUtil.getMimeType(file).toString());
-        try {
-            getContext().startActivity(intent);
-        } catch (Exception e) {
-            TT.show(getContext(), "没有合适的程序来打开这个文件", TT.LENGTH_SHORT);
         }
     }
 }

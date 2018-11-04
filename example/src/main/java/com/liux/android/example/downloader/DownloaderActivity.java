@@ -1,5 +1,6 @@
 package com.liux.android.example.downloader;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -65,7 +66,7 @@ public class DownloaderActivity extends AppCompatActivity {
                                     public void onClick(View v) {
                                         if (task == null) return;
                                         if (task.isCompleted()) {
-                                            openFile(task.getFile());
+                                            openFile(DownloaderActivity.this, task.getFile());
                                         } else if (!task.isStarted()) {
                                             task.start();
                                         } else {
@@ -251,17 +252,17 @@ public class DownloaderActivity extends AppCompatActivity {
         taskMultipleAdapter.notifyDataSetChanged();
     }
 
-    private void openFile(File file) {
+    protected static void openFile(Context context, File file) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        intent.setDataAndType(UriUtil.getProviderUri(this, file), HttpUtil.getMimeType(file).toString());
+        intent.setDataAndType(UriUtil.getProviderUri(context, file), HttpUtil.getMimeType(file).toString());
         try {
-            startActivity(intent);
+            context.startActivity(intent);
         } catch (Exception e) {
-            TT.show(this, "没有合适的程序来打开这个文件", TT.LENGTH_SHORT);
+            TT.show(context, "没有合适的程序来打开这个文件", TT.LENGTH_SHORT);
         }
     }
 }

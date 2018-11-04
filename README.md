@@ -32,7 +32,7 @@ repositories {
 
 [downloader](/downloader/README.md)
 ---
-	全局/单线程/多任务/断点续传HTTP下载器
+	全局/多线程/多任务/断点续传HTTP下载器
 
 [glide](/glide/README.md)
 ---
