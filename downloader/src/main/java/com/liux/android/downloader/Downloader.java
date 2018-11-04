@@ -103,13 +103,6 @@ public class Downloader {
     }
 
     /**
-     * 重置所有任务
-     */
-    public static void resetAllTasks() {
-        DownloaderService.get().resetAllTasks();
-    }
-
-    /**
      * 删除所有任务
      */
     public static void deleteAllTasks() {

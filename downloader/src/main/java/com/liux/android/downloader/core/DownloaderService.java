@@ -170,28 +170,34 @@ public class DownloaderService implements TaskDispatch {
      * 开始所有任务
      */
     public void startAllTasks() {
-
+        for (DownloaderTask downloaderTask : downloaderTasks) {
+            start(downloaderTask);
+        }
+        schedulingTask();
     }
 
     /**
      * 停止所有任务
      */
     public void stopAllTasks() {
-
-    }
-
-    /**
-     * 重置所有任务
-     */
-    public void resetAllTasks() {
-
+        for (DownloaderTask downloaderTask : downloaderTasks) {
+            Status status = downloaderTask.getStatus();
+            if (status == Status.WAIT || status == Status.CONN || status == Status.START) {
+                stop(downloaderTask);
+            }
+        }
     }
 
     /**
      * 删除所有任务
      */
     public void deleteAllTasks() {
-
+        for (DownloaderTask downloaderTask : downloaderTasks) {
+            Status status = downloaderTask.getStatus();
+            if (status != Status.DELETE) {
+                delete(downloaderTask);
+            }
+        }
     }
 
     /**
