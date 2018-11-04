@@ -16,33 +16,38 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 下载任务线程池
+ * 十分牛批的下载任务线程池
+ * 1.对于可以等待的任务,线程池只会使用核心线程执行,核心线程数达到设定值后,会用外部队列存储挨个执行
+ * 2.对于需要立即运行的临时任务,如果提交时运行线程数没有超过核心线程数,则使用核心线程运行
+ *   如果提交时核心线程数已经达到设定值,则会启动非核心线程运行,临时任务执行完毕之后,线程池
+ *   不会复用改非核心线程,会回收掉该非核心线程
  */
 class DownloaderThreadPoolExecutor extends ThreadPoolExecutor {
 
     // 正在执行集合
-    private Collection<DownloaderTask> runningCollection;
+    private Collection<DownloaderTask> runningCollection;;
     // 等待执行队列
     private BlockingQueue<DownloaderTask> waitingBlockingQueue;
 
     static DownloaderThreadPoolExecutor create(int maxTaskCount) {
-        return new DownloaderThreadPoolExecutor(maxTaskCount, new DownloaderBlockingQueue());
+        return new DownloaderThreadPoolExecutor(
+                maxTaskCount,
+                new DownloaderBlockingQueue()
+        );
     }
 
-    private DownloaderThreadPoolExecutor(int maxTaskCount, DownloaderBlockingQueue blockingQueue) {
+    private DownloaderThreadPoolExecutor(int maxTaskCount, DownloaderBlockingQueue downloaderBlockingQueue) {
         super(
                 maxTaskCount,
                 2^6,
-                0,
+                500,
                 TimeUnit.MILLISECONDS,
-                blockingQueue,
+                downloaderBlockingQueue,
                 new DownloaderThreadFactory(),
                 new DownloaderRejectedExecutionHandler()
         );
         runningCollection = new LinkedList<>();
-        waitingBlockingQueue = new LinkedBlockingQueue<>();
-
-        blockingQueue.bind(waitingBlockingQueue);
+        waitingBlockingQueue = downloaderBlockingQueue.getWaitingBlockingQueue();
     }
 
     @Override
@@ -73,10 +78,8 @@ class DownloaderThreadPoolExecutor extends ThreadPoolExecutor {
         if (waitingBlockingQueue.contains(downloaderTask)) return;
 
         // 如果当前未达到线程池设置数量或者该任务是单任务,则直接提交.否则添加入等待执行队列
-        if (getActiveCount() < getCorePoolSize()) {
-            executeTask(downloaderTask);
-        } else if (getActiveCount() < getMaximumPoolSize() && downloaderTask.getSingle()) {
-            // 由于修改了队列,核心线程数超过配置值后提交的任务都直接启动非核心线程执行
+        // 由于修改了队列实现,核心线程数超过配置值后提交的任务都直接启动非核心线程执行
+        if (getPoolSize() < getCorePoolSize() || downloaderTask.getSingle()) {
             executeTask(downloaderTask);
         } else {
             waitingBlockingQueue.add(downloaderTask);
@@ -87,7 +90,7 @@ class DownloaderThreadPoolExecutor extends ThreadPoolExecutor {
      * 从等待任务队列移除一个下载任务
      * @param downloaderTask
      */
-    public void removeWaitTask(DownloaderTask downloaderTask) {
+    public void cancelTask(DownloaderTask downloaderTask) {
         waitingBlockingQueue.remove(downloaderTask);
     }
 
@@ -97,9 +100,8 @@ class DownloaderThreadPoolExecutor extends ThreadPoolExecutor {
      */
     private void executeTask(DownloaderTask downloaderTask) {
         DownloaderFutureTask downloaderFutureTask = new DownloaderFutureTask(downloaderTask);
-
-        execute(downloaderFutureTask);
         downloaderTask.setFuture(downloaderFutureTask);
+        execute(downloaderFutureTask);
     }
 
     /**
@@ -111,15 +113,17 @@ class DownloaderThreadPoolExecutor extends ThreadPoolExecutor {
 
         public DownloaderBlockingQueue() {
             super();
+            waitingBlockingQueue = new LinkedBlockingQueue<>();
         }
 
-        public void bind(BlockingQueue<DownloaderTask> waitingBlockingQueue) {
-            this.waitingBlockingQueue = waitingBlockingQueue;
+        public BlockingQueue<DownloaderTask> getWaitingBlockingQueue() {
+            return waitingBlockingQueue;
         }
 
         /**
          * 添加一个元素并返回true
          * 如果队列已满，则返回false
+         * 调用 {@link #execute} 时通过这个方法检测队列是否已满
          * @param runnable
          * @return
          */
@@ -129,30 +133,9 @@ class DownloaderThreadPoolExecutor extends ThreadPoolExecutor {
         }
 
         /**
-         * 移除并返回队列头部的元素
-         * 如果移除成功，则返回true
-         * @param o
-         * @return
-         */
-        @Override
-        public boolean remove(Object o) {
-            return false;
-        }
-
-        /**
          * 移除并返问队列头部的元素
          * 如果队列为空，则返回null
-         * @return
-         */
-        @Override
-        public Runnable poll() {
-            return null;
-        }
-
-        /**
-         * 移除并返问队列头部的元素
-         * 如果队列为空，则返回null
-         * 非核心线程任务结束时会调用
+         * 非核心线程任务结束时会调用,返回null线程池会认为没有多余任务,而将非核心线程销毁
          * @param timeout
          * @param unit
          * @return
@@ -160,16 +143,6 @@ class DownloaderThreadPoolExecutor extends ThreadPoolExecutor {
          */
         @Override
         public Runnable poll(long timeout, TimeUnit unit) throws InterruptedException {
-            return null;
-        }
-
-        /**
-         * 返回队列头部的元素
-         * 如果队列为空，则返回null
-         * @return
-         */
-        @Override
-        public Runnable peek() {
             return null;
         }
 
@@ -203,6 +176,9 @@ class DownloaderThreadPoolExecutor extends ThreadPoolExecutor {
      * 下载器线程池拒绝处理器
      */
     private static class DownloaderRejectedExecutionHandler implements RejectedExecutionHandler {
+
+        public DownloaderRejectedExecutionHandler() {
+        }
 
         @Override
         public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {

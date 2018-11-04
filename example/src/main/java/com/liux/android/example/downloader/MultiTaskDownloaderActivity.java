@@ -219,6 +219,7 @@ public class MultiTaskDownloaderActivity extends AppCompatActivity {
                             @Override
                             public void onFinish(String url, String method, String fileName) {
                                 Task task = Downloader.createTaskBuilder(url)
+                                        .method(method)
                                         .fileName(fileName)
                                         .single(true)
                                         .build();

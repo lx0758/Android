@@ -328,7 +328,8 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
         if (differenceTime < 1000) return speedLast;
 
         // 单位时间内下载量 * 1秒出现间隔时间的倍数
-        speedLast = (long) (differenceSize * (1000.0f / differenceTime));
+        // differenceSize * (1000.0f / differenceTime) => differenceSize * 1000.0f / differenceTime
+        speedLast = (long) (differenceSize * 1000.0f / differenceTime);
         speedLastSize = getCompleted();
         speedLastTime = System.currentTimeMillis();
 

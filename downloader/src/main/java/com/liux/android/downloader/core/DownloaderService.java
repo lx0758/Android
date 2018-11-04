@@ -91,7 +91,7 @@ public class DownloaderService implements TaskDispatch {
 
     @Override
     public void removeForWait(DownloaderTask downloaderTask) {
-        downloaderThreadPoolExecutor.removeWaitTask(downloaderTask);
+        downloaderThreadPoolExecutor.cancelTask(downloaderTask);
     }
 
     /**
@@ -239,7 +239,7 @@ public class DownloaderService implements TaskDispatch {
                 continue;
             }
 
-            if (Status.CONN.code() == record.getStatus() || Status.START.code() == record.getStatus()) {
+            if (Status.WAIT.code() == record.getStatus() || Status.CONN.code() == record.getStatus() || Status.START.code() == record.getStatus()) {
                 if (config.getRunUndoneForStart()) {
                     record.setStatus(Status.WAIT.code());
                 } else {
