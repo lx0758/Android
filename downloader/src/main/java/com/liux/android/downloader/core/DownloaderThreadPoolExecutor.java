@@ -77,10 +77,15 @@ class DownloaderThreadPoolExecutor extends ThreadPoolExecutor {
         // 如果存在于在等待任务队列,返回
         if (waitingBlockingQueue.contains(downloaderTask)) return;
 
-        // 如果当前未达到线程池设置数量或者该任务是单任务,则直接提交.否则添加入等待执行队列
+        // 如果当前核心线程数未达到线程池设置数量或者该任务是单任务,则直接提交.否则添加入等待执行队列
         // 由于修改了队列实现,核心线程数超过配置值后提交的任务都直接启动非核心线程执行
         if (getPoolSize() < getCorePoolSize() || downloaderTask.getTemporary()) {
-            executeTask(downloaderTask);
+            // 有核心线程并且处于空闲状态则使用核心线程,否则使用非核心线程
+            if (getActiveCount() < getPoolSize()) {
+                waitingBlockingQueue.add(downloaderTask);
+            } else {
+                executeTask(downloaderTask);
+            }
         } else {
             waitingBlockingQueue.add(downloaderTask);
         }
