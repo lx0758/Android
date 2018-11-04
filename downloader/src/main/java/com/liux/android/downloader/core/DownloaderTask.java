@@ -272,6 +272,20 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
     }
 
     @Override
+    public File syncStart() throws IOException, IllegalStateException {
+        switch (getStatus()) {
+            case NEW:
+            case STOP:
+            case ERROR:
+                run();
+                if (isCompleted()) throw new IOException(getErrorInfo());
+                return getFile();
+            default:
+                throw new IllegalStateException("Status=" + getStatus() + ", the download task currently cannot synchronous start. because not\'s NEW or STOP or ERROR");
+        }
+    }
+
+    @Override
     public long getId() {
         return record.getId();
     }

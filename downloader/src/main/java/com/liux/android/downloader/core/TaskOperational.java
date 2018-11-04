@@ -1,5 +1,8 @@
 package com.liux.android.downloader.core;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * 任务操作接口
  */
@@ -24,4 +27,9 @@ interface TaskOperational {
      * 删除自己
      */
     void delete();
+
+    /**
+     * 同步开始自己
+     */
+    File syncStart() throws IOException, IllegalStateException;
 }
