@@ -1,5 +1,6 @@
 package com.liux.android.example.downloader;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,6 +29,8 @@ import com.liux.android.list.adapter.MultipleAdapter;
 import com.liux.android.list.adapter.state.State;
 import com.liux.android.list.adapter.state.SuperRule;
 import com.liux.android.list.holder.SuperHolder;
+import com.liux.android.permission.Authorizer;
+import com.liux.android.permission.install.OnInstallPermissionListener;
 import com.liux.android.tool.TT;
 import com.liux.android.util.TextUtil;
 import com.liux.android.util.UriUtil;
@@ -237,7 +240,9 @@ public class DownloaderActivity extends AppCompatActivity {
                                         .fileName(fileName)
                                         .temporary(true)
                                         .build();
-                                new DownloadTaskDialog(DownloaderActivity.this, task).show();
+                                DownloadTaskDialog downloadTaskDialog = new DownloadTaskDialog(DownloaderActivity.this, task);
+                                downloadTaskDialog.setOwnerActivity(DownloaderActivity.this);
+                                downloadTaskDialog.show();
                             }
                         })
                         .show();
@@ -252,17 +257,38 @@ public class DownloaderActivity extends AppCompatActivity {
         taskMultipleAdapter.notifyDataSetChanged();
     }
 
-    protected static void openFile(Context context, File file) {
+    protected static void openFile(final Activity activity, final File file) {
+        if (file.getName().endsWith(".apk")) {
+            Authorizer.with(activity)
+                    .requestInstall()
+                    .listener(new OnInstallPermissionListener() {
+                        @Override
+                        public void onSucceed() {
+                            openFileReal(activity, file);
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            TT.show(activity, "没有软件安装权限", TT.LENGTH_SHORT);
+                        }
+                    })
+                    .request();
+        } else {
+            openFileReal(activity, file);
+        }
+    }
+
+    private static void openFileReal(Activity activity, File file) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-        intent.setDataAndType(UriUtil.getProviderUri(context, file), HttpUtil.getMimeType(file).toString());
+        intent.setDataAndType(UriUtil.getProviderUri(activity, file), HttpUtil.getMimeType(file).toString());
         try {
-            context.startActivity(intent);
+            activity.startActivity(intent);
         } catch (Exception e) {
-            TT.show(context, "没有合适的程序来打开这个文件", TT.LENGTH_SHORT);
+            TT.show(activity, "没有合适的程序来打开这个文件", TT.LENGTH_SHORT);
         }
     }
 }
