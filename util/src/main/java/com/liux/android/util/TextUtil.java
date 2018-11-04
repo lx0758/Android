@@ -270,98 +270,216 @@ public class TextUtil {
     }
 
     /**
-     * 整数转中文计数
-     * @param intInput
-     * @return
-     */
-    public static String getCHString(int intInput) {
-        String si = String.valueOf(intInput);
-        String ss = "";
-        if (si.length() == 1) { // 个
-            ss += getCH(intInput);
-            return ss;
-        } else if (si.length() == 2) { // 十
-            if (si.substring(0, 1).equals("1")) {
-                ss += "十";
-            } else {
-                ss += (getCH(intInput / 10) + "十");
-            }
-            ss += getCHString(intInput % 10);
-        } else if (si.length() == 3) { // 百
-            ss += (getCH(intInput / 100) + "百");
-            if (String.valueOf(intInput % 100).length() < 2) {
-                ss += "零";
-            }
-            ss += getCHString(intInput % 100);
-        } else if (si.length() == 4) { // 千
-            ss += (getCH(intInput / 1000) + "千");
-            if (String.valueOf(intInput % 1000).length() < 3) {
-                ss += "零";
-            }
-            ss += getCHString(intInput % 1000);
-        } else if (si.length() == 5) { // 万
-            ss += (getCH(intInput / 10000) + "万");
-            if (String.valueOf(intInput % 10000).length() < 4) {
-                ss += "零";
-            }
-            ss += getCHString(intInput % 10000);
-        }
-        return ss;
-    }
-
-    /**
-     * 格式化文件大小
+     * 格式化字节尺寸
      * @param size
      * @return
      */
+    private static DecimalFormat decimalFormat = new DecimalFormat("0.00");
     public static String getFormetSize(long size) {
-        DecimalFormat df = new DecimalFormat("#.00");
         String fileSizeString = "";
         if (size < 1024) {
-            fileSizeString = df.format((double) size) + "B";
+            fileSizeString = size + "B";
         } else if (size < 1048576) {
-            fileSizeString = df.format((double) size / 1024) + "K";
+            fileSizeString = decimalFormat.format(size / 1024.0) + "KB";
         } else if (size < 1073741824) {
-            fileSizeString = df.format((double) size / 1048576) + "M";
+            fileSizeString = decimalFormat.format(size / 1048576.0) + "MB";
         } else {
-            fileSizeString = df.format((double) size / 1073741824) + "G";
+            fileSizeString = decimalFormat.format(size / 1073741824.0) + "GB";
         }
         return fileSizeString;
     }
 
-    private static String getCH(int input) {
-        String string = "";
+    /**
+     * 人民币转中文简体,精确两位小数
+     * @param money
+     * @return
+     */
+    public static String getChinaMoney(double money) {
+        long yuan = (long) money;
+
+        String result = getChinaNumber(yuan) + "元";
+        String jiaoFen = getChinaMoneyDecimal(money);
+        if (jiaoFen == null) {
+            result += "整";
+        } else {
+            result += jiaoFen;
+        }
+
+        return result;
+    }
+
+    /**
+     * 人民币转中文繁体,精确两位小数
+     * @param money
+     * @return
+     */
+    public static String getChinaMoneyTraditional(double money) {
+        return getChinaAccountantNumber(
+                getChinaMoney(money)
+        );
+    }
+
+    /**
+     * 整数转中文
+     * @param number
+     * @return
+     */
+    public static String getChinaNumber(long number) {
+        String sn = String.valueOf(number);
+        String result = "";
+        if (sn.length() == 1) { // 个
+            result += getChinaNumber((int) number);
+            return result;
+        } else if (sn.length() == 2) { // 十
+            if (sn.substring(0, 1).equals("1")) {
+                result += "十";
+            } else {
+                result += (getChinaNumber((int) (number / 10)) + "十");
+            }
+            result += getChinaNumber(number % 10);
+        } else if (sn.length() == 3) { // 百
+            result += (getChinaNumber((int) (number / 100)) + "百");
+            if (String.valueOf(number % 100).length() < 2 && number % 100 > 0) {
+                result += "零";
+            }
+            result += getChinaNumber(number % 100);
+        } else if (sn.length() == 4) { // 千
+            result += (getChinaNumber((int) (number / 1000)) + "千");
+            if (String.valueOf(number % 1000).length() < 3 && number % 1000 > 0) {
+                result += "零";
+            }
+            result += getChinaNumber(number % 1000);
+        } else if (sn.length() < 9) { // 万 - 千万
+            result += (getChinaNumber(number / 10000) + "万");
+            if (String.valueOf(number % 10000).length() < 4 && number % 10000 > 0) {
+                result += "零";
+            }
+            result += getChinaNumber(number % 10000);
+        } else { // 亿及以上
+            result += (getChinaNumber(number / 100000000) + "亿");
+            if (String.valueOf(number % 100000000).length() < 8 && number % 100000000 > 0) {
+                result += "零";
+            }
+            result += getChinaNumber(number % 100000000);
+        }
+        return result;
+    }
+
+    /**
+     * 个位转中文数字
+     * @param input
+     * @return
+     */
+    private static String getChinaNumber(int input) {
+        String result = "";
         switch (input) {
             case 1:
-                string = "一";
+                result = "一";
                 break;
             case 2:
-                string = "二";
+                result = "二";
                 break;
             case 3:
-                string = "三";
+                result = "三";
                 break;
             case 4:
-                string = "四";
+                result = "四";
                 break;
             case 5:
-                string = "五";
+                result = "五";
                 break;
             case 6:
-                string = "六";
+                result = "六";
                 break;
             case 7:
-                string = "七";
+                result = "七";
                 break;
             case 8:
-                string = "八";
+                result = "八";
                 break;
             case 9:
-                string = "九";
+                result = "九";
                 break;
             default:
                 break;
         }
-        return string;
+        return result;
+    }
+
+    /**
+     * 中文简体数字转繁体数字
+     * @param string
+     * @return
+     */
+    private static String getChinaAccountantNumber(String string) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < string.length(); i++) {
+            String s = string.substring(i, i + 1);
+            switch (s) {
+                case "零":
+                    stringBuilder.append("零");
+                    break;
+                case "一":
+                    stringBuilder.append("壹");
+                    break;
+                case "二":
+                    stringBuilder.append("贰");
+                    break;
+                case "三":
+                    stringBuilder.append("叁");
+                    break;
+                case "四":
+                    stringBuilder.append("肆");
+                    break;
+                case "五":
+                    stringBuilder.append("伍");
+                    break;
+                case "六":
+                    stringBuilder.append("陆");
+                    break;
+                case "七":
+                    stringBuilder.append("柒");
+                    break;
+                case "八":
+                    stringBuilder.append("捌");
+                    break;
+                case "九":
+                    stringBuilder.append("玖");
+                    break;
+                case "十":
+                    stringBuilder.append("拾");
+                    break;
+                case "百":
+                    stringBuilder.append("佰");
+                    break;
+                case "千":
+                    stringBuilder.append("仟");
+                    break;
+                case "万":
+                case "亿":
+                default:
+                    stringBuilder.append(s);
+                    break;
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+    /**
+     * 人民币转中文人民币小数
+     * @param money
+     * @return
+     */
+    private static String getChinaMoneyDecimal(double money) {
+        int fen = (int) (money * 100 % 100);
+        String result = "";
+        if (fen <= 0) return null;
+        if (fen > 9) {
+            result += getChinaNumber(fen / 10) + "角";
+        }
+        if (fen % 10 != 0) {
+            result += getChinaNumber(fen % 10) + "分";
+        }
+        return result;
     }
 }
