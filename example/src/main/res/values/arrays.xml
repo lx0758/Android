@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="downloader_methods">
+        <item>GET</item>
+        <item>HEAD</item>
+        <item>POST</item>
+        <item>PUT</item>
+        <item>CONNECT</item>
+        <item>TRACE</item>
+        <item>OPTIONS</item>
+        <item>DELETE</item>
+    </string-array>
+</resources>
