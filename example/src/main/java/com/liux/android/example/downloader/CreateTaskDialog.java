@@ -15,7 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MultiTaskDownloaderDialog extends Dialog {
+public class CreateTaskDialog extends Dialog {
 
     @BindView(R.id.et_url)
     EditText etUrl;
@@ -28,14 +28,14 @@ public class MultiTaskDownloaderDialog extends Dialog {
 
     private OnFinishListener onFinishListener;
 
-    public MultiTaskDownloaderDialog(Context context) {
+    public CreateTaskDialog(Context context) {
         super(context);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_downloader_multi);
+        setContentView(R.layout.dialog_task_create);
         ButterKnife.bind(this);
     }
 
@@ -58,7 +58,7 @@ public class MultiTaskDownloaderDialog extends Dialog {
         dismiss();
     }
 
-    public MultiTaskDownloaderDialog lintener(OnFinishListener onFinishListener) {
+    public CreateTaskDialog lintener(OnFinishListener onFinishListener) {
         this.onFinishListener = onFinishListener;
         return this;
     }

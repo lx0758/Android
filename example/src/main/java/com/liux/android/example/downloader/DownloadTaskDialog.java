@@ -25,7 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SingleTaskDownloaderDialog extends Dialog {
+public class DownloadTaskDialog extends Dialog {
 
     @BindView(R.id.tv_id)
     TextView tvId;
@@ -77,7 +77,7 @@ public class SingleTaskDownloaderDialog extends Dialog {
         }
     };
 
-    public SingleTaskDownloaderDialog(Context context, Task task) {
+    public DownloadTaskDialog(Context context, Task task) {
         super(context);
         this.task = task;
     }
@@ -85,7 +85,7 @@ public class SingleTaskDownloaderDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dialog_downloader_single);
+        setContentView(R.layout.dialog_task_download);
         ButterKnife.bind(this);
 
         setCancelable(false);
