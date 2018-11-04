@@ -83,12 +83,19 @@ public class DefaultDataStorage implements DataStorage {
     }
 
     @Override
-    public void onDelete(Record record) {
-        sqliteDatabase.delete(
-                tableName,
-                "id=?",
-                new String[]{String.valueOf(record.getId())}
-        );
+    public void onDelete(Record... records) {
+        sqliteDatabase.beginTransaction();
+        for (Record record : records) {
+            try {
+                sqliteDatabase.delete(
+                        tableName,
+                        "id=?",
+                        new String[]{String.valueOf(record.getId())}
+                );
+            } catch (Exception ignore) {}
+        }
+        sqliteDatabase.setTransactionSuccessful();
+        sqliteDatabase.endTransaction();
     }
 
     @Override

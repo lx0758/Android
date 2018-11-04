@@ -28,7 +28,7 @@ public class DownloaderService implements TaskDispatch {
         return downloaderService;
     }
 
-    private DownloaderPoolExecutor downloaderPoolExecutor;
+    private DownloaderThreadPoolExecutor downloaderThreadPoolExecutor;
 
     private Config config;
     private List<DownloaderTask> downloaderTasks;
@@ -39,7 +39,7 @@ public class DownloaderService implements TaskDispatch {
         this.downloaderTasks = new LinkedList<>();
         this.downloaderCallbackDispense = new DownloaderCallbackDispense();
 
-        this.downloaderPoolExecutor = DownloaderPoolExecutor.create(config.getMaxTaskCount());
+        this.downloaderThreadPoolExecutor = DownloaderThreadPoolExecutor.create(config.getMaxTaskCount());
 
         config.getDataStorage().onInit(config.getContext());
         config.getFileStorage().onInit(config.getContext(), config.getRootDirectory());
@@ -87,6 +87,11 @@ public class DownloaderService implements TaskDispatch {
     public void delete(DownloaderTask downloaderTask) {
         downloaderTask.setStatus(Status.DELETE);
         downloaderTasks.remove(downloaderTask);
+    }
+
+    @Override
+    public void removeForWait(DownloaderTask downloaderTask) {
+        downloaderThreadPoolExecutor.removeWaitTask(downloaderTask);
     }
 
     /**
@@ -206,18 +211,40 @@ public class DownloaderService implements TaskDispatch {
     }
 
     /**
-     * 从本地数据库中恢复任务
+     * 调度任务,扫描所有任务,将 {@link Status#WAIT} 的任务提交线程池
+     */
+    private synchronized void schedulingTask() {
+        if (downloaderTasks.isEmpty()) return;
+
+        for (DownloaderTask downloaderTask : downloaderTasks) {
+            if (Status.WAIT != downloaderTask.getStatus()) continue;
+            downloaderThreadPoolExecutor.submitTask(downloaderTask);
+        }
+    }
+
+    /**
+     * 从本地数据库中恢复任务，删除单任务只保留普通任务
      * 会将 {@link Status#CONN} 和 {@link Status#START} 的任务重置为 {@link Status#WAIT} 状态
      */
-    private List<DownloaderTask> restoreTasksFromDataStorage(Config config, TaskDispatch taskDispatch, DownloaderCallback downloaderCallback) {
-        List<DownloaderTask> tasks = new LinkedList<>();
+    private static List<DownloaderTask> restoreTasksFromDataStorage(Config config, TaskDispatch taskDispatch, DownloaderCallback downloaderCallback) {
+        List<DownloaderTask> generalTasks = new LinkedList<>();
 
         List<Record> records = config.getDataStorage().onQueryAll();
-        if (records == null) return tasks;
+        if (records == null) return generalTasks;
 
+        List<Record> singleRecords = new LinkedList<>();
         for (Record record : records) {
+            if (record.getSingle()) {
+                singleRecords.add(record);
+                continue;
+            }
+
             if (Status.CONN.code() == record.getStatus() || Status.START.code() == record.getStatus()) {
-                record.setStatus(Status.WAIT.code());
+                if (config.getRunUndoneForStart()) {
+                    record.setStatus(Status.WAIT.code());
+                } else {
+                    record.setStatus(Status.STOP.code());
+                }
             }
             DownloaderTask downloaderTask = createDownloaderTask(
                     record,
@@ -225,9 +252,28 @@ public class DownloaderService implements TaskDispatch {
                     taskDispatch,
                     downloaderCallback
             );
-            tasks.add(downloaderTask);
+            generalTasks.add(downloaderTask);
         }
-        return tasks;
+
+        clearSingleRecords(config, singleRecords);
+
+        return generalTasks;
+    }
+
+    /**
+     * 清理数据库记录的单任务数据库和文件
+     * @param config
+     * @param singleRecords
+     */
+    private static void clearSingleRecords(Config config, List<Record> singleRecords) {
+        for (Record record : singleRecords) {
+            if (!TextUtils.isEmpty(record.getFileNameFinal())) {
+                config.getFileStorage().onDelete(record.getDir(), record.getFileNameFinal());
+            }
+        }
+        Record[] records = new Record[singleRecords.size()];
+        singleRecords.toArray(records);
+        config.getDataStorage().onDelete(records);
     }
 
     /**
@@ -237,7 +283,7 @@ public class DownloaderService implements TaskDispatch {
      * @param downloaderCallback
      * @return
      */
-    private DownloaderTask createDownloaderTask(Record record, Config config, TaskDispatch taskDispatch, DownloaderCallback downloaderCallback) {
+    private static DownloaderTask createDownloaderTask(Record record, Config config, TaskDispatch taskDispatch, DownloaderCallback downloaderCallback) {
         return new DownloaderTask(
                 record,
                 config.getDataStorage(),
@@ -246,17 +292,5 @@ public class DownloaderService implements TaskDispatch {
                 taskDispatch,
                 downloaderCallback
         );
-    }
-
-    /**
-     * 调度任务,扫描所有任务,将所有 {@link Status#WAIT} 的任务加入线程池队列
-     */
-    private synchronized void schedulingTask() {
-        if (downloaderTasks.isEmpty()) return;
-
-        for (DownloaderTask downloaderTask : downloaderTasks) {
-            if (Status.WAIT != downloaderTask.getStatus()) continue;
-            downloaderPoolExecutor.submitTask(downloaderTask);
-        }
     }
 }

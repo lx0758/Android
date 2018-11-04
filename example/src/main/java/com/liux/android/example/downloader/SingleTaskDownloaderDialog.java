@@ -106,9 +106,7 @@ public class SingleTaskDownloaderDialog extends Dialog {
             case R.id.btn_operate:
                 if (task.isCompleted()) {
                     openFile(task.getFile());
-                    return;
-                }
-                if (!task.isStarted()) {
+                } else if (!task.isStarted()) {
                     task.start();
                 } else {
                     task.stop();

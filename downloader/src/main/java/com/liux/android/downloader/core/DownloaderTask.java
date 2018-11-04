@@ -20,12 +20,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.io.RandomAccessFile;
-import java.lang.ref.WeakReference;
 import java.net.ConnectException;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -99,13 +97,11 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
         try {
             // 获取一个连接器
             connect = connectFactory.create();
-            // 打开文件
-            randomAccessFile = fileStorage.onOpen(record.getDir(), record.getFileNameFinal());
 
             // 探测资源
             setStatus(Status.CONN);
             // 是否需要从头开始下载(不支持断点续传,etag发生变更的情况)
-            boolean needRestart = false;
+            boolean needRestartDownload = false;
             Map<String, List<String>> connectHeaders = getHeaders();
             if (connectHeaders == null) connectHeaders = new HashMap<>();
             // 探测是否支持断点续传
@@ -117,7 +113,7 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
             if (!connectResponse.isSuccessful()) throw new ConnectException(connectResponse.message());
             // 获取是否支持续传
             if (!connectResponse.hasHeader("content-range") && !connectResponse.hasHeader("accept-ranges")) {
-                needRestart = true;
+                needRestartDownload = true;
             }
             // 获取内容长度
             if (connectResponse.hasHeader("content-length")) {
@@ -128,25 +124,34 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
             if (connectResponse.hasHeader("etag")) {
                 String value = connectResponse.header("etag").get(0);
                 if (!TextUtils.isEmpty(record.getEtag()) && !record.getEtag().equals(value)) {
-                    needRestart = true;
+                    needRestartDownload = true;
                 }
                 record.setEtag(value);
             }
             connectResponse.close();
             dataStorage.onUpdate(record);
 
+            // 打开文件
+            randomAccessFile = fileStorage.onOpen(record.getDir(), record.getFileNameFinal());
+
             // 下载资源
             setStatus(Status.START);
             // 检测文件和数据库记录是否一致
             if (randomAccessFile.length() < record.getCompleted()) {
+                // 第一种方案 直接抛错
                 // throw new IOException("File status and database record status are inconsistent");
+
+                // 第二种方案 以文件为准
                 record.setCompleted(randomAccessFile.length());
                 dataStorage.onUpdate(record);
+
+                // 第三种方案 重新下载
+                //needRestartDownload = true;
             }
             // 处理下载 headers,加入断点续传参数
             Map<String, List<String>> downloadHeaders = getHeaders();
             if (downloadHeaders == null) downloadHeaders = new HashMap<>();
-            if (needRestart) {
+            if (needRestartDownload) {
                 record.setCompleted(0);
                 randomAccessFile.seek(0);
                 callStatusListenerUpdate();
@@ -166,7 +171,6 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
             long cacheLength = 0;
             byte[] bytes = new byte[10240];
             while ((length = inputStream.read(bytes)) != -1) {
-                if (getStatus() != Status.START) break;
                 randomAccessFile.write(bytes, 0, length);
                 record.setCompleted(record.getCompleted() + length);
 
@@ -176,18 +180,26 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
                     dataStorage.onUpdate(record);
                     cacheLength = 0;
                 }
+
+                // 如果状态已经不是已下载,则退出线程
+                if (getStatus() != Status.START) {
+                    dataStorage.onUpdate(record);
+                    return;
+                }
             }
             if (Thread.currentThread().isInterrupted()) return;
             dataStorage.onUpdate(record);
 
             // 设置状态为完成
             setStatus(Status.COMPLETE);
-        } catch (InterruptedIOException e) {
-            // do nothing
-            return;
         } catch (Exception e) {
-            errorInfo = e;
-            setStatus(Status.ERROR);
+            if (e.getClass().equals(InterruptedException.class) ||
+                    e.getClass().equals(InterruptedIOException.class)) {
+                // 排除中断造成的异常
+            } else {
+                errorInfo = e;
+                setStatus(Status.ERROR);
+            }
         } finally {
             if (connect != null) connect.close();
             if (connectResponse != null) connectResponse.close();
@@ -380,7 +392,7 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
         switch (status) {
             case NEW:
                 // 虽然是新建,但这里的作用是重置(恢复到新建的状态).真正的新建逻辑在Service中处理
-                checkAndStopTask();
+                checkAndCancelTask(true);
                 if (!TextUtils.isEmpty(record.getFileNameFinal())) {
                     fileStorage.onDelete(record.getDir(), record.getFileNameFinal());
                 }
@@ -393,7 +405,6 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
                 downloaderCallback.onTaskReset(this);
                 break;
             case WAIT:
-                checkAndStopTask();
                 record.setStatus(status.code());
                 dataStorage.onUpdate(record);
                 break;
@@ -404,23 +415,25 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
                 dataStorage.onUpdate(record);
                 break;
             case STOP:
-                checkAndStopTask();
+                checkAndCancelTask(true);
                 record.setStatus(status.code());
                 dataStorage.onUpdate(record);
                 downloaderCallback.onTaskStopped(this);
                 break;
             case ERROR:
+                checkAndCancelTask(false);
                 record.setStatus(status.code());
                 dataStorage.onUpdate(record);
                 downloaderCallback.onTaskFailed(this, errorInfo);
                 break;
             case COMPLETE:
+                checkAndCancelTask(false);
                 record.setStatus(status.code());
                 dataStorage.onUpdate(record);
                 downloaderCallback.onTaskCompleted(this);
                 break;
             case DELETE:
-                checkAndStopTask();
+                checkAndCancelTask(true);
                 if (!TextUtils.isEmpty(record.getFileNameFinal())) {
                     fileStorage.onDelete(record.getDir(), record.getFileNameFinal());
                 }
@@ -464,13 +477,16 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
     }
 
     /**
-     * 通过结束线程强行停止任务
+     * 检查并且取消任务
+     * @param force 是否强制停止, 因为 ERROR 和 COMPLETE 都会正常退出线程,所以不需要中断退出线程
      */
-    private void checkAndStopTask() {
-        if (future != null && !future.isDone() && !future.isCancelled()) {
+    private void checkAndCancelTask(boolean force) {
+        if (force && future != null && !future.isDone() && !future.isCancelled()) {
             future.cancel(true);
         }
         future = null;
+
+        taskDispatch.removeForWait(this);
     }
 
     /**

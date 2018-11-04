@@ -49,7 +49,7 @@ public class SingleTaskDownloaderActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_download)
     public void onViewClicked() {
-        String url = etUrl.getText().toString();
+        String url = etUrl.getText().toString().replace("\n", "").replace("\n", "");
         String name = etName.getText().toString();
         Task task = Downloader.createTaskBuilder(url)
                 .fileName(name)

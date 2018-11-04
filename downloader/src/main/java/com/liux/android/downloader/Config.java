@@ -22,6 +22,8 @@ public class Config {
 
     // 上下文对象
     private Context context;
+    // 启动后是否自动开始未完成任务
+    private boolean runUndoneForStart;
     // 最大同时允许下载数量
     private int maxTaskCount;
     // 默认存储文件根目录
@@ -39,6 +41,10 @@ public class Config {
 
     public Context getContext() {
         return context;
+    }
+
+    public boolean getRunUndoneForStart() {
+        return runUndoneForStart;
     }
 
     public int getMaxTaskCount() {
@@ -67,6 +73,7 @@ public class Config {
 
     public static Builder from(Config config) {
         Builder newBuilder = new Builder(config.context);
+        newBuilder.runUndoneForStart = config.runUndoneForStart;
         newBuilder.maxTaskCount = config.maxTaskCount;
         newBuilder.rootDirectory = config.rootDirectory;
         newBuilder.fileStorage = config.fileStorage;
@@ -78,7 +85,8 @@ public class Config {
     public static class Builder {
 
         private Context context;
-        private int maxTaskCount;
+        private boolean runUndoneForStart = false;
+        private int maxTaskCount = 3;
         private File rootDirectory;
         private FileStorage fileStorage;
         private DataStorage dataStorage;
@@ -86,6 +94,11 @@ public class Config {
 
         private Builder(Context context) {
             this.context = context;
+        }
+
+        public Builder runUndoneForStart(boolean runUndoneForStart) {
+            this.runUndoneForStart = runUndoneForStart;
+            return this;
         }
 
         public Builder maxTaskCount(int maxTaskCount) {
@@ -118,6 +131,8 @@ public class Config {
 
             if (context == null) throw new NullPointerException("Context cannot be empty");
             config.context = context.getApplicationContext();
+
+            config.runUndoneForStart = runUndoneForStart;
 
             if (maxTaskCount < MIN_TASK_COUNT) maxTaskCount = MIN_TASK_COUNT;
             if (maxTaskCount > MAX_TASK_COUNT) maxTaskCount = MAX_TASK_COUNT;

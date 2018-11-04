@@ -15,7 +15,7 @@ public interface DataStorage {
 
     List<Record> onQueryAll();
 
-    void onDelete(Record record);
+    void onDelete(Record... records);
 
     void onUpdate(Record record);
 

@@ -19,9 +19,10 @@ public class DownloaderActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         Downloader.init(Config.builder(getApplicationContext())
-                .connectFactory(new OKHttpConnectFactory())
-                .rootDirectory(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS))
                 .maxTaskCount(3)
+                .runUndoneForStart(false)
+                .connectFactory(new OKHttpConnectFactory())
+                .rootDirectory(getExternalFilesDir("download"))
                 .build());
 
         setContentView(R.layout.activity_downloader);

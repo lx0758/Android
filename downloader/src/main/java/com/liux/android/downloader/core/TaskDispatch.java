@@ -28,4 +28,10 @@ interface TaskDispatch {
      * @param downloaderTask
      */
     void delete(DownloaderTask downloaderTask);
+
+    /**
+     * 从等待队列移除一个任务
+     * @param downloaderTask
+     */
+    void removeForWait(DownloaderTask downloaderTask);
 }
