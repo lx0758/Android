@@ -81,6 +81,8 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
         ConnectResponse connectResponse = null;
         RandomAccessFile randomAccessFile = null;
         try {
+            if (Thread.currentThread().isInterrupted()) return;
+
             // 新任务初始化
             if (TextUtils.isEmpty(record.getFileNameFinal())) {
                 int index = 1;
@@ -94,65 +96,93 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
 
                 writeFile = new File(record.getDir(), record.getFileNameFinal());
             }
-            // 打开文件
-            randomAccessFile = fileStorage.onOpen(record.getDir(), record.getFileNameFinal());
-            callStatusListenerUpdate();
 
-            // 获取一个连接器
+            // 获取连接器&打开存储文件
             connect = connectFactory.create();
+            randomAccessFile = fileStorage.onOpen(record.getDir(), record.getFileNameFinal());
 
             // 探测资源
             setStatus(Status.CONN);
-            // 是否需要从头开始下载(不支持断点续传,etag发生变更的情况)
+            // 是否需要从头开始下载
             boolean needRestartDownload = false;
+            // 处理探测 headers,加入检测断点续传参数
             Map<String, List<String>> connectHeaders = getHeaders();
             if (connectHeaders == null) connectHeaders = new HashMap<>();
-            // 探测是否支持断点续传
             connectHeaders.put("Range", Collections.singletonList("bytes=0-"));
-            // 发起探测连接
+            // 发起探测连接,如果返回405不则支持HEAD请求,再使用设置的请求方法再请求一次
             connectResponse = connect.connect(getUrl(), "HEAD", connectHeaders, false);
             if (Thread.currentThread().isInterrupted()) return;
-            // 检查是否成功
+            connectResponse.close();
+            if (connectResponse.code() == 405) {
+                connectResponse = connect.connect(getUrl(), getMethod(), connectHeaders, false);
+                if (Thread.currentThread().isInterrupted()) return;
+                connectResponse.close();
+            }
             if (!connectResponse.isSuccessful()) throw new ConnectException(connectResponse.message());
-            // 获取是否支持续传
+            // 是否支持续传,不支持则重新下载
             if (!connectResponse.hasHeader("content-range") && !connectResponse.hasHeader("accept-ranges")) {
                 needRestartDownload = true;
             }
-            // 获取内容长度
+            // 获取&校验文件长度,如果文件长度发生变化则重新下载
+            long total = 0;
             if (connectResponse.hasHeader("content-length")) {
                 String value = connectResponse.header("content-length").get(0);
-                record.setTotal(Long.valueOf(value));
+                total = Long.valueOf(value);
             }
-            // 获取&校验缓存标志
+            if (record.getTotal() != total) {
+                needRestartDownload = true;
+            }
+            record.setTotal(total);
+            // 获取&校验缓存标志,如果标志发生变化则重新下载
+            String etag = null;
             if (connectResponse.hasHeader("etag")) {
-                String value = connectResponse.header("etag").get(0);
-                if (!TextUtils.isEmpty(record.getEtag()) && !record.getEtag().equals(value)) {
-                    needRestartDownload = true;
-                }
-                record.setEtag(value);
+                etag = connectResponse.header("etag").get(0);
             }
-            connectResponse.close();
-            dataStorage.onUpdate(record);
-
-            // 下载资源
-            setStatus(Status.START);
-            // 检测文件和数据库记录是否一致
+            if (!TextUtils.isEmpty(etag)) {
+                needRestartDownload = !etag.equals(record.getEtag());
+            } else if (!TextUtils.isEmpty(record.getEtag())){
+                needRestartDownload = true;
+            }
+            record.setEtag(etag);
+            // 检测文件和数据库记录是否一致,如果小于记录则以文件为准
             if (randomAccessFile.length() < record.getCompleted()) {
-                // 调整进度
+                // 按照文件调整已完成进度
                 record.setCompleted(randomAccessFile.length());
-                dataStorage.onUpdate(record);
                 // 抛出错误 或者 重新开始下载
                 //throw new IOException("File status and database record status are inconsistent");
                 //needRestartDownload = true;
+                // 同步处理速度缓存
+                speedLastSize = record.getCompleted();
+                speedLastTime = System.currentTimeMillis();
             }
+            // 如果文件比总大小还大则重新下载,相同则完成下载
+            if (record.getTotal() > 0) {
+                if (randomAccessFile.length() > record.getTotal()) {
+                    needRestartDownload = true;
+                } else if (randomAccessFile.length() == record.getTotal()) {
+                    setStatus(Status.COMPLETE);
+                    return;
+                }
+            }
+            // 更新探测数据
+            dataStorage.onUpdate(record);
+
+            if (Thread.currentThread().isInterrupted()) return;
+
+            // 下载资源
+            setStatus(Status.START);
             // 处理下载 headers,加入断点续传参数
             Map<String, List<String>> downloadHeaders = getHeaders();
             if (downloadHeaders == null) downloadHeaders = new HashMap<>();
             if (needRestartDownload) {
                 record.setCompleted(0);
+                dataStorage.onUpdate(record);
                 callStatusListenerUpdate();
                 randomAccessFile.seek(0);
                 downloadHeaders.put("Range", Collections.singletonList("bytes=0-"));
+                // 同步处理速度缓存
+                speedLastSize = record.getCompleted();
+                speedLastTime = System.currentTimeMillis();
             } else {
                 randomAccessFile.seek(record.getCompleted());
                 downloadHeaders.put("Range", Collections.singletonList("bytes=" + String.valueOf(record.getCompleted()) + "-"));
@@ -160,7 +190,6 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
             // 发起下载连接
             connectResponse = connect.connect(getUrl(), getMethod(), downloadHeaders, true);
             if (Thread.currentThread().isInterrupted()) return;
-            // 检查是否成功
             if (!connectResponse.isSuccessful()) throw new ConnectException(connectResponse.message());
             // 开始传输
             InputStream inputStream = connectResponse.inputstream();
@@ -171,7 +200,7 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
                 randomAccessFile.write(bytes, 0, length);
                 record.setCompleted(record.getCompleted() + length);
 
-                // 更新数据库,为了减少 IO 读写频率这里设置了一个阈值
+                // 更新数据库,为了减少 IO 读写频率这里设置了一个缓存阈值
                 cacheLength += length;
                 if (cacheLength >= 5 * 10240) {
                     dataStorage.onUpdate(record);
@@ -187,16 +216,20 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
             if (Thread.currentThread().isInterrupted()) return;
             dataStorage.onUpdate(record);
 
+            // 如果下载流程走完已下载大小不等于探测结果则抛错
+            if (record.getTotal() > 0 && record.getCompleted() < record.getTotal()) {
+                throw new ConnectException("download unexpectedly stopped");
+            }
+
             // 设置状态为完成
             setStatus(Status.COMPLETE);
         } catch (Exception e) {
             if (e.getClass().equals(InterruptedException.class) ||
                     e.getClass().equals(InterruptedIOException.class)) {
-                // 排除中断造成的异常
-            } else {
-                errorInfo = e;
-                setStatus(Status.ERROR);
+                return;
             }
+            errorInfo = e;
+            setStatus(Status.ERROR);
         } finally {
             if (connect != null) connect.close();
             if (connectResponse != null) connectResponse.close();
@@ -443,6 +476,9 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
                 break;
             case COMPLETE:
                 checkAndCancelTask(false);
+                if (record.getTotal() == 0) {
+                    record.setTotal(record.getCompleted());
+                }
                 record.setStatus(status.code());
                 dataStorage.onUpdate(record);
                 downloaderCallback.onTaskCompleted(this);
