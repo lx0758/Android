@@ -30,6 +30,10 @@ repositories {
 ---
 	对bilibili的Boxing媒体选择器组件封装
 
+[downloader](/downloader/README.md)
+---
+	全局/多线程/多任务/断点续传HTTP下载器
+
 [glide](/glide/README.md)
 ---
 	Glide转换器,自定义Glide4配置和实现视屏缩略图的自定义加载过程

@@ -18,6 +18,9 @@ implementation 'com.liux.android:util:x.y.z'
 ### x.y.z_201x-xx-xx
     1.
 
+### 0.1.3_2018-11-05
+    1.增强文字处理类
+
 ### 0.1.2_2018-11-03
     1.优化Util库类代码
 
