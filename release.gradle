@@ -2,7 +2,7 @@
 // https://github.com/bintray/gradle-bintray-plugin#Getting_Started_Using_the_Plugin
 
 // 打包某个库到JCenter
-// ..\gradlew.bat clean build assemble bintrayUpload -PbintrayUser=Liux -PbintrayKey=xxxxx -PdryRun=false
+// ..\gradlew.bat clean build assemble bintrayUpload -PbintrayUser=Liux -PbintrayKey=xxxxx -PdryRun=false --info
 // 打包某个库到本地
 // ..\gradlew.bat clean build assemble publishToMavenLocal
 // 打包某个库到私服
@@ -23,11 +23,12 @@ if (rootProject.projectDir != project.projectDir.parentFile) return
 apply plugin: "maven-publish"
 apply plugin: 'com.jfrog.bintray'
 bintray {
+    // Fuck the dog! Project.property() get Boolean always true
     user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : null
     key = project.hasProperty('bintrayKey') ? project.property('bintrayKey') : null
-    dryRun = project.hasProperty('dryRun') ? project.property('dryRun') : false
-    publish = project.hasProperty('publish') ? project.property('publish') : false
-    override = project.hasProperty('override') ? project.property('override') : false
+    dryRun = project.hasProperty('dryRun') ? "true" == project.property('dryRun') : false
+    publish = project.hasProperty('publish') ? "true" == project.property('publish') : false
+    override = project.hasProperty('override') ? "true" == project.property('override') : false
     publications = ['jcenter']
     pkg {
         repo = 'android'
@@ -46,9 +47,23 @@ publishing {
             artifactId project.getLibraryArtifactId()
             version project.getLibraryVersionName()
 
-            artifact ("$buildDir/outputs/aar/"+ project.name +"-release.aar")
+            artifact ("$buildDir/outputs/aar/" + project.name + "-release.aar")
             artifact androidSourcesJar
             artifact androidJavaDocJar
+
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+                // Iterate over the implementation dependencies (we don't want the test ones), adding a <dependency> node for each
+                configurations.implementation.allDependencies.each {
+                    // Ensure dependencies such as fileTree are not included in the pom.
+                    if (it.name != 'unspecified') {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
         }
     }
 }
