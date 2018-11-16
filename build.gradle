@@ -3,6 +3,7 @@ buildscript {
         flatDir { dirs '../aarlibs' }
         maven { url 'http://maven.aliyun.com/repository/public/' }
         maven { url 'http://maven.6xyun.cn/' }
+        maven { url 'https://dl.bintray.com/novoda/maven/' }
         //google()
         //jcenter()
         //mavenLocal()
@@ -10,7 +11,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.1'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'com.novoda:bintray-release:0.9'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -33,6 +34,7 @@ allprojects{
     }
     // 设置全局文档编码
     tasks.withType(Javadoc) {
+        failOnError = false
         options {
             encoding "UTF-8"
             charSet 'UTF-8'

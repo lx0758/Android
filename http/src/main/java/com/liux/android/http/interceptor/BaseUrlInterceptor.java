@@ -16,7 +16,7 @@ import okhttp3.Response;
 
 /**
  * 根据特定Header更换请求BaseUrl
- * 作用域 HEADER_BASE_URL > HEADER_BASE_RULE > BaseUrl
+ * 作用域 HEADER_BASE_URL &gt; HEADER_BASE_RULE &gt; BaseUrl
  * 1.动态更换Scheme       支持
  * 2.动态更换Host         支持
  * 3.动态更换Port         支持
@@ -92,7 +92,6 @@ public class BaseUrlInterceptor implements Interceptor {
     /**
      * 设置当前全局BaseUrl
      * @param baseUrl
-     * @return
      */
     public void setBaseUrl(String baseUrl) {
         mBaseUrl = baseUrl;
@@ -112,7 +111,6 @@ public class BaseUrlInterceptor implements Interceptor {
      * 加入某个URL对应的规则
      * @param rule
      * @param baseUrl
-     * @return
      */
     public void putDomainRule(String rule, String baseUrl) {
         mDomainRules.put(rule, baseUrl);
@@ -130,7 +128,6 @@ public class BaseUrlInterceptor implements Interceptor {
 
     /**
      * 清除所有URL对应规则
-     * @return
      */
     public void clearDomainRules() {
         mDomainRules.clear();

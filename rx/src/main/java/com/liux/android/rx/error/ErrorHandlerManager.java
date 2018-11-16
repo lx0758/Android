@@ -20,9 +20,7 @@ public class ErrorHandlerManager {
     }
 
     public static void registerListener(OnErrorListener listener) {
-        if (mOnErrorListeners.indexOf(listener) == -1) {
-            mOnErrorListeners.add(listener);
-        }
+        if (!mOnErrorListeners.contains(listener)) mOnErrorListeners.add(listener);
     }
 
     public static void unregisterListener(OnErrorListener listener) {

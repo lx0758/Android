@@ -1,12 +1,9 @@
-// https://github.com/bintray/gradle-bintray-plugin
-// https://github.com/bintray/gradle-bintray-plugin#Getting_Started_Using_the_Plugin
-
 // 打包某个库到JCenter
-// ..\gradlew.bat clean build assemble bintrayUpload -PbintrayUser=Liux -PbintrayKey=xxxxx -PdryRun=false --info
+// ..\gradlew.bat clean build bintrayUpload -PbintrayUser=Liux -PbintrayKey=xxxxx -PdryRun=false --info
 // 打包某个库到本地
-// ..\gradlew.bat clean build assemble publishToMavenLocal
+// ..\gradlew.bat clean build publishToMavenLocal
 // 打包某个库到私服
-// ..\gradlew.bat clean build assemble uploadArchives
+// ..\gradlew.bat clean build uploadArchives
 
 // Library 升级快速验证方法:
 // 1. 升级/修复/优化代码
@@ -20,52 +17,18 @@
 if (rootProject.projectDir != project.projectDir.parentFile) return
 
 // release to JCenter
-apply plugin: "maven-publish"
-apply plugin: 'com.jfrog.bintray'
-bintray {
-    // Fuck the dog! Project.property() get Boolean always true
-    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : null
-    key = project.hasProperty('bintrayKey') ? project.property('bintrayKey') : null
-    dryRun = project.hasProperty('dryRun') ? "true" == project.property('dryRun') : false
-    publish = project.hasProperty('publish') ? "true" == project.property('publish') : false
-    override = project.hasProperty('override') ? "true" == project.property('override') : false
-    publications = ['jcenter']
-    pkg {
-        repo = 'android'
-        name = 'lib-' + project.getLibraryArtifactId()
-        vcsUrl = rootProject.getLibraryVCSUrl()
-        licenses = [rootProject.getLibraryLicense()]
-        version {
-            name = project.getLibraryVersionName()
-        }
-    }
-}
-publishing {
-    publications {
-        jcenter(MavenPublication) {
-            groupId rootProject.getLibraryGroupId()
-            artifactId project.getLibraryArtifactId()
-            version project.getLibraryVersionName()
-
-            artifact ("$buildDir/outputs/aar/" + project.name + "-release.aar")
-            artifact androidSourcesJar
-            artifact androidJavaDocJar
-
-            pom.withXml {
-                def dependenciesNode = asNode().appendNode('dependencies')
-                // Iterate over the implementation dependencies (we don't want the test ones), adding a <dependency> node for each
-                configurations.implementation.allDependencies.each {
-                    // Ensure dependencies such as fileTree are not included in the pom.
-                    if (it.name != 'unspecified') {
-                        def dependencyNode = dependenciesNode.appendNode('dependency')
-                        dependencyNode.appendNode('groupId', it.group)
-                        dependencyNode.appendNode('artifactId', it.name)
-                        dependencyNode.appendNode('version', it.version)
-                    }
-                }
-            }
-        }
-    }
+// https://github.com/novoda/bintray-release/wiki
+apply plugin: 'com.novoda.bintray-release'
+publish {
+    repoName = 'android'
+    userOrg = ''
+    groupId = rootProject.getLibraryGroupId()
+    artifactId = project.getLibraryArtifactId()
+    uploadName = 'lib-' + project.getLibraryArtifactId()
+    publishVersion = project.getLibraryVersionName()
+    licences = [rootProject.getLibraryLicense()]
+    desc = ''
+    website = rootProject.getLibraryVCSUrl()
 }
 
 // release to Maven Repositories
