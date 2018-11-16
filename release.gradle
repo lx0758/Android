@@ -1,12 +1,9 @@
-// https://github.com/bintray/gradle-bintray-plugin
-// https://github.com/bintray/gradle-bintray-plugin#Getting_Started_Using_the_Plugin
-
 // 打包某个库到JCenter
-// ..\gradlew.bat clean build assemble bintrayUpload -PbintrayUser=Liux -PbintrayKey=xxxxx -PdryRun=false
+// ..\gradlew.bat clean build bintrayUpload -PbintrayUser=Liux -PbintrayKey=xxxxx -PdryRun=false --info
 // 打包某个库到本地
-// ..\gradlew.bat clean build assemble publishToMavenLocal
+// ..\gradlew.bat clean build publishToMavenLocal
 // 打包某个库到私服
-// ..\gradlew.bat clean build assemble uploadArchives
+// ..\gradlew.bat clean build uploadArchives
 
 // Library 升级快速验证方法:
 // 1. 升级/修复/优化代码
@@ -20,37 +17,18 @@
 if (rootProject.projectDir != project.projectDir.parentFile) return
 
 // release to JCenter
-apply plugin: "maven-publish"
-apply plugin: 'com.jfrog.bintray'
-bintray {
-    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : null
-    key = project.hasProperty('bintrayKey') ? project.property('bintrayKey') : null
-    dryRun = project.hasProperty('dryRun') ? project.property('dryRun') : false
-    publish = project.hasProperty('publish') ? project.property('publish') : false
-    override = project.hasProperty('override') ? project.property('override') : false
-    publications = ['jcenter']
-    pkg {
-        repo = 'android'
-        name = 'lib-' + project.getLibraryArtifactId()
-        vcsUrl = rootProject.getLibraryVCSUrl()
-        licenses = [rootProject.getLibraryLicense()]
-        version {
-            name = project.getLibraryVersionName()
-        }
-    }
-}
-publishing {
-    publications {
-        jcenter(MavenPublication) {
-            groupId rootProject.getLibraryGroupId()
-            artifactId project.getLibraryArtifactId()
-            version project.getLibraryVersionName()
-
-            artifact ("$buildDir/outputs/aar/"+ project.name +"-release.aar")
-            artifact androidSourcesJar
-            artifact androidJavaDocJar
-        }
-    }
+// https://github.com/novoda/bintray-release/wiki
+apply plugin: 'com.novoda.bintray-release'
+publish {
+    repoName = 'android'
+    userOrg = ''
+    groupId = rootProject.getLibraryGroupId()
+    artifactId = project.getLibraryArtifactId()
+    uploadName = 'lib-' + project.getLibraryArtifactId()
+    publishVersion = project.getLibraryVersionName()
+    licences = [rootProject.getLibraryLicense()]
+    desc = ''
+    website = rootProject.getLibraryVCSUrl()
 }
 
 // release to Maven Repositories
