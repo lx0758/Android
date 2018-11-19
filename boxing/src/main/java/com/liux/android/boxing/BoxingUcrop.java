@@ -42,16 +42,8 @@ public class BoxingUcrop implements IBoxingCrop {
                 .scheme("file")
                 .appendPath(path)
                 .build();
-        UCrop.Options options = new UCrop.Options();
-        options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
-        options.setCompressionQuality(70);
-        options.withMaxResultSize(cropConfig.getMaxWidth(), cropConfig.getMaxHeight());
-        options.withAspectRatio(cropConfig.getAspectRatioX(), cropConfig.getAspectRatioY());
 
-        options.setStatusBarColor(context.getResources().getColor(R.color.boxing_colorPrimaryDark));
-        options.setToolbarColor(context.getResources().getColor(R.color.boxing_colorPrimaryDark));
-        options.setToolbarWidgetColor(context.getResources().getColor(R.color.boxing_white));
-        options.setActiveWidgetColor(context.getResources().getColor(R.color.boxing_colorPrimaryDark));
+        UCrop.Options options = getOptions(context, cropConfig.getMaxWidth(), cropConfig.getMaxHeight(), cropConfig.getAspectRatioX(), cropConfig.getAspectRatioY());
 
         UCrop.of(uri, cropConfig.getDestination())
                 .withOptions(options)
@@ -68,5 +60,20 @@ public class BoxingUcrop implements IBoxingCrop {
             return null;
         }
         return UCrop.getOutput(data);
+    }
+
+    public static UCrop.Options getOptions(Context context, int maxWidth, int maxHeight, float aspectRatioX, float aspectRatioY) {
+        UCrop.Options options = new UCrop.Options();
+        options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
+        options.setCompressionQuality(70);
+        options.withMaxResultSize(maxWidth, maxHeight);
+        options.withAspectRatio(aspectRatioX, aspectRatioY);
+
+        options.setStatusBarColor(context.getResources().getColor(R.color.boxing_colorPrimaryDark));
+        options.setToolbarColor(context.getResources().getColor(R.color.boxing_colorPrimaryDark));
+        options.setToolbarWidgetColor(context.getResources().getColor(R.color.boxing_white));
+        options.setActiveWidgetColor(context.getResources().getColor(R.color.boxing_colorPrimaryDark));
+
+        return options;
     }
 }

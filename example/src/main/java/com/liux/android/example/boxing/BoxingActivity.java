@@ -1,5 +1,6 @@
 package com.liux.android.example.boxing;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -16,8 +17,10 @@ import com.bilibili.boxing.model.entity.impl.VideoMedia;
 import com.liux.android.boxing.BoxingGlideLoader;
 import com.liux.android.boxing.Boxinger;
 import com.liux.android.boxing.BoxingUcrop;
+import com.liux.android.boxing.OnCropListener;
 import com.liux.android.boxing.OnMultiSelectListener;
 import com.liux.android.boxing.OnSingleSelectListener;
+import com.liux.android.boxing.OnTakeListener;
 import com.liux.android.boxing.OnVideoSelectListener;
 import com.liux.android.example.R;
 import com.liux.android.list.adapter.MultipleAdapter;
@@ -25,7 +28,10 @@ import com.liux.android.list.adapter.state.State;
 import com.liux.android.list.adapter.state.SuperRule;
 import com.liux.android.list.decoration.GridItemDecoration;
 import com.liux.android.list.holder.SuperHolder;
+import com.liux.android.tool.TT;
+import com.liux.android.util.UriUtil;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -71,7 +77,11 @@ public class BoxingActivity extends AppCompatActivity {
                             public void onClick(View v) {
                                 String[] medias = new String[mMultipleAdapter.getData().size()];
                                 mMultipleAdapter.getData().toArray(medias);
-                                Boxinger.startPreview(BoxingActivity.this, medias, position);
+                                Boxinger
+                                        .with(BoxingActivity.this)
+                                        .preview(medias)
+                                        .position(position)
+                                        .start();
                             }
                         });
                     }
@@ -83,50 +93,112 @@ public class BoxingActivity extends AppCompatActivity {
         BoxingMediaLoader.getInstance().init(new BoxingGlideLoader());
     }
 
-    @OnClick({R.id.btn_select_pic, R.id.btn_select_pic_clip, R.id.btn_select_pics, R.id.btn_select_video})
+    @OnClick({R.id.btn_select_pic, R.id.btn_select_pic_clip, R.id.btn_select_pics, R.id.btn_select_video,R.id.btn_screen_crop})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_select_pic:
-                Boxinger.startSingle(this, true, false, new OnSingleSelectListener() {
-                    @Override
-                    public void onSingleSelect(ImageMedia imageMedia) {
-                        mMultipleAdapter.getData().clear();
-                        mMultipleAdapter.getData().add(imageMedia.getPath());
-                        mMultipleAdapter.notifyDataSetChanged();
-                    }
-                });
+                Boxinger
+                        .with(this)
+                        .singleSelect()
+                        .useCamera(true)
+                        .useCrop(false)
+                        .listener(new OnSingleSelectListener() {
+                            @Override
+                            public void onSingleSelect(ImageMedia imageMedia) {
+                                mMultipleAdapter.getData().clear();
+                                mMultipleAdapter.getData().add(imageMedia.getPath());
+                                mMultipleAdapter.notifyDataSetChanged();
+                            }
+                        })
+                        .start();
                 break;
             case R.id.btn_select_pic_clip:
-                Boxinger.startSingle(this, true, true, new OnSingleSelectListener() {
-                    @Override
-                    public void onSingleSelect(ImageMedia imageMedia) {
-                        mMultipleAdapter.getData().clear();
-                        mMultipleAdapter.getData().add(imageMedia.getPath());
-                        mMultipleAdapter.notifyDataSetChanged();
-                    }
-                });
+                Boxinger
+                        .with(this)
+                        .singleSelect()
+                        .useCamera(true)
+                        .useCrop(true)
+                        .listener(new OnSingleSelectListener() {
+                            @Override
+                            public void onSingleSelect(ImageMedia imageMedia) {
+                                mMultipleAdapter.getData().clear();
+                                mMultipleAdapter.getData().add(imageMedia.getPath());
+                                mMultipleAdapter.notifyDataSetChanged();
+                            }
+                        })
+                        .start();
                 break;
             case R.id.btn_select_pics:
-                Boxinger.startMulti(this, 5, true, new OnMultiSelectListener() {
-                    @Override
-                    public void onMultiSelect(List<ImageMedia> imageMedias) {
-                        mMultipleAdapter.getData().clear();
-                        for (BaseMedia media : imageMedias) {
-                            mMultipleAdapter.getData().add(media.getPath());
-                        }
-                        mMultipleAdapter.notifyDataSetChanged();
-                    }
-                });
+                Boxinger
+                        .with(this)
+                        .multipleSelect(5)
+                        .useCamera(true)
+                        .listener(new OnMultiSelectListener() {
+                            @Override
+                            public void onMultiSelect(List<ImageMedia> imageMedias) {
+                                mMultipleAdapter.getData().clear();
+                                for (BaseMedia media : imageMedias) {
+                                    mMultipleAdapter.getData().add(media.getPath());
+                                }
+                                mMultipleAdapter.notifyDataSetChanged();
+                            }
+                        })
+                        .start();
                 break;
             case R.id.btn_select_video:
-                Boxinger.startVideo(this, new OnVideoSelectListener() {
-                    @Override
-                    public void onVideoSelect(VideoMedia videoMedia) {
-                        mMultipleAdapter.getData().clear();
-                        mMultipleAdapter.getData().add(videoMedia.getPath());
-                        mMultipleAdapter.notifyDataSetChanged();
-                    }
-                });
+                Boxinger
+                        .with(this)
+                        .videoSelect()
+                        .listener(new OnVideoSelectListener() {
+                            @Override
+                            public void onVideoSelect(VideoMedia videoMedia) {
+                                mMultipleAdapter.getData().clear();
+                                mMultipleAdapter.getData().add(videoMedia.getPath());
+                                mMultipleAdapter.notifyDataSetChanged();
+                            }
+                        })
+                        .start();
+                break;
+            case R.id.btn_screen_crop:
+                Boxinger
+                        .with(BoxingActivity.this)
+                        .take()
+                        .authority(UriUtil.getAuthority(this))
+                        .listener(new OnTakeListener() {
+                            @Override
+                            public void onSucceed(Uri uri) {
+                                Boxinger
+                                        .with(BoxingActivity.this)
+                                        .crop(uri)
+                                        .listener(new OnCropListener() {
+                                            @Override
+                                            public void onSucceed(Uri output) {
+                                                mMultipleAdapter.getData().clear();
+                                                mMultipleAdapter.getData().add(output.getPath());
+                                                mMultipleAdapter.notifyDataSetChanged();
+                                            }
+
+                                            @Override
+                                            public void onFailure() {
+                                                TT.show(BoxingActivity.this, "裁剪失败", TT.LENGTH_SHORT);
+                                            }
+                                        })
+                                        .start();
+                            }
+
+                            @Override
+                            public void onFailure(int type) {
+                                switch (type) {
+                                    case OnTakeListener.ERROR_INTENT:
+                                        TT.show(BoxingActivity.this, "没有找到相机程序", TT.LENGTH_SHORT);
+                                        break;
+                                    case OnTakeListener.ERROR_PERMISSION:
+                                        TT.show(BoxingActivity.this, "没有授权使用相机权限", TT.LENGTH_SHORT);
+                                        break;
+                                }
+                            }
+                        })
+                        .start();
                 break;
         }
     }
