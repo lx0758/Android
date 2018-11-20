@@ -13,8 +13,6 @@ import com.liux.android.boxing.Request;
 import com.liux.android.boxing.Task;
 import com.yalantis.ucrop.UCrop;
 
-import java.io.File;
-
 public class CropRequest extends Request {
 
     Uri inUri, outUri;
@@ -51,7 +49,7 @@ public class CropRequest extends Request {
 
     @Override
     public void start() {
-        if (outUri == null) outUri = Uri.fromFile(new File(BoxingUtil.getCacheDir(target), String.valueOf(System.currentTimeMillis())));
+        if (outUri == null) outUri = Uri.fromFile(BoxingUtil.getCacheTempFile(target));
         BoxingFragment boxingFragment = BoxingUtil.getPermissionFragment(target);
         boxingFragment.executeTask(new Task() {
             @Override

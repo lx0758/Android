@@ -57,8 +57,7 @@ public class MultipleSelectRequest extends Request {
         if (true) {
             config.withCropOption(new BoxingCropOption(new Uri.Builder()
                     .scheme("file")
-                    .appendPath(BoxingUtil.getCacheDir(target).getAbsolutePath())
-                    .appendPath(String.valueOf(System.currentTimeMillis()))
+                    .appendPath(BoxingUtil.getCacheTempFile(target).getAbsolutePath())
                     .build()));
         }
 

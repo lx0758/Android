@@ -38,10 +38,10 @@ public class Boxinger {
     }
 
     public static Prepare with(Fragment fragment) {
-        return new Prepare(fragment);
+        return new Prepare(fragment.getActivity());
     }
 
     public static Prepare with(android.support.v4.app.Fragment fragment) {
-        return new Prepare(fragment);
+        return new Prepare(fragment.getActivity());
     }
 }

@@ -20,14 +20,6 @@ public class Prepare {
         target = activity;
     }
 
-    Prepare(Fragment fragment) {
-        target = fragment.getActivity();
-    }
-
-    Prepare(android.support.v4.app.Fragment fragment) {
-        target = fragment.getActivity();
-    }
-
     /**
      * 图片单选
      * @return

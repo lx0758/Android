@@ -8,6 +8,11 @@ import java.io.File;
 
 public class BoxingUtil {
 
+    /**
+     * 获取缓存目录
+     * @param context
+     * @return
+     */
     public static File getCacheDir(Context context) {
         context = context.getApplicationContext();
         File cacheDir = context.getExternalCacheDir();
@@ -19,6 +24,21 @@ public class BoxingUtil {
         return cache;
     }
 
+    /**
+     * 获取缓存目录一个临时文件
+     * @param context
+     * @return
+     */
+    public static File getCacheTempFile(Context context) {
+        File file = new File(getCacheDir(context), String.valueOf(System.currentTimeMillis()));
+        return file.exists() ? getCacheTempFile(context) : file;
+    }
+
+    /**
+     * 获取注入的 Fragment
+     * @param activity
+     * @return
+     */
     public static BoxingFragment getPermissionFragment(Activity activity) {
         BoxingFragment fragment;
         fragment = (BoxingFragment) activity.getFragmentManager().findFragmentByTag(Boxinger.TAG);

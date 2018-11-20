@@ -86,7 +86,7 @@ public class TakeRequest extends Request {
      */
     private void callTake() {
         if (outUri == null) {
-            File file = new File(BoxingUtil.getCacheDir(target), String.valueOf(System.currentTimeMillis()));
+            File file = BoxingUtil.getCacheTempFile(target);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
                 outUri = Uri.fromFile(file);
             } else {
