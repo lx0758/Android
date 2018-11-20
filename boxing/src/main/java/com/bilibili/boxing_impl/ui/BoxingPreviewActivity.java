@@ -28,9 +28,9 @@ import java.util.List;
 
 public class BoxingPreviewActivity extends AbsBoxingViewActivity {
     public static final String PARAM_IMAGES = "BoxingPreviewActivity_PARAM_IMAGES";
-    public static final String PARAM_POS = "BoxingPreviewActivity_PARAM_POS";
+    public static final String PARAM_POSITION = "BoxingPreviewActivity_PARAM_POSITION";
 
-    private int mPos;
+    private int mPosition;
     private boolean mFinishLoading;
     private ArrayList<BaseMedia> mImages;
 
@@ -66,7 +66,7 @@ public class BoxingPreviewActivity extends AbsBoxingViewActivity {
 
         mHint.setText(getString(
                 R.string.boxing_image_preview_title_fmt,
-                String.valueOf(++mPos),
+                String.valueOf(++mPosition),
                 String.valueOf(mImages.size())
         ));
     }
@@ -76,7 +76,7 @@ public class BoxingPreviewActivity extends AbsBoxingViewActivity {
         if (mImages != null) {
             outState.putParcelableArrayList(PARAM_IMAGES, mImages);
         }
-        outState.putInt(PARAM_POS, mPos);
+        outState.putInt(PARAM_POSITION, mPosition);
         super.onSaveInstanceState(outState);
     }
 
@@ -103,10 +103,10 @@ public class BoxingPreviewActivity extends AbsBoxingViewActivity {
     private void initData(Bundle savedInstanceState, Intent intent) {
         if (savedInstanceState != null) {
             mImages = savedInstanceState.getParcelableArrayList(PARAM_IMAGES);
-            mPos = savedInstanceState.getInt(PARAM_POS, 0);
+            mPosition = savedInstanceState.getInt(PARAM_POSITION, 0);
         } else if (intent != null) {
             mImages = intent.getParcelableArrayListExtra(PARAM_IMAGES);
-            mPos = intent.getIntExtra(PARAM_POS, 0);
+            mPosition = intent.getIntExtra(PARAM_POSITION, 0);
         }
     }
 
@@ -128,15 +128,15 @@ public class BoxingPreviewActivity extends AbsBoxingViewActivity {
     }
 
     private void setupGallery() {
-        if (mGallery == null || mPos < 0) {
+        if (mGallery == null || mPosition < 0) {
             return;
         }
-        if (mPos < mImages.size() && !mFinishLoading) {
-            mGallery.setCurrentItem(mPos, false);
+        if (mPosition < mImages.size() && !mFinishLoading) {
+            mGallery.setCurrentItem(mPosition, false);
             mProgressBar.setVisibility(View.GONE);
             mGallery.setVisibility(View.VISIBLE);
             mFinishLoading = true;
-        } else if (mPos >= mImages.size()) {
+        } else if (mPosition >= mImages.size()) {
             mProgressBar.setVisibility(View.VISIBLE);
             mGallery.setVisibility(View.GONE);
         }

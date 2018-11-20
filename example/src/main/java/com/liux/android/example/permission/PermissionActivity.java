@@ -118,8 +118,7 @@ public class PermissionActivity extends AppCompatActivity {
                             public void onRuntimePermission(List<String> allow, List<String> reject, List<String> prohibit) {
                                 if (allow.contains(Manifest.permission.CAMERA)) {
                                     Boxinger.with(PermissionActivity.this)
-                                            .take()
-                                            .authority(UriUtil.getAuthority(PermissionActivity.this))
+                                            .take(UriUtil.getAuthority(PermissionActivity.this))
                                             .listener(new OnTakeListener() {
                                                 @Override
                                                 public void onSucceed(Uri uri) {
@@ -178,8 +177,7 @@ public class PermissionActivity extends AppCompatActivity {
 
                                 if (allow.contains(Manifest.permission.CAMERA)) {
                                     Boxinger.with(PermissionActivity.this)
-                                            .take()
-                                            .authority(UriUtil.getAuthority(PermissionActivity.this))
+                                            .take(UriUtil.getAuthority(PermissionActivity.this))
                                             .listener(new OnTakeListener() {
                                                 @Override
                                                 public void onSucceed(Uri uri) {

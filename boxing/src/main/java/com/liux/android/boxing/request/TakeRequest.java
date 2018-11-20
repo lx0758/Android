@@ -26,18 +26,14 @@ public class TakeRequest extends Request {
     String authority;
     OnTakeListener onTakeListener;
 
-    public TakeRequest(Activity target) {
+    public TakeRequest(Activity target, Uri outUri) {
         super(target);
-    }
-
-    public TakeRequest outUri(Uri outUri) {
         this.outUri = outUri;
-        return this;
     }
 
-    public TakeRequest authority(String authority) {
+    public TakeRequest(Activity target, String authority) {
+        super(target);
         this.authority = authority;
-        return this;
     }
 
     public TakeRequest listener(OnTakeListener onTakeListener) {

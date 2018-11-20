@@ -36,7 +36,7 @@ public class PreviewRequest extends Request {
 
         Intent intent = new Intent(target, BoxingPreviewActivity.class);
         intent.putParcelableArrayListExtra(BoxingPreviewActivity.PARAM_IMAGES, medias);
-        intent.putExtra(BoxingPreviewActivity.PARAM_POS, position);
+        intent.putExtra(BoxingPreviewActivity.PARAM_POSITION, position);
         target.startActivity(intent);
     }
 }

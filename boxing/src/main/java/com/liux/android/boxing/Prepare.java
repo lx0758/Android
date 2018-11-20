@@ -53,11 +53,21 @@ public class Prepare {
     }
 
     /**
-     * 直接拍照
+     * .直接拍照
+     * @param outUri 输出Uri
      * @return
      */
-    public TakeRequest take() {
-        return new TakeRequest(target);
+    public TakeRequest take(Uri outUri) {
+        return new TakeRequest(target, outUri);
+    }
+
+    /**
+     * .直接拍照
+     * @param authority Uri权限
+     * @return
+     */
+    public TakeRequest take(String authority) {
+        return new TakeRequest(target, authority);
     }
 
     /**

@@ -162,8 +162,7 @@ public class BoxingActivity extends AppCompatActivity {
             case R.id.btn_screen_crop:
                 Boxinger
                         .with(BoxingActivity.this)
-                        .take()
-                        .authority(UriUtil.getAuthority(this))
+                        .take(UriUtil.getAuthority(this))
                         .listener(new OnTakeListener() {
                             @Override
                             public void onSucceed(Uri uri) {
