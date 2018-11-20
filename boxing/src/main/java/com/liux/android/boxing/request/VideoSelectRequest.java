@@ -50,7 +50,7 @@ public class VideoSelectRequest extends Request {
                 List<BaseMedia> medias = Boxing.getResult(data);
                 if (medias == null) return;
 
-                onVideoSelectListener.onVideoSelect((VideoMedia) medias.get(0));
+                if (onVideoSelectListener != null) onVideoSelectListener.onVideoSelect((VideoMedia) medias.get(0));
             }
 
             @Override

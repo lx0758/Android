@@ -14,45 +14,62 @@ import android.support.v4.content.PermissionChecker;
 
 import com.liux.android.boxing.BoxingFragment;
 import com.liux.android.boxing.BoxingUtil;
+import com.liux.android.boxing.OnRecordListener;
 import com.liux.android.boxing.OnTakeListener;
 import com.liux.android.boxing.Request;
 import com.liux.android.boxing.Task;
 
 import java.io.File;
 
-public class TakeRequest extends Request {
+public class RecordRequest extends Request {
 
     Uri outUri;
     String authority;
-    OnTakeListener onTakeListener;
+    int duration, size, quality;
+    OnRecordListener onRecordListener;
 
-    public TakeRequest(Activity target, Uri outUri) {
+    public RecordRequest(Activity target, Uri outUri) {
         super(target);
         this.outUri = outUri;
     }
 
-    public TakeRequest(Activity target, String authority) {
+    public RecordRequest(Activity target, String authority) {
         super(target);
         this.authority = authority;
     }
 
-    public TakeRequest listener(OnTakeListener onTakeListener) {
-        this.onTakeListener = onTakeListener;
+    public RecordRequest duration(int duration) {
+        this.duration = duration;
+        return this;
+    }
+
+    public RecordRequest size(int size) {
+        this.size = size;
+        return this;
+    }
+
+    public RecordRequest quality(int quality) {
+        if (quality < 0) quality = 0;
+        if (quality > 1) quality = 1;
+        this.quality = quality;
+        return this;
+    }
+
+    public RecordRequest listener(OnRecordListener onRecordListener) {
+        this.onRecordListener = onRecordListener;
         return this;
     }
 
     @Override
     public void start() {
-        if (PermissionChecker.checkCallingOrSelfPermission(target, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        if (PermissionChecker.checkCallingOrSelfPermission(target, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                PermissionChecker.checkCallingOrSelfPermission(target, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             callRequestPermission();
         } else {
-            callTake();
+            callRecord();
         }
     }
 
-    /**
-     * 申请权限
-     */
     private void callRequestPermission() {
         BoxingFragment boxingFragment = BoxingUtil.getPermissionFragment(target);
         boxingFragment.executeTask(new Task() {
@@ -60,7 +77,7 @@ public class TakeRequest extends Request {
             @TargetApi(Build.VERSION_CODES.M)
             public void onMainThreadExecute(int requestCode, BoxingFragment boxingFragment) {
                 boxingFragment.requestPermissions(
-                        new String[]{Manifest.permission.CAMERA},
+                        new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO},
                         requestCode
                 );
             }
@@ -72,8 +89,9 @@ public class TakeRequest extends Request {
 
             @Override
             public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-                if (PermissionChecker.checkCallingOrSelfPermission(target, Manifest.permission.CAMERA) == PermissionChecker.PERMISSION_GRANTED) {
-                    callTake();
+                if (PermissionChecker.checkCallingOrSelfPermission(target, Manifest.permission.CAMERA) == PermissionChecker.PERMISSION_GRANTED &&
+                        PermissionChecker.checkCallingOrSelfPermission(target, Manifest.permission.RECORD_AUDIO) == PermissionChecker.PERMISSION_GRANTED) {
+                    callRecord();
                     return;
                 }
                 callFailure(OnTakeListener.ERROR_PERMISSION);
@@ -81,10 +99,7 @@ public class TakeRequest extends Request {
         });
     }
 
-    /**
-     * 调用相机拍照
-     */
-    private void callTake() {
+    private void callRecord() {
         if (outUri == null) {
             File file = new File(BoxingUtil.getCacheDir(target), String.valueOf(System.currentTimeMillis()));
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
@@ -98,15 +113,17 @@ public class TakeRequest extends Request {
             @Override
             public void onMainThreadExecute(int requestCode, BoxingFragment boxingFragment) {
                 try {
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
                     intent.addCategory(Intent.CATEGORY_DEFAULT);
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, outUri);
-                    intent.putExtra("return-data", false);
+                    intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, quality);
+                    if (duration > 0) intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, duration);
+                    if (size > 0) intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, size);
                     boxingFragment.startActivityForResult(intent, requestCode);
                 } catch (Exception e) {
-                    callFailure(OnTakeListener.ERROR_INTENT);
+                    callFailure(OnRecordListener.ERROR_INTENT);
                 }
             }
 
@@ -127,7 +144,7 @@ public class TakeRequest extends Request {
      * 处理成功
      */
     private void callSucceed() {
-        if (onTakeListener != null) onTakeListener.onSucceed(outUri);
+        if (onRecordListener != null) onRecordListener.onSucceed(outUri);
     }
 
     /**
@@ -135,6 +152,6 @@ public class TakeRequest extends Request {
      * @param type
      */
     private void callFailure(int type) {
-        if (onTakeListener != null) onTakeListener.onFailure(type);
+        if (onRecordListener != null) onRecordListener.onFailure(type);
     }
 }

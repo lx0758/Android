@@ -53,12 +53,20 @@
             android:text="视频单选" />
 
         <Button
-            android:id="@+id/btn_screen_crop"
+            android:id="@+id/btn_take_and_crop"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:text="拍照裁剪" />
+
+        <Button
+            android:id="@+id/btn_record"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="视频录制" />
 
     </LinearLayout>
 

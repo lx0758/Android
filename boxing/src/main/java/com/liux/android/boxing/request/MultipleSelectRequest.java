@@ -80,7 +80,7 @@ public class MultipleSelectRequest extends Request {
                 for (BaseMedia media : medias) {
                     imageMedias.add((ImageMedia) media);
                 }
-                onMultiSelectListener.onMultiSelect(imageMedias);
+                if (onMultiSelectListener != null) onMultiSelectListener.onMultiSelect(imageMedias);
             }
 
             @Override

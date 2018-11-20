@@ -7,6 +7,7 @@ import android.net.Uri;
 import com.liux.android.boxing.request.CropRequest;
 import com.liux.android.boxing.request.MultipleSelectRequest;
 import com.liux.android.boxing.request.PreviewRequest;
+import com.liux.android.boxing.request.RecordRequest;
 import com.liux.android.boxing.request.SingleSelectRequest;
 import com.liux.android.boxing.request.TakeRequest;
 import com.liux.android.boxing.request.VideoSelectRequest;
@@ -53,7 +54,7 @@ public class Prepare {
     }
 
     /**
-     * .直接拍照
+     * .调用系统相机直接拍照
      * @param outUri 输出Uri
      * @return
      */
@@ -62,12 +63,30 @@ public class Prepare {
     }
 
     /**
-     * .直接拍照
+     * .调用系统相机直接拍照
      * @param authority Uri权限
      * @return
      */
     public TakeRequest take(String authority) {
         return new TakeRequest(target, authority);
+    }
+
+    /**
+     * .调用系统相机进行录像
+     * @param outUri 输出Uri
+     * @return
+     */
+    public RecordRequest record(Uri outUri) {
+        return new RecordRequest(target, outUri);
+    }
+
+    /**
+     * .调用系统相机进行录像
+     * @param authority Uri权限
+     * @return
+     */
+    public RecordRequest record(String authority) {
+        return new RecordRequest(target, authority);
     }
 
     /**

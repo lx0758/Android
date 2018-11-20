@@ -76,7 +76,7 @@ public class SingleSelectRequest extends Request {
                 List<BaseMedia> medias = Boxing.getResult(data);
                 if (medias == null) return;
 
-                onSingleSelectListener.onSingleSelect((ImageMedia) medias.get(0));
+                if (onSingleSelectListener != null) onSingleSelectListener.onSingleSelect((ImageMedia) medias.get(0));
             }
 
             @Override

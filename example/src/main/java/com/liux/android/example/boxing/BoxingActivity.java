@@ -19,6 +19,7 @@ import com.liux.android.boxing.Boxinger;
 import com.liux.android.boxing.BoxingUcrop;
 import com.liux.android.boxing.OnCropListener;
 import com.liux.android.boxing.OnMultiSelectListener;
+import com.liux.android.boxing.OnRecordListener;
 import com.liux.android.boxing.OnSingleSelectListener;
 import com.liux.android.boxing.OnTakeListener;
 import com.liux.android.boxing.OnVideoSelectListener;
@@ -31,7 +32,6 @@ import com.liux.android.list.holder.SuperHolder;
 import com.liux.android.tool.TT;
 import com.liux.android.util.UriUtil;
 
-import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -93,7 +93,7 @@ public class BoxingActivity extends AppCompatActivity {
         BoxingMediaLoader.getInstance().init(new BoxingGlideLoader());
     }
 
-    @OnClick({R.id.btn_select_pic, R.id.btn_select_pic_clip, R.id.btn_select_pics, R.id.btn_select_video,R.id.btn_screen_crop})
+    @OnClick({R.id.btn_select_pic, R.id.btn_select_pic_clip, R.id.btn_select_pics, R.id.btn_select_video,R.id.btn_take_and_crop,R.id.btn_record})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_select_pic:
@@ -159,7 +159,7 @@ public class BoxingActivity extends AppCompatActivity {
                         })
                         .start();
                 break;
-            case R.id.btn_screen_crop:
+            case R.id.btn_take_and_crop:
                 Boxinger
                         .with(BoxingActivity.this)
                         .take(UriUtil.getAuthority(this))
@@ -173,7 +173,7 @@ public class BoxingActivity extends AppCompatActivity {
                                             @Override
                                             public void onSucceed(Uri output) {
                                                 mMultipleAdapter.getData().clear();
-                                                mMultipleAdapter.getData().add(output.getPath());
+                                                mMultipleAdapter.getData().add(output.toString());
                                                 mMultipleAdapter.notifyDataSetChanged();
                                             }
 
@@ -192,6 +192,34 @@ public class BoxingActivity extends AppCompatActivity {
                                         TT.show(BoxingActivity.this, "没有找到相机程序", TT.LENGTH_SHORT);
                                         break;
                                     case OnTakeListener.ERROR_PERMISSION:
+                                        TT.show(BoxingActivity.this, "没有授权使用相机权限", TT.LENGTH_SHORT);
+                                        break;
+                                }
+                            }
+                        })
+                        .start();
+                break;
+            case R.id.btn_record:
+                Boxinger.with(this)
+                        .record(UriUtil.getAuthority(this))
+                        .duration(30)
+                        .size(2 * 1024 * 1024)
+                        .quality(0)
+                        .listener(new OnRecordListener() {
+                            @Override
+                            public void onSucceed(Uri uri) {
+                                mMultipleAdapter.getData().clear();
+                                mMultipleAdapter.getData().add(uri.toString());
+                                mMultipleAdapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onFailure(int type) {
+                                switch (type) {
+                                    case OnRecordListener.ERROR_INTENT:
+                                        TT.show(BoxingActivity.this, "没有找到相机程序", TT.LENGTH_SHORT);
+                                        break;
+                                    case OnRecordListener.ERROR_PERMISSION:
                                         TT.show(BoxingActivity.this, "没有授权使用相机权限", TT.LENGTH_SHORT);
                                         break;
                                 }
