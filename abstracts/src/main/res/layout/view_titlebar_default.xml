@@ -10,15 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
-        android:paddingTop="2.5dp"
-        android:paddingBottom="2.5dp"
         android:paddingLeft="0dp"
         android:paddingRight="0dp">
 
         <LinearLayout
             android:id="@+id/view_titlebar_default_back"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="?attr/actionBarSize"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:orientation="horizontal"
@@ -51,6 +49,7 @@
             android:layout_centerInParent="true"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
+            android:includeFontPadding="false"
             android:singleLine="true"
             android:ellipsize="marquee"
             android:textColor="#FFFFFF"
@@ -59,7 +58,7 @@
         <RelativeLayout
             android:id="@+id/view_titlebar_default_more"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="?attr/actionBarSize"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
