@@ -17,6 +17,7 @@ import com.bilibili.boxing.model.entity.impl.VideoMedia;
 import com.liux.android.boxing.BoxingGlideLoader;
 import com.liux.android.boxing.Boxinger;
 import com.liux.android.boxing.BoxingUcrop;
+import com.liux.android.boxing.OnCancelListener;
 import com.liux.android.boxing.OnCropListener;
 import com.liux.android.boxing.OnMultiSelectListener;
 import com.liux.android.boxing.OnRecordListener;
@@ -88,9 +89,7 @@ public class BoxingActivity extends AppCompatActivity {
                 });
         rvList.setAdapter(mMultipleAdapter);
 
-        /* 初始化Boxing */
-        BoxingCrop.getInstance().init(new BoxingUcrop());
-        BoxingMediaLoader.getInstance().init(new BoxingGlideLoader());
+        Boxinger.init();
     }
 
     @OnClick({R.id.btn_select_pic, R.id.btn_select_pic_clip, R.id.btn_select_pics, R.id.btn_select_video,R.id.btn_take_and_crop,R.id.btn_record})
@@ -102,6 +101,12 @@ public class BoxingActivity extends AppCompatActivity {
                         .singleSelect()
                         .useCamera(true)
                         .useCrop(false)
+                        .listener(new OnCancelListener() {
+                            @Override
+                            public void onCancel() {
+
+                            }
+                        })
                         .listener(new OnSingleSelectListener() {
                             @Override
                             public void onSingleSelect(ImageMedia imageMedia) {
@@ -118,6 +123,12 @@ public class BoxingActivity extends AppCompatActivity {
                         .singleSelect()
                         .useCamera(true)
                         .useCrop(true)
+                        .listener(new OnCancelListener() {
+                            @Override
+                            public void onCancel() {
+
+                            }
+                        })
                         .listener(new OnSingleSelectListener() {
                             @Override
                             public void onSingleSelect(ImageMedia imageMedia) {
@@ -133,6 +144,12 @@ public class BoxingActivity extends AppCompatActivity {
                         .with(this)
                         .multipleSelect(5)
                         .useCamera(true)
+                        .listener(new OnCancelListener() {
+                            @Override
+                            public void onCancel() {
+
+                            }
+                        })
                         .listener(new OnMultiSelectListener() {
                             @Override
                             public void onMultiSelect(List<ImageMedia> imageMedias) {
@@ -149,6 +166,12 @@ public class BoxingActivity extends AppCompatActivity {
                 Boxinger
                         .with(this)
                         .videoSelect()
+                        .listener(new OnCancelListener() {
+                            @Override
+                            public void onCancel() {
+
+                            }
+                        })
                         .listener(new OnVideoSelectListener() {
                             @Override
                             public void onVideoSelect(VideoMedia videoMedia) {
@@ -163,6 +186,12 @@ public class BoxingActivity extends AppCompatActivity {
                 Boxinger
                         .with(BoxingActivity.this)
                         .take(UriUtil.getAuthority(this))
+                        .listener(new OnCancelListener() {
+                            @Override
+                            public void onCancel() {
+
+                            }
+                        })
                         .listener(new OnTakeListener() {
                             @Override
                             public void onSucceed(Uri uri) {
@@ -205,6 +234,12 @@ public class BoxingActivity extends AppCompatActivity {
                         .duration(30)
                         .size(2 * 1024 * 1024)
                         .quality(0)
+                        .listener(new OnCancelListener() {
+                            @Override
+                            public void onCancel() {
+
+                            }
+                        })
                         .listener(new OnRecordListener() {
                             @Override
                             public void onSucceed(Uri uri) {

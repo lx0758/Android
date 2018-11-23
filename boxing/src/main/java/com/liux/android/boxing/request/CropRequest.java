@@ -8,12 +8,13 @@ import android.support.annotation.NonNull;
 import com.liux.android.boxing.BoxingFragment;
 import com.liux.android.boxing.BoxingUcrop;
 import com.liux.android.boxing.BoxingUtil;
+import com.liux.android.boxing.OnCancelListener;
 import com.liux.android.boxing.OnCropListener;
 import com.liux.android.boxing.Request;
 import com.liux.android.boxing.Task;
 import com.yalantis.ucrop.UCrop;
 
-public class CropRequest extends Request {
+public class CropRequest extends Request<CropRequest> {
 
     Uri inUri, outUri;
     OnCropListener onCropListener;
@@ -48,6 +49,11 @@ public class CropRequest extends Request {
     }
 
     @Override
+    public CropRequest listener(OnCancelListener onCancelListener) {
+        return super.listener(onCancelListener);
+    }
+
+    @Override
     public void start() {
         if (outUri == null) outUri = Uri.fromFile(BoxingUtil.getCacheTempFile(target));
         BoxingFragment boxingFragment = BoxingUtil.getPermissionFragment(target);
@@ -62,14 +68,16 @@ public class CropRequest extends Request {
 
             @Override
             public void onActivityResult(int resultCode, Intent data) {
-                if (data == null) return;
+                if (resultCode != Activity.RESULT_OK) {
+                    if (onCancelListener != null) onCancelListener.onCancel();
+                    return;
+                }
 
                 Throwable throwable = UCrop.getError(data);
                 if (throwable != null) {
                     callFailure();
                     return;
                 }
-
                 callSucceed(UCrop.getOutput(data));
             }
 

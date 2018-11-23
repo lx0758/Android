@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.bilibili.boxing.Boxing;
+import com.bilibili.boxing.BoxingCrop;
+import com.bilibili.boxing.BoxingMediaLoader;
 import com.bilibili.boxing.model.config.BoxingConfig;
 import com.bilibili.boxing.model.config.BoxingCropOption;
 import com.bilibili.boxing.model.entity.BaseMedia;
@@ -32,6 +34,11 @@ import java.util.concurrent.ExecutionException;
 public class Boxinger {
 
     public static final String TAG = "Boxinger";
+
+    public static void init() {
+        BoxingCrop.getInstance().init(new BoxingUcrop());
+        BoxingMediaLoader.getInstance().init(new BoxingGlideLoader());
+    }
 
     public static Prepare with(Activity activity) {
         return new Prepare(activity);

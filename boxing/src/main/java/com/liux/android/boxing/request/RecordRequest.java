@@ -14,6 +14,7 @@ import android.support.v4.content.PermissionChecker;
 
 import com.liux.android.boxing.BoxingFragment;
 import com.liux.android.boxing.BoxingUtil;
+import com.liux.android.boxing.OnCancelListener;
 import com.liux.android.boxing.OnRecordListener;
 import com.liux.android.boxing.OnTakeListener;
 import com.liux.android.boxing.Request;
@@ -21,7 +22,7 @@ import com.liux.android.boxing.Task;
 
 import java.io.File;
 
-public class RecordRequest extends Request {
+public class RecordRequest extends Request<RecordRequest> {
 
     Uri outUri;
     String authority;
@@ -58,6 +59,11 @@ public class RecordRequest extends Request {
     public RecordRequest listener(OnRecordListener onRecordListener) {
         this.onRecordListener = onRecordListener;
         return this;
+    }
+
+    @Override
+    public RecordRequest listener(OnCancelListener onCancelListener) {
+        return super.listener(onCancelListener);
     }
 
     @Override
@@ -129,7 +135,10 @@ public class RecordRequest extends Request {
 
             @Override
             public void onActivityResult(int resultCode, Intent data) {
-                if (Activity.RESULT_OK != resultCode) return;
+                if (resultCode != Activity.RESULT_OK) {
+                    if (onCancelListener != null) onCancelListener.onCancel();
+                    return;
+                }
                 callSucceed();
             }
 

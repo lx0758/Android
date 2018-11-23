@@ -6,11 +6,12 @@ import android.content.Intent;
 import com.bilibili.boxing.model.entity.BaseMedia;
 import com.bilibili.boxing.model.entity.impl.ImageMedia;
 import com.bilibili.boxing_impl.ui.BoxingPreviewActivity;
+import com.liux.android.boxing.OnCancelListener;
 import com.liux.android.boxing.Request;
 
 import java.util.ArrayList;
 
-public class PreviewRequest extends Request {
+public class PreviewRequest extends Request<PreviewRequest> {
 
     String[] medias;
     int position;
@@ -25,6 +26,11 @@ public class PreviewRequest extends Request {
         if (position >= medias.length) position = medias.length - 1;
         this.position = position;
         return this;
+    }
+
+    @Override
+    public PreviewRequest listener(OnCancelListener onCancelListener) {
+        return super.listener(onCancelListener);
     }
 
     @Override
