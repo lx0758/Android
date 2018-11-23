@@ -10,6 +10,7 @@ import com.google.zxing.MultiFormatReader;
 import com.google.zxing.PlanarYUVLuminanceSource;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
+import com.liux.android.qrcode.QRCodeScanningFragment;
 import com.liux.android.qrcode.camrea.PreviewFrame;
 
 import java.util.Arrays;
@@ -71,14 +72,16 @@ public class DecodeHandler extends Handler {
             mDecodeCallback.onLightness(mLightnessList);
         }
 
-        Log.d("DecodeHandler", String.format(
-                "parsing frame: %dx%d, time: %dms, lightness: %s, text: %s",
-                previewFrame.getWidth(),
-                previewFrame.getHeight(),
-                System.currentTimeMillis() - time,
-                Arrays.toString(mLightnessList),
-                result == null ? null : result.getText()
-        ));
+        if (QRCodeScanningFragment.DEBUG) {
+            Log.d("DecodeHandler", String.format(
+                    "parsing frame: %dx%d, time: %dms, lightness: %s, text: %s",
+                    previewFrame.getWidth(),
+                    previewFrame.getHeight(),
+                    System.currentTimeMillis() - time,
+                    Arrays.toString(mLightnessList),
+                    result == null ? null : result.getText()
+            ));
+        }
 
         mProcessing = false;
     }
@@ -136,7 +139,7 @@ public class DecodeHandler extends Handler {
             BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(planarYUVLuminanceSource));
             result = mMultiFormatReader.decodeWithState(binaryBitmap);
         } catch (Exception ignore) {} finally {
-            mMultiFormatReader.reset();
+            if (mMultiFormatReader != null) mMultiFormatReader.reset();
         }
 
         return  result;
