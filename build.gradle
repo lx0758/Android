@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        flatDir { dirs '../aarlibs' }
+        flatDir { dirs rootProject.projectDir.getAbsolutePath() + File.separator + 'aarlibs' }
         maven { url 'http://maven.aliyun.com/repository/public/' }
         maven { url 'http://maven.6xyun.cn/' }
         maven { url 'https://dl.bintray.com/novoda/maven/' }
@@ -20,7 +20,7 @@ buildscript {
 
 allprojects{
     repositories {
-        flatDir { dirs '../aarlibs' }
+        flatDir { dirs rootProject.projectDir.getAbsolutePath() + File.separator + 'aarlibs' }
         maven { url 'http://maven.aliyun.com/repository/public/' }
         maven { url 'http://maven.6xyun.cn/' }
         //google()
