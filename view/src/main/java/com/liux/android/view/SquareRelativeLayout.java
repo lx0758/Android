@@ -6,9 +6,12 @@ import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
 /**
- * 正方形的RelativeLayout
- * Created by Liux on 16-03-15.
+ * date：2016-03-15
+ * author：Liux
+ * email：lx0758@qq.com
+ * description：正方形的RelativeLayout
  */
+
 public class SquareRelativeLayout extends RelativeLayout {
 
     private boolean mAlignWidth;

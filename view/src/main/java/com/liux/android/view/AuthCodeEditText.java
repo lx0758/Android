@@ -20,9 +20,10 @@ import android.widget.EditText;
 import java.util.Arrays;
 
 /**
- * 2018/2/25
- * By Liux
- * lx0758@qq.com
+ * date：2018/2/25
+ * author：Liux
+ * email：lx0758@qq.com
+ * description：验证码输入编辑框
  */
 
 public class AuthCodeEditText extends EditText {

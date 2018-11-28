@@ -7,7 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Created by Liux on 2017/8/2.
+ * date：2017/8/2
+ * author：Liux
+ * email：lx0758@qq.com
+ * description：流式布局
  */
 
 public class FlowLayout extends ViewGroup {

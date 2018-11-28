@@ -11,6 +11,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 
+/**
+ * date：2018/11/28 14:04
+ * author：Liux
+ * email：lx0758@qq.com
+ * description：带清除按钮的编辑框
+ */
+
 public class ClearEditText extends EditText {
     private static String TAG = "ClearEditText";
 
