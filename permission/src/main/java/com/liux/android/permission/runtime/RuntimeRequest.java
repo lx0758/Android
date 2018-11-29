@@ -136,8 +136,9 @@ public class RuntimeRequest extends Request<RuntimeRequest> {
      * 检查请求后的权限状态
      * 经测试 shouldShowRequestPermissionRationale 返回值主要以下几种情况 ：
      * 第一次打开App时	                                            false
-     * 上次弹出权限点击了禁止（但没有勾选“下次不在询问”）	        true
-     * 上次选择禁止并勾选：下次不在询问	                            false
+     * 允许某个权限之后	                                            false
+     * 上次弹出权限点击了禁止，但没有勾选“下次不在询问”	        true
+     * 上次选择禁止，并勾选“下次不在询问”	                        false
      * 所以放在请求返回之后判断
      */
     @TargetApi(Build.VERSION_CODES.M)
