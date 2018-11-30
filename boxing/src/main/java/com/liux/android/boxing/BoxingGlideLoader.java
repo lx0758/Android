@@ -34,7 +34,8 @@ public class BoxingGlideLoader implements IBoxingMediaLoader {
         GlideRequest<Bitmap> request = GlideApp.with(img.getContext())
                 .asBitmap()
                 .centerInside()
-                .load(absPath);
+                .load(absPath)
+                .skipMemoryCache(true);
         if (width > 0 && height > 0) {
             request.override(width, height);
         }
