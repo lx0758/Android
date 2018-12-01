@@ -38,7 +38,7 @@ public class AbstractsActivity extends AppCompatActivity {
             case R.id.btn_fragment:
                 intent = new Intent(this, FragmentActivity.class);
                 break;
-            case R.id.btn_dialog:
+            case R.id.btn_abstracts_dialog:
                 intent = new Intent(this, DialogActivity.class);
                 break;
         }

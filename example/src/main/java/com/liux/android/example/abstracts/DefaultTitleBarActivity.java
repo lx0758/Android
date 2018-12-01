@@ -25,7 +25,7 @@ public class DefaultTitleBarActivity extends AbstractsActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base_demo);
+        setContentView(R.layout.activity_abstracts_demo);
         ButterKnife.bind(this);
 
 //        DefaultTitleBar titleBar = getTitleBar();

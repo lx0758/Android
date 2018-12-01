@@ -21,7 +21,7 @@ public class WhiteTitleBarActivity extends com.liux.android.abstracts.AbstractsA
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base_demo);
+        setContentView(R.layout.activity_abstracts_demo);
 //        DefaultTitleBar titleBar = getTitleBar();
 //        titleBar
 //                .setTitleBarColor()

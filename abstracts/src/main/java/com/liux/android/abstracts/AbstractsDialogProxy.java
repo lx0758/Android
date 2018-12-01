@@ -2,9 +2,7 @@ package com.liux.android.abstracts;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.view.ViewGroup;
-
-import com.liux.android.abstracts.util.DialogUtil;
+import android.view.Window;
 
 /**
  * 2018/2/12
@@ -15,40 +13,32 @@ import com.liux.android.abstracts.util.DialogUtil;
 public class AbstractsDialogProxy {
 
     private IAbstractsDialog mIAbstractsDialog;
+    private boolean mWidthMatchParentLayout = false, mHeightMatchParentLayout = false;
 
     public AbstractsDialogProxy(IAbstractsDialog IAbstractsDialog) {
         mIAbstractsDialog = IAbstractsDialog;
     }
 
+    public void initDialog() {
+        mIAbstractsDialog.getTarget().getDelegate().requestWindowFeature(Window.FEATURE_NO_TITLE);
+    }
+
     public void onContentChanged() {
-        if (mFullScreen) {
-            mIAbstractsDialog.getTarget().getWindow().setBackgroundDrawable(mBackground);
-            mIAbstractsDialog.getTarget().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        // 处理不能撑满布局的问题
+        if (mWidthMatchParentLayout) {
+            mIAbstractsDialog.getTarget().getWindow().getDecorView().setMinimumWidth(10000);
         }
+        if (mHeightMatchParentLayout) {
+            mIAbstractsDialog.getTarget().getWindow().getDecorView().setMinimumHeight(10000);
+        }
+
+        // 移除自带的边距
+        mIAbstractsDialog.getTarget().getWindow().getDecorView().setPadding(0, 0, 0, 0);
+        mIAbstractsDialog.getTarget().getWindow().getDecorView().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
     }
 
-    // ===============================================================
-
-    private boolean mFullScreen = false;
-    private ColorDrawable mBackground = new ColorDrawable(Color.TRANSPARENT);
-
-    public void openTranslucentMode() {
-        DialogUtil.openTranslucentMode(mIAbstractsDialog.getTarget());
-    }
-
-    public boolean isFullScreen() {
-        return mFullScreen;
-    }
-
-    public void setFullScreen(boolean fullScreen) {
-        mFullScreen = fullScreen;
-    }
-
-    public int getBackgroundColor() {
-        return mBackground.getColor();
-    }
-
-    public void setBackgroundColor(int color) {
-        mBackground = new ColorDrawable(color);
+    public void setMatchParentLayout(boolean width, boolean height) {
+        mWidthMatchParentLayout = width;
+        mHeightMatchParentLayout = height;
     }
 }

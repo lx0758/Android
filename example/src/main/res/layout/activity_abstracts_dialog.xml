@@ -11,15 +11,7 @@
         android:gravity="center">
 
         <Button
-            android:id="@+id/btn_dialog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:text="Dialog"
-            android:onClick="onClick"/>
-
-        <Button
-            android:id="@+id/btn_app_dialog"
+            android:id="@+id/btn_appcompat_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
@@ -27,11 +19,19 @@
             android:onClick="onClick"/>
 
         <Button
-            android:id="@+id/btn_base_dialog"
+            android:id="@+id/btn_abstracts_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
-            android:text="BaseDialog"
+            android:text="AbstractsDialog"
+            android:onClick="onClick"/>
+
+        <Button
+            android:id="@+id/btn_abstracts_dialog_fragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="AbstractsDialogFragment"
             android:onClick="onClick"/>
 
     </LinearLayout>
