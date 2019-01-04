@@ -32,7 +32,7 @@ repositories {
 
 [downloader](/downloader/README.md)
 ---
-	全局/多线程/多任务/断点续传HTTP下载器
+	全局/单线程/多任务/断点续传HTTP下载器
 
 [glide](/glide/README.md)
 ---
@@ -41,10 +41,6 @@ repositories {
 [http](/http/README.md)
 ---
 	封装OkHttp3和Retrofit2的全局单例Http客户端,并添加了持久化Cookie相关能力
-
-[lbs](/lbs/README.md)
----
-	基于百度地图和高德地图的业务层Model封装
 
 [list](/list/README.md)
 ---
