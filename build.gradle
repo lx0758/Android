@@ -1,9 +1,11 @@
 buildscript {
     repositories {
-        flatDir { dirs '../aarlibs' }
-        maven { url 'http://maven.aliyun.com/repository/public/' }
+        flatDir { dirs rootProject.projectDir.getAbsolutePath() + File.separator + 'aarlibs' }
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/central/' }
+        maven { url 'https://maven.aliyun.com/repository/google/' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter/' }
         maven { url 'http://maven.6xyun.cn/' }
-        maven { url 'https://dl.bintray.com/novoda/maven/' }
         //google()
         //jcenter()
         //mavenLocal()
@@ -20,8 +22,11 @@ buildscript {
 
 allprojects{
     repositories {
-        flatDir { dirs '../aarlibs' }
-        maven { url 'http://maven.aliyun.com/repository/public/' }
+        flatDir { dirs rootProject.projectDir.getAbsolutePath() + File.separator + 'aarlibs' }
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/central/' }
+        maven { url 'https://maven.aliyun.com/repository/google/' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter/' }
         maven { url 'http://maven.6xyun.cn/' }
         //google()
         //jcenter()
