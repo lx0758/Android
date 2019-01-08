@@ -22,6 +22,9 @@ implementation 'com.liux.android:pay:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
+    1.
+
+### 0.1.3_2019-01-08
     1.升级支付宝SDK
 
 ### 0.1.2_2018-10-31

@@ -16,7 +16,10 @@ implementation 'com.liux.android:abstracts:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
-    1.优化默认的TitleBar尺寸属性
+    1.
+
+### 0.1.1_2019-01-08
+    1.优化默认的 TitleBar 尺寸属性
     2.添加基础的 DialogFragment 支持
 
 ### 0.1.0_2018-10-14
