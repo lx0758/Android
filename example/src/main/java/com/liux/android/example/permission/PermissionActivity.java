@@ -13,7 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.liux.android.boxing.Cameraer;
+import com.liux.android.boxing.Boxinger;
+import com.liux.android.boxing.OnTakeListener;
 import com.liux.android.example.R;
 import com.liux.android.glide.GlideApp;
 import com.liux.android.permission.Authorizer;
@@ -22,10 +23,9 @@ import com.liux.android.permission.OnContinueListener;
 import com.liux.android.permission.floats.OnFloatPermissionListener;
 import com.liux.android.permission.install.OnInstallPermissionListener;
 import com.liux.android.permission.runtime.OnRuntimePermissionListener;
-import com.liux.android.util.UriUtil;
 import com.liux.android.tool.TT;
+import com.liux.android.util.UriUtil;
 
-import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -117,21 +117,23 @@ public class PermissionActivity extends AppCompatActivity {
                             @Override
                             public void onRuntimePermission(List<String> allow, List<String> reject, List<String> prohibit) {
                                 if (allow.contains(Manifest.permission.CAMERA)) {
-                                    Cameraer.setAuthority(UriUtil.getAuthority(PermissionActivity.this));
-                                    Cameraer.start(PermissionActivity.this, new Cameraer.OnCameraListener() {
-                                        @Override
-                                        public void onSucceed(File file) {
-                                            GlideApp.with(ivPreview)
-                                                    .asBitmap()
-                                                    .load(file)
-                                                    .into(ivPreview);
-                                        }
+                                    Boxinger.with(PermissionActivity.this)
+                                            .take(UriUtil.getAuthority(PermissionActivity.this))
+                                            .listener(new OnTakeListener() {
+                                                @Override
+                                                public void onSucceed(Uri uri) {
+                                                    GlideApp.with(ivPreview)
+                                                            .asBitmap()
+                                                            .load(uri)
+                                                            .into(ivPreview);
+                                                }
 
-                                        @Override
-                                        public void onFailure(int type) {
+                                                @Override
+                                                public void onFailure(int type) {
 
-                                        }
-                                    });
+                                                }
+                                            })
+                                            .start();
                                 } else {
                                     TT.show(PermissionActivity.this, "没有拍照权限", TT.LENGTH_SHORT);
                                 }
@@ -174,21 +176,23 @@ public class PermissionActivity extends AppCompatActivity {
                                 }
 
                                 if (allow.contains(Manifest.permission.CAMERA)) {
-                                    Cameraer.setAuthority(UriUtil.getAuthority(PermissionActivity.this));
-                                    Cameraer.start(PermissionActivity.this, new Cameraer.OnCameraListener() {
-                                        @Override
-                                        public void onSucceed(File file) {
-                                            GlideApp.with(ivPreview)
-                                                    .asBitmap()
-                                                    .load(file)
-                                                    .into(ivPreview);
-                                        }
+                                    Boxinger.with(PermissionActivity.this)
+                                            .take(UriUtil.getAuthority(PermissionActivity.this))
+                                            .listener(new OnTakeListener() {
+                                                @Override
+                                                public void onSucceed(Uri uri) {
+                                                    GlideApp.with(ivPreview)
+                                                            .asBitmap()
+                                                            .load(uri)
+                                                            .into(ivPreview);
+                                                }
 
-                                        @Override
-                                        public void onFailure(int type) {
+                                                @Override
+                                                public void onFailure(int type) {
 
-                                        }
-                                    });
+                                                }
+                                            })
+                                            .start();
                                 } else {
                                     TT.show(PermissionActivity.this, "没有拍照权限", TT.LENGTH_SHORT);
                                 }

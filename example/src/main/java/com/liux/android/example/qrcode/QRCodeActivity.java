@@ -71,121 +71,146 @@ public class QRCodeActivity extends AppCompatActivity {
                 break;
             case R.id.btn_bitmap_decode:
                 // FIXME: memory overflow may occur here
-                Boxinger.startSingle(this, true, false, new OnSingleSelectListener() {
-                    @Override
-                    public void onSingleSelect(ImageMedia imageMedia) {
-                        File file = new File(imageMedia.getPath());
+                Boxinger.with(this)
+                        .singleSelect()
+                        .useCamera(true)
+                        .useCrop(false)
+                        .listener(new OnSingleSelectListener() {
+                            @Override
+                            public void onSingleSelect(ImageMedia imageMedia) {
+                                File file = new File(imageMedia.getPath());
 
-                        BitmapFactory.Options opts = new BitmapFactory.Options();
-                        opts.inPreferredConfig = Bitmap.Config.RGB_565;
-                        opts.inJustDecodeBounds = false;
-                        opts.inSampleSize = 1;
-                        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), opts);
+                                BitmapFactory.Options opts = new BitmapFactory.Options();
+                                opts.inPreferredConfig = Bitmap.Config.RGB_565;
+                                opts.inJustDecodeBounds = false;
+                                opts.inSampleSize = 1;
+                                Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), opts);
 
-                        String result = QRCodeDecoder.decode(bitmap);
-                        if (bitmap != null) bitmap.recycle();
-                        TT.show(QRCodeActivity.this, result != null ? ("解码成功:\n" + result) : "解码失败", TT.LENGTH_SHORT);
-                    }
-                });
+                                String result = QRCodeDecoder.decode(bitmap);
+                                if (bitmap != null) bitmap.recycle();
+                                TT.show(QRCodeActivity.this, result != null ? ("解码成功:\n" + result) : "解码失败", TT.LENGTH_SHORT);
+                            }
+                        })
+                        .start();
                 break;
             case R.id.btn_bytes_decode:
-                Boxinger.startSingle(this, true, false, new OnSingleSelectListener() {
-                    @Override
-                    public void onSingleSelect(ImageMedia imageMedia) {
-                        File file = new File(imageMedia.getPath());
+                Boxinger.with(this)
+                        .singleSelect()
+                        .useCamera(true)
+                        .useCrop(false)
+                        .listener(new OnSingleSelectListener() {
+                            @Override
+                            public void onSingleSelect(ImageMedia imageMedia) {
+                                File file = new File(imageMedia.getPath());
 
-                        FileInputStream fileInputStream = null;
-                        ByteArrayOutputStream byteArrayOutputStream = null;
-                        try {
-                            fileInputStream = new FileInputStream(file);
-                            byteArrayOutputStream = new ByteArrayOutputStream();
+                                FileInputStream fileInputStream = null;
+                                ByteArrayOutputStream byteArrayOutputStream = null;
+                                try {
+                                    fileInputStream = new FileInputStream(file);
+                                    byteArrayOutputStream = new ByteArrayOutputStream();
 
-                            byte[] buffer = new byte[1024];
-                            int len;
-                            while ((len = fileInputStream.read(buffer)) > -1 ) {
-                                byteArrayOutputStream.write(buffer, 0, len);
+                                    byte[] buffer = new byte[1024];
+                                    int len;
+                                    while ((len = fileInputStream.read(buffer)) > -1 ) {
+                                        byteArrayOutputStream.write(buffer, 0, len);
+                                    }
+
+                                    String result = QRCodeDecoder.decode(byteArrayOutputStream.toByteArray());
+                                    TT.show(QRCodeActivity.this, result != null ? ("解码成功:\n" + result) : "解码失败", TT.LENGTH_SHORT);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                } finally {
+                                    try {
+                                        if (fileInputStream != null) fileInputStream.close();
+                                        if (byteArrayOutputStream != null) byteArrayOutputStream.close();
+                                    } catch (Exception ignore) {}
+                                }
                             }
-
-                            String result = QRCodeDecoder.decode(byteArrayOutputStream.toByteArray());
-                            TT.show(QRCodeActivity.this, result != null ? ("解码成功:\n" + result) : "解码失败", TT.LENGTH_SHORT);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        } finally {
-                            try {
-                                if (fileInputStream != null) fileInputStream.close();
-                                if (byteArrayOutputStream != null) byteArrayOutputStream.close();
-                            } catch (Exception ignore) {}
-                        }
-                    }
-                });
+                        })
+                        .start();
                 break;
             case R.id.btn_file_decode:
-                Boxinger.startSingle(this, true, false, new OnSingleSelectListener() {
-                    @Override
-                    public void onSingleSelect(ImageMedia imageMedia) {
-                        File file = new File(imageMedia.getPath());
+                Boxinger.with(this)
+                        .singleSelect()
+                        .useCamera(true)
+                        .useCrop(false)
+                        .listener(new OnSingleSelectListener() {
+                            @Override
+                            public void onSingleSelect(ImageMedia imageMedia) {
+                                File file = new File(imageMedia.getPath());
 
-                        String result = QRCodeDecoder.decode(file);
-                        TT.show(QRCodeActivity.this, result != null ? ("解码成功:\n" + result) : "解码失败", TT.LENGTH_SHORT);
-                    }
-                });
+                                String result = QRCodeDecoder.decode(file);
+                                TT.show(QRCodeActivity.this, result != null ? ("解码成功:\n" + result) : "解码失败", TT.LENGTH_SHORT);
+                            }
+                        })
+                        .start();
                 break;
             case R.id.btn_file_descriptor_decode:
-                Boxinger.startSingle(this, true, false, new OnSingleSelectListener() {
-                    @Override
-                    public void onSingleSelect(ImageMedia imageMedia) {
-                        File file = new File(imageMedia.getPath());
+                Boxinger.with(this)
+                        .singleSelect()
+                        .useCamera(true)
+                        .useCrop(false)
+                        .listener(new OnSingleSelectListener() {
+                            @Override
+                            public void onSingleSelect(ImageMedia imageMedia) {
+                                File file = new File(imageMedia.getPath());
 
-                        FileInputStream fileInputStream = null;
-                        try {
-                            fileInputStream = new FileInputStream(file);
+                                FileInputStream fileInputStream = null;
+                                try {
+                                    fileInputStream = new FileInputStream(file);
 
-                            String result = QRCodeDecoder.decode(fileInputStream.getFD());
-                            TT.show(QRCodeActivity.this, result != null ? ("解码成功:\n" + result) : "解码失败", TT.LENGTH_SHORT);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        } finally {
-                            try {
-                                if (fileInputStream != null) fileInputStream.close();
-                            } catch (Exception ignore) {}
-                        }
-                    }
-                });
+                                    String result = QRCodeDecoder.decode(fileInputStream.getFD());
+                                    TT.show(QRCodeActivity.this, result != null ? ("解码成功:\n" + result) : "解码失败", TT.LENGTH_SHORT);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                } finally {
+                                    try {
+                                        if (fileInputStream != null) fileInputStream.close();
+                                    } catch (Exception ignore) {}
+                                }
+                            }
+                        })
+                        .start();
                 break;
             case R.id.btn_input_stream_decode:
-                Boxinger.startSingle(this, true, false, new OnSingleSelectListener() {
-                    @Override
-                    public void onSingleSelect(ImageMedia imageMedia) {
-                        File file = new File(imageMedia.getPath());
+                Boxinger.with(this)
+                        .singleSelect()
+                        .useCamera(true)
+                        .useCrop(false)
+                        .listener(new OnSingleSelectListener() {
+                            @Override
+                            public void onSingleSelect(ImageMedia imageMedia) {
+                                File file = new File(imageMedia.getPath());
 
-                        InputStream inputStream = null;
-                        FileInputStream fileInputStream = null;
-                        ByteArrayOutputStream byteArrayOutputStream = null;
-                        try {
-                            fileInputStream = new FileInputStream(file);
-                            byteArrayOutputStream = new ByteArrayOutputStream();
+                                InputStream inputStream = null;
+                                FileInputStream fileInputStream = null;
+                                ByteArrayOutputStream byteArrayOutputStream = null;
+                                try {
+                                    fileInputStream = new FileInputStream(file);
+                                    byteArrayOutputStream = new ByteArrayOutputStream();
 
-                            byte[] buffer = new byte[1024];
-                            int len;
-                            while ((len = fileInputStream.read(buffer)) > -1 ) {
-                                byteArrayOutputStream.write(buffer, 0, len);
+                                    byte[] buffer = new byte[1024];
+                                    int len;
+                                    while ((len = fileInputStream.read(buffer)) > -1 ) {
+                                        byteArrayOutputStream.write(buffer, 0, len);
+                                    }
+
+                                    inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+
+                                    String result = QRCodeDecoder.decode(inputStream);
+                                    TT.show(QRCodeActivity.this, result != null ? ("解码成功:\n" + result) : "解码失败", TT.LENGTH_SHORT);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                } finally {
+                                    try {
+                                        if (inputStream != null) inputStream.close();
+                                        if (fileInputStream != null) fileInputStream.close();
+                                        if (byteArrayOutputStream != null) byteArrayOutputStream.close();
+                                    } catch (Exception ignore) {}
+                                }
                             }
-
-                            inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-
-                            String result = QRCodeDecoder.decode(inputStream);
-                            TT.show(QRCodeActivity.this, result != null ? ("解码成功:\n" + result) : "解码失败", TT.LENGTH_SHORT);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        } finally {
-                            try {
-                                if (inputStream != null) inputStream.close();
-                                if (fileInputStream != null) fileInputStream.close();
-                                if (byteArrayOutputStream != null) byteArrayOutputStream.close();
-                            } catch (Exception ignore) {}
-                        }
-                    }
-                });
+                        })
+                        .start();
                 break;
             case R.id.btn_generate:
                 startActivity(
