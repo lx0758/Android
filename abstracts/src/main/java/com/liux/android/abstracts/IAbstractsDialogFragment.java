@@ -1,16 +1,10 @@
 package com.liux.android.abstracts;
 
-import android.support.v7.app.AppCompatDialog;
+import android.support.v7.app.AppCompatDialogFragment;
 
-/**
- * 2018/2/12
- * By Liux
- * lx0758@qq.com
- */
+interface IAbstractsDialogFragment {
 
-interface IAbstractsDialog {
-
-    AppCompatDialog getTarget();
+    AppCompatDialogFragment getTarget();
 
     /**
      * 设置是否撑满布局

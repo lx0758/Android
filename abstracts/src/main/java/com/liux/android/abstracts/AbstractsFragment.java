@@ -18,8 +18,7 @@ import com.liux.android.abstracts.touch.TouchCallback;
  * Created by Liux on 2017/8/7.
  */
 
-public abstract class AbstractsFragment extends Fragment
-        implements IAbstractsFragment, TouchCallback {
+public abstract class AbstractsFragment extends Fragment implements IAbstractsFragment, TouchCallback {
     private String TAG = "AbstractsFragment";
 
     private AbstractsFragmentProxy mProxy = new AbstractsFragmentProxy(this);
