@@ -10,25 +10,26 @@ import android.support.v7.app.AppCompatDialog;
  * Created by Liux on 2017/8/23.
  */
 
-public abstract class AbstractsDialog extends AppCompatDialog
-        implements IAbstractsDialog {
+public abstract class AbstractsDialog extends AppCompatDialog implements IAbstractsDialog {
     private String TAG = "AbstractsDialog";
 
     private AbstractsDialogProxy mProxy = new AbstractsDialogProxy(this);
 
     public AbstractsDialog(@NonNull Context context) {
         this(context, 0);
+        mProxy.initDialog();
     }
 
     public AbstractsDialog(@NonNull Context context, int themeResId) {
         super(context, themeResId);
-        mProxy.openTranslucentMode();
+        mProxy.initDialog();
     }
 
     public AbstractsDialog(@NonNull Context context, boolean cancelable, @Nullable OnCancelListener cancelListener) {
         this(context);
         setCancelable(cancelable);
         setOnCancelListener(cancelListener);
+        mProxy.initDialog();
     }
 
     @Override
@@ -43,24 +44,7 @@ public abstract class AbstractsDialog extends AppCompatDialog
     }
 
     @Override
-    public boolean isFullScreen() {
-        return mProxy.isFullScreen();
-    }
-
-    @Override
-    public AbstractsDialog setFullScreen(boolean fullScreen) {
-        mProxy.setFullScreen(fullScreen);
-        return this;
-    }
-
-    @Override
-    public int getBackgroundColor() {
-        return mProxy.getBackgroundColor();
-    }
-
-    @Override
-    public AbstractsDialog setBackgroundColor(int color) {
-        mProxy.setBackgroundColor(color);
-        return this;
+    public void setMatchParentLayout(boolean width, boolean height) {
+        mProxy.setMatchParentLayout(width, height);
     }
 }

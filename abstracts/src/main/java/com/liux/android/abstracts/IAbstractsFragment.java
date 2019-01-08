@@ -12,7 +12,7 @@ import com.liux.android.abstracts.touch.TouchCallback;
  * lx0758@qq.com
  */
 
-public interface IAbstractsFragment extends TouchCallback {
+interface IAbstractsFragment extends TouchCallback {
 
     Fragment getTarget();
 

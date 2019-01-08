@@ -8,35 +8,14 @@ import android.support.v7.app.AppCompatDialog;
  * lx0758@qq.com
  */
 
-public interface IAbstractsDialog {
+interface IAbstractsDialog {
 
     AppCompatDialog getTarget();
 
-    // ===============================================================
-
     /**
-     * 是否全屏模式
-     * @return
+     * 设置是否撑满布局
+     * @param width
+     * @param height
      */
-    boolean isFullScreen();
-
-    /**
-     * 设置是否全屏模式
-     * @param fullScreen
-     * @return
-     */
-    IAbstractsDialog setFullScreen(boolean fullScreen);
-
-    /**
-     * 获取全屏背景色
-     * @return
-     */
-    int getBackgroundColor();
-
-    /**
-     * 设置全屏背景色
-     * @param color
-     * @return
-     */
-    IAbstractsDialog setBackgroundColor(int color);
+    void setMatchParentLayout(boolean width, boolean height);
 }

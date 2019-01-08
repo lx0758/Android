@@ -14,7 +14,7 @@ import java.util.Map;
  * lx0758@qq.com
  */
 
-public interface IAbstractsActivity extends TouchCallback {
+interface IAbstractsActivity extends TouchCallback {
 
     AppCompatActivity getTarget();
 

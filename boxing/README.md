@@ -18,6 +18,9 @@ implementation 'com.liux.android:boxing:x.y.z'
 ### x.y.z_201x-xx-xx
     1.
 
+### 0.1.4_2019-01-08
+    1.重构库类, 并添加裁剪和简陋的录像能力
+
 ### 0.1.3_2018-11-16
     1.修正发版插件生成错误的pom.xml文件
 

@@ -19,8 +19,13 @@ import android.widget.EditText;
 
 import java.util.Arrays;
 
+/**
+ * date：2018/03/16
+ * author：Liux
+ * email：lx0758@qq.com
+ * description：输入类似支付PIN密码的密码输入框
+ */
 
-@SuppressLint("DrawAllocation")
 public class PasswordInputView extends EditText {
     
     private int mLength = 6;
@@ -68,6 +73,7 @@ public class PasswordInputView extends EditText {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
+    @SuppressLint("DrawAllocation")
     @Override
     protected void onDraw(Canvas canvas) {
         //super.onDraw(canvas);

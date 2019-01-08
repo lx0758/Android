@@ -1,5 +1,8 @@
 package com.liux.android.util;
 
+import android.content.Context;
+import android.os.Environment;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +54,61 @@ public class DiskUtil {
     }
 
     /**
+     * 扩展存储是否已经挂载
+     * @return
+     */
+    public static boolean isExternalMounted() {
+        return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
+    }
+
+    /**
+     * 递归清空目录
+     * @param dir
+     */
+    public static void deleteAllFile(File dir) {
+        for (File file : dir.listFiles()) {
+            if (file.isDirectory()) {
+                deleteAllFile(file);
+            }
+            file.delete();
+        }
+    }
+
+    /**
+     * 获取缓存目录
+     * @param context
+     * @return
+     */
+    public static File getCacheDir(Context context) {
+        context = context.getApplicationContext();
+        File cacheDir = context.getExternalCacheDir();
+        if (cacheDir == null || !cacheDir.exists()) cacheDir = context.getCacheDir();
+        return cacheDir;
+    }
+
+    /**
+     * 获取私有目录
+     * @param context
+     * @return
+     */
+    public static File getFileDir(Context context) {
+        context = context.getApplicationContext();
+        File filesDir = context.getExternalFilesDir(null);
+        if (filesDir == null || !filesDir.exists()) filesDir = context.getFilesDir();
+        return filesDir;
+    }
+
+    /**
+     * 获取私有文件
+     * @param context
+     * @return
+     */
+    public static File getFile(Context context) {
+        File file = new File(getFileDir(context), String.valueOf(System.currentTimeMillis()));
+        return file.exists() ? getFile(context) : file;
+    }
+
+    /**
      * 递归遍历文件
      * @param files
      * @param dir
@@ -67,19 +125,6 @@ public class DiskUtil {
                     files.add(file);
                 }
             }
-        }
-    }
-
-    /**
-     * 递归清空目录
-     * @param dir
-     */
-    public static void deleteAllFile(File dir) {
-        for (File file : dir.listFiles()) {
-            if (file.isDirectory()) {
-                deleteAllFile(file);
-            }
-            file.delete();
         }
     }
 }

@@ -33,6 +33,7 @@ import com.liux.android.qrcode.decode.DecodeManagerImpl;
  * android:configChanges="orientation|screenSize|keyboardHidden|keyboard|screenLayout"
  */
 public class QRCodeScanningFragment extends Fragment implements DecodeCallback {
+    public static boolean DEBUG = false;
 
     private int mRequestCode;
     private boolean hasSurfaceHolder = false;

@@ -122,6 +122,9 @@ implementation 'com.liux.android:http:x.y.z'
 ### x.y.z_201x-xx-xx
     1.
 
+### 0.1.4_2019-01-08
+    1.升级支持库引用版本
+
 ### 0.1.3_2018-11-16
     1.优化完善代码
     2.修正发版插件生成错误的pom.xml文件

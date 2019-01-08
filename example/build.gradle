@@ -47,8 +47,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    lintOptions {
-        abortOnError false
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -70,10 +71,9 @@ dependencies {
     implementation project(':util')
     implementation project(':view')
 
-    implementation ('com.jakewharton:butterknife:8.8.1', {
-        exclude group: 'com.android.support',module: 'appcompat-v7'
-    })
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    // noinspection GradleDependency
+    implementation 'com.jakewharton:butterknife:9.0.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

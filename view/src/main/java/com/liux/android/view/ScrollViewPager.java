@@ -6,7 +6,10 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 /**
- * Created by Liux on 2017/12/11.
+ * date：2017/12/11
+ * author：Liux
+ * email：lx0758@qq.com
+ * description：可以控制是否允许左右滑动的 ViewPager
  */
 
 public class ScrollViewPager extends ViewPager {

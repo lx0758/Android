@@ -15,9 +15,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    lintOptions {
-        abortOnError false
-    }
 }
 
 dependencies {
@@ -30,7 +27,7 @@ static def getLibraryArtifactId() {
     return 'abstracts'
 }
 static def getLibraryVersionName() {
-    return '0.1.0'
+    return '0.1.1'
 }
 static def getLibraryVersionCode() {
     def version = getLibraryVersionName().replace("-SNAPSHOT", "")

@@ -27,8 +27,7 @@ import java.util.Map;
  * Created by Liux on 2017/8/7
  */
 
-public abstract class AbstractsActivity extends AppCompatActivity
-        implements IAbstractsActivity {
+public abstract class AbstractsActivity extends AppCompatActivity implements IAbstractsActivity {
     private String TAG = "AbstractsActivity";
 
     private AbstractsActivityProxy mProxy = new AbstractsActivityProxy(this);

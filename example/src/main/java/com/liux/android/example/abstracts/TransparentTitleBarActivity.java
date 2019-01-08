@@ -18,7 +18,7 @@ public class TransparentTitleBarActivity extends AbstractsActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base_demo);
+        setContentView(R.layout.activity_abstracts_demo);
 
         //WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING
         //WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN

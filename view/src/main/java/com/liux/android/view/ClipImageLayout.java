@@ -24,8 +24,12 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 /**
- * Created by Liux on 2016/9/7.
+ * date：2016/9/7
+ * author：Liux
+ * email：lx0758@qq.com
+ * description：裁剪图片用的视图
  */
+
 public class ClipImageLayout extends RelativeLayout {
     private String TAG = "ClipImageLayout";
 

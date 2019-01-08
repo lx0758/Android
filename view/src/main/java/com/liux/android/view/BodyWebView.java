@@ -6,7 +6,10 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 /**
- * Created by Liux on 2017/9/5.
+ * date：2017/9/5
+ * author：Liux
+ * email：lx0758@qq.com
+ * description：可以直接设置内容的WebView控件
  */
 
 public class BodyWebView extends WebView {

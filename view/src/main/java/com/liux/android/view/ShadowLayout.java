@@ -15,9 +15,10 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 /**
- * 2018/2/24
- * By Liux
- * lx0758@qq.com
+ * date：2018/2/24
+ * author：Liux
+ * email：lx0758@qq.com
+ * description：可以自动画控件阴影的布局
  */
 
 public class ShadowLayout extends FrameLayout {

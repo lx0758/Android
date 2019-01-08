@@ -10,9 +10,12 @@ import android.widget.RadioGroup;
 import java.lang.reflect.Field;
 
 /**
- * 支持控制子孙层 RadioButton 的 RadioGroup
- * Created by Liux on 2016/11/28.
+ * date：2016/11/28
+ * author：Liux
+ * email：lx0758@qq.com
+ * description：支持控制子孙层 RadioButton 的 RadioGroup
  */
+
 public class SpanRadioGroup extends RadioGroup {
     private static String TAG = "SpanRadioGroup";
 
