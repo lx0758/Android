@@ -22,7 +22,7 @@ implementation 'com.liux.android:pay:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
-    1.
+    1.升级支付宝SDK
 
 ### 0.1.2_2018-10-31
     1.调整微信回调代码
