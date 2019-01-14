@@ -1,5 +1,6 @@
 package com.liux.android.abstracts.util;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
@@ -44,8 +45,9 @@ public class TitleBarUtil {
      * @return 成功执行返回true
      */
     public static boolean setStatusBarMode(Activity activity, boolean darkmode) {
-        if (setMiuiStatusBarMode(activity, darkmode)) return true;
-        if (setMeizuStatusBarMode(activity, darkmode)) return true;
+        boolean miui = setMiuiStatusBarMode(activity, darkmode);
+        boolean flyme = setMeizuStatusBarMode(activity, darkmode);
+        boolean android = false;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View decor = activity.getWindow().getDecorView();
@@ -56,18 +58,21 @@ public class TitleBarUtil {
                 ui &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             }
             decor.setSystemUiVisibility(ui);
-            return true;
-        } else {
-            return false;
+            android = true;
         }
+        return miui || flyme || android;
     }
 
     /**
      * 设置 MIUIV6+ 系统状态栏图标和字体配色模式 <br>
+     * 开发版 7.7.13 及以后版本和原生一致 <br>
+     * http://www.miui.com/thread-8946673-1-1.html <br>
+     *
      * @param activity 需要设置的Activity
      * @param darkmode 是否把状态栏字体及图标颜色设置为深色
      * @return 成功执行返回true
      */
+    @SuppressLint("PrivateApi")
     private static boolean setMiuiStatusBarMode(Activity activity, boolean darkmode) {
         // 开发版 7.7.13 以前版本
         try {
@@ -78,17 +83,10 @@ public class TitleBarUtil {
             darkModeFlag = field.getInt(layoutParams);
             Method extraFlagField = clazz.getMethod(darkmode ? "addExtraFlags" : "clearExtraFlags", int.class);
             extraFlagField.invoke(activity.getWindow(), darkModeFlag);
-        } catch (Exception e) {}
-
-        // 开发版 7.7.13 及以后版本(和原生一致)
-        // http://www.miui.com/thread-8946673-1-1.html
-        //try {
-        //    Window window = activity.getWindow();
-        //    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        //    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        //    window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        //} catch (Exception e) {}
-        return false;
+            return true;
+        } catch (Exception ignore) {
+            return false;
+        }
     }
 
     /**
@@ -97,6 +95,7 @@ public class TitleBarUtil {
      * @param darkmode 是否把状态栏字体及图标颜色设置为深色
      * @return 成功执行返回true
      */
+    @SuppressWarnings("JavaReflectionMemberAccess")
     private static boolean setMeizuStatusBarMode(Activity activity, boolean darkmode) {
         try {
             WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
@@ -114,8 +113,9 @@ public class TitleBarUtil {
             meizuFlags.setInt(lp, value);
             activity.getWindow().setAttributes(lp);
             return true;
-        } catch (Exception e) {}
-        return false;
+        } catch (Exception ignore) {
+            return false;
+        }
     }
 
     /**
@@ -147,8 +147,6 @@ public class TitleBarUtil {
             field.setAccessible(true);
             ActionMenuView actionMenuView = (ActionMenuView) field.get(toolbar);
             actionMenuView.setVisibility(View.GONE);
-        } catch (Exception e) {
-
-        }
+        } catch (Exception ignore) {}
     }
 }
