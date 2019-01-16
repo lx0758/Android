@@ -24,7 +24,7 @@ dependencies {
     api("com.squareup.retrofit2:adapter-rxjava2:2.5.0", {
         exclude group: 'io.reactivex.rxjava2', module: 'rxjava'
     })
-    api 'com.alibaba:fastjson:1.1.70.android'
+    api 'com.alibaba:fastjson:1.2.54'
     api 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
     compileOnly "com.android.support:support-annotations:${LIBRARY_SUPPORT}"
 }

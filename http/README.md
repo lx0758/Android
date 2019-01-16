@@ -120,7 +120,7 @@ implementation 'com.liux.android:http:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
-    1.
+    1.升级FastJson为Java版本,旧版本有反序列化坑(会缓存解析器,但没有成功在新项目复现)
 
 ### 0.1.4_2019-01-08
     1.升级支持库引用版本
