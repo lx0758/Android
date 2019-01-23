@@ -360,7 +360,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
         File temp = null;
         FileOutputStream fileOutputStream = null;
         try {
-            temp = File.createTempFile("temp_", ".apk");
+            temp = File.createTempFile("测试文件_", ".apk");
             fileOutputStream = new FileOutputStream(temp);
 
             int random = new Random().nextInt(10240) + 51200;
