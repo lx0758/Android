@@ -2,6 +2,7 @@ package com.liux.android.util;
 
 import android.content.Context;
 import android.os.Environment;
+import android.text.TextUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,22 +23,6 @@ public class DiskUtil {
         if (dir == null || !dir.exists()) return 0;
         if (dir.isFile()) return dir.length();
         return getDirSizeChild(dir);
-    }
-
-    /**
-     * 递归获取文件夹大小
-     * @param dir
-     */
-    private static long getDirSizeChild(File dir) {
-        long size = 0L;
-        for (File file : dir.listFiles()) {
-            if (file.isDirectory()) {
-                size = size + getDirSize(file);
-            } else {
-                size = size + file.length();
-            }
-        }
-        return size;
     }
 
     /**
@@ -87,6 +72,27 @@ public class DiskUtil {
     }
 
     /**
+     * 获取缓存临时文件
+     * @param context
+     * @return
+     */
+    public static File getCacheTempFile(Context context) {
+        return getCacheTempFile(context, null);
+    }
+
+    /**
+     * 获取缓存临时文件
+     * @param context
+     * @return
+     */
+    public static File getCacheTempFile(Context context, String suffix) {
+        String fileName = String.valueOf(System.currentTimeMillis());
+        if (!TextUtils.isEmpty(suffix)) fileName += ("." + suffix);
+        File file = new File(getCacheDir(context), fileName);
+        return file.exists() ? getCacheTempFile(context, suffix) : file;
+    }
+
+    /**
      * 获取私有目录
      * @param context
      * @return
@@ -99,13 +105,40 @@ public class DiskUtil {
     }
 
     /**
-     * 获取私有文件
+     * 获取私有临时文件
      * @param context
      * @return
      */
-    public static File getFile(Context context) {
-        File file = new File(getFileDir(context), String.valueOf(System.currentTimeMillis()));
-        return file.exists() ? getFile(context) : file;
+    public static File getTempFile(Context context) {
+        return getTempFile(context, null);
+    }
+
+    /**
+     * 获取私有临时文件
+     * @param context
+     * @return
+     */
+    public static File getTempFile(Context context, String suffix) {
+        String fileName = String.valueOf(System.currentTimeMillis());
+        if (!TextUtils.isEmpty(suffix)) fileName += ("." + suffix);
+        File file = new File(getFileDir(context), fileName);
+        return file.exists() ? getTempFile(context, suffix) : file;
+    }
+
+    /**
+     * 递归获取文件夹大小
+     * @param dir
+     */
+    private static long getDirSizeChild(File dir) {
+        long size = 0L;
+        for (File file : dir.listFiles()) {
+            if (file.isDirectory()) {
+                size = size + getDirSize(file);
+            } else {
+                size = size + file.length();
+            }
+        }
+        return size;
     }
 
     /**

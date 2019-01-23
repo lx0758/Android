@@ -16,7 +16,7 @@ implementation 'com.liux.android:boxing:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
-    1.
+    1.完善工具类
 
 ### 0.1.4_2019-01-08
     1.重构库类, 并添加裁剪和简陋的录像能力
