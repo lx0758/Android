@@ -7,7 +7,7 @@ import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.liux.android.http.converter.FastJsonConverterFactory;
-import com.liux.android.http.interceptor.CheckInterceptor;
+import com.liux.android.http.interceptor.RequestInterceptor;
 import com.liux.android.http.interceptor.HttpLoggingInterceptor;
 import com.liux.android.http.interceptor.BaseUrlInterceptor;
 import com.liux.android.http.interceptor.TimeoutInterceptor;
@@ -76,7 +76,7 @@ public class Http {
     private TimeoutInterceptor mTimeoutInterceptor;
     private BaseUrlInterceptor mBaseUrlInterceptor;
     private UserAgentInterceptor mUserAgentInterceptor;
-    private CheckInterceptor mCheckInterceptor;
+    private RequestInterceptor mRequestInterceptor;
     private HttpLoggingInterceptor mHttpLoggingInterceptor;
 
     private Http(Context context, OkHttpClient.Builder okHttpBuilder, Retrofit.Builder retrofitBuilder) {
@@ -87,7 +87,7 @@ public class Http {
         mTimeoutInterceptor = new TimeoutInterceptor();
         mBaseUrlInterceptor = new BaseUrlInterceptor(this);
         mUserAgentInterceptor = new UserAgentInterceptor(mContext);
-        mCheckInterceptor = new CheckInterceptor();
+        mRequestInterceptor = new RequestInterceptor();
         mHttpLoggingInterceptor = new HttpLoggingInterceptor();
 
         mOkHttpClient = initOkHttpClient(okHttpBuilder);
@@ -203,7 +203,7 @@ public class Http {
      * @return
      */
     public Http setOnHeaderListener(OnHeaderListener listener) {
-        mCheckInterceptor.setOnHeaderListener(listener);
+        mRequestInterceptor.setOnHeaderListener(listener);
         return this;
     }
 
@@ -213,7 +213,7 @@ public class Http {
      * @return
      */
     public Http setOnRequestListener(OnRequestListener listener) {
-        mCheckInterceptor.setOnRequestListener(listener);
+        mRequestInterceptor.setOnRequestListener(listener);
         return this;
     }
 
@@ -369,7 +369,7 @@ public class Http {
                     .addInterceptor(mTimeoutInterceptor)
                     .addInterceptor(mBaseUrlInterceptor)
                     .addInterceptor(mUserAgentInterceptor)
-                    .addInterceptor(mCheckInterceptor)
+                    .addInterceptor(mRequestInterceptor)
                     .addInterceptor(mHttpLoggingInterceptor)
                     .build();
         } else {
@@ -377,7 +377,7 @@ public class Http {
                     .addInterceptor(mTimeoutInterceptor)
                     .addInterceptor(mBaseUrlInterceptor)
                     .addInterceptor(mUserAgentInterceptor)
-                    .addInterceptor(mCheckInterceptor)
+                    .addInterceptor(mRequestInterceptor)
                     .addInterceptor(mHttpLoggingInterceptor)
                     .build();
         }

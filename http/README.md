@@ -120,7 +120,8 @@ implementation 'com.liux.android:http:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
-    1.
+    1.修复表单内容被二次编码的BUG
+    2.升级依赖库库引用版本
 
 ### 0.1.5_2019-01-23
     1.升级FastJson为Java版本, 旧版本有反序列化坑(会缓存解析器,但没有成功在新项目复现)

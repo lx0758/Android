@@ -28,7 +28,7 @@ import okio.Buffer;
  * Created by Liux on 2017/11/29.
  */
 
-public class CheckInterceptor implements Interceptor {
+public class RequestInterceptor implements Interceptor {
 
     private OnHeaderListener mOnHeaderListener;
     private OnRequestListener mOnRequestListener;
@@ -195,7 +195,7 @@ public class CheckInterceptor implements Interceptor {
             // 组合成新的  FormBody
             FormBody.Builder bodyBuilder = new FormBody.Builder();
             for (Map.Entry<String, String> entry : bodyParams.entrySet()) {
-                bodyBuilder.addEncoded(entry.getKey(), entry.getValue());
+                bodyBuilder.add(entry.getKey(), entry.getValue());
             }
             formBody = bodyBuilder.build();
             requestBody = formBody;
@@ -265,7 +265,7 @@ public class CheckInterceptor implements Interceptor {
         // 组合成新的  FormBody
         FormBody.Builder bodyBuilder = new FormBody.Builder();
         for (Map.Entry<String, String> entry : bodyParams.entrySet()) {
-            bodyBuilder.addEncoded(entry.getKey(), entry.getValue());
+            bodyBuilder.add(entry.getKey(), entry.getValue());
         }
         formBody = bodyBuilder.build();
 
@@ -327,15 +327,15 @@ public class CheckInterceptor implements Interceptor {
         HttpUrl url = request.url();
         HttpUrl.Builder urlBuilder = new HttpUrl.Builder()
                 .scheme(url.scheme())
-                .encodedUsername(url.username())
-                .encodedPassword(url.password())
+                .username(url.username())
+                .password(url.password())
                 .host(url.host())
                 .port(url.port());
         for (String path : url.pathSegments()) {
-            urlBuilder.addEncodedPathSegment(path);
+            urlBuilder.addPathSegment(path);
         }
         for (Map.Entry<String, String> param : queryParams.entrySet()) {
-            urlBuilder.addEncodedQueryParameter(param.getKey(), param.getValue());
+            urlBuilder.addQueryParameter(param.getKey(), param.getValue());
         }
         urlBuilder.encodedFragment(url.fragment());
         return urlBuilder.build();

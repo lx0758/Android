@@ -54,7 +54,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
     @BindView(R.id.et_data)
     EditText etData;
 
-    private TestApiModel mTestApiModle = new TestApiModelImpl(this);
+    private TestApiModel mTestApiModle = new TestApiModelImpl();
     private RequestManager mRequestManager = RequestManager.Builder.build();
 
     @Override

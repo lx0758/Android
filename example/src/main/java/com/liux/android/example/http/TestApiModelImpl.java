@@ -21,11 +21,9 @@ public class TestApiModelImpl implements TestApiModel {
 
     private static final String TAG = "TestApiModelImpl";
 
-    private Context mContext;
     private TestApi mTestApi;
 
-    public TestApiModelImpl(Context context) {
-        mContext = context;
+    public TestApiModelImpl() {
         mTestApi = Http.get().getService(TestApi.class);
     }
 
