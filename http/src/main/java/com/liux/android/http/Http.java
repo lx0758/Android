@@ -364,7 +364,7 @@ public class Http {
                     .connectTimeout(10, TimeUnit.SECONDS)
                     .writeTimeout(30, TimeUnit.SECONDS)
                     .readTimeout(30, TimeUnit.SECONDS)
-                    .cache(new Cache(cacheDir.getAbsoluteFile(), 200 * 1024 * 1024))
+                    .cache(new Cache(new File(cacheDir, "okhttp"), 50 * 1024 * 1024))
                     .retryOnConnectionFailure(true)
                     .addInterceptor(mTimeoutInterceptor)
                     .addInterceptor(mBaseUrlInterceptor)

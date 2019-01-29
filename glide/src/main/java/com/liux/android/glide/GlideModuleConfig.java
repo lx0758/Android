@@ -41,7 +41,7 @@ public class GlideModuleConfig extends AppGlideModule {
         glideBuilder.setBitmapPool(new LruBitmapPool(memorySize));
 
         /* 定义SD卡缓存大小和位置 */
-        int diskSize = 1024 * 1024 * 200;
+        int diskSize = 50 * 1024 * 1024;
         // /sdcard/Android/data/<application package>/cache/glide/
         glideBuilder.setDiskCache(new ExternalPreferredCacheDiskCacheFactory(context, "glide", diskSize));
 
@@ -69,9 +69,10 @@ public class GlideModuleConfig extends AppGlideModule {
      */
     @Override
     public void registerComponents(Context context, Glide glide, Registry registry) {
-        // 注册全局唯一OkHttp客户端(Http先于Glide初始化完成的情况下)
-        Call.Factory factory = getHttp();
-        if (factory != null) {
+        // 注册全局OkHttp客户端(Http先于Glide初始化完成的情况下会使用)
+        Object httpClient = getHttpClient();
+        if (httpClient != null) {
+            Call.Factory factory = (Call.Factory) httpClient;
             OkHttpUrlLoader.Factory factory_glideurl = new OkHttpUrlLoader.Factory(factory);
             registry.replace(GlideUrl.class, InputStream.class, factory_glideurl);
         }
@@ -95,12 +96,12 @@ public class GlideModuleConfig extends AppGlideModule {
      * 通过反射获取Http实例
      * @return
      */
-    private Call.Factory getHttp() {
+    private Object getHttpClient() {
         try {
             Class<?> clazz = Class.forName("com.liux.android.http.Http");
-            Object client = clazz.getMethod("get").invoke(null);
-            Object factory = client.getClass().getMethod("getOkHttpClient").invoke(client);
-            return (Call.Factory) factory;
+            Object http = clazz.getMethod("get").invoke(null);
+            Object httpClient = http.getClass().getMethod("getOkHttpClient").invoke(http);
+            return httpClient;
         } catch (Exception e) {
             return null;
         }
