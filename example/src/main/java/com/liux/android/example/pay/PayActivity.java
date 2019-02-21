@@ -144,6 +144,6 @@ public class PayActivity extends AppCompatActivity {
     }
 
     private void makeText(String msg) {
-        TT.show(this, msg, TT.LENGTH_SHORT);
+        TT.show(msg);
     }
 }

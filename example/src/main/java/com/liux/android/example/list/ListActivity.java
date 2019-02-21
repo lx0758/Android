@@ -102,19 +102,19 @@ public class ListActivity extends AppCompatActivity {
         mMultipleAdapter.setOnSelectListener(new OnSelectListener<Object>() {
             @Override
             public boolean onSelectChange(Object o, int position, boolean isSelect) {
-                TT.show(ListActivity.this, o + " requestRuntime select:" + isSelect, TT.LENGTH_SHORT);
+                TT.show(o + " requestRuntime select:" + isSelect);
                 return position % 3 != 0;
             }
 
             @Override
             public void onSelectFailure() {
-                TT.show(ListActivity.this, "select failure", TT.LENGTH_SHORT);
+                TT.show("select failure");
             }
 
             @Override
             public void onSelectComplete() {
                 List<Object> list = mMultipleAdapter.getSelectedAll();
-                TT.show(ListActivity.this, list.toString(), TT.LENGTH_SHORT);
+                TT.show(list.toString());
             }
         });
         rvList.setAdapter(mMultipleAdapter);

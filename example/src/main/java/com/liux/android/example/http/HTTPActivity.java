@@ -91,7 +91,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
             @Override
             public void onError(Throwable e) {
                 Log.d(TAG, "onError", e);
-                TT.show(getApplicationContext(), "onError" + e, TT.LENGTH_LONG);
+                TT.show("onError" + e);
             }
 
             @Override
@@ -163,7 +163,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
     public void onRequestClicked(View view) {
         String url = etData.getText().toString();
         if (HttpUrl.parse(url) == null) {
-            TT.show(this, "URL不正确,必须形如 http://www.domain.com/", TT.LENGTH_LONG);
+            TT.show("URL不正确,必须形如 http://www.domain.com/");
             etData.setText("http://api.6xyun.cn/");
             return;
         }
@@ -181,7 +181,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                                 etData.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        TT.show(HTTPActivity.this, "onResponseProgress:" + httpUrl + "," + bytesRead + "," + contentLength + "," + done, TT.LENGTH_LONG);
+                                        TT.show("onResponseProgress:" + httpUrl + "," + bytesRead + "," + contentLength + "," + done);
                                     }
                                 });
                             }
@@ -194,7 +194,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                                 etData.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        TT.show(HTTPActivity.this, "onFailure:" + e, TT.LENGTH_LONG);
+                                        TT.show("onFailure:" + e);
                                     }
                                 });
                             }
@@ -224,7 +224,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                             @Override
                             public void onFailure(IOException e) {
                                 System.out.println("onFailure:" + e);
-                                TT.show(HTTPActivity.this, "onFailure:" + e, TT.LENGTH_LONG);
+                                TT.show("onFailure:" + e);
                             }
 
                             @Override
@@ -245,7 +245,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                             @Override
                             public void onFailure(IOException e) {
                                 System.out.println("onFailure:" + e);
-                                TT.show(HTTPActivity.this, "onFailure:" + e, TT.LENGTH_LONG);
+                                TT.show("onFailure:" + e);
                             }
 
                             @Override
@@ -273,7 +273,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                                 etData.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        TT.show(HTTPActivity.this, "onRequestProgress:" + httpUrl + "," + bytesWrite + "," + contentLength + "," + done, TT.LENGTH_LONG);
+                                        TT.show("onRequestProgress:" + httpUrl + "," + bytesWrite + "," + contentLength + "," + done);
                                     }
                                 });
                             }
@@ -284,7 +284,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                                 etData.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        TT.show(HTTPActivity.this, "onResponseProgress:" + httpUrl + "," + bytesRead + "," + contentLength + "," + done, TT.LENGTH_LONG);
+                                        TT.show("onResponseProgress:" + httpUrl + "," + bytesRead + "," + contentLength + "," + done);
                                     }
                                 });
                             }
@@ -294,7 +294,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                             @Override
                             public void onFailure(IOException e) {
                                 System.out.println("onFailure:" + e);
-                                TT.show(HTTPActivity.this, "onFailure:" + e, TT.LENGTH_LONG);
+                                TT.show("onFailure:" + e);
                             }
 
                             @Override
@@ -318,7 +318,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                             @Override
                             public void onFailure(IOException e) {
                                 System.out.println("onFailure:" + e);
-                                TT.show(HTTPActivity.this, "onFailure:" + e, TT.LENGTH_LONG);
+                                TT.show("onFailure:" + e);
                             }
 
                             @Override
@@ -342,7 +342,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                             @Override
                             public void onFailure(IOException e) {
                                 System.out.println("onFailure:" + e);
-                                TT.show(HTTPActivity.this, "onFailure:" + e, TT.LENGTH_LONG);
+                                TT.show("onFailure:" + e);
                             }
 
                             @Override

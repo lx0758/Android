@@ -84,7 +84,7 @@ public class PermissionActivity extends AppCompatActivity {
                                     intent.setData(Uri.parse("tel:10010"));
                                     startActivity(intent);
                                 } else {
-                                    TT.show(PermissionActivity.this, "没有拨号权限", TT.LENGTH_SHORT);
+                                    TT.show("没有拨号权限");
                                 }
                             }
                         })
@@ -135,7 +135,7 @@ public class PermissionActivity extends AppCompatActivity {
                                             })
                                             .start();
                                 } else {
-                                    TT.show(PermissionActivity.this, "没有拍照权限", TT.LENGTH_SHORT);
+                                    TT.show("没有拍照权限");
                                 }
                             }
                         })
@@ -172,7 +172,7 @@ public class PermissionActivity extends AppCompatActivity {
                                     intent.setData(Uri.parse("tel:10010"));
                                     startActivity(intent);
                                 } else {
-                                    TT.show(PermissionActivity.this, "没有拨号权限", TT.LENGTH_SHORT);
+                                    TT.show("没有拨号权限");
                                 }
 
                                 if (allow.contains(Manifest.permission.CAMERA)) {
@@ -194,7 +194,7 @@ public class PermissionActivity extends AppCompatActivity {
                                             })
                                             .start();
                                 } else {
-                                    TT.show(PermissionActivity.this, "没有拍照权限", TT.LENGTH_SHORT);
+                                    TT.show("没有拍照权限");
                                 }
                             }
                         })
@@ -226,13 +226,13 @@ public class PermissionActivity extends AppCompatActivity {
                         .listener(new OnFloatPermissionListener() {
                             @Override
                             public void onSucceed() {
-                                TT.show(PermissionActivity.this, "成功获取悬浮窗权限", TT.LENGTH_SHORT);
+                                TT.show("成功获取悬浮窗权限");
                                 new FloatWindow(getApplicationContext()).showFloatWindow();
                             }
 
                             @Override
                             public void onFailure() {
-                                TT.show(PermissionActivity.this, "没有悬浮窗权限", TT.LENGTH_SHORT);
+                                TT.show("没有悬浮窗权限");
                             }
                         })
                         .request();
@@ -267,12 +267,12 @@ public class PermissionActivity extends AppCompatActivity {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                     install = getPackageManager().canRequestPackageInstalls();
                                 }
-                                TT.show(PermissionActivity.this, "成功获取安装应用权限,检测结果:" + install, TT.LENGTH_SHORT);
+                                TT.show("成功获取安装应用权限,检测结果:" + install);
                             }
 
                             @Override
                             public void onFailure() {
-                                TT.show(PermissionActivity.this, "没有安装应用权限", TT.LENGTH_SHORT);
+                                TT.show("没有安装应用权限");
                             }
                         })
                         .request();

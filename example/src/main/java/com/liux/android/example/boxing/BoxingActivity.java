@@ -208,7 +208,7 @@ public class BoxingActivity extends AppCompatActivity {
 
                                             @Override
                                             public void onFailure() {
-                                                TT.show(BoxingActivity.this, "裁剪失败", TT.LENGTH_SHORT);
+                                                TT.show("裁剪失败");
                                             }
                                         })
                                         .start();
@@ -218,10 +218,10 @@ public class BoxingActivity extends AppCompatActivity {
                             public void onFailure(int type) {
                                 switch (type) {
                                     case OnTakeListener.ERROR_INTENT:
-                                        TT.show(BoxingActivity.this, "没有找到相机程序", TT.LENGTH_SHORT);
+                                        TT.show("没有找到相机程序");
                                         break;
                                     case OnTakeListener.ERROR_PERMISSION:
-                                        TT.show(BoxingActivity.this, "没有授权使用相机权限", TT.LENGTH_SHORT);
+                                        TT.show("没有授权使用相机权限");
                                         break;
                                 }
                             }
@@ -252,10 +252,10 @@ public class BoxingActivity extends AppCompatActivity {
                             public void onFailure(int type) {
                                 switch (type) {
                                     case OnRecordListener.ERROR_INTENT:
-                                        TT.show(BoxingActivity.this, "没有找到相机程序", TT.LENGTH_SHORT);
+                                        TT.show("没有找到相机程序");
                                         break;
                                     case OnRecordListener.ERROR_PERMISSION:
-                                        TT.show(BoxingActivity.this, "没有授权使用相机权限", TT.LENGTH_SHORT);
+                                        TT.show("没有授权使用相机权限");
                                         break;
                                 }
                             }

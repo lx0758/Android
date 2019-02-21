@@ -11,6 +11,7 @@ import com.liux.android.rx.lifecycle.LifecyleProviderManager;
 
 import java.util.Map;
 
+import com.liux.android.tool.TT;
 import okhttp3.Request;
 
 /**
@@ -30,6 +31,8 @@ public class ApplocationInstance extends Application {
     public void onCreate() {
         super.onCreate();
 
+        /* 初始化 Toast */
+        TT.setContext(getApplicationContext());
         /* 初始化 Http */
         Http.init(this, "http://6xyun.cn/v1.0/");
         Http.get().setLoggingLevel(Http.LOG_LEVEL_BODY);
