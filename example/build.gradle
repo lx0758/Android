@@ -68,6 +68,7 @@ dependencies {
     implementation project(':permission')
     implementation project(':qrcode')
     implementation project(':rx')
+    implementation project(':serialport')
     implementation project(':util')
     implementation project(':view')
 

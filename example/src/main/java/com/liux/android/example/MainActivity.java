@@ -22,6 +22,7 @@ import com.liux.android.example.pay.PayActivity;
 import com.liux.android.example.permission.PermissionActivity;
 import com.liux.android.example.qrcode.QRCodeActivity;
 import com.liux.android.example.rx.RXActivity;
+import com.liux.android.example.serialport.SerialPortActivity;
 import com.liux.android.example.util.UtilActivity;
 import com.liux.android.example.view.ViewActivity;
 
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         add("Permission", "运行时/悬浮窗/安装权限申请过程封装", PermissionActivity.class);
         add("QRCode", "基于ZXing的一个二维码扫描/生成库", QRCodeActivity.class);
         add("RX", "基于ReactiveX的RxJava2全家桶部分成员", RXActivity.class);
+        add("SerialPort", "基于谷歌安卓串口通信Api的编译版本", SerialPortActivity.class);
         add("Tool", "一些工具类集合", ToolActivity.class);
         add("Util", "一些工具方法集合", UtilActivity.class);
         add("View", "一些自定义View集合", ViewActivity.class);
