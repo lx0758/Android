@@ -120,6 +120,9 @@ implementation 'com.liux.android:http:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
+    1.
+
+### 0.1.6_2019-04-17
     1.修复表单内容被二次编码的BUG
     2.升级依赖库库引用版本
     3.修改缓存目录位置

@@ -1,5 +1,6 @@
 package com.liux.android.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
   * description：支持圆角的 ImageView
   */
 
+ @SuppressLint("AppCompatCustomView")
 public class RoundImageView extends ImageView {
 
     private Path path = new Path();

@@ -15,7 +15,7 @@ implementation 'com.liux.android:downloader:x.y.z'
 
 更新说明
 ---
-### x.y.z_201x-xx-xx
+### 0.1.1_2019-04-17
     1.升级支持库引用版本
 
 ### 0.1.0_2018-11-05

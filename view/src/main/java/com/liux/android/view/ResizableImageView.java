@@ -1,5 +1,6 @@
 package com.liux.android.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
  * description：宽度最大,高度自适应的 ImageView
  */
 
+@SuppressLint("AppCompatCustomView")
 public class ResizableImageView extends ImageView {
 
     public ResizableImageView(Context context) {

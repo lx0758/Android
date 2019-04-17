@@ -16,6 +16,9 @@ implementation 'com.liux.android:tool:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
+    1.
+
+### 0.1.1_2019-04-17
     1.添加参数注入工具
     2.添加Activity管理工具
 

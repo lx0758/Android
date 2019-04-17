@@ -22,6 +22,9 @@ implementation 'com.liux.android:rx:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
+    1.
+
+### 0.1.2_2019-04-17
     1.优化依赖配置
     2.升级RxJava/RxAndroid版本
 
