@@ -26,6 +26,7 @@ import java.util.Arrays;
  * description：输入类似支付PIN密码的密码输入框
  */
 
+@SuppressLint("AppCompatCustomView")
 public class PasswordInputView extends EditText {
     
     private int mLength = 6;

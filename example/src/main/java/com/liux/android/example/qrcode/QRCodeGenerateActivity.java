@@ -54,13 +54,13 @@ public class QRCodeGenerateActivity extends AppCompatActivity {
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        TT.show(QRCodeGenerateActivity.this, "二维码生成失败", TT.LENGTH_SHORT);
+                        TT.show("二维码生成失败");
                         return false;
                     }
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        TT.show(QRCodeGenerateActivity.this, "二维码生成成功", TT.LENGTH_SHORT);
+                        TT.show("二维码生成成功");
                         return false;
                     }
                 })

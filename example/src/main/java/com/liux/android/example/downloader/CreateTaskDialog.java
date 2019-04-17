@@ -46,11 +46,11 @@ public class CreateTaskDialog extends Dialog {
         String name = etName.getText().toString();
 
         if (TextUtils.isEmpty(url)) {
-            TT.show(getContext(), "下载地址不能为空", TT.LENGTH_SHORT);
+            TT.show("下载地址不能为空");
             return;
         }
         if (TextUtils.isEmpty(method)) {
-            TT.show(getContext(), "请求方法不能为空", TT.LENGTH_SHORT);
+            TT.show("请求方法不能为空");
             return;
         }
 

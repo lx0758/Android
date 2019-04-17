@@ -19,36 +19,41 @@ public class TT {
 
     private static int LAYOUT;
     private static Toast TOAST;
+    private static Context CONTEXT;
+
+    public static void setContext(Context context) {
+        CONTEXT = context.getApplicationContext();
+    }
 
     public static void setLayout(@LayoutRes int resId) {
         LAYOUT = resId;
     }
 
-    public static void show(Context context, int resId, int duration) {
-        makeText(context, context.getString(resId), duration).show();
+    public static void show(int resId) {
+        makeText(resId, LENGTH_SHORT).show();
     }
 
-    public static void show(Context context, CharSequence text, int duration) {
-        makeText(context, text, duration).show();
+    public static void show(CharSequence text) {
+        makeText(text, LENGTH_SHORT).show();
     }
 
-    public static Toast makeText(Context context, int resId, int duration) {
-        return makeText(context, context.getString(resId), duration);
+    public static Toast makeText(int resId, int duration) {
+        return makeText(CONTEXT.getString(resId), duration);
     }
 
     @SuppressLint("ShowToast")
-    public static Toast makeText(Context context, CharSequence text, int duration) {
+    public static Toast makeText(CharSequence text, int duration) {
         if (TOAST == null) {
             if (LAYOUT != 0) {
-                LayoutInflater inflate = (LayoutInflater) context.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                LayoutInflater inflate = (LayoutInflater) CONTEXT.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = inflate.inflate(LAYOUT, null);
 
-                TOAST = new Toast(context.getApplicationContext());
+                TOAST = new Toast(CONTEXT);
                 TOAST.setView(view);
                 TOAST.setText(text);
                 TOAST.setDuration(duration);
             } else {
-                TOAST = Toast.makeText(context.getApplicationContext(), text, duration);
+                TOAST = Toast.makeText(CONTEXT, text, duration);
             }
         } else {
             TOAST.setText(text);

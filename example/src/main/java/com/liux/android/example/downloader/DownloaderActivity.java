@@ -98,7 +98,7 @@ public class DownloaderActivity extends AppCompatActivity {
                                                         taskMultipleAdapter.getData().remove(deleteTask);
                                                         taskMultipleAdapter.notifyItemRemoved(pos);
                                                         dialog.dismiss();
-                                                        TT.show(DownloaderActivity.this, "删除成功", TT.LENGTH_SHORT);
+                                                        TT.show("删除成功");
                                                     }
                                                 })
                                                 .show();
@@ -208,7 +208,7 @@ public class DownloaderActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (!Downloader.isInit()) {
-            TT.show(this, "下载器还没初始化好呢!怎么回事啊,小老弟~", TT.LENGTH_SHORT);
+            TT.show("下载器还没初始化好呢!怎么回事啊,小老弟~");
             return super.onOptionsItemSelected(item);
         }
 
@@ -269,7 +269,7 @@ public class DownloaderActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure() {
-                            TT.show(activity, "没有软件安装权限", TT.LENGTH_SHORT);
+                            TT.show("没有软件安装权限");
                         }
                     })
                     .request();
@@ -288,7 +288,7 @@ public class DownloaderActivity extends AppCompatActivity {
         try {
             activity.startActivity(intent);
         } catch (Exception e) {
-            TT.show(activity, "没有合适的程序来打开这个文件", TT.LENGTH_SHORT);
+            TT.show("没有合适的程序来打开这个文件");
         }
     }
 }

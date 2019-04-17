@@ -19,6 +19,7 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
+    compileOnly "com.android.support:design:${LIBRARY_SUPPORT}"
     compileOnly "com.android.support:support-core-ui:${LIBRARY_SUPPORT}"
     compileOnly "com.android.support:support-annotations:${LIBRARY_SUPPORT}"
 }
@@ -28,7 +29,7 @@ static def getLibraryArtifactId() {
     return 'view'
 }
 static def getLibraryVersionName() {
-    return '0.1.0'
+    return '0.1.1'
 }
 static def getLibraryVersionCode() {
     def version = getLibraryVersionName().replace("-SNAPSHOT", "")

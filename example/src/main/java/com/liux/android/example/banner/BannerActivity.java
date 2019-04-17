@@ -62,7 +62,7 @@ public class BannerActivity extends AppCompatActivity {
                         .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        TT.show(BannerActivity.this, "点击了Banner:" + s, TT.LENGTH_SHORT);
+                        TT.show("点击了Banner:" + s);
                     }
                 });
             }

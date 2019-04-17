@@ -1,5 +1,6 @@
 package com.liux.android.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -26,6 +27,7 @@ import java.util.Arrays;
  * description：验证码输入编辑框
  */
 
+@SuppressLint("AppCompatCustomView")
 public class AuthCodeEditText extends EditText {
 
     private int mLength = 6;

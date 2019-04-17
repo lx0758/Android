@@ -3,11 +3,7 @@ package com.liux.android.util;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
@@ -19,11 +15,7 @@ import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -112,10 +104,10 @@ public class ImageUtil {
             ExifInterface newExif = new ExifInterface(newFilePath);
             Class<ExifInterface> cls = ExifInterface.class;
             Field[] fields = cls.getFields();
-            for (int i = 0; i < fields.length; i++) {
-                String fieldName = fields[i].getName();
+            for (Field field : fields) {
+                String fieldName = field.getName();
                 if (!TextUtils.isEmpty(fieldName) && fieldName.startsWith("TAG")) {
-                    String fieldValue = fields[i].get(cls).toString();
+                    String fieldValue = field.get(cls).toString();
                     String attribute = oldExif.getAttribute(fieldValue);
                     if (attribute != null) {
                         newExif.setAttribute(fieldValue, attribute);
@@ -181,5 +173,44 @@ public class ImageUtil {
         paint.setColorFilter(f);
         canvas.drawBitmap(srcBitmap, 0, 0, paint);
         return resultBitmap;
+    }
+
+    /**
+     * 等比压缩图像
+     * @param source
+     * @param maxWidth
+     * @param maxHeight
+     * @return
+     */
+    public static Bitmap compressScale(Bitmap source, int maxWidth, int maxHeight) {
+        if (source == null) return null;
+
+        int width = source.getWidth();
+        int height = source.getHeight();
+        if (width == 0 || height == 0) return source;
+
+        if (width <= maxHeight && height <= maxHeight) return source;
+
+        float widthScale = (maxWidth + 0.0F) / width;
+        float heightScale = (maxHeight + 0.0F) / height;
+        float scale = Math.min(widthScale, heightScale);
+
+        Matrix matrix = new Matrix();
+        matrix.setScale(scale, scale);
+        return Bitmap.createBitmap(source, 0, 0, width, height, matrix, true);
+    }
+
+    /**
+     * 获取位图的像素字节数组
+     * @param source
+     * @param format
+     * @param quality
+     * @return
+     */
+    public static byte[] getBitmapBytes(Bitmap source, Bitmap.CompressFormat format, int quality) {
+        if (source == null) return null;
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        source.compress(format, quality, outputStream);
+        return outputStream.toByteArray();
     }
 }

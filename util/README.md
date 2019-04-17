@@ -16,7 +16,10 @@ implementation 'com.liux.android:util:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
-    1.完善工具类
+    1.
+
+### 0.1.5_2019-04-17
+    1.添加工具类
 
 ### 0.1.4_2019-01-08
     1.增加DiskUtil获取目录和文件能力

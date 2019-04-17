@@ -55,11 +55,7 @@ public class QRCodeActivity extends AppCompatActivity {
                             @Override
                             public void onActivityResult(int resultCode, Intent data) {
                                 if (resultCode != RESULT_OK) return;
-                                TT.show(
-                                        QRCodeActivity.this,
-                                        QRCodeScanningActivity.resolveQRCode(data),
-                                        TT.LENGTH_SHORT
-                                );
+                                TT.show(QRCodeScanningActivity.resolveQRCode(data));
                             }
                         }
                 );
@@ -88,7 +84,7 @@ public class QRCodeActivity extends AppCompatActivity {
 
                                 String result = QRCodeDecoder.decode(bitmap);
                                 if (bitmap != null) bitmap.recycle();
-                                TT.show(QRCodeActivity.this, result != null ? ("解码成功:\n" + result) : "解码失败", TT.LENGTH_SHORT);
+                                TT.show(result != null ? ("解码成功:\n" + result) : "解码失败");
                             }
                         })
                         .start();
@@ -116,7 +112,7 @@ public class QRCodeActivity extends AppCompatActivity {
                                     }
 
                                     String result = QRCodeDecoder.decode(byteArrayOutputStream.toByteArray());
-                                    TT.show(QRCodeActivity.this, result != null ? ("解码成功:\n" + result) : "解码失败", TT.LENGTH_SHORT);
+                                    TT.show(result != null ? ("解码成功:\n" + result) : "解码失败");
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 } finally {
@@ -140,7 +136,7 @@ public class QRCodeActivity extends AppCompatActivity {
                                 File file = new File(imageMedia.getPath());
 
                                 String result = QRCodeDecoder.decode(file);
-                                TT.show(QRCodeActivity.this, result != null ? ("解码成功:\n" + result) : "解码失败", TT.LENGTH_SHORT);
+                                TT.show(result != null ? ("解码成功:\n" + result) : "解码失败");
                             }
                         })
                         .start();
@@ -160,7 +156,7 @@ public class QRCodeActivity extends AppCompatActivity {
                                     fileInputStream = new FileInputStream(file);
 
                                     String result = QRCodeDecoder.decode(fileInputStream.getFD());
-                                    TT.show(QRCodeActivity.this, result != null ? ("解码成功:\n" + result) : "解码失败", TT.LENGTH_SHORT);
+                                    TT.show(result != null ? ("解码成功:\n" + result) : "解码失败");
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 } finally {
@@ -198,7 +194,7 @@ public class QRCodeActivity extends AppCompatActivity {
                                     inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
 
                                     String result = QRCodeDecoder.decode(inputStream);
-                                    TT.show(QRCodeActivity.this, result != null ? ("解码成功:\n" + result) : "解码失败", TT.LENGTH_SHORT);
+                                    TT.show(result != null ? ("解码成功:\n" + result) : "解码失败");
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 } finally {

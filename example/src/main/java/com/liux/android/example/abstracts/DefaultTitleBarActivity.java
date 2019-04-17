@@ -52,7 +52,7 @@ public class DefaultTitleBarActivity extends AbstractsActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_button_1:
-                TT.show(view.getContext(), "点击了按钮", TT.LENGTH_SHORT);
+                TT.show("点击了按钮");
                 break;
             case R.id.btn_button_2:
                 break;

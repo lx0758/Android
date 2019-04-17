@@ -48,7 +48,7 @@ public class QRCodeCustomizeScanningActivity extends AppCompatActivity {
 
         @Override
         public void onResult(Result result) {
-            TT.show(QRCodeCustomizeScanningActivity.this, "扫描到二维码:\n" + result.getText(), TT.LENGTH_SHORT);
+            TT.show("扫描到二维码:\n" + result.getText());
             mQRCodeScanningFragment.reset();
         }
 

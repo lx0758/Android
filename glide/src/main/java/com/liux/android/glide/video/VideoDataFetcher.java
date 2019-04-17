@@ -23,7 +23,6 @@ public class VideoDataFetcher implements DataFetcher<InputStream> {
     private Video mVideo;
     private int mWidth, mHeight;
 
-    private Thread mThread;
     private MediaMetadataRetriever mMediaMetadataRetriever;
 
     VideoDataFetcher(Video video, int width, int height) {
@@ -34,41 +33,36 @@ public class VideoDataFetcher implements DataFetcher<InputStream> {
 
     @Override
     public void loadData(@NonNull Priority priority, @NonNull final DataCallback<? super InputStream> dataCallback) {
-        mThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String url = mVideo.getStringUrl();
-                MediaMetadataRetriever retriever = getMediaMetadataRetriever();
-                try {
-                    if (Build.VERSION.SDK_INT >= 14) {
-                        retriever.setDataSource(url, new HashMap<String, String>());
-                    } else {
-                        retriever.setDataSource(url);
-                    }
-
-                    Bitmap bitmap = retriever.getFrameAtTime();
-                    if (bitmap == null) {
-                        dataCallback.onLoadFailed(new NullPointerException("gets thumbnail failure."));
-                        return;
-                    }
-
-                    bitmap = scaleUp(bitmap, mWidth, mHeight);
-
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
-                    InputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
-
-                    dataCallback.onDataReady(inputStream);
-                } catch (Exception e) {
-                    dataCallback.onLoadFailed(e);
-                } finally {
-                    try {
-                        if (retriever != null) retriever.release();
-                    } catch (Exception ignore) {}
-                }
+        String url = mVideo.getStringUrl();
+        MediaMetadataRetriever retriever = getMediaMetadataRetriever();
+        try {
+            if (Build.VERSION.SDK_INT >= 14) {
+                retriever.setDataSource(url, new HashMap<String, String>());
+            } else {
+                retriever.setDataSource(url);
             }
-        });
-        mThread.start();
+
+            Bitmap bitmap = retriever.getFrameAtTime();
+            if (bitmap == null) {
+                dataCallback.onLoadFailed(new NullPointerException("gets thumbnail failure."));
+                return;
+            }
+
+            Bitmap scaleBitmap = scaleUp(bitmap, mWidth, mHeight);
+            bitmap.recycle();
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            scaleBitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
+            InputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
+
+            dataCallback.onDataReady(inputStream);
+        } catch (Exception e) {
+            dataCallback.onLoadFailed(e);
+        } finally {
+            try {
+                if (retriever != null) retriever.release();
+            } catch (Exception ignore) {}
+        }
     }
 
     @Override
@@ -76,10 +70,6 @@ public class VideoDataFetcher implements DataFetcher<InputStream> {
         if (mMediaMetadataRetriever != null) {
             mMediaMetadataRetriever.release();
             mMediaMetadataRetriever = null;
-        }
-        if (mThread != null) {
-            if (mThread.isAlive()) mThread.stop();
-            mThread = null;
         }
     }
 

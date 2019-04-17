@@ -1,5 +1,6 @@
 package com.liux.android.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -27,6 +28,8 @@ import android.widget.TextView;
  * 
  * @author Jeff Gilfelt
  */
+
+@SuppressLint("AppCompatCustomView")
 public class BadgeView extends TextView {
 
     public static final int POSITION_TOP_LEFT = 1;
