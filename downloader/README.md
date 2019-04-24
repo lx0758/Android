@@ -15,6 +15,12 @@ implementation 'com.liux.android:downloader:x.y.z'
 
 更新说明
 ---
+### x.y.z_201x-xx-xx
+    1.
+
+### 0.1.2_2019-04-24
+    1.增加逆初始化支持
+
 ### 0.1.1_2019-04-17
     1.升级支持库引用版本
 

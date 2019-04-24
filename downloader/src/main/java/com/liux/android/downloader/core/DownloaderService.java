@@ -231,6 +231,13 @@ public class DownloaderService implements TaskDispatch {
     }
 
     /**
+     * 解除所以注册下载任务回调
+     */
+    public void unregisterAllTaskCallback() {
+        downloaderCallbackDispense.removeAll();
+    }
+
+    /**
      * 调度任务,扫描所有任务,将 {@link Status#WAIT} 的任务提交线程池
      */
     private synchronized void schedulingTask() {

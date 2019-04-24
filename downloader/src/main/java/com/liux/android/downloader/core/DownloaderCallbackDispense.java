@@ -69,4 +69,8 @@ public class DownloaderCallbackDispense implements DownloaderCallback {
     public void remove(DownloaderCallback downloaderCallback) {
         downloaderCallbacks.remove(downloaderCallback);
     }
+
+    public void removeAll() {
+        downloaderCallbacks.clear();
+    }
 }
