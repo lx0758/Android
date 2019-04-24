@@ -29,6 +29,13 @@ public class Downloader {
     }
 
     /**
+     * 释放下载器
+     */
+    public static void release() {
+        DownloaderCreator.release();
+    }
+
+    /**
      * 注册初始化回调接口
      * @param initCallback
      */

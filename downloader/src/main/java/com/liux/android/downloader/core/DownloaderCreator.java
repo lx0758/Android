@@ -48,6 +48,14 @@ public class DownloaderCreator {
         }
     }
 
+    public static void release() {
+        if (DownloaderService.getService() != null) {
+            DownloaderService.getService().stopAllTasks();
+            DownloaderService.getService().unregisterAllTaskCallback();
+            DownloaderService.setService(null);
+        }
+    }
+
     public static void registerInitCallback(InitCallback initCallback) {
         if (initCallback == null) return;
 

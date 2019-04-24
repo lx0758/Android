@@ -66,6 +66,13 @@ public class Http {
             mInstance = new Http(context, okHttpBuilder, retrofitBuilder);
         }
     }
+    public static void release() {
+        if (mInstance != null) {
+            mInstance.mRequestInterceptor.setOnHeaderListener(null);
+            mInstance.mRequestInterceptor.setOnRequestListener(null);
+            mInstance = null;
+        }
+    }
 
     public static final String TAG = "[Http]";
 
