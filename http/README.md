@@ -120,6 +120,9 @@ implementation 'com.liux.android:http:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
+    1.
+
+### 0.1.7_2019-04-24
     1.增加逆初始化支持
 
 ### 0.1.6_2019-04-17
