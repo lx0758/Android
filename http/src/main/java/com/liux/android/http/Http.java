@@ -101,9 +101,9 @@ public class Http {
 
         mRetrofit = initRetorfit(retrofitBuilder);
 
-        mTimeoutInterceptor.setOverallConnectTimeout(mOkHttpClient.connectTimeoutMillis() / 1000);
-        mTimeoutInterceptor.setOverallWriteTimeout(mOkHttpClient.writeTimeoutMillis() / 1000);
-        mTimeoutInterceptor.setOverallReadTimeout(mOkHttpClient.readTimeoutMillis() / 1000);
+        mTimeoutInterceptor.setOverallConnectTimeout(mOkHttpClient.connectTimeoutMillis(), TimeUnit.MILLISECONDS);
+        mTimeoutInterceptor.setOverallWriteTimeout(mOkHttpClient.writeTimeoutMillis(), TimeUnit.MILLISECONDS);
+        mTimeoutInterceptor.setOverallReadTimeout(mOkHttpClient.readTimeoutMillis(), TimeUnit.MILLISECONDS);
     }
 
     public QueryRequest get(String url) {
@@ -310,10 +310,11 @@ public class Http {
     /**
      * 设置全局连接超时时间
      * @param overallConnectTimeout
+     * @param timeUnit
      * @return
      */
-    public Http setOverallConnectTimeout(int overallConnectTimeout) {
-        mTimeoutInterceptor.setOverallConnectTimeout(overallConnectTimeout);
+    public Http setOverallConnectTimeout(int overallConnectTimeout, TimeUnit timeUnit) {
+        mTimeoutInterceptor.setOverallConnectTimeout(overallConnectTimeout, timeUnit);
         return this;
     }
 
@@ -328,10 +329,11 @@ public class Http {
     /**
      * 设置全局写超时时间
      * @param overallWriteTimeout
+     * @param timeUnit
      * @return
      */
-    public Http setOverallWriteTimeout(int overallWriteTimeout) {
-        mTimeoutInterceptor.setOverallConnectTimeout(overallWriteTimeout);
+    public Http setOverallWriteTimeout(int overallWriteTimeout, TimeUnit timeUnit) {
+        mTimeoutInterceptor.setOverallConnectTimeout(overallWriteTimeout, timeUnit);
         return this;
     }
 
@@ -346,10 +348,11 @@ public class Http {
     /**
      * 设置全局读超时时间
      * @param overallReadTimeout
+     * @param timeUnit
      * @return
      */
-    public Http setOverallReadTimeout(int overallReadTimeout) {
-        mTimeoutInterceptor.setOverallConnectTimeout(overallReadTimeout);
+    public Http setOverallReadTimeout(int overallReadTimeout, TimeUnit timeUnit) {
+        mTimeoutInterceptor.setOverallConnectTimeout(overallReadTimeout, timeUnit);
         return this;
     }
 

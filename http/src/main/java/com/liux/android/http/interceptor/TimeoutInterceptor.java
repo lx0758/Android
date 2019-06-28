@@ -38,14 +38,14 @@ public class TimeoutInterceptor implements Interceptor {
         writeTimeout = parseTimeout(request, HEADER_TIMEOUT_WRITE, writeTimeout);
         readTimeout = parseTimeout(request, HEADER_TIMEOUT_READ, readTimeout);
 
-        if (connectTimeout > 0 && connectTimeout != chain.connectTimeoutMillis() / 1000) {
-            chain = chain.withConnectTimeout(connectTimeout, TimeUnit.SECONDS);
+        if (connectTimeout > 0 && connectTimeout != chain.connectTimeoutMillis()) {
+            chain = chain.withConnectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
         }
-        if (writeTimeout > 0 && writeTimeout != chain.writeTimeoutMillis() / 1000) {
-            chain = chain.withWriteTimeout(writeTimeout, TimeUnit.SECONDS);
+        if (writeTimeout > 0 && writeTimeout != chain.writeTimeoutMillis()) {
+            chain = chain.withWriteTimeout(writeTimeout, TimeUnit.MILLISECONDS);
         }
-        if (readTimeout > 0 && readTimeout != chain.readTimeoutMillis() / 1000) {
-            chain = chain.withReadTimeout(readTimeout, TimeUnit.SECONDS);
+        if (readTimeout > 0 && readTimeout != chain.readTimeoutMillis()) {
+            chain = chain.withReadTimeout(readTimeout, TimeUnit.MILLISECONDS);
         }
 
         request = request.newBuilder()
@@ -61,24 +61,24 @@ public class TimeoutInterceptor implements Interceptor {
         return mOverallConnectTimeout;
     }
 
-    public void setOverallConnectTimeout(int overallConnectTimeout) {
-        mOverallConnectTimeout = overallConnectTimeout;
+    public void setOverallConnectTimeout(int overallConnectTimeout, TimeUnit timeUnit) {
+        mOverallConnectTimeout = (int) timeUnit.toMillis(overallConnectTimeout);
     }
 
     public int getOverallWriteTimeout() {
         return mOverallWriteTimeout;
     }
 
-    public void setOverallWriteTimeout(int overallWriteTimeout) {
-        mOverallWriteTimeout = overallWriteTimeout;
+    public void setOverallWriteTimeout(int overallWriteTimeout, TimeUnit timeUnit) {
+        mOverallWriteTimeout = (int) timeUnit.toMillis(overallWriteTimeout);
     }
 
     public int getOverallReadTimeout() {
         return mOverallReadTimeout;
     }
 
-    public void setOverallReadTimeout(int overallReadTimeout) {
-        mOverallReadTimeout = overallReadTimeout;
+    public void setOverallReadTimeout(int overallReadTimeout, TimeUnit timeUnit) {
+        mOverallReadTimeout = (int) timeUnit.toMillis(overallReadTimeout);
     }
 
     private int parseTimeout(Request request, String header, int defaultValue) {

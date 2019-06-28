@@ -90,9 +90,9 @@ public interface TestApi {
     // 以"/"开头的表示从根路径开始
     @GET("retorfit-timeout")
     @Headers({
-            Http.HEADER_TIMEOUT_CONNECT + ":3",
-            Http.HEADER_TIMEOUT_WRITE + ":6",
-            Http.HEADER_TIMEOUT_READ + ":6"
+            Http.HEADER_TIMEOUT_CONNECT + ":3000",
+            Http.HEADER_TIMEOUT_WRITE + ":6000",
+            Http.HEADER_TIMEOUT_READ + ":6000"
     })
     Observable<JSONObject> testTimeout(
             @Query("data") String data
