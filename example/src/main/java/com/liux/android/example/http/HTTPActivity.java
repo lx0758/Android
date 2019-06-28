@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -151,9 +152,9 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                 mTestApiModle.testTimeout(data, observable);
                 break;
             case R.id.btn_retorfit_timeout_global:
-                Http.get().setOverallConnectTimeout(5);
-                Http.get().setOverallWriteTimeout(20);
-                Http.get().setOverallReadTimeout(20);
+                Http.get().setOverallConnectTimeout(5, TimeUnit.SECONDS);
+                Http.get().setOverallWriteTimeout(20, TimeUnit.SECONDS);
+                Http.get().setOverallReadTimeout(20, TimeUnit.SECONDS);
                 mTestApiModle.testTimeoutGlobal(data, observable);
                 break;
         }
@@ -330,9 +331,9 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                         });
                 break;
             case R.id.btn_request_timeout_global:
-                Http.get().setOverallConnectTimeout(5);
-                Http.get().setOverallWriteTimeout(20);
-                Http.get().setOverallReadTimeout(20);
+                Http.get().setOverallConnectTimeout(5, TimeUnit.SECONDS);
+                Http.get().setOverallWriteTimeout(20, TimeUnit.SECONDS);
+                Http.get().setOverallReadTimeout(20, TimeUnit.SECONDS);
                 Http.get().post(url + "request-timeout-global")
                         .addHeader("Request-Header-Id", "btn_request_timeout_header")
                         .addQuery("Request-Query-Id", "btn_request_timeout_header")
