@@ -303,8 +303,8 @@ public class Http {
      * 获取全局连接超时时间
      * @return
      */
-    public int getOverallConnectTimeout() {
-        return mTimeoutInterceptor.getOverallConnectTimeout();
+    public int getOverallConnectTimeoutMillis() {
+        return mTimeoutInterceptor.getOverallConnectTimeoutMillis();
     }
 
     /**
@@ -322,8 +322,8 @@ public class Http {
      * 获取全局写超时时间
      * @return
      */
-    public int getOverallWriteTimeout() {
-        return mTimeoutInterceptor.getOverallWriteTimeout();
+    public int getOverallWriteTimeoutMillis() {
+        return mTimeoutInterceptor.getOverallWriteTimeoutMillis();
     }
 
     /**
@@ -341,8 +341,8 @@ public class Http {
      * 获取全局读超时时间
      * @return
      */
-    public int getOverallReadTimeout() {
-        return mTimeoutInterceptor.getOverallReadTimeout();
+    public int getOverallReadTimeoutMillis() {
+        return mTimeoutInterceptor.getOverallReadTimeoutMillis();
     }
 
     /**

@@ -57,7 +57,7 @@ public class TimeoutInterceptor implements Interceptor {
         return chain.proceed(request);
     }
 
-    public int getOverallConnectTimeout() {
+    public int getOverallConnectTimeoutMillis() {
         return mOverallConnectTimeout;
     }
 
@@ -65,7 +65,7 @@ public class TimeoutInterceptor implements Interceptor {
         mOverallConnectTimeout = (int) timeUnit.toMillis(overallConnectTimeout);
     }
 
-    public int getOverallWriteTimeout() {
+    public int getOverallWriteTimeoutMillis() {
         return mOverallWriteTimeout;
     }
 
@@ -73,7 +73,7 @@ public class TimeoutInterceptor implements Interceptor {
         mOverallWriteTimeout = (int) timeUnit.toMillis(overallWriteTimeout);
     }
 
-    public int getOverallReadTimeout() {
+    public int getOverallReadTimeoutMillis() {
         return mOverallReadTimeout;
     }
 

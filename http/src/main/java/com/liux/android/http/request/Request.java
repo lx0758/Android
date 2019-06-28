@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.FailException;
 import java.util.IdentityHashMap;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -83,27 +84,30 @@ public abstract class Request<T extends Request> implements Callback {
         return (T) this;
     }
 
-    public T connectTimeout(int second) {
-        if (second > 0) {
-            getHeaderHashMap().put(TimeoutInterceptor.HEADER_TIMEOUT_CONNECT, String.valueOf(second));
+    public T connectTimeout(int time, TimeUnit timeUnit) {
+        long millTime = timeUnit.toMillis(time);
+        if (millTime > 0) {
+            getHeaderHashMap().put(TimeoutInterceptor.HEADER_TIMEOUT_CONNECT, String.valueOf(millTime));
         } else {
             getHeaderHashMap().remove(TimeoutInterceptor.HEADER_TIMEOUT_CONNECT);
         }
         return (T) this;
     }
 
-    public T writeTimeout(int second) {
-        if (second > 0) {
-            getHeaderHashMap().put(TimeoutInterceptor.HEADER_TIMEOUT_WRITE, String.valueOf(second));
+    public T writeTimeout(int time, TimeUnit timeUnit) {
+        long millTime = timeUnit.toMillis(time);
+        if (millTime > 0) {
+            getHeaderHashMap().put(TimeoutInterceptor.HEADER_TIMEOUT_WRITE, String.valueOf(millTime));
         } else {
             getHeaderHashMap().remove(TimeoutInterceptor.HEADER_TIMEOUT_WRITE);
         }
         return (T) this;
     }
 
-    public T readTimeout(int second) {
-        if (second > 0) {
-            getHeaderHashMap().put(TimeoutInterceptor.HEADER_TIMEOUT_READ, String.valueOf(second));
+    public T readTimeout(int time, TimeUnit timeUnit) {
+        long millTime = timeUnit.toMillis(time);
+        if (millTime > 0) {
+            getHeaderHashMap().put(TimeoutInterceptor.HEADER_TIMEOUT_READ, String.valueOf(millTime));
         } else {
             getHeaderHashMap().remove(TimeoutInterceptor.HEADER_TIMEOUT_READ);
         }

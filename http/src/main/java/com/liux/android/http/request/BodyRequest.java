@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.*;
 import okhttp3.Request;
@@ -59,18 +60,18 @@ public class BodyRequest<T extends BodyRequest> extends QueryRequest<T> {
     }
 
     @Override
-    public T connectTimeout(int second) {
-        return super.connectTimeout(second);
+    public T connectTimeout(int time, TimeUnit timeUnit) {
+        return super.connectTimeout(time, timeUnit);
     }
 
     @Override
-    public T writeTimeout(int second) {
-        return super.writeTimeout(second);
+    public T writeTimeout(int time, TimeUnit timeUnit) {
+        return super.writeTimeout(time, timeUnit);
     }
 
     @Override
-    public T readTimeout(int second) {
-        return super.readTimeout(second);
+    public T readTimeout(int time, TimeUnit timeUnit) {
+        return super.readTimeout(time, timeUnit);
     }
 
     @Override
