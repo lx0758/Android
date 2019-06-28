@@ -311,9 +311,9 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                         .addHeader("Request-Header-Id", "btn_request_timeout_header")
                         .addQuery("Request-Query-Id", "btn_request_timeout_header")
                         .addParam("Request-Param-Id", "btn_request_timeout_header")
-                        .connectTimeout(5)
-                        .writeTimeout(10)
-                        .readTimeout(10)
+                        .connectTimeout(5, TimeUnit.SECONDS)
+                        .writeTimeout(10, TimeUnit.SECONDS)
+                        .readTimeout(10, TimeUnit.SECONDS)
                         .manager(this)
                         .async(new UIResult() {
                             @Override
