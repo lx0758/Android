@@ -41,7 +41,7 @@ public class UserAgentInterceptor implements Interceptor {
     }
 
     /**
-     * Dalvik/2.1.0 (Linux; U; Android 6.0.1; MI 4LTE MIUI/7.11.9) App_packageName_versionCode
+     * Dalvik/2.1.0 (Linux; U; Android 6.0.1; MI 4LTE MIUI/7.11.9) App_packageName_versionName/versionCode
      * @param context
      * @return
      */
@@ -58,12 +58,19 @@ public class UserAgentInterceptor implements Interceptor {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        String versionName = "";
+        try {
+            versionName = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_CONFIGURATIONS).versionName;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return String.format(
                 Locale.CHINA,
-                "%s App_%s_%d",
+                "%s Application_%s_%s/%d",
                 System.getProperty("http.agent"),
                 context.getPackageName(),
+                versionName,
                 versionCode
         );
     }

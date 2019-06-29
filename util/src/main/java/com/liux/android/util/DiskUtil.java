@@ -2,9 +2,15 @@ package com.liux.android.util;
 
 import android.content.Context;
 import android.os.Environment;
+import android.os.StatFs;
 import android.text.TextUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,6 +129,61 @@ public class DiskUtil {
         if (!TextUtils.isEmpty(suffix)) fileName += ("." + suffix);
         File file = new File(getFileDir(context), fileName);
         return file.exists() ? getTempFile(context, suffix) : file;
+    }
+
+    /**
+     * 文件拷贝
+     * @param source
+     * @param target
+     */
+    public static void fileCopy(File source, File target) {
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            in = new FileInputStream(source);
+            out = new FileOutputStream(target);
+            int length;
+            byte[] buffer = new byte[2048];
+            while ((length = in.read(buffer)) > 0) {
+                out.write(buffer, 0, length);
+            }
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * 获取磁盘总量
+     * @return
+     */
+    public static long getDiskTotal() {
+        StatFs sf = new StatFs(Environment.getExternalStorageDirectory().getAbsolutePath());
+        return (long) sf.getBlockCount() * (long) sf.getBlockSize();
+    }
+
+    /**
+     * 获取磁盘剩余空间
+     * @return
+     */
+    public static long getDiskAvailable() {
+        StatFs sf = new StatFs(Environment.getExternalStorageDirectory().getAbsolutePath());
+        return (long) sf.getAvailableBlocks() * (long) sf.getBlockSize();
     }
 
     /**

@@ -135,7 +135,7 @@ public class RegexUtil {
      */
     public static boolean isVehicleLicence(String license) {
         if (license == null) return false;
-        return license.matches("^[京|津|沪|渝|冀|豫|云|辽|黑|湘|皖|鲁|新|苏|浙|赣|鄂|桂|甘|晋|蒙|陕|吉|闽|贵|粤|青|藏|川|宁|琼][a-zA-Z][·•]?[0-9a-zA-Z]{5}");
+        return license.matches("^(([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z](([0-9]{5}[DF])|([DF]([A-HJ-NP-Z0-9])[0-9]{4})))|([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z][A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳使领]))$");
     }
 
     /**
@@ -211,5 +211,35 @@ public class RegexUtil {
     public static boolean isComplexPassword(String password) {
         if (!isPassword(password)) return false;
         return password.matches("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$");
+    }
+
+    /**
+     * 是否是一个合法的IP地址
+     * @param address
+     * @return
+     */
+    public static boolean isIpAddress(String address) {
+        if (address == null) return false;
+        return isIp4Address(address) || isIp6Address(address);
+    }
+
+    /**
+     * 是否是一个合法的IPV4地址
+     * @param address
+     * @return
+     */
+    public static boolean isIp4Address(String address) {
+        if (address == null) return false;
+        return address.matches("^((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)$");
+    }
+
+    /**
+     * 是否是一个合法的IPV6地址
+     * @param address
+     * @return
+     */
+    public static boolean isIp6Address(String address) {
+        if (address == null) return false;
+        return address.matches("^([\\da-fA-F]{1,4}:){7}[\\da-fA-F]{1,4}$");
     }
 }

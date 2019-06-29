@@ -7,6 +7,9 @@ import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.liux.android.http.converter.FastJsonConverterFactory;
+import com.liux.android.http.dns.HttpDns;
+import com.liux.android.http.dns.TencentHttpDns;
+import com.liux.android.http.dns.TimeOutDns;
 import com.liux.android.http.interceptor.RequestInterceptor;
 import com.liux.android.http.interceptor.HttpLoggingInterceptor;
 import com.liux.android.http.interceptor.BaseUrlInterceptor;
@@ -371,6 +374,7 @@ public class Http {
                             new SetCookieCache(),
                             new SharedPrefsCookiePersistor(mContext)
                     ))
+                    .dns(new TimeOutDns(5, TimeUnit.SECONDS))
                     .connectTimeout(10, TimeUnit.SECONDS)
                     .writeTimeout(30, TimeUnit.SECONDS)
                     .readTimeout(30, TimeUnit.SECONDS)
