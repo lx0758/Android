@@ -195,12 +195,12 @@ public class IntentUtil {
      * 安装Apk文件
      *
      * @param context
-     * @param file
+     * @param uri
      */
-    public static void installApk(Context context, File file) {
+    public static void installApk(Context context, Uri uri) {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+            intent.setDataAndType(uri, "application/vnd.android.package-archive");
             // 华为EMUI说,我必须要这句
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

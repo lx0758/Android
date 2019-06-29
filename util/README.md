@@ -18,6 +18,9 @@ implementation 'com.liux.android:util:x.y.z'
 ### x.y.z_201x-xx-xx
     1.
 
+### 0.1.6_2019-06-29
+    1.添加工具类方法
+
 ### 0.1.5_2019-04-17
     1.添加工具类
 

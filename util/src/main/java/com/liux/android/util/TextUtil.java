@@ -482,4 +482,45 @@ public class TextUtil {
         }
         return result;
     }
+
+    /**
+     * 字节数组转16进制
+     * @param bytes 需要转换的byte数组
+     * @return  转换后的Hex字符串
+     */
+    public static String bytes2Hex(byte[] bytes) {
+        if (bytes == null) return "";
+        StringBuffer sb = new StringBuffer();
+        for (byte aByte : bytes) {
+            String hex = Integer.toHexString(aByte & 0xFF);
+            if (hex.length() < 2) sb.append(0);
+            sb.append(hex);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * hex字符串转byte数组
+     * @param inHex 待转换的Hex字符串
+     * @return  转换后的byte数组结果
+     */
+    public static byte[] hex2Bytes(String inHex) {
+        int hexlen = inHex.length();
+        byte[] result;
+        if (hexlen % 2 == 1) {
+            // 奇数
+            hexlen++;
+            result = new byte[(hexlen / 2)];
+            inHex = "0" + inHex;
+        } else {
+            // 偶数
+            result = new byte[(hexlen / 2)];
+        }
+        int j = 0;
+        for (int i = 0; i < hexlen; i += 2) {
+            result[j] = (byte)Integer.parseInt(inHex.substring(i, i + 2),16);
+            j++;
+        }
+        return result;
+    }
 }

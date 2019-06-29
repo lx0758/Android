@@ -5,7 +5,20 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
+
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Liux on 2016/6/18.
@@ -157,5 +170,62 @@ public class DeviceUtil {
         // 通过WLAN或移动网络(3G/2G)确定的位置（也称作AGPS，辅助GPS定位。主要用于在室内或遮盖物（建筑群或茂密的深林等）密集的地方定位）
         boolean network = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         return gps || network;
+    }
+
+    /**
+     * 获取设备ID
+     * @param context
+     * @return
+     */
+    public static String getAndroidDeviceID(Context context) {
+        // 获取设备主板名称
+        String brand = Build.BRAND.toUpperCase();
+        // 获取设备参数
+        String device = Build.DEVICE.toUpperCase();
+        // 系统/固件版本号
+        String id = Build.ID.toUpperCase();
+        // 获取设备制造商
+        String manufacturer = Build.MANUFACTURER.toUpperCase();
+        // 整个产品名称
+        String product = Build.PRODUCT.toUpperCase();
+        // 获取设备序列号
+        String serial = android.os.Build.SERIAL;
+        // 获取在设备首次启动时，系统随机生成的一个64位的数字
+        // 该值在系统被恢复出厂后会被重置
+        String android_id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        // 拼接
+        String soleDeviceID = brand + device + id + manufacturer + product + serial + android_id;
+        // 过滤特殊字符
+        String regEx = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】'；：”“’。，、？]";
+        Pattern pattern = Pattern.compile(regEx);
+        Matcher matcher = pattern.matcher(soleDeviceID);
+        soleDeviceID = matcher.replaceAll("");
+        return soleDeviceID.trim();
+    }
+
+    /**
+     * 获取本地IP地址
+     * @param ipv6
+     * @return
+     */
+    public static List<InetAddress> getLocalIpAddress(boolean ipv6) {
+        List<InetAddress> inetAddresses = new LinkedList<>();
+        try {
+            for (Enumeration<NetworkInterface> enNetI = NetworkInterface.getNetworkInterfaces(); enNetI.hasMoreElements();) {
+                NetworkInterface networkInterface = enNetI.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = networkInterface.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (inetAddress.isLoopbackAddress()) continue;
+                    if (inetAddress instanceof Inet4Address) {
+                        inetAddresses.add(inetAddress);
+                    } else if (ipv6 && inetAddress instanceof Inet6Address) {
+                        inetAddresses.add(inetAddress);
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        return inetAddresses;
     }
 }

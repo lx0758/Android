@@ -122,6 +122,9 @@ implementation 'com.liux.android:http:x.y.z'
 ### x.y.z_201x-xx-xx
     1.
 
+### 0.1.10_2019-06-29
+    1.添加DNS超时及HttpDns实现
+
 ### 0.1.9_2019-06-28
     1.统一设置超时时间的单位
 
