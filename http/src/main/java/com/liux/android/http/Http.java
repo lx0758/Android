@@ -73,6 +73,8 @@ public class Http {
         if (mInstance != null) {
             mInstance.mRequestInterceptor.setOnHeaderListener(null);
             mInstance.mRequestInterceptor.setOnRequestListener(null);
+            mInstance.mOkHttpClient.dispatcher().executorService().shutdown();
+            mInstance.mOkHttpClient.connectionPool().evictAll();
             mInstance = null;
         }
     }

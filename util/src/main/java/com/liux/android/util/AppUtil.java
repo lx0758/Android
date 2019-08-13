@@ -110,22 +110,42 @@ public class AppUtil {
      * @return
      */
     public static String getApplicationName(Context context) {
+        return getApplicationName(context, context.getPackageName());
+    }
+
+    /**
+     * 获取应用名称
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public static String getApplicationName(Context context, String packageName) {
         PackageManager packageManager = context.getPackageManager();
         try {
-            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
+            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(packageName, 0);
             return packageManager.getApplicationLabel(applicationInfo).toString();
         } catch (PackageManager.NameNotFoundException ignore) {}
         return null;
     }
 
     /**
-     * 获取应用版本号码
+     * 获取应用版本号
      * @param context
      * @return
      */
     public static int getVersionCode(Context context) {
+        return getVersionCode(context, context.getPackageName());
+    }
+
+    /**
+     * 获取应用版本号
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public static int getVersionCode(Context context, String packageName) {
         try {
-            return context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_CONFIGURATIONS).versionCode;
+            return context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_CONFIGURATIONS).versionCode;
         } catch (PackageManager.NameNotFoundException ignore) {}
         return -1;
     }
@@ -136,8 +156,18 @@ public class AppUtil {
      * @return
      */
     public static String getVersionName(Context context) {
+        return getVersionName(context, context.getPackageName());
+    }
+
+    /**
+     * 获取应用版本名称
+     * @param context
+     * @param packageName
+     * @return
+     */
+    public static String getVersionName(Context context, String packageName) {
         try {
-            return context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_CONFIGURATIONS).versionName;
+            return context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_CONFIGURATIONS).versionName;
         } catch (PackageManager.NameNotFoundException ignore) {}
         return null;
     }
@@ -147,7 +177,7 @@ public class AppUtil {
      * @param context
      * @param apkFile
      **/
-    public static String getApkFilePackage(Context context, File apkFile) {
+    public static String getApkPackageName(Context context, File apkFile) {
         PackageManager pm = context.getPackageManager();
         PackageInfo info = pm.getPackageArchiveInfo(apkFile.getPath(), PackageManager.GET_ACTIVITIES);
         if (info != null) {

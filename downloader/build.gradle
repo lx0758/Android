@@ -19,7 +19,7 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    compileOnly 'com.squareup.okhttp3:okhttp:3.11.0'
+    compileOnly 'com.squareup.okhttp3:okhttp:3.12.3'
 }
 
 apply from: '../release.gradle'
