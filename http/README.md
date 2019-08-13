@@ -122,6 +122,10 @@ implementation 'com.liux.android:http:x.y.z'
 ### x.y.z_201x-xx-xx
     1.
 
+### 0.1.11_2019-08-13
+    1.更新OkHttp & Retorfit版本
+    2.修复释放 Http 后不能及时回收资源
+
 ### 0.1.10_2019-06-29
     1.添加DNS超时及HttpDns实现
 
