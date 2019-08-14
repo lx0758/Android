@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import com.liux.android.abstracts.touch.TouchCallback;
+import com.liux.android.abstracts.touch.TouchHost;
 
 import java.lang.reflect.Field;
 
@@ -143,41 +144,58 @@ public class AbstractsFragmentProxy {
     // ===============================================================
 
     public boolean isHandlerTouch() {
-        if (getHandlerTouch() == null) return false;
-        if (!getHandlerTouch().isHandlerTouch()) return false;
-        if (getHandlerTouch().hasIgnoreView(mIAbstractsFragment.getTarget().getView())) return false;
+        TouchHost touchHost = getHandlerTouch();
+        if (touchHost == null) return false;
+        if (!touchHost.isHandlerTouch()) return false;
+        if (touchHost.hasIgnoreView(mIAbstractsFragment.getTarget().getView())) return false;
         return true;
     }
 
     public void setHandlerTouch(boolean handlerTouch) {
-        if (getHandlerTouch() == null) return;
-        if (!getHandlerTouch().isHandlerTouch()) return;
+        TouchHost touchHost = getHandlerTouch();
+        if (touchHost == null) return;
+        if (!touchHost.isHandlerTouch()) return;
         if (handlerTouch) {
-            getHandlerTouch().removeIgnoreView(mIAbstractsFragment.getTarget().getView());
+            touchHost.removeIgnoreView(mIAbstractsFragment.getTarget().getView());
         } else {
-            getHandlerTouch().addIgnoreView(mIAbstractsFragment.getTarget().getView());
+            touchHost.addIgnoreView(mIAbstractsFragment.getTarget().getView());
         }
     }
 
     public boolean hasIgnoreView(View view) {
-        if (getHandlerTouch() == null) return false;
-        return getHandlerTouch().hasIgnoreView(view);
+        TouchHost touchHost = getHandlerTouch();
+        if (touchHost == null) return false;
+        return touchHost.hasIgnoreView(view);
     }
 
     public void addIgnoreView(View view) {
-        if (getHandlerTouch() == null) return;
-        getHandlerTouch().addIgnoreView(view);
+        TouchHost touchHost = getHandlerTouch();
+        if (touchHost == null) return;
+        touchHost.addIgnoreView(view);
     }
 
     public void removeIgnoreView(View view) {
-        if (getHandlerTouch() == null) return;
-        getHandlerTouch().removeIgnoreView(view);
+        TouchHost touchHost = getHandlerTouch();
+        if (touchHost == null) return;
+        touchHost.removeIgnoreView(view);
     }
 
-    private TouchCallback getHandlerTouch() {
+    public void addTouchCallback(TouchCallback touchCallback) {
+        TouchHost touchHost = getHandlerTouch();
+        if (touchHost == null) return;
+        touchHost.addTouchCallback(touchCallback);
+    }
+
+    public void removeTouchCallback(TouchCallback touchCallback) {
+        TouchHost touchHost = getHandlerTouch();
+        if (touchHost == null) return;
+        touchHost.removeTouchCallback(touchCallback);
+    }
+
+    private TouchHost getHandlerTouch() {
         Activity activity = mIAbstractsFragment.getTarget().getActivity();
-        if (activity instanceof TouchCallback) {
-            return (TouchCallback) activity;
+        if (activity instanceof TouchHost) {
+            return (TouchHost) activity;
         }
         return null;
     }

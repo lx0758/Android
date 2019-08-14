@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 
 import com.liux.android.abstracts.titlebar.TitleBar;
-import com.liux.android.abstracts.touch.TouchCallback;
+import com.liux.android.abstracts.touch.TouchHost;
 
 import java.util.Map;
 
@@ -14,7 +14,7 @@ import java.util.Map;
  * lx0758@qq.com
  */
 
-interface IAbstractsActivity extends TouchCallback {
+interface IAbstractsActivity extends TouchHost {
 
     AppCompatActivity getTarget();
 

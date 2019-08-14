@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.liux.android.abstracts.titlebar.TitleBar;
+import com.liux.android.abstracts.touch.TouchCallback;
 import com.liux.android.abstracts.util.FixInputMethodManagerLeak;
 
 import java.util.HashMap;
@@ -103,12 +104,16 @@ public class AbstractsActivityProxy {
 
     private boolean mHandlerTouch = true;
     private List<View> mIgnoreViews;
+    private List<TouchCallback> mTouchCallbacks = new LinkedList<>();
     private GestureDetector mGestureDetector;
     private InputMethodManager mInputMethodManager;
 
     private GestureDetector.SimpleOnGestureListener mSimpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
         public boolean onSingleTapUp(MotionEvent event) {
+            for (TouchCallback touchCallback : mTouchCallbacks) {
+                touchCallback.hideKeyboard();
+            }
             hideKeyboard(event);
             return true;
         }
@@ -229,5 +234,13 @@ public class AbstractsActivityProxy {
         } else {
             return false;
         }
+    }
+
+    public void addTouchCallback(TouchCallback touchCallback) {
+        mTouchCallbacks.add(touchCallback);
+    }
+
+    public void removeTouchCallback(TouchCallback touchCallback) {
+        mTouchCallbacks.remove(touchCallback);
     }
 }

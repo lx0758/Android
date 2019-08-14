@@ -9,16 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.liux.android.abstracts.touch.TouchCallback;
+import com.liux.android.abstracts.touch.TouchHost;
 
 /**
  * 抽象Fragment,提供以下能力 <br>
- * 1.自动隐藏输入法 {@link TouchCallback} <br>
+ * 1.自动隐藏输入法 {@link TouchHost} <br>
  * 2.重定义生命周期细节 {@link #onLazyLoad()} {@link #onVisibleChanged()}
  * 3.修复某些版本某些情况下 Fragent 显示状态不保存的问题
  * Created by Liux on 2017/8/7.
  */
 
-public abstract class AbstractsFragment extends Fragment implements IAbstractsFragment, TouchCallback {
+public abstract class AbstractsFragment extends Fragment implements IAbstractsFragment {
     private String TAG = "AbstractsFragment";
 
     private AbstractsFragmentProxy mProxy = new AbstractsFragmentProxy(this);
@@ -103,6 +104,16 @@ public abstract class AbstractsFragment extends Fragment implements IAbstractsFr
     @Override
     public void removeIgnoreView(View view) {
         mProxy.removeIgnoreView(view);
+    }
+
+    @Override
+    public void addTouchCallback(TouchCallback touchCallback) {
+        mProxy.addTouchCallback(touchCallback);
+    }
+
+    @Override
+    public void removeTouchCallback(TouchCallback touchCallback) {
+        mProxy.removeTouchCallback(touchCallback);
     }
 
     @Override

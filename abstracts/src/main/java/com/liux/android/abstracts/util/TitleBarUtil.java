@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * 2018/2/12
@@ -143,9 +144,17 @@ public class TitleBarUtil {
             // 隐藏 MenuView
             toolbar.getMenu();
             Class clazz = toolbar.getClass();
-            Field field = clazz.getDeclaredField("mMenuView");
-            field.setAccessible(true);
-            ActionMenuView actionMenuView = (ActionMenuView) field.get(toolbar);
+            Field[] fields = clazz.getDeclaredFields();
+            Field mMenuView = null;
+            for (Field field : fields) {
+                if (field.getType() == ActionMenuView.class) {
+                    mMenuView = field;
+                    break;
+                }
+            }
+            if (mMenuView == null) return;
+            mMenuView.setAccessible(true);
+            ActionMenuView actionMenuView = (ActionMenuView) mMenuView.get(toolbar);
             actionMenuView.setVisibility(View.GONE);
         } catch (Exception ignore) {}
     }
