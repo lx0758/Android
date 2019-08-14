@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
-import com.liux.android.abstracts.touch.TouchCallback;
+import com.liux.android.abstracts.touch.TouchHost;
 
 /**
  * 2018/2/12
@@ -12,7 +12,7 @@ import com.liux.android.abstracts.touch.TouchCallback;
  * lx0758@qq.com
  */
 
-interface IAbstractsFragment extends TouchCallback {
+interface IAbstractsFragment extends TouchHost {
 
     Fragment getTarget();
 

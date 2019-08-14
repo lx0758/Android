@@ -9,18 +9,19 @@ import android.view.View;
 import com.liux.android.abstracts.titlebar.DefaultTitleBar;
 import com.liux.android.abstracts.titlebar.TitleBar;
 import com.liux.android.abstracts.touch.TouchCallback;
+import com.liux.android.abstracts.touch.TouchHost;
 
 import java.util.Map;
 
 /**
  * 抽象Activity,提供以下能力 <br>
- * 1.自动隐藏输入法 {@link TouchCallback} <br>
+ * 1.自动隐藏输入法 {@link TouchHost} <br>
  * 2.实现任意数据的"意外"恢复和存储 {@link #onRestoreData(Map)} {@link #onSaveData(Map)} <br>
  * 3.实现各种特殊场景的 {@link TitleBar} 详见 {@link #onInitTitleBar()} <br>
  * 2017-8-21 <br>
  * 调整恢复数据的调用时机<br>
  * 2017-12-4 <br>
- * 实现 {@link TouchCallback} 事件的过滤
+ * 实现 {@link TouchHost} 事件的过滤
  * 2018-2-12 <br>
  * 1.改代理模式实现
  * 2.移除自定义生命周期
@@ -113,6 +114,16 @@ public abstract class AbstractsActivity extends AppCompatActivity implements IAb
     @Override
     public void removeIgnoreView(View view) {
         mProxy.removeIgnoreView(view);
+    }
+
+    @Override
+    public void addTouchCallback(TouchCallback touchCallback) {
+        mProxy.addTouchCallback(touchCallback);
+    }
+
+    @Override
+    public void removeTouchCallback(TouchCallback touchCallback) {
+        mProxy.removeTouchCallback(touchCallback);
     }
 
     @Override
