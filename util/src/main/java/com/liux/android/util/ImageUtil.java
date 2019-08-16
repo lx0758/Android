@@ -4,7 +4,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.*;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -13,6 +12,7 @@ import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.RequiresApi;
+import android.support.media.ExifInterface;
 import android.text.TextUtils;
 
 import java.io.*;
@@ -102,15 +102,14 @@ public class ImageUtil {
         try {
             ExifInterface oldExif = new ExifInterface(oldFilePath);
             ExifInterface newExif = new ExifInterface(newFilePath);
-            Class<ExifInterface> cls = ExifInterface.class;
-            Field[] fields = cls.getFields();
+            Class clazz = ExifInterface.class;
+            Field[] fields = clazz.getFields();
             for (Field field : fields) {
-                String fieldName = field.getName();
-                if (!TextUtils.isEmpty(fieldName) && fieldName.startsWith("TAG")) {
-                    String fieldValue = field.get(cls).toString();
-                    String attribute = oldExif.getAttribute(fieldValue);
-                    if (attribute != null) {
-                        newExif.setAttribute(fieldValue, attribute);
+                if (field.getType() == ExifInterface.ExifTag[].class) {
+                    ExifInterface.ExifTag[] exifTags = (ExifInterface.ExifTag[]) field.get(clazz);
+                    for (ExifInterface.ExifTag exifTag : exifTags) {
+                        String attribute = oldExif.getAttribute(exifTag.name);
+                        newExif.setAttribute(exifTag.name, attribute);
                     }
                 }
             }

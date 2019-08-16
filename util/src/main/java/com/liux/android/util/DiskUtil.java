@@ -5,6 +5,8 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.text.TextUtils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -132,11 +134,103 @@ public class DiskUtil {
     }
 
     /**
+     * 读文件
+     * @param file
+     * @return
+     */
+    public static byte[] readFile(File file) {
+        InputStream in = null;
+        ByteArrayOutputStream out = null;
+        try {
+            in = new FileInputStream(file);
+            out = new ByteArrayOutputStream();
+            int length;
+            byte[] buffer = new byte[2048];
+            while ((length = in.read(buffer)) > 0) {
+                out.write(buffer, 0, length);
+            }
+            out.flush();
+            return out.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (in != null) in.close();
+                if (out != null) out.close();
+            } catch (Exception ignore) {}
+        }
+        return null;
+    }
+
+    /**
+     * 读流
+     * @param in
+     * @return
+     */
+    public static byte[] readStream(InputStream in) {
+        ByteArrayOutputStream out = null;
+        try {
+            out = new ByteArrayOutputStream();
+            int length;
+            byte[] buffer = new byte[2048];
+            while ((length = in.read(buffer)) > 0) {
+                out.write(buffer, 0, length);
+            }
+            out.flush();
+            return out.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (in != null) in.close();
+                if (out != null) out.close();
+            } catch (Exception ignore) {}
+        }
+        return null;
+    }
+
+    /**
+     * 写文件
+     * @param file
+     * @param bytes
+     */
+    public static boolean writeFile(File file, byte[] bytes) {
+        return writeFile(file, new ByteArrayInputStream(bytes));
+    }
+
+    /**
+     * 写文件
+     * @param file
+     * @param inputStream
+     */
+    public static boolean writeFile(File file, InputStream inputStream) {
+        OutputStream out = null;
+        try {
+            out = new FileOutputStream(file);
+            int length;
+            byte[] buffer = new byte[2048];
+            while ((length = inputStream.read(buffer)) > 0) {
+                out.write(buffer, 0, length);
+            }
+            out.flush();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (inputStream != null) inputStream.close();
+                if (out != null) out.close();
+            } catch (Exception ignore) {}
+        }
+        return false;
+    }
+
+    /**
      * 文件拷贝
      * @param source
      * @param target
      */
-    public static void fileCopy(File source, File target) {
+    public static boolean fileCopy(File source, File target) {
         InputStream in = null;
         OutputStream out = null;
         try {
@@ -148,24 +242,16 @@ public class DiskUtil {
                 out.write(buffer, 0, length);
             }
             out.flush();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            try {
+                if (in != null) in.close();
+                if (out != null) out.close();
+            } catch (Exception ignore) {}
         }
+        return false;
     }
 
     /**
