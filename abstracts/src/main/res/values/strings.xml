@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name"/>
-
     <string name="view_titlebar_default_back">返回</string>
     <string name="view_titlebar_default_more">更多</string>
 </resources>

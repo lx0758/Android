@@ -12,7 +12,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules-aar.txt'
         }
     }
 }
@@ -27,7 +27,6 @@ dependencies {
         exclude group: 'androidx'
         exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     }
-    api 'androidx.fragment:fragment:1.0.0'
     api "com.google.android.material:material:1.0.0"
     compileOnly "com.liux.android:glide:latest.release"
 }

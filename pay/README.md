@@ -7,18 +7,6 @@ Pay
 implementation 'com.liux.android:pay:x.y.z'
 ```
 
-混淆参考
----
-```
-# PAY
-## alipay
--dontwarn com.alipay.**
--keep class com.alipay.** {*;}
-## unionpay
--dontwarn com.unionpay.**
--keep class com.unionpay.** {*;}
-```
-
 更新说明
 ---
 ### x.y.z_201x-xx-xx

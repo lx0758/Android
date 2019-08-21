@@ -7,15 +7,6 @@
 implementation 'com.liux.android:qrcode:x.y.z'
 ```
 
-混淆参考
----
-```
-# QRCode
-# zxing
--dontwarn com.google.zxing.**
--keep class com.google.zxing.** {*;}
-```
-
 更新说明
 ---
 ### x.y.z_201x-xx-xx

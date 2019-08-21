@@ -16,26 +16,6 @@ Http
 implementation 'com.liux.android:http:x.y.z'
 ```
 
-混淆参考
----
-```
-# HTTP
-## okhttp3
--dontwarn okhttp3.**
--keep class okhttp3.** {*;}
--dontwarn okio.**
--keep class okio.** {*;}
-## retrofit2
--dontwarn retrofit2.**
--keep class retrofit2.** {*;}
--keepattributes Signature
--keepattributes Exceptions
-## fastjson
--dontwarn com.alibaba.fastjson.**
--keep class com.alibaba.fastjson.** {*;}
--keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,LocalVariable*Table,*Annotation*,Synthetic,EnclosingMethod
-```
-
 注意事项
 ---
     1.使用Retorfit以根Url方式创建请求时,如果全局 Base 的 根Url 以其重叠将无法无法正确匹配
