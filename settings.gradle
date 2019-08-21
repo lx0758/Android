@@ -1,4 +1,4 @@
-rootProject.name='Librarys'
+rootProject.name='Android-Librarys'
 
 include ':example'
 

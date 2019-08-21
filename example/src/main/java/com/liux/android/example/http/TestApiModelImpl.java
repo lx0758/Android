@@ -1,7 +1,5 @@
 package com.liux.android.example.http;
 
-import android.content.Context;
-
 import com.alibaba.fastjson.JSONObject;
 import com.liux.android.http.Http;
 import com.liux.android.http.HttpUtil;

@@ -48,17 +48,13 @@
 -keepattributes SourceFile,LineNumberTable
 
 # 保持哪些类不被混淆：四大组件，应用类，配置类等等
--keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
+-keep public class * extends android.app.Activity
 -keep public class * extends android.app.Service
 -keep public class * extends android.content.BroadcastReceiver
 -keep public class * extends android.content.ContentProvider
 -keep public class * extends android.app.backup.BackupAgentHelper
 -keep public class * extends android.preference.Preference
-
-# 保留Google原生服务需要的类
--keep public class com.google.vending.licensing.ILicensingService
--keep public class com.android.vending.licensing.ILicensingService
 
 # 保持 native 方法不被混淆
 -keepclasseswithmembernames class * {
@@ -90,7 +86,7 @@
 
 # 保持 Parcelable 不被混淆
 -keepclassmembers class * implements android.os.Parcelable {
-  public static final android.os.Parcelable$Creator CREATOR;
+    public static final ** CREATOR;
 }
 
 # 保持 R 不被混淆
