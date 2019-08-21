@@ -20,7 +20,7 @@ android {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     // with包含统计能力 without不包含统计能力
-    api "com.tencent.mm.opensdk:wechat-sdk-android-with-mta:5.1.6"
+    api "com.tencent.mm.opensdk:wechat-sdk-android-with-mta:5.3.1"
     compileOnly 'androidx.fragment:fragment:1.0.0'
 }
 
