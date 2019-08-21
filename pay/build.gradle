@@ -21,7 +21,7 @@ dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     // with包含统计能力 without不包含统计能力
     api "com.tencent.mm.opensdk:wechat-sdk-android-with-mta:5.1.6"
-    compileOnly "com.android.support:support-fragment:${LIBRARY_SUPPORT}"
+    compileOnly 'androidx.fragment:fragment:1.0.0'
 }
 
 apply from: '../release.gradle'

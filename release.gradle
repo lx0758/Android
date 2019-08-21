@@ -18,18 +18,18 @@ if (rootProject.projectDir != project.projectDir.parentFile) return
 
 // release to JCenter
 // https://github.com/novoda/bintray-release/wiki
-apply plugin: 'com.novoda.bintray-release'
-publish {
-    repoName = 'android'
-    userOrg = ''
-    groupId = rootProject.getLibraryGroupId()
-    artifactId = project.getLibraryArtifactId()
-    uploadName = 'lib-' + project.getLibraryArtifactId()
-    publishVersion = project.getLibraryVersionName()
-    licences = [rootProject.getLibraryLicense()]
-    desc = ''
-    website = rootProject.getLibraryVCSUrl()
-}
+//apply plugin: 'com.novoda.bintray-release'
+//publish {
+//    repoName = 'android'
+//    userOrg = ''
+//    groupId = rootProject.getLibraryGroupId()
+//    artifactId = project.getLibraryArtifactId()
+//    uploadName = 'lib-' + project.getLibraryArtifactId()
+//    publishVersion = project.getLibraryVersionName()
+//    licences = [rootProject.getLibraryLicense()]
+//    desc = ''
+//    website = rootProject.getLibraryVCSUrl()
+//}
 
 // release to Maven Repositories
 apply plugin: 'maven'

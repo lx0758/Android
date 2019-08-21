@@ -1,10 +1,11 @@
 package com.liux.android.list.adapter.append;
 
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.liux.android.list.holder.MarginHolder;
 
@@ -128,7 +129,7 @@ public class AppendProxy<T> {
     public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
         if (isAppendPosition(holder.getAdapterPosition())) {
             ViewGroup.LayoutParams lp_vg = holder.itemView.getLayoutParams();
-            if(lp_vg != null && lp_vg instanceof StaggeredGridLayoutManager.LayoutParams) {
+            if(lp_vg instanceof StaggeredGridLayoutManager.LayoutParams) {
                 StaggeredGridLayoutManager.LayoutParams lp_sglm = (StaggeredGridLayoutManager.LayoutParams) lp_vg;
                 lp_sglm.setFullSpan(true);
             }

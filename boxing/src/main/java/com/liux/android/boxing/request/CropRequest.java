@@ -3,7 +3,8 @@ package com.liux.android.boxing.request;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.liux.android.boxing.BoxingFragment;
 import com.liux.android.boxing.BoxingUcrop;

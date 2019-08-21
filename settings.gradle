@@ -1,3 +1,5 @@
+rootProject.name='Librarys'
+
 include ':example'
 
 include ':abstracts'

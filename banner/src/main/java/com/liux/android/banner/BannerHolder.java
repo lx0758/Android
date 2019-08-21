@@ -1,12 +1,13 @@
 package com.liux.android.banner;
 
-import android.support.annotation.IdRes;
-import android.support.annotation.StringRes;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.StringRes;
 
 /**
  * 一个缓存全部条目控件的灵活的ViewHolder

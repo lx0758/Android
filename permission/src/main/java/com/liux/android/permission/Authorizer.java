@@ -18,7 +18,7 @@ public class Authorizer {
         return new Prepare(fragment);
     }
 
-    public static Prepare with(android.support.v4.app.Fragment fragment) {
+    public static Prepare with(androidx.fragment.app.Fragment fragment) {
         return new Prepare(fragment);
     }
 }

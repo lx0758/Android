@@ -2,12 +2,13 @@ package com.liux.android.abstracts.util;
 
 import android.app.Activity;
 import android.graphics.Rect;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * {@link View#SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN} <br>
