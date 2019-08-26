@@ -1,9 +1,10 @@
 package com.liux.android.example.abstracts;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.EditText;
+
+import androidx.annotation.Nullable;
 
 import com.liux.android.abstracts.AbstractsActivity;
 import com.liux.android.example.R;

@@ -11,9 +11,9 @@ import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import android.support.annotation.RequiresApi;
-import android.support.media.ExifInterface;
-import android.text.TextUtils;
+
+import androidx.annotation.RequiresApi;
+import androidx.exifinterface.media.ExifInterface;
 
 import java.io.*;
 import java.lang.reflect.Field;

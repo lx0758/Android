@@ -1,6 +1,6 @@
 package com.liux.android.example.rx;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * 2018/2/27

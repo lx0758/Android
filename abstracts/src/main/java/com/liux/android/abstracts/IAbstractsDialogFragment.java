@@ -1,6 +1,6 @@
 package com.liux.android.abstracts;
 
-import android.support.v7.app.AppCompatDialogFragment;
+import androidx.appcompat.app.AppCompatDialogFragment;
 
 interface IAbstractsDialogFragment {
 

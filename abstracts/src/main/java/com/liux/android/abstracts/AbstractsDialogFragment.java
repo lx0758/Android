@@ -1,8 +1,9 @@
 package com.liux.android.abstracts;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatDialogFragment;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDialogFragment;
 
 /**
  * 基础全屏沉浸式的 DialogFragment <br>

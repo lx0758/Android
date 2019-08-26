@@ -7,22 +7,13 @@ Glide
 implementation 'com.liux.android:glide:x.y.z'
 ```
 
-混淆参考
----
-```
-# Glide
-## glide
--keep public class * implements com.bumptech.glide.module.GlideModule
--keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {   
-  **[] $VALUES; 
-  public *;
-}
-```
-
 更新说明
 ---
 ### x.y.z_201x-xx-xx
     1.
+
+### 0.2.0_2019-08-26
+    1.支持库迁移至AndroidX
 
 ### 0.1.1_2019-04-17
     1.移除 OkHttp 引用依赖

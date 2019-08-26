@@ -6,7 +6,8 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
-import android.support.annotation.RequiresApi;
+
+import androidx.annotation.RequiresApi;
 
 import com.liux.android.permission.PermissionFragment;
 

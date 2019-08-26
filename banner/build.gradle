@@ -12,15 +12,15 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules-aar.txt'
         }
     }
 }
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-    api "com.android.support:support-core-ui:${LIBRARY_SUPPORT}"
-    compileOnly "com.android.support:support-annotations:${LIBRARY_SUPPORT}"
+    api 'androidx.viewpager:viewpager:1.0.0'
+    api 'androidx.annotation:annotation:1.0.0'
 }
 
 apply from: '../release.gradle'
@@ -28,7 +28,7 @@ static def getLibraryArtifactId() {
     return 'banner'
 }
 static def getLibraryVersionName() {
-    return '0.1.0'
+    return '0.2.0'
 }
 static def getLibraryVersionCode() {
     def version = getLibraryVersionName().replace("-SNAPSHOT", "")

@@ -1,3 +1,5 @@
+rootProject.name='Android-Librarys'
+
 include ':example'
 
 include ':abstracts'

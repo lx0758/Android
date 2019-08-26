@@ -57,11 +57,16 @@
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="true"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.alipay.sdk.app.AlipayResultActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
 
         <!-- 银联 -->

@@ -21,7 +21,7 @@ public class Payer {
         return new Payer(fragment.getActivity());
     }
 
-    public static Payer with(android.support.v4.app.Fragment fragment) {
+    public static Payer with(androidx.fragment.app.Fragment fragment) {
         return new Payer(fragment.getActivity());
     }
 

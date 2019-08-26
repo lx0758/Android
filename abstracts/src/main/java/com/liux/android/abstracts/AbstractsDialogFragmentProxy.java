@@ -3,8 +3,9 @@ package com.liux.android.abstracts;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v7.app.AppCompatDialog;
 import android.view.Window;
+
+import androidx.appcompat.app.AppCompatDialog;
 
 /**
  * 2018/2/12

@@ -12,7 +12,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules-aar.txt'
         }
     }
     lintOptions {
@@ -30,9 +30,10 @@ dependencies {
         exclude group: 'com.squareup.retrofit2', module: 'retrofit'
         exclude group: 'io.reactivex.rxjava2', module: 'rxjava'
     })
+    // noinspection GradleDependency
     api 'com.alibaba:fastjson:1.1.71.android'
     api 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
-    compileOnly "com.android.support:support-annotations:${LIBRARY_SUPPORT}"
+    compileOnly 'androidx.annotation:annotation:1.0.0'
 }
 
 apply from: '../release.gradle'
@@ -40,7 +41,7 @@ static def getLibraryArtifactId() {
     return 'http'
 }
 static def getLibraryVersionName() {
-    return '0.1.12'
+    return '0.2.0'
 }
 static def getLibraryVersionCode() {
     def version = getLibraryVersionName().replace("-SNAPSHOT", "")

@@ -7,16 +7,13 @@ Abstracts
 implementation 'com.liux.android:abstracts:x.y.z'
 ```
 
-混淆参考
----
-```
-无
-```
-
 更新说明
 ---
 ### x.y.z_201x-xx-xx
     1.
+
+### 0.2.0_2019-08-26
+    1.支持库迁移至AndroidX
 
 ### 0.1.2_2019-08-14
     1.修正混淆后TitleBar反射属性失败问题

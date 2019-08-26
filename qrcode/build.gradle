@@ -12,14 +12,14 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules-aar.txt'
         }
     }
 }
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    api "com.android.support:support-core-utils:${LIBRARY_SUPPORT}"
+    api "androidx.core:core:1.0.2"
     api "com.google.zxing:core:3.3.3"
 }
 
@@ -28,7 +28,7 @@ static def getLibraryArtifactId() {
     return 'qrcode'
 }
 static def getLibraryVersionName() {
-    return '0.1.1'
+    return '0.2.0'
 }
 static def getLibraryVersionCode() {
     def version = getLibraryVersionName().replace("-SNAPSHOT", "")

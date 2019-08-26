@@ -1,8 +1,10 @@
 package com.liux.android.view;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v4.widget.SwipeRefreshLayout;
+
+import androidx.annotation.NonNull;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;

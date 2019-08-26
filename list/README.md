@@ -7,16 +7,13 @@ List
 implementation 'com.liux.android:list:x.y.z'
 ```
 
-混淆参考
----
-```
-无
-```
-
 更新说明
 ---
 ### x.y.z_201x-xx-xx
     1.
+
+### 0.2.0_2019-08-26
+    1.支持库迁移至AndroidX
 
 ### 0.1.1_2019-04-17
     1.移除 AllRecyclerView

@@ -12,22 +12,24 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules-aar.txt'
         }
     }
 }
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-    api "com.android.support:support-fragment:${LIBRARY_SUPPORT}"
+    api 'androidx.fragment:fragment:1.0.0'
+    api 'androidx.vectordrawable:vectordrawable-animated:1.0.0'
     api ("com.github.bumptech.glide:glide:4.9.0", {
-        exclude group: "com.android.support"
+        exclude group: "androidx"
     })
     api ("com.github.bumptech.glide:okhttp3-integration:4.9.0", {
-        exclude group: "com.android.support"
+        exclude group: "androidx"
         exclude group: 'com.squareup.okhttp3'
     })
-    compileOnly 'com.squareup.okhttp3:okhttp:3.11.0'
+    compileOnly 'com.squareup.okhttp3:okhttp:3.12.3'
+    annotationProcessor 'androidx.annotation:annotation:1.1.0'
     annotationProcessor "com.github.bumptech.glide:compiler:4.9.0"
 }
 
@@ -36,7 +38,7 @@ static def getLibraryArtifactId() {
     return 'glide'
 }
 static def getLibraryVersionName() {
-    return '0.1.1'
+    return '0.2.0'
 }
 static def getLibraryVersionCode() {
     def version = getLibraryVersionName().replace("-SNAPSHOT", "")

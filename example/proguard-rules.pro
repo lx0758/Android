@@ -48,17 +48,13 @@
 -keepattributes SourceFile,LineNumberTable
 
 # 保持哪些类不被混淆：四大组件，应用类，配置类等等
--keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
+-keep public class * extends android.app.Activity
 -keep public class * extends android.app.Service
 -keep public class * extends android.content.BroadcastReceiver
 -keep public class * extends android.content.ContentProvider
 -keep public class * extends android.app.backup.BackupAgentHelper
 -keep public class * extends android.preference.Preference
-
-# 保留Google原生服务需要的类
--keep public class com.google.vending.licensing.ILicensingService
--keep public class com.android.vending.licensing.ILicensingService
 
 # 保持 native 方法不被混淆
 -keepclasseswithmembernames class * {
@@ -90,90 +86,10 @@
 
 # 保持 Parcelable 不被混淆
 -keepclassmembers class * implements android.os.Parcelable {
-  public static final android.os.Parcelable$Creator CREATOR;
+    public static final ** CREATOR;
 }
 
 # 保持 R 不被混淆
 -keepclassmembers class **.R$* {
     public static <fields>;
-}
-
-# ==================================================================================================
-
-# RX
-## rxjava2
--dontwarn io.reactivex.**
--keep class io.reactivex.** {*;}
-## rxlifecycle2
--dontwarn com.trello.rxlifecycle2.**
--keep class com.trello.rxlifecycle2.** {*;}
-
-# LBS
-## baidulbs
--dontwarn com.baidu.**
--dontwarn mapsdkvi.com.gdi.bgl.android.java.**
--keep class com.baidu.** {*;}
--keep class mapsdkvi.com.gdi.bgl.android.java.** {*;}
-## amaplbs
--dontwarn com.amap.**
--dontwarn com.autonavi.**
--keep class com.amap.**{*;}
--keep class com.autonavi.**{*;}
-
-# PAY
-## alipay
--dontwarn com.alipay.**
--dontwarn com.ta.utdid2.**
--dontwarn com.ut.device.**
--dontwarn org.apache.http.**
--dontwarn org.json.alipay.**
--keep class com.alipay.** {*;}
--keep class com.ta.utdid2.** {*;}
--keep class com.ut.device.** {*;}
--keep class org.apache.http.** {*;}
--keep class org.json.alipay.** {*;}
-## weixinpay
--dontwarn com.tencent.wxop.**
--dontwarn com.tencent.mm.**
--dontwarn com.tencent.a.**
--keep class com.tencent.wxop.** {*;}
--keep class com.tencent.mm.** {*;}
--keep class com.tencent.a.** {*;}
-## unionpay
--dontwarn com.unionpay.**
--dontwarn com.UCMobile.PayPlugin.**
--dontwarn org.simalliance.openmobileapi.**
--dontwarn cn.gov.pbc.tsm.client.mobile.android.bank.service.**
--keep class com.unionpay.** {*;}
--keep class com.UCMobile.PayPlugin.** {*;}
--keep class org.simalliance.openmobileapi.** {*;}
--keep class cn.gov.pbc.tsm.client.mobile.android.bank.service.** {*;}
-
-# HTTP
-## okhttp3
--dontwarn okhttp3.**
--keep class okhttp3.** {*;}
--dontwarn okio.**
--keep class okio.** {*;}
-## retrofit2
--dontwarn retrofit2.**
--keep class retrofit2.** {*;}
--keepattributes Signature
--keepattributes Exceptions
-## fastjson
--dontwarn com.alibaba.fastjson.**
--keep class com.alibaba.fastjson.** {*;}
--keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,LocalVariable*Table,*Annotation*,Synthetic,EnclosingMethod
-
-# UTIL
-# zxing
--dontwarn com.google.zxing.**
--keep class com.google.zxing.** {*;}
-
-# Glide
-## glide
--keep public class * implements com.bumptech.glide.module.GlideModule
--keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
-  **[] $VALUES;
-  public *;
 }

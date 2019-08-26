@@ -1,6 +1,6 @@
 package com.liux.android.abstracts;
 
-import android.support.v7.app.AppCompatDialog;
+import androidx.appcompat.app.AppCompatDialog;
 
 /**
  * 2018/2/12

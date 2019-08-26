@@ -7,19 +7,13 @@
 implementation 'com.liux.android:qrcode:x.y.z'
 ```
 
-混淆参考
----
-```
-# QRCode
-# zxing
--dontwarn com.google.zxing.**
--keep class com.google.zxing.** {*;}
-```
-
 更新说明
 ---
 ### x.y.z_201x-xx-xx
     1.
+
+### 0.2.0_2019-08-26
+    1.支持库迁移至AndroidX
 
 ### 0.1.1_2019-01-08
     1.修复一些可能引起崩溃的BUG

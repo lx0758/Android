@@ -22,7 +22,7 @@ public class EventHelper {
         return new EventHelper(fragment);
     }
 
-    public static EventHelper with(android.support.v4.app.Fragment fragment) {
+    public static EventHelper with(androidx.fragment.app.Fragment fragment) {
         return new EventHelper(fragment);
     }
 
@@ -36,7 +36,7 @@ public class EventHelper {
         if (mTarget instanceof Activity) {
             return getActivtyEvent(event);
         } else if (mTarget instanceof Fragment ||
-                mTarget instanceof android.support.v4.app.Fragment) {
+                mTarget instanceof androidx.fragment.app.Fragment) {
             return getFragmentEvent(event);
         } else {
             throw new IllegalStateException("wrong event");

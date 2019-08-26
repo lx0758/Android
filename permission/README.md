@@ -7,16 +7,13 @@ Permission
 implementation 'com.liux.android:permission:x.y.z'
 ```
 
-混淆参考
----
-```
-无
-```
-
 更新说明
 ---
 ### x.y.z_201x-xx-xx
     1.
+
+### 0.2.0_2019-08-26
+    1.支持库迁移至AndroidX
 
 ### 0.1.4_2018-11-03
     1.添加安装应用权限请求能力
