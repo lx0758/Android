@@ -102,6 +102,9 @@ implementation 'com.liux.android:http:x.y.z'
 ### x.y.z_201x-xx-xx
     1.
 
+### 0.2.0_2019-08-26
+    1.支持库迁移至AndroidX
+
 ### 0.1.12_2019-08-14
     1.更新 FastJSON 为安卓专用版
 

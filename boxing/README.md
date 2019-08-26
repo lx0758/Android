@@ -12,6 +12,9 @@ implementation 'com.liux.android:boxing:x.y.z'
 ### x.y.z_201x-xx-xx
     1.
 
+### 0.2.0_2019-08-26
+    1.支持库迁移至AndroidX
+
 ### 0.1.5_2019-04-17
     1.完善工具类
 

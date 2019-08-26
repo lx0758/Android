@@ -12,6 +12,9 @@ implementation 'com.liux.android:rx:x.y.z'
 ### x.y.z_201x-xx-xx
     1.
 
+### 0.2.0_2019-08-26
+    1.支持库迁移至AndroidX
+
 ### 0.1.3_2019-06-13
     1.优化转换器兼容五种模式
 

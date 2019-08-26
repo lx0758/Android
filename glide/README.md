@@ -12,6 +12,9 @@ implementation 'com.liux.android:glide:x.y.z'
 ### x.y.z_201x-xx-xx
     1.
 
+### 0.2.0_2019-08-26
+    1.支持库迁移至AndroidX
+
 ### 0.1.1_2019-04-17
     1.移除 OkHttp 引用依赖
     2.优化 Glide 配置

@@ -12,6 +12,9 @@ implementation 'com.liux.android:util:x.y.z'
 ### x.y.z_201x-xx-xx
     1.
 
+### 0.2.0_2019-08-26
+    1.支持库迁移至AndroidX
+
 ### 0.1.8_2019-08-16
     1.添加工具类方法
 

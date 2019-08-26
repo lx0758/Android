@@ -28,7 +28,7 @@ static def getLibraryArtifactId() {
     return 'banner'
 }
 static def getLibraryVersionName() {
-    return '0.1.0'
+    return '0.2.0'
 }
 static def getLibraryVersionCode() {
     def version = getLibraryVersionName().replace("-SNAPSHOT", "")

@@ -12,5 +12,8 @@ implementation 'com.liux.android:banner:x.y.z'
 ### x.y.z_201x-xx-xx
     1.
 
+### 0.2.0_2019-08-26
+    1.支持库迁移至AndroidX
+
 ### 0.1.0_2018-10-14
     1.发布0.1.0版本
