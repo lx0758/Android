@@ -21,6 +21,7 @@
 build/
 /captures/
 /local.properties
+.cxx/
 .externalNativeBuild/
 
 ### Mac ###
