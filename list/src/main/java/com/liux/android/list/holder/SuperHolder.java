@@ -23,11 +23,6 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class SuperHolder extends RecyclerView.ViewHolder {
 
-    public static SuperHolder create(ViewGroup parent, @LayoutRes int layout) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
-        return new SuperHolder(view);
-    }
-
     private SparseArray<View> mItemViews;
 
     public SuperHolder(View itemView) {

@@ -1,21 +1,23 @@
 package com.liux.android.list.adapter.rule;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 规则管理器
  */
-public class RuleManage {
+public class RuleManage<T> {
 
-    private List<Rule> mRules = new ArrayList<>();
+    private List<Rule<? extends T, ? extends RecyclerView.ViewHolder>> mRules = new ArrayList<>();
 
     /**
      * 添加规则
      * {@link IRule#addRule(Rule)}
      * @param rule
      */
-    public void addRule(Rule rule) {
+    public void addRule(Rule<? extends T, ? extends RecyclerView.ViewHolder> rule) {
         mRules.add(rule);
     }
 
@@ -26,7 +28,7 @@ public class RuleManage {
      */
     public int getRuleType(Object object) {
         for (int index = 0; index < mRules.size(); index++) {
-            if (mRules.get(index).doBindObject(object)) {
+            if (mRules.get(index).canBindObject(object)) {
                 return index;
             }
         }
@@ -38,7 +40,7 @@ public class RuleManage {
      * @param type
      * @return
      */
-    public Rule getTypeRule(int type) {
+    public Rule<? extends T, ? extends RecyclerView.ViewHolder> getTypeRule(int type) {
         return mRules.get(type);
     }
 
@@ -47,9 +49,9 @@ public class RuleManage {
      * @param object
      * @return
      */
-    public Rule getObjectRule(Object object) {
+    public Rule<? extends T, ? extends RecyclerView.ViewHolder> getObjectRule(Object object) {
         for (Rule rule : mRules) {
-            if (rule.doBindObject(object)) return rule;
+            if (rule.canBindObject(object)) return rule;
         }
         throw new IllegalArgumentException("No rule of object [" + object + "] was found");
     }

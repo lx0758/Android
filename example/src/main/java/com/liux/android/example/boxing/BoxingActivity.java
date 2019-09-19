@@ -24,8 +24,8 @@ import com.liux.android.boxing.OnTakeListener;
 import com.liux.android.boxing.OnVideoSelectListener;
 import com.liux.android.example.R;
 import com.liux.android.list.adapter.MultipleAdapter;
+import com.liux.android.list.adapter.rule.SingleRule;
 import com.liux.android.list.adapter.state.State;
-import com.liux.android.list.adapter.state.SuperRule;
 import com.liux.android.list.decoration.GridItemDecoration;
 import com.liux.android.list.holder.SuperHolder;
 import com.liux.android.tool.TT;
@@ -59,12 +59,7 @@ public class BoxingActivity extends AppCompatActivity {
         rvList.addItemDecoration(new GridItemDecoration(10, 3));
         rvList.setLayoutManager(new GridLayoutManager(this, 3));
         mMultipleAdapter = new MultipleAdapter<String>()
-                .addRule(new SuperRule<String>(R.layout.layout_media_item) {
-                    @Override
-                    public boolean doBindData(String string) {
-                        return true;
-                    }
-
+                .addRule(new SingleRule<String>(R.layout.layout_media_item) {
                     @Override
                     public void onDataBind(SuperHolder holder, String path, State state, final int position) {
                         ImageView imageView = holder.getView(R.id.iv_image);

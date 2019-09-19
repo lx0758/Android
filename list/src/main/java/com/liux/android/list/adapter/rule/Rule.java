@@ -1,8 +1,8 @@
 package com.liux.android.list.adapter.rule;
 
+import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.LayoutRes;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.liux.android.list.adapter.state.State;
@@ -13,14 +13,10 @@ import com.liux.android.list.adapter.state.State;
  */
 public abstract class Rule<T, VH extends RecyclerView.ViewHolder> {
 
-    public int layout;
+    private ViewFactory viewFactory;
 
-    /**
-     * 规则绑定目标 Layout
-     * @param layout
-     */
-    public Rule(@LayoutRes int layout) {
-        this.layout = layout;
+    public Rule(ViewFactory viewFactory) {
+        this.viewFactory = viewFactory;
     }
 
     /**
@@ -28,10 +24,10 @@ public abstract class Rule<T, VH extends RecyclerView.ViewHolder> {
      * @param object
      * @return
      */
-    public boolean doBindObject(Object object) {
+    public boolean canBindObject(Object object) {
         try {
             T t = (T) object;
-            return doBindData(t);
+            return canBindData(t);
         } catch (ClassCastException e) {
             return false;
         }
@@ -42,18 +38,28 @@ public abstract class Rule<T, VH extends RecyclerView.ViewHolder> {
      * @param t
      * @return
      */
-    public abstract boolean doBindData(T t);
+    public abstract boolean canBindData(T t);
 
     /**
-     * 创建ViewHolder
+     * 创建 ViewHolder
      * @param parent
-     * @param layout
      * @return
      */
-    public abstract VH createHolder(ViewGroup parent, int layout);
+    public VH onCreateHolder(ViewGroup parent) {
+        View itemView = viewFactory.createView(parent);
+        return onCreateHolder(parent, itemView);
+    }
 
     /**
-     * 绑定数据到View
+     * 创建 ViewHolder
+     * @param parent
+     * @param itemView
+     * @return
+     */
+    public abstract VH onCreateHolder(ViewGroup parent, View itemView);
+
+    /**
+     * 绑定数据到 View
      * @param holder
      * @param t
      * @param state

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.liux.android.example.R;
 import com.liux.android.list.adapter.MultipleAdapter;
 import com.liux.android.list.adapter.state.State;
-import com.liux.android.list.adapter.state.SuperRule;
+import com.liux.android.list.adapter.rule.SuperRule;
 import com.liux.android.list.decoration.AbsItemDecoration;
 import com.liux.android.list.holder.SuperHolder;
 import com.liux.android.list.listener.OnSelectListener;
@@ -67,7 +67,7 @@ public class ListActivity extends AppCompatActivity {
                 .setFooter(LayoutInflater.from(this).inflate(R.layout.layout_footer, rvList, false))
                 .addRule(new SuperRule<String>(android.R.layout.simple_list_item_1) {
                     @Override
-                    public boolean doBindData(String string) {
+                    public boolean canBindData(String string) {
                         return true;
                     }
 
@@ -84,7 +84,7 @@ public class ListActivity extends AppCompatActivity {
                 })
                 .addRule(new SuperRule<Long>(android.R.layout.simple_list_item_2) {
                     @Override
-                    public boolean doBindData(Long l) {
+                    public boolean canBindData(Long l) {
                         return true;
                     }
 

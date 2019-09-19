@@ -3,6 +3,7 @@ package com.liux.android.list.adapter;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.liux.android.list.adapter.append.AppendProxy;
@@ -58,18 +59,19 @@ public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
         return mRuleProxy.getRuleType(t);
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (mAppendProxy.isAppendType(viewType)) {
             return mAppendProxy.getAppendTypeHolder(viewType);
         }
 
         Rule rule = mRuleProxy.getTypeRule(viewType);
-        return rule.createHolder(parent, rule.layout);
+        return rule.onCreateHolder(parent);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof MarginHolder) {
             return;
         }
@@ -79,7 +81,7 @@ public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
         T t = getData().get(position);
         Rule rule = mRuleProxy.getObjectRule(t);
 
-        State state = mStateProxy.getData().getState(position);
+        State<T> state = mStateProxy.getData().getState(position);
         if (!isEnabledSelect()) state.setSelectDisabled();
 
         rule.onDataBind(holder, t, state, position);
@@ -94,31 +96,31 @@ public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         mAppendProxy.onAttachedToRecyclerView(recyclerView);
     }
 
     @Override
-    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+    public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
         mAppendProxy.onViewAttachedToWindow(holder);
     }
 
     @Override
-    public MultipleAdapter<T> addRule(Rule<? extends T, ? extends RecyclerView.ViewHolder> rule) {
+    public MultipleAdapter<T> addRule(@NonNull Rule<? extends T, ? extends RecyclerView.ViewHolder> rule) {
         mRuleProxy.addRule(rule);
         return this;
     }
 
     @Override
-    public MultipleAdapter<T> setHeader(View view) {
+    public MultipleAdapter<T> setHeader(@NonNull View view) {
         mAppendProxy.setHeader(view);
         return this;
     }
 
     @Override
-    public MultipleAdapter<T> setFooter(View view) {
+    public MultipleAdapter<T> setFooter(@NonNull View view) {
         mAppendProxy.setFooter(view);
         return this;
     }
@@ -182,7 +184,7 @@ public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public boolean toggleSelect(T t) {
+    public boolean toggleSelect(@NonNull T t) {
         return mStateProxy.toggleSelect(t);
     }
 
@@ -192,7 +194,7 @@ public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public boolean isSelect(T t) {
+    public boolean isSelect(@NonNull T t) {
         return mStateProxy.isSelect(t);
     }
 
