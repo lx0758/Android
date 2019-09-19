@@ -1,5 +1,7 @@
 package com.liux.android.list.adapter.rule;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 /**
  * 2018/3/6
  * By Liux
@@ -10,13 +12,13 @@ public class RuleProxy<T> {
 
     private IRule mIRule;
 
-    private RuleManage mRuleManage = new RuleManage();
+    private RuleManage<T> mRuleManage = new RuleManage<>();
 
     public RuleProxy(IRule iRule) {
         mIRule = iRule;
     }
 
-    public void addRule(Rule rule) {
+    public void addRule(Rule<? extends T, ? extends RecyclerView.ViewHolder> rule) {
         mRuleManage.addRule(rule);
     }
 
@@ -24,11 +26,11 @@ public class RuleProxy<T> {
         return mRuleManage.getRuleType(t);
     }
 
-    public Rule getTypeRule(int viewType) {
+    public Rule<? extends T, ? extends RecyclerView.ViewHolder> getTypeRule(int viewType) {
         return mRuleManage.getTypeRule(viewType);
     }
 
-    public Rule getObjectRule(T t) {
+    public Rule<? extends T, ? extends RecyclerView.ViewHolder> getObjectRule(T t) {
         return mRuleManage.getObjectRule(t);
     }
 }

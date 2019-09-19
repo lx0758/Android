@@ -1,23 +1,37 @@
 package com.liux.android.pay.alipay;
 
+import java.util.Map;
+
 public class AliResult {
     private String resultStatus;
     private String result;
     private String memo;
 
-    public AliResult(String rawResult) {
-        if (rawResult == null || rawResult.length() == 0) return;
+    public AliResult(String resultString) {
+        if (resultString == null || resultString.isEmpty()) return;
 
-        String[] resultParams = rawResult.split(";");
+        String[] resultParams = resultString.split(";");
         for (String resultParam : resultParams) {
             if (resultParam.startsWith("resultStatus")) {
                 resultStatus = gatValue(resultParam, "resultStatus");
-            }
-            if (resultParam.startsWith("result")) {
+            } else if (resultParam.startsWith("result")) {
                 result = gatValue(resultParam, "result");
-            }
-            if (resultParam.startsWith("memo")) {
+            } else if (resultParam.startsWith("memo")) {
                 memo = gatValue(resultParam, "memo");
+            }
+        }
+    }
+
+    public AliResult(Map<String, String> resultMap) {
+        if (resultMap == null || resultMap.isEmpty()) return;
+
+        for (Map.Entry<String, String> entry : resultMap.entrySet()) {
+            if ("resultStatus".equals(entry.getKey())) {
+                resultStatus = entry.getValue();
+            } else if ("result".equals(entry.getKey())) {
+                result = entry.getValue();
+            } else if ("memo".equals(entry.getKey())) {
+                memo = entry.getValue();
             }
         }
     }

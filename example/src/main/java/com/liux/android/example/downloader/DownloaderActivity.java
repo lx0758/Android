@@ -26,8 +26,9 @@ import com.liux.android.downloader.network.OKHttpConnectFactory;
 import com.liux.android.example.R;
 import com.liux.android.http.HttpUtil;
 import com.liux.android.list.adapter.MultipleAdapter;
+import com.liux.android.list.adapter.rule.SingleRule;
 import com.liux.android.list.adapter.state.State;
-import com.liux.android.list.adapter.state.SuperRule;
+import com.liux.android.list.adapter.rule.SuperRule;
 import com.liux.android.list.holder.SuperHolder;
 import com.liux.android.permission.Authorizer;
 import com.liux.android.permission.install.OnInstallPermissionListener;
@@ -52,12 +53,7 @@ public class DownloaderActivity extends AppCompatActivity {
         rvList = findViewById(R.id.rv_list);
 
         taskMultipleAdapter = new MultipleAdapter<Task>()
-                .addRule(new SuperRule<Task>(R.layout.item_downloader) {
-                    @Override
-                    public boolean doBindData(Task task) {
-                        return true;
-                    }
-
+                .addRule(new SingleRule<Task>(R.layout.item_downloader) {
                     @Override
                     public void onDataBind(final SuperHolder holder, Task task, State state, int position) {
                         OnStatusListener onStatusListener = (OnStatusListener) holder.getItemView().getTag();

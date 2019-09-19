@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.liux.android.example.R;
 import com.liux.android.pay.Payer;
 import com.liux.android.pay.alipay.AliRequest;
+import com.liux.android.pay.alipay.AliRequestV2;
 import com.liux.android.pay.alipay.AliResult;
 import com.liux.android.pay.unionpay.UnionRequest;
 import com.liux.android.pay.unionpay.UnionResult;
@@ -35,12 +36,48 @@ public class PayActivity extends AppCompatActivity {
         Payer.DEBUG = true;
     }
 
-    @OnClick({R.id.btn_ali, R.id.btn_wx, R.id.btn_union})
+    @OnClick({R.id.btn_ali, R.id.btn_ali_v2, R.id.btn_wx, R.id.btn_union})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_ali:
                 Payer.with(this)
                         .request(new AliRequest("") {
+                            @Override
+                            public void callback(AliResult aliResult) {
+                                String result = aliResult.getResultStatus();
+                                switch (result) {
+                                    case ALI_MEMO_SUCCEED:
+                                        makeText("支付成功");
+                                        break;
+                                    case ALI_MEMO_UNDERWAY:
+                                        makeText("支付处理中");
+                                        break;
+                                    case ALI_MEMO_FAILURE:
+                                        makeText("支付失败");
+                                        break;
+                                    case ALI_MEMO_CANCEL:
+                                        makeText("取消支付");
+                                        break;
+                                    case ALI_MEMO_REPEAT:
+                                        makeText("重复支付");
+                                        break;
+                                    case ALI_MEMO_ERROR:
+                                        makeText("网络错误");
+                                        break;
+                                    case ALI_MEMO_UNKNOWN:
+                                        makeText("支付状态未知");
+                                        break;
+                                    default:
+                                        makeText("支付错误 [" + result + "]");
+                                        break;
+                                }
+                            }
+                        })
+                        .pay();
+                break;
+            case R.id.btn_ali_v2:
+                Payer.with(this)
+                        .request(new AliRequestV2("") {
                             @Override
                             public void callback(AliResult aliResult) {
                                 String result = aliResult.getResultStatus();

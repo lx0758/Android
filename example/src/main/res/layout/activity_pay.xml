@@ -18,6 +18,13 @@
             android:text="AliPay"/>
 
         <Button
+            android:id="@+id/btn_ali_v2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="AliPayV2"/>
+
+        <Button
             android:id="@+id/btn_wx"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
