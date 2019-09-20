@@ -18,16 +18,15 @@ public class WhiteTitleBar extends DefaultTitleBar {
 
     public WhiteTitleBar(AppCompatActivity activity) {
         super(activity);
-    }
 
-    @Override
-    public void initView() {
-        super.initView();
         getBackIcon().setImageResource(R.drawable.ic_arrow_back_black);
 
         setStatusBarColor(Color.WHITE);
         setTitleBarColor(Color.WHITE);
-        setTitleColor(Color.parseColor("#333333"));
+        setTitleColor(Color.BLACK);
+
+        getBackText().setTextColor(Color.parseColor("#333333"));
+        getMoreText().setTextColor(Color.parseColor("#333333"));
 
         View view = new View(getActivity());
         view.setBackgroundColor(Color.parseColor("#EEEEEE"));

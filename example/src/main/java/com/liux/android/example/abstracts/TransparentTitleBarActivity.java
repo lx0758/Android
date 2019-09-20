@@ -17,6 +17,11 @@ import com.liux.android.example.R;
 public class TransparentTitleBarActivity extends AbstractsActivity {
 
     @Override
+    public TitleBar onInitTitleBar() {
+        return new TransparentTitleBar(this);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_abstracts_demo);
@@ -26,10 +31,5 @@ public class TransparentTitleBarActivity extends AbstractsActivity {
         //WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
         //WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-    }
-
-    @Override
-    public TitleBar onInitTitleBar() {
-        return new TransparentTitleBar(this);
     }
 }

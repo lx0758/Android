@@ -2,6 +2,7 @@ package com.liux.android.abstracts.titlebar;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.liux.android.abstracts.AbstractsActivity;
@@ -11,10 +12,7 @@ import com.liux.android.abstracts.AbstractsActivity;
  * 调用时机: <br>
  * 1.{@link AbstractsActivity#onCreate(Bundle)} <br>
  * 2.{@link AbstractsActivity#onInitTitleBar} to {@link TitleBar} <br>
- * 3.{@link AbstractsActivity#onCreate(Bundle)} <br>
- * 4.{@link #initView} <br>
- * 5.{@link AbstractsActivity#onTitleChanged(CharSequence, int)} <br>
- * 6.{@link #setTitle(CharSequence)}
+ * 5.{@link AbstractsActivity#onTitleChanged(CharSequence, int)}
  */
 public abstract class TitleBar<T extends TitleBar> {
 
@@ -28,7 +26,7 @@ public abstract class TitleBar<T extends TitleBar> {
         return mActivity;
     }
 
-    public abstract void initView();
+    public abstract void setup(ActionBar actionBar);
 
     public abstract T setTitle(CharSequence title);
 

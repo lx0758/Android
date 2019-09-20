@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import androidx.appcompat.app.ActionBar;
+
 import com.liux.android.abstracts.titlebar.TitleBar;
 import com.liux.android.abstracts.touch.TouchCallback;
 import com.liux.android.abstracts.util.FixInputMethodManagerLeak;
@@ -76,7 +78,8 @@ public class AbstractsActivityProxy {
     private void initTitleBar() {
         mTitleBar = mIAbstractsActivity.onInitTitleBar();
         if (mTitleBar != null) {
-            mTitleBar.initView();
+            ActionBar actionBar = mIAbstractsActivity.getTarget().getSupportActionBar();
+            if (actionBar != null) mTitleBar.setup(actionBar);
         }
     }
 

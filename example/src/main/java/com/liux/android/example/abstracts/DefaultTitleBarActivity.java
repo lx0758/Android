@@ -7,6 +7,8 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 
 import com.liux.android.abstracts.AbstractsActivity;
+import com.liux.android.abstracts.titlebar.DefaultTitleBar;
+import com.liux.android.abstracts.titlebar.TitleBar;
 import com.liux.android.example.R;
 import com.liux.android.tool.TT;
 
@@ -24,13 +26,10 @@ public class DefaultTitleBarActivity extends AbstractsActivity {
     EditText etText1;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_abstracts_demo);
-        ButterKnife.bind(this);
+    public TitleBar onInitTitleBar() {
+        DefaultTitleBar defaultTitleBar = (DefaultTitleBar) super.onInitTitleBar();
 
-//        DefaultTitleBar titleBar = getTitleBar();
-//        titleBar
+//        defaultTitleBar
 //                .setTitleBarColor()
 //                .setStatusBarColor()
 //                .setOnTitleBarListener()
@@ -45,6 +44,18 @@ public class DefaultTitleBarActivity extends AbstractsActivity {
 //                .getMore()
 //                .getMoreIcon()
 //                .getMoreText();
+
+        defaultTitleBar.hasMore(true).getMoreText().setText("测试");
+
+        return defaultTitleBar;
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_abstracts_demo);
+        ButterKnife.bind(this);
+
         // 忽略某控件
         addIgnoreView(findViewById(R.id.btn_button_1));
     }
