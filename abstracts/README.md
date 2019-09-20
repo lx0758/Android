@@ -12,6 +12,9 @@ implementation 'com.liux.android:abstracts:x.y.z'
 ### x.y.z_201x-xx-xx
     1.
 
+### 0.2.1_2019-09-20
+    1.调整TitleBar生命周期
+
 ### 0.2.0_2019-08-26
     1.支持库迁移至AndroidX
 
