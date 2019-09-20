@@ -20,7 +20,7 @@ android {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     api "androidx.core:core:1.0.2"
-    api "com.google.zxing:core:3.3.3"
+    api "com.google.zxing:core:3.4.0"
 }
 
 apply from: '../release.gradle'
