@@ -19,7 +19,7 @@ public class Prepare {
         target = fragment.getActivity();
     }
 
-    Prepare(androidx.fragment.app.Fragment fragment) {
+    Prepare(android.support.v4.app.Fragment fragment) {
         target = fragment.getActivity();
     }
 

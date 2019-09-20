@@ -1,6 +1,6 @@
 package com.liux.android.list.adapter.rule;
 
-import androidx.annotation.LayoutRes;
+import android.support.annotation.LayoutRes;
 
 public abstract class SingleRule<T> extends SuperRule<T> {
 

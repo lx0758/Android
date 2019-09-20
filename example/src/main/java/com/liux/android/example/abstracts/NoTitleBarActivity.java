@@ -1,8 +1,7 @@
 package com.liux.android.example.abstracts;
 
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
+import android.support.annotation.Nullable;
 
 import com.liux.android.abstracts.titlebar.NoTitleBar;
 import com.liux.android.abstracts.titlebar.TitleBar;

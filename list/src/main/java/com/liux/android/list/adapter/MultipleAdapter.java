@@ -1,10 +1,9 @@
 package com.liux.android.list.adapter;
 
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.liux.android.list.adapter.append.AppendProxy;
 import com.liux.android.list.adapter.append.IAppend;

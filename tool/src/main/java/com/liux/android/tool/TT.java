@@ -2,11 +2,10 @@ package com.liux.android.tool;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
-
-import androidx.annotation.LayoutRes;
 
 /**
  * ToastTool => TT

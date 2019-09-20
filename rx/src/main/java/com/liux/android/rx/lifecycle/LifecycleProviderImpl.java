@@ -1,6 +1,6 @@
 package com.liux.android.rx.lifecycle;
 
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 import com.trello.rxlifecycle2.LifecycleProvider;
 import com.trello.rxlifecycle2.LifecycleTransformer;

@@ -2,8 +2,7 @@ package com.liux.android.boxing.request;
 
 import android.app.Activity;
 import android.content.Intent;
-
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 import com.bilibili.boxing.Boxing;
 import com.bilibili.boxing.model.config.BoxingConfig;

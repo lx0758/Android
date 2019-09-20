@@ -1,10 +1,9 @@
 package com.liux.android.list.adapter.rule;
 
+import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.annotation.LayoutRes;
 
 import com.liux.android.list.holder.SuperHolder;
 

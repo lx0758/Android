@@ -1,8 +1,7 @@
 package com.liux.android.http;
 
 import android.content.Context;
-
-import androidx.annotation.IntDef;
+import android.support.annotation.IntDef;
 
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;

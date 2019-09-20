@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.Locale;
 
 /**
@@ -251,7 +252,7 @@ public class IntentUtil {
         callAlbum(fragment.getActivity(), fragment, requestCode);
     }
 
-    public static void callAlbum(androidx.fragment.app.Fragment fragment, int requestCode) {
+    public static void callAlbum(android.support.v4.app.Fragment fragment, int requestCode) {
         callAlbum(fragment.getActivity(), fragment, requestCode);
     }
 
@@ -264,8 +265,8 @@ public class IntentUtil {
                 ((Activity) callbacks).startActivityForResult(intent, requestCode);
             } else if (callbacks instanceof Fragment) {
                 ((Fragment) callbacks).startActivityForResult(intent, requestCode);
-            } else if (callbacks instanceof androidx.fragment.app.Fragment) {
-                ((androidx.fragment.app.Fragment) callbacks).startActivityForResult(intent, requestCode);
+            } else if (callbacks instanceof android.support.v4.app.Fragment) {
+                ((android.support.v4.app.Fragment) callbacks).startActivityForResult(intent, requestCode);
             }
         } catch (ActivityNotFoundException e){
             Toast.makeText(context, "没有找到合适的相册程序.", Toast.LENGTH_SHORT).show();
@@ -283,7 +284,7 @@ public class IntentUtil {
         callCamera(fragment.getActivity(), fragment, out, requestCode);
     }
 
-    public static void callCamera(androidx.fragment.app.Fragment fragment, Uri out, int requestCode) {
+    public static void callCamera(android.support.v4.app.Fragment fragment, Uri out, int requestCode) {
         callCamera(fragment.getActivity(), fragment, out, requestCode);
     }
 
@@ -299,8 +300,8 @@ public class IntentUtil {
                 ((Activity) callbacks).startActivityForResult(intent, requestCode);
             } else if (callbacks instanceof Fragment) {
                 ((Fragment) callbacks).startActivityForResult(intent, requestCode);
-            } else if (callbacks instanceof androidx.fragment.app.Fragment) {
-                ((androidx.fragment.app.Fragment) callbacks).startActivityForResult(intent, requestCode);
+            } else if (callbacks instanceof android.support.v4.app.Fragment) {
+                ((android.support.v4.app.Fragment) callbacks).startActivityForResult(intent, requestCode);
             }
         } catch (ActivityNotFoundException e){
             Toast.makeText(context, "没有找到合适的相机程序.", Toast.LENGTH_SHORT).show();
@@ -318,7 +319,7 @@ public class IntentUtil {
         callCrop(fragment.getActivity(), fragment, in, out, out_width, out_height, requestCode);
     }
 
-    public static void callCrop(androidx.fragment.app.Fragment fragment, Uri in, Uri out, int out_width, int out_height, int requestCode) {
+    public static void callCrop(android.support.v4.app.Fragment fragment, Uri in, Uri out, int out_width, int out_height, int requestCode) {
         callCrop(fragment.getActivity(), fragment, in, out, out_width, out_height, requestCode);
     }
 
@@ -344,8 +345,8 @@ public class IntentUtil {
                 ((Activity) callbacks).startActivityForResult(intent, requestCode);
             } else if (callbacks instanceof Fragment) {
                 ((Fragment) callbacks).startActivityForResult(intent, requestCode);
-            } else if (callbacks instanceof androidx.fragment.app.Fragment) {
-                ((androidx.fragment.app.Fragment) callbacks).startActivityForResult(intent, requestCode);
+            } else if (callbacks instanceof android.support.v4.app.Fragment) {
+                ((android.support.v4.app.Fragment) callbacks).startActivityForResult(intent, requestCode);
             }
         } catch (ActivityNotFoundException e){
             Toast.makeText(context, "没有找到合适的裁剪程序.", Toast.LENGTH_SHORT).show();

@@ -4,9 +4,8 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.util.SparseArray;
-
-import androidx.annotation.NonNull;
 
 /**
  * 申请权限时注入的Fragment

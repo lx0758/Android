@@ -1,6 +1,6 @@
 package com.liux.android.glide.video;
 
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 
 import com.bumptech.glide.load.Key;
 

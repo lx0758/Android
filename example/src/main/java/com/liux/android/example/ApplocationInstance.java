@@ -2,8 +2,7 @@ package com.liux.android.example;
 
 import android.app.Application;
 import android.content.Context;
-
-import androidx.multidex.MultiDex;
+import android.support.multidex.MultiDex;
 
 import com.liux.android.http.Http;
 import com.liux.android.http.OnHeaderListener;

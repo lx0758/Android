@@ -4,10 +4,9 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 
 import com.trello.rxlifecycle2.LifecycleTransformer;
 import com.trello.rxlifecycle2.android.ActivityEvent;
@@ -30,7 +29,7 @@ public class LifecyleProviderManager {
 
     private static Map<Activity, LifecycleProviderImpl<ActivityEvent>> activityLifecycleProviderWeakHashMap = Collections.synchronizedMap(new WeakHashMap<Activity, LifecycleProviderImpl<ActivityEvent>>());
 //    private static Map<android.app.Fragment, LifecycleProviderImpl<FragmentEvent>> frgamentLifecycleProviderWeakHashMap = Collections.synchronizedMap(new WeakHashMap<android.app.Fragment, LifecycleProviderImpl<FragmentEvent>>());
-    private static Map<androidx.fragment.app.Fragment, LifecycleProviderImpl<FragmentEvent>> supportFrgamentLifecycleProviderWeakHashMap = Collections.synchronizedMap(new WeakHashMap<androidx.fragment.app.Fragment, LifecycleProviderImpl<FragmentEvent>>());
+    private static Map<android.support.v4.app.Fragment, LifecycleProviderImpl<FragmentEvent>> supportFrgamentLifecycleProviderWeakHashMap = Collections.synchronizedMap(new WeakHashMap<android.support.v4.app.Fragment, LifecycleProviderImpl<FragmentEvent>>());
 
     private static Application.ActivityLifecycleCallbacks activityLifecycleCallbacks = new Application.ActivityLifecycleCallbacks() {
         @Override
@@ -146,68 +145,68 @@ public class LifecyleProviderManager {
 //        }
 //    };
 
-    private static androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks supportFragmentLifecycleCallbacks = new androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks() {
+    private static android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks supportFragmentLifecycleCallbacks = new android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks() {
         @Override
-        public void onFragmentAttached(androidx.fragment.app.FragmentManager fm, androidx.fragment.app.Fragment f, Context context) {
+        public void onFragmentAttached(android.support.v4.app.FragmentManager fm, android.support.v4.app.Fragment f, Context context) {
             super.onFragmentAttached(fm, f, context);
             getBehaviorSubject(f).onNext(FragmentEvent.ATTACH);
         }
 
         @Override
-        public void onFragmentCreated(androidx.fragment.app.FragmentManager fm, androidx.fragment.app.Fragment f, Bundle savedInstanceState) {
+        public void onFragmentCreated(android.support.v4.app.FragmentManager fm, android.support.v4.app.Fragment f, Bundle savedInstanceState) {
             super.onFragmentCreated(fm, f, savedInstanceState);
             getBehaviorSubject(f).onNext(FragmentEvent.CREATE);
         }
 
         @Override
-        public void onFragmentViewCreated(androidx.fragment.app.FragmentManager fm, androidx.fragment.app.Fragment f, View v, Bundle savedInstanceState) {
+        public void onFragmentViewCreated(android.support.v4.app.FragmentManager fm, android.support.v4.app.Fragment f, View v, Bundle savedInstanceState) {
             super.onFragmentViewCreated(fm, f, v, savedInstanceState);
             getBehaviorSubject(f).onNext(FragmentEvent.CREATE_VIEW);
         }
 
         @Override
-        public void onFragmentStarted(androidx.fragment.app.FragmentManager fm, androidx.fragment.app.Fragment f) {
+        public void onFragmentStarted(android.support.v4.app.FragmentManager fm, android.support.v4.app.Fragment f) {
             super.onFragmentStarted(fm, f);
             getBehaviorSubject(f).onNext(FragmentEvent.START);
         }
 
         @Override
-        public void onFragmentResumed(androidx.fragment.app.FragmentManager fm, androidx.fragment.app.Fragment f) {
+        public void onFragmentResumed(android.support.v4.app.FragmentManager fm, android.support.v4.app.Fragment f) {
             super.onFragmentResumed(fm, f);
             getBehaviorSubject(f).onNext(FragmentEvent.RESUME);
         }
 
         @Override
-        public void onFragmentPaused(androidx.fragment.app.FragmentManager fm, androidx.fragment.app.Fragment f) {
+        public void onFragmentPaused(android.support.v4.app.FragmentManager fm, android.support.v4.app.Fragment f) {
             super.onFragmentPaused(fm, f);
             getBehaviorSubject(f).onNext(FragmentEvent.PAUSE);
         }
 
         @Override
-        public void onFragmentStopped(androidx.fragment.app.FragmentManager fm, androidx.fragment.app.Fragment f) {
+        public void onFragmentStopped(android.support.v4.app.FragmentManager fm, android.support.v4.app.Fragment f) {
             super.onFragmentStopped(fm, f);
             getBehaviorSubject(f).onNext(FragmentEvent.STOP);
         }
 
         @Override
-        public void onFragmentViewDestroyed(androidx.fragment.app.FragmentManager fm, androidx.fragment.app.Fragment f) {
+        public void onFragmentViewDestroyed(android.support.v4.app.FragmentManager fm, android.support.v4.app.Fragment f) {
             super.onFragmentViewDestroyed(fm, f);
             getBehaviorSubject(f).onNext(FragmentEvent.DESTROY_VIEW);
         }
 
         @Override
-        public void onFragmentDestroyed(androidx.fragment.app.FragmentManager fm, androidx.fragment.app.Fragment f) {
+        public void onFragmentDestroyed(android.support.v4.app.FragmentManager fm, android.support.v4.app.Fragment f) {
             super.onFragmentDestroyed(fm, f);
             getBehaviorSubject(f).onNext(FragmentEvent.DESTROY);
         }
 
         @Override
-        public void onFragmentDetached(androidx.fragment.app.FragmentManager fm, androidx.fragment.app.Fragment f) {
+        public void onFragmentDetached(android.support.v4.app.FragmentManager fm, android.support.v4.app.Fragment f) {
             super.onFragmentDetached(fm, f);
             getBehaviorSubject(f).onNext(FragmentEvent.DETACH);
         }
 
-        private BehaviorSubject<FragmentEvent> getBehaviorSubject(androidx.fragment.app.Fragment fragment) {
+        private BehaviorSubject<FragmentEvent> getBehaviorSubject(android.support.v4.app.Fragment fragment) {
             return LifecyleProviderManager.getLifecycleProvider(fragment).getSubject();
         }
     };
@@ -251,7 +250,7 @@ public class LifecyleProviderManager {
 //    }
 
     @SuppressWarnings({"SynchronizationOnLocalVariableOrMethodParameter", "unchecked"})
-    public static LifecycleProviderImpl<FragmentEvent> getLifecycleProvider(androidx.fragment.app.Fragment fragment) {
+    public static LifecycleProviderImpl<FragmentEvent> getLifecycleProvider(android.support.v4.app.Fragment fragment) {
         synchronized (fragment) {
             LifecycleProviderImpl<FragmentEvent> lifecycleProvider = supportFrgamentLifecycleProviderWeakHashMap.get(fragment);
             if (lifecycleProvider == null) {
@@ -280,7 +279,7 @@ public class LifecyleProviderManager {
 //        fragmentManager.registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true);
 //    }
 
-    private static void installSupportFragment(androidx.fragment.app.FragmentManager supportFragmentManager) {
+    private static void installSupportFragment(android.support.v4.app.FragmentManager supportFragmentManager) {
         supportFragmentManager.unregisterFragmentLifecycleCallbacks(supportFragmentLifecycleCallbacks);
         supportFragmentManager.registerFragmentLifecycleCallbacks(supportFragmentLifecycleCallbacks, true);
     }

@@ -2,13 +2,12 @@ package com.liux.android.banner;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
-
-import androidx.annotation.DrawableRes;
-import androidx.annotation.Nullable;
 
 /**
  * 默认的指示器实现 <br>

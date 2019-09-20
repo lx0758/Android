@@ -1,8 +1,7 @@
 package com.liux.android.abstracts;
 
+import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.liux.android.abstracts.titlebar.TitleBar;
 import com.liux.android.abstracts.touch.TouchHost;

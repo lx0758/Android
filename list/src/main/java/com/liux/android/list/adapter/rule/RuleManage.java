@@ -1,6 +1,6 @@
 package com.liux.android.list.adapter.rule;
 
-import androidx.recyclerview.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;

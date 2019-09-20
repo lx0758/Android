@@ -4,9 +4,8 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
-
-import androidx.annotation.NonNull;
-import androidx.core.content.PermissionChecker;
+import android.support.annotation.NonNull;
+import android.support.v4.content.PermissionChecker;
 
 import com.liux.android.permission.Continue;
 import com.liux.android.permission.PermissionFragment;

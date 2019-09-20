@@ -1,10 +1,9 @@
 package com.liux.android.abstracts.titlebar;
 
 import android.graphics.Color;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.liux.android.abstracts.R;
 import com.liux.android.abstracts.util.TitleBarUtil;

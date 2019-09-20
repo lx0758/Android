@@ -19,8 +19,8 @@ android {
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-    api 'androidx.viewpager:viewpager:1.0.0'
-    api 'androidx.annotation:annotation:1.0.0'
+    api "com.android.support:support-core-ui:${LIBRARY_SUPPORT}"
+    compileOnly "com.android.support:support-annotations:${LIBRARY_SUPPORT}"
 }
 
 apply from: '../release.gradle'

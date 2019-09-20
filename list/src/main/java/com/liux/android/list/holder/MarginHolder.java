@@ -1,10 +1,9 @@
 package com.liux.android.list.holder;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by Liux on 2017/9/19.

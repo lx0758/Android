@@ -2,17 +2,14 @@ package com.liux.android.view;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
+import android.support.annotation.Size;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MenuItem;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.annotation.Size;
-import androidx.viewpager.widget.ViewPager;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 
 /**
  * 主页底部导航栏
@@ -21,7 +18,7 @@ import com.google.android.material.bottomnavigation.LabelVisibilityMode;
  * lx0758@qq.com
  */
 
-public class TabNavigationView extends BottomNavigationView {
+public class TabNavigationView extends BottomNavigationView{
 
     private static final int[][] STATES = new int[][]{
             new int[]{android.R.attr.state_checked},
@@ -50,7 +47,7 @@ public class TabNavigationView extends BottomNavigationView {
      */
     public void setShiftMode(boolean shiftMode) {
         // -1_自动 0_开启 1_关闭
-        super.setLabelVisibilityMode(shiftMode ? LabelVisibilityMode.LABEL_VISIBILITY_SELECTED : LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
+        super.setLabelVisibilityMode(shiftMode ? 0 : 1);
     }
 
     /**

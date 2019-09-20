@@ -19,8 +19,8 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    api 'androidx.recyclerview:recyclerview:1.0.0'
-    compileOnly 'androidx.annotation:annotation:1.0.0'
+    api "com.android.support:recyclerview-v7:${LIBRARY_SUPPORT}"
+    compileOnly "com.android.support:support-annotations:${LIBRARY_SUPPORT}"
 }
 
 apply from: '../release.gradle'

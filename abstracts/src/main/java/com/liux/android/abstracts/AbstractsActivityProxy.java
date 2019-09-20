@@ -2,13 +2,12 @@ package com.liux.android.abstracts;
 
 import android.content.Context;
 import android.os.IBinder;
+import android.support.v7.app.ActionBar;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-
-import androidx.appcompat.app.ActionBar;
 
 import com.liux.android.abstracts.titlebar.TitleBar;
 import com.liux.android.abstracts.touch.TouchCallback;

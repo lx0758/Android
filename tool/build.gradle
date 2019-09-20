@@ -19,7 +19,7 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    compileOnly 'androidx.fragment:fragment:1.0.0'
+    compileOnly "com.android.support:support-fragment:${LIBRARY_SUPPORT}"
 }
 
 apply from: '../release.gradle'

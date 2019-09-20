@@ -1,9 +1,8 @@
 package com.liux.android.abstracts.titlebar;
 
 import android.os.Bundle;
-
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 
 import com.liux.android.abstracts.AbstractsActivity;
 

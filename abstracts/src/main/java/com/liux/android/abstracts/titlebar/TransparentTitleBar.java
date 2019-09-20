@@ -2,12 +2,11 @@ package com.liux.android.abstracts.titlebar;
 
 import android.graphics.Color;
 import android.os.Build;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.liux.android.abstracts.util.FixFullScreenAndResize;
 import com.liux.android.abstracts.util.TitleBarUtil;

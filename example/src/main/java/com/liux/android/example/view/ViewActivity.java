@@ -1,6 +1,6 @@
 package com.liux.android.example.view;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.support.v7.app.AppCompatActivity;
 
 /**
  * Created by Liux on 2017/11/28.

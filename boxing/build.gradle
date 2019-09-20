@@ -21,14 +21,15 @@ dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     api "com.bilibili:boxing-impl:1.0.4"
     api ("com.chensl.rotatephotoview:rotatephotoview:1.0.5") {
-        exclude group: 'androidx'
+        exclude group: 'com.android.support', module: 'support-v4'
     }
     api ("com.yalantis:ucrop:2.2.0") {
-        exclude group: 'androidx'
-        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+        exclude group: 'com.android.support',module: 'appcompat-v7'
+        exclude group: 'com.squareup.okhttp3',module: 'okhttp'
     }
-    api "com.google.android.material:material:1.0.0"
-    compileOnly "com.liux.android:glide:latest.release"
+    api "com.android.support:appcompat-v7:${LIBRARY_SUPPORT}"
+    api "com.android.support:design:${LIBRARY_SUPPORT}"
+    compileOnly "com.liux.android:glide:0.1.+"
 }
 
 apply from: '../release.gradle'

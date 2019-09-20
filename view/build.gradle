@@ -19,9 +19,9 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    compileOnly 'androidx.legacy:legacy-support-core-ui:1.0.0'
-    compileOnly 'com.google.android.material:material:1.0.0'
-    compileOnly 'androidx.annotation:annotation:1.0.0'
+    compileOnly "com.android.support:design:${LIBRARY_SUPPORT}"
+    compileOnly "com.android.support:support-core-ui:${LIBRARY_SUPPORT}"
+    compileOnly "com.android.support:support-annotations:${LIBRARY_SUPPORT}"
 }
 
 apply from: '../release.gradle'
