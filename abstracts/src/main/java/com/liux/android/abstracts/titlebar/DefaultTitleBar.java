@@ -44,28 +44,11 @@ public class DefaultTitleBar extends TitleBar<DefaultTitleBar> {
 
     public DefaultTitleBar(AppCompatActivity activity) {
         super(activity);
-    }
-
-    @Override
-    public void initView() {
         mRoot = LayoutInflater.from(getActivity()).inflate(
                 R.layout.view_titlebar_default,
                 null,
                 false
         );
-
-        ActionBar actionBar = getActivity().getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-            actionBar.setCustomView(
-                    mRoot,
-                    new ActionBar.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                    )
-            );
-            TitleBarUtil.operationToolbar(mRoot);
-        }
 
         mBack = mRoot.findViewById(R.id.view_titlebar_default_back);
         mMore = mRoot.findViewById(R.id.view_titlebar_default_more);
@@ -77,6 +60,19 @@ public class DefaultTitleBar extends TitleBar<DefaultTitleBar> {
 
         mBack.setOnClickListener(mOnClickListener);
         mMore.setOnClickListener(mOnClickListener);
+    }
+
+    @Override
+    public void setup(ActionBar actionBar) {
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setCustomView(
+                mRoot,
+                new ActionBar.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+        );
+        TitleBarUtil.operationToolbar(mRoot);
     }
 
     @Override

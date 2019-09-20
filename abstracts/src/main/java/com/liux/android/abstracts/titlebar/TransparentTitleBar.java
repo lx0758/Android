@@ -57,8 +57,7 @@ public class TransparentTitleBar extends TitleBar<TransparentTitleBar> {
     }
 
     @Override
-    public final void initView() {
-        ActionBar actionBar = getActivity().getSupportActionBar();
+    public void setup(ActionBar actionBar) {
         if (actionBar != null) {
             throw new IllegalFormatFlagsException("The window style do not contain Window.FEATURE_NO_TITLE");
         }
@@ -66,7 +65,7 @@ public class TransparentTitleBar extends TitleBar<TransparentTitleBar> {
         FixFullScreenAndResize.fix(getActivity());
 
         int topPadding = TitleBarUtil.getTransparentStatusBarHeight(getActivity());
-        initView(topPadding);
+        onInitView(topPadding);
     }
 
     @Override
@@ -80,11 +79,10 @@ public class TransparentTitleBar extends TitleBar<TransparentTitleBar> {
     }
 
     /**
-     * 初始化 TitleBar 的View <br>
-     * {@link #initView()} 后调用
+     * 初始化 TitleBar 的View
      * @param topPadding
      */
-    public void initView(int topPadding) {
+    public void onInitView(int topPadding) {
 
     }
 }

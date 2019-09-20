@@ -16,15 +16,9 @@ public class WhiteTitleBarActivity extends com.liux.android.abstracts.AbstractsA
 
     @Override
     public TitleBar onInitTitleBar() {
-        return new WhiteTitleBar(this);
-    }
+        WhiteTitleBar whiteTitleBar =  new WhiteTitleBar(this);
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_abstracts_demo);
-//        DefaultTitleBar titleBar = getTitleBar();
-//        titleBar
+//        whiteTitleBar
 //                .setTitleBarColor()
 //                .setStatusBarColor()
 //                .setOnTitleBarListener()
@@ -39,5 +33,15 @@ public class WhiteTitleBarActivity extends com.liux.android.abstracts.AbstractsA
 //                .getMore()
 //                .getMoreIcon()
 //                .getMoreText();
+
+        whiteTitleBar.hasMore(true).getMoreText().setText("测试");
+
+        return whiteTitleBar;
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_abstracts_demo);
     }
 }
