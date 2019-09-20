@@ -60,7 +60,7 @@ public abstract class UnionRequest extends Request<String, UnionResult> {
         }
 
         if (!UPPayAssistEx.checkWalletInstalled(activity)) {
-            Payer.println("检测到银联支付控件未安装,可以通过链接下载并安装 http://mobile.unionpay.com/getclient?platform=android&type=securepayplugin");
+            Payer.println("检测到银联支付控件未安装或安装的是盗版");
         }
 
         Payer.println("银联支付预检查完毕:" + bill);
