@@ -49,7 +49,7 @@ public class BannerActivity extends AppCompatActivity {
             @Override
             public void onBindData(BannerHolder holder, final String s, int index) {
                 ImageView imageView = holder.getView(R.id.iv_image);
-                if (s == null && s.length() == 0) {
+                if (s == null || s.length() == 0) {
                     imageView.setImageResource(R.drawable.background);
                 } else {
                     GlideApp.with(imageView.getContext())

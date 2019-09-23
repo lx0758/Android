@@ -22,7 +22,7 @@ android {
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-    api 'com.squareup.okhttp3:okhttp:3.12.3'
+    api 'com.squareup.okhttp3:okhttp:3.12.5'
     api ('com.squareup.retrofit2:retrofit:2.6.1', {
         exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     })

@@ -29,7 +29,7 @@ dependencies {
         exclude group: "com.android.support"
         exclude group: 'com.squareup.okhttp3'
     })
-    compileOnly 'com.squareup.okhttp3:okhttp:3.12.3'
+    compileOnly 'com.squareup.okhttp3:okhttp:3.12.5'
     annotationProcessor "com.github.bumptech.glide:compiler:4.9.0"
 }
 
