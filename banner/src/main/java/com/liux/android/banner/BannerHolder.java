@@ -14,15 +14,10 @@ import androidx.annotation.StringRes;
  */
 public class BannerHolder {
 
-    public static BannerHolder create(ViewGroup container, int layoutRes) {
-        View itemView = LayoutInflater.from(container.getContext()).inflate(layoutRes, container, false);
-        return new BannerHolder(itemView);
-    }
-
     private View mItemView;
     private SparseArray<View> mItemViews;
 
-    private BannerHolder(View itemView) {
+    public BannerHolder(View itemView) {
         mItemView = itemView;
         mItemViews = new SparseArray<>();
     }

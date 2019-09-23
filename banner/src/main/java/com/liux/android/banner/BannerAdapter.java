@@ -1,5 +1,6 @@
 package com.liux.android.banner;
 
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,11 +19,16 @@ import java.util.List;
 
 public abstract class BannerAdapter<T> extends PagerAdapter {
 
-    private int mLayoutRes;
+    private ViewFactory viewFactory;
     private List<T> mDataSource;
 
     public BannerAdapter(List<T> data, @LayoutRes int layout) {
-        mLayoutRes = layout;
+        this.viewFactory = new ViewFactoryImpl(layout);
+        mDataSource = data;
+    }
+
+    public BannerAdapter(List<T> data, ViewFactory viewFactory) {
+        this.viewFactory = viewFactory;
         mDataSource = data;
     }
 
@@ -47,7 +53,7 @@ public abstract class BannerAdapter<T> extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         if (getRealCount() == 0) return new Object();
 
-        BannerHolder holder = BannerHolder.create(container, mLayoutRes);
+        BannerHolder holder = new BannerHolder(viewFactory.createView(container));
         container.addView(holder.getItemView());
 
         int index = position % getRealCount();
@@ -95,4 +101,18 @@ public abstract class BannerAdapter<T> extends PagerAdapter {
     }
 
     public abstract void onBindData(BannerHolder holder, T t, int index);
+
+    private static class ViewFactoryImpl implements ViewFactory {
+
+        private int itemLayout;
+
+        public ViewFactoryImpl(@LayoutRes int itemLayout) {
+            this.itemLayout = itemLayout;
+        }
+
+        @Override
+        public View createView(ViewGroup parent) {
+            return LayoutInflater.from(parent.getContext()).inflate(itemLayout, parent, false);
+        }
+    }
 }
