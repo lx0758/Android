@@ -17,6 +17,8 @@ android {
     }
 }
 
+// Glide 4.9.0 为支持 Support 的最终版本
+// 升级时请注意跳过
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     api "com.android.support:support-fragment:${LIBRARY_SUPPORT}"
@@ -27,7 +29,7 @@ dependencies {
         exclude group: "com.android.support"
         exclude group: 'com.squareup.okhttp3'
     })
-    compileOnly 'com.squareup.okhttp3:okhttp:3.11.0'
+    compileOnly 'com.squareup.okhttp3:okhttp:3.12.3'
     annotationProcessor "com.github.bumptech.glide:compiler:4.9.0"
 }
 

@@ -9,14 +9,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bilibili.boxing.BoxingCrop;
 import com.bilibili.boxing.BoxingMediaLoader;
 import com.bilibili.boxing.model.entity.BaseMedia;
 import com.bilibili.boxing.model.entity.impl.ImageMedia;
 import com.bilibili.boxing.model.entity.impl.VideoMedia;
-import com.liux.android.boxing.BoxingGlideLoader;
 import com.liux.android.boxing.Boxinger;
-import com.liux.android.boxing.BoxingUcrop;
 import com.liux.android.boxing.OnCancelListener;
 import com.liux.android.boxing.OnCropListener;
 import com.liux.android.boxing.OnMultiSelectListener;

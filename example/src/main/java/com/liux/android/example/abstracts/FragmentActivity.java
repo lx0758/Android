@@ -1,6 +1,5 @@
 package com.liux.android.example.abstracts;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,8 +9,6 @@ import android.widget.RadioGroup;
 
 import com.liux.android.abstracts.AbstractsActivity;
 import com.liux.android.example.R;
-
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -14,7 +14,6 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.Locale;
 
 /**

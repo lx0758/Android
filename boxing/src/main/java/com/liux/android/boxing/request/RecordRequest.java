@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -68,8 +67,8 @@ public class RecordRequest extends Request<RecordRequest> {
 
     @Override
     public void start() {
-        if (PermissionChecker.checkCallingOrSelfPermission(target, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-                PermissionChecker.checkCallingOrSelfPermission(target, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+        if (PermissionChecker.checkCallingOrSelfPermission(target, Manifest.permission.CAMERA) != PermissionChecker.PERMISSION_GRANTED ||
+                PermissionChecker.checkCallingOrSelfPermission(target, Manifest.permission.RECORD_AUDIO) != PermissionChecker.PERMISSION_GRANTED) {
             callRequestPermission();
         } else {
             callRecord();

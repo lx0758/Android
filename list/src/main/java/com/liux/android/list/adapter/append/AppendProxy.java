@@ -128,7 +128,7 @@ public class AppendProxy<T> {
     public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
         if (isAppendPosition(holder.getAdapterPosition())) {
             ViewGroup.LayoutParams lp_vg = holder.itemView.getLayoutParams();
-            if(lp_vg != null && lp_vg instanceof StaggeredGridLayoutManager.LayoutParams) {
+            if(lp_vg instanceof StaggeredGridLayoutManager.LayoutParams) {
                 StaggeredGridLayoutManager.LayoutParams lp_sglm = (StaggeredGridLayoutManager.LayoutParams) lp_vg;
                 lp_sglm.setFullSpan(true);
             }

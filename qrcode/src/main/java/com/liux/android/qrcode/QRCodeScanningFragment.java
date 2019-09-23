@@ -5,7 +5,6 @@ import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -179,7 +178,7 @@ public class QRCodeScanningFragment extends Fragment implements DecodeCallback {
 
     @TargetApi(Build.VERSION_CODES.M)
     private void checkAndStartPreview() {
-        if (PermissionChecker.checkCallingOrSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        if (PermissionChecker.checkCallingOrSelfPermission(getActivity(), Manifest.permission.CAMERA) != PermissionChecker.PERMISSION_GRANTED) {
             mRequestCode = getRequestCode();
             requestPermissions(
                     new String[]{Manifest.permission.CAMERA},

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -49,7 +48,7 @@ public class TakeRequest extends Request<TakeRequest> {
 
     @Override
     public void start() {
-        if (PermissionChecker.checkCallingOrSelfPermission(target, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+        if (PermissionChecker.checkCallingOrSelfPermission(target, Manifest.permission.CAMERA) != PermissionChecker.PERMISSION_GRANTED) {
             callRequestPermission();
         } else {
             callTake();
