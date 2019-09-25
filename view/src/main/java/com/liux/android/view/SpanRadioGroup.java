@@ -16,6 +16,7 @@ import java.lang.reflect.Field;
  * description：支持控制子孙层 RadioButton 的 RadioGroup
  */
 
+@Deprecated
 public class SpanRadioGroup extends RadioGroup {
     private static String TAG = "SpanRadioGroup";
 

@@ -102,4 +102,11 @@
         <attr name="left_bottom_radius" format="dimension"/>
     </declare-styleable>
 
+    <declare-styleable name="LicensePlateEditText">
+        <attr name="lpet_drawable_normal" format="color|reference"/>
+        <attr name="lpet_drawable_pressed" format="color|reference"/>
+        <attr name="lpet_drawable_energy" format="color|reference"/>
+        <attr name="lpet_interval" format="dimension|reference"/>
+    </declare-styleable>
+
 </resources>
