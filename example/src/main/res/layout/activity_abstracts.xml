@@ -61,6 +61,14 @@
             android:text="Fragment"
             android:onClick="onClick"/>
 
+        <Button
+            android:id="@+id/btn_fragment_nesting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="FragmentNesting"
+            android:onClick="onClick"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

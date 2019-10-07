@@ -1,4 +1,4 @@
-package com.liux.android.example.abstracts;
+package com.liux.android.example.abstracts.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import com.liux.android.abstracts.AbstractsFragment;
 import com.liux.android.example.R;
+import com.liux.android.example.abstracts.activity.DialogActivity;
 import com.liux.android.tool.TT;
 
 import butterknife.BindView;

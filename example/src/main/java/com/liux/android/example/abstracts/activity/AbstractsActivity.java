@@ -1,4 +1,4 @@
-package com.liux.android.example.abstracts;
+package com.liux.android.example.abstracts.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,6 +38,9 @@ public class AbstractsActivity extends AppCompatActivity {
                 break;
             case R.id.btn_fragment:
                 intent = new Intent(this, FragmentActivity.class);
+                break;
+            case R.id.btn_fragment_nesting:
+                intent = new Intent(this, NestingFragmentActivity.class);
                 break;
             case R.id.btn_abstracts_dialog:
                 intent = new Intent(this, DialogActivity.class);
