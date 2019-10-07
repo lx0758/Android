@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.liux.android.example.banner.BannerActivity;
-import com.liux.android.example.abstracts.AbstractsActivity;
+import com.liux.android.example.abstracts.activity.AbstractsActivity;
 import com.liux.android.example.boxing.BoxingActivity;
 import com.liux.android.example.downloader.DownloaderActivity;
 import com.liux.android.example.glide.GlideActivity;

@@ -5,8 +5,10 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
 
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.liux.android.abstracts.touch.TouchCallback;
 import com.liux.android.abstracts.touch.TouchHost;
@@ -34,6 +36,7 @@ public class AbstractsFragmentProxy {
 
     public void onViewCreated() {
         mViewCreated = true;
+        if (!isViewPagerItem()) mUserVisible = true;
         checkLazyLoad();
     }
 
@@ -118,6 +121,33 @@ public class AbstractsFragmentProxy {
 
         mCallLazyLoad = true;
         mIAbstractsFragment.onLazyLoad();
+    }
+
+    private ViewGroup mContainer;
+
+    /**
+     * 检查是不是 ViewPager 的一个条目
+     * @return
+     */
+    private boolean isViewPagerItem() {
+        if (mContainer == null) {
+            try {
+                Class clazz = Fragment.class;
+                Field[] fields = clazz.getDeclaredFields();
+                Field containerField = null;
+                for (Field field : fields) {
+                    if (field.getType() == ViewGroup.class) {
+                        containerField = field;
+                        break;
+                    }
+                }
+                if (containerField != null) {
+                    containerField.setAccessible(true);
+                    mContainer = (ViewGroup) containerField.get(mIAbstractsFragment.getTarget());
+                }
+            } catch (Exception ignore) {}
+        }
+        return mContainer instanceof ViewPager;
     }
 
     /**

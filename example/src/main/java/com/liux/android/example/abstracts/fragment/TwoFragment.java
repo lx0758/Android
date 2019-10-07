@@ -1,4 +1,4 @@
-package com.liux.android.example.abstracts;
+package com.liux.android.example.abstracts.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

@@ -1,4 +1,4 @@
-package com.liux.android.example.abstracts;
+package com.liux.android.example.abstracts.activity;
 
 import android.os.Bundle;
 
@@ -11,6 +11,10 @@ import android.widget.RadioGroup;
 
 import com.liux.android.abstracts.AbstractsActivity;
 import com.liux.android.example.R;
+import com.liux.android.example.abstracts.fragment.FourFragment;
+import com.liux.android.example.abstracts.fragment.OneFragment;
+import com.liux.android.example.abstracts.fragment.ThreeFragment;
+import com.liux.android.example.abstracts.fragment.TwoFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,7 +33,7 @@ public class FragmentActivity extends AbstractsActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base_fragment);
+        setContentView(R.layout.activity_abstracts_fragment);
 
         ButterKnife.bind(this);
 

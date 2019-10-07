@@ -1,4 +1,4 @@
-package com.liux.android.example.abstracts;
+package com.liux.android.example.abstracts.activity;
 
 import android.os.Bundle;
 import android.view.View;
