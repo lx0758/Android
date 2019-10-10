@@ -82,8 +82,12 @@
         <activity android:name=".rx.RXActivity"
             android:label="RX"/>
 
-        <activity android:name=".serialport.SerialPortActivity"
+        <activity android:name=".io.IOActivity"
+            android:label="IO"/>
+        <activity android:name=".io.SerialPortActivity"
             android:label="SerialPort"/>
+        <activity android:name=".io.GpioActivity"
+            android:label="Gpio"/>
 
         <activity android:name=".other.ToolActivity"
             android:label="Other"/>

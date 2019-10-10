@@ -14,9 +14,11 @@
  * limitations under the License. 
  */
 
-package android_serialport_api;
+package com.liux.android.io.serialport;
 
 import android.util.Log;
+
+import androidx.annotation.IntDef;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -25,6 +27,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 public class SerialPort {
 
@@ -61,20 +65,20 @@ public class SerialPort {
 	public static final int BAUDRATE_3500000 = 3500000;
 	public static final int BAUDRATE_4000000 = 4000000;
 
-	public static final int DATABIT_LENGTH_NONE = -1;
-	public static final int DATABIT_LENGTH_5 = 5;
-	public static final int DATABIT_LENGTH_6 = 6;
-	public static final int DATABIT_LENGTH_7 = 7;
-	public static final int DATABIT_LENGTH_8 = 8;
+	public static final int DATABIT_NONE = -1;
+	public static final int DATABIT_5 = 5;
+	public static final int DATABIT_6 = 6;
+	public static final int DATABIT_7 = 7;
+	public static final int DATABIT_8 = 8;
 
-	public static final int STOPBIT_LENGTH_NONE = -1;
-	public static final int STOPBIT_LENGTH_1 = 1;
-	public static final int STOPBIT_LENGTH_2 = 2;
+	public static final int STOPBIT_NONE = -1;
+	public static final int STOPBIT_1 = 1;
+	public static final int STOPBIT_2 = 2;
 
-	public static final char CHECKBIT_RULE_NONE = ' '; // 忽略校验位
-	public static final char CHECKBIT_RULE_O = 'O'; // 奇校验位
-	public static final char CHECKBIT_RULE_E = 'E'; // 偶校验位
-	public static final char CHECKBIT_RULE_N = 'N'; // 无校验位
+	public static final char CHECKBIT_NONE = ' '; // 忽略校验位
+	public static final char CHECKBIT_O = 'O'; // 奇校验位
+	public static final char CHECKBIT_E = 'E'; // 偶校验位
+	public static final char CHECKBIT_N = 'N'; // 无校验位
 
 	private static final String TAG = "SerialPort";
 
@@ -85,10 +89,10 @@ public class SerialPort {
 	private FileInputStream mFileInputStream;
 	private FileOutputStream mFileOutputStream;
 
-	public static SerialPort open(File device, int baudrate, int databit, int stopbit, char checkrule) {
+	public static SerialPort open(File device, @BaudRate int baudrate, @DataBit int databit, @StopBit int stopbit, /*@CheckBit*/ char checkbit) {
 		SerialPort serialPort = null;
 		try {
-			serialPort = new SerialPort(device, baudrate, databit, stopbit, checkrule);
+			serialPort = new SerialPort(device, baudrate, databit, stopbit, checkbit);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -101,11 +105,11 @@ public class SerialPort {
 	 * @param baudrate 波特率
 	 * @param databit 数据位 (5/6/7/8)
 	 * @param stopbit 停止位 (1/2)
-	 * @param checkrule 校验规则 (O_奇/E_偶/N_无)
+	 * @param checkbit 校验规则 (O_奇/E_偶/N_无)
 	 * @throws SecurityException
 	 * @throws IOException
 	 */
-	public SerialPort(File device, int baudrate, int databit, int stopbit, char checkrule) throws SecurityException, IOException {
+	public SerialPort(File device, @BaudRate int baudrate, @DataBit int databit, @StopBit int stopbit, /*@CheckBit*/ char checkbit) throws SecurityException, IOException {
 
 		/* Check access permission */
 		if (!device.canRead() || !device.canWrite()) {
@@ -122,7 +126,7 @@ public class SerialPort {
 			}
 		}
 
-		mFd = open(device.getAbsolutePath(), baudrate, databit, stopbit, checkrule);
+		mFd = open(device.getAbsolutePath(), baudrate, databit, stopbit, checkbit);
 		if (mFd == null) {
 			Log.e(TAG, "native open returns null");
 			throw new IOException();
@@ -144,6 +148,55 @@ public class SerialPort {
 	private native static FileDescriptor open(String path, int baudrate, int databit, int stopbit, char checkrule);
 	public native void close();
 	static {
-		System.loadLibrary("serial-port");
+		System.loadLibrary("io-serialport");
 	}
+
+	@IntDef({
+			BAUDRATE_DEFAULT,
+			BAUDRATE_0,
+			BAUDRATE_50,
+			BAUDRATE_75,
+			BAUDRATE_110,
+			BAUDRATE_134,
+			BAUDRATE_150,
+			BAUDRATE_200,
+			BAUDRATE_300,
+			BAUDRATE_600,
+			BAUDRATE_1200,
+			BAUDRATE_1800,
+			BAUDRATE_2400,
+			BAUDRATE_4800,
+			BAUDRATE_9600,
+			BAUDRATE_19200,
+			BAUDRATE_38400,
+			BAUDRATE_57600,
+			BAUDRATE_115200,
+			BAUDRATE_230400,
+			BAUDRATE_460800,
+			BAUDRATE_500000,
+			BAUDRATE_576000,
+			BAUDRATE_921600,
+			BAUDRATE_1000000,
+			BAUDRATE_1152000,
+			BAUDRATE_1500000,
+			BAUDRATE_2000000,
+			BAUDRATE_2500000,
+			BAUDRATE_3000000,
+			BAUDRATE_3500000,
+			BAUDRATE_4000000
+	})
+	@Retention(RetentionPolicy.SOURCE)
+	public @interface BaudRate {}
+
+	@IntDef({DATABIT_NONE, DATABIT_5, DATABIT_6, DATABIT_7, DATABIT_8})
+	@Retention(RetentionPolicy.SOURCE)
+	public @interface DataBit {}
+
+	@IntDef({STOPBIT_NONE, STOPBIT_1, STOPBIT_2})
+	@Retention(RetentionPolicy.SOURCE)
+	public @interface StopBit {}
+
+	//@StringDef({CHECKBIT_NONE, CHECKBIT_O, CHECKBIT_E, CHECKBIT_N})
+	//@Retention(RetentionPolicy.SOURCE)
+	//public @interface CheckBit {}
 }
