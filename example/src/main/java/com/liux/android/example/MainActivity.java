@@ -23,7 +23,7 @@ import com.liux.android.example.pay.PayActivity;
 import com.liux.android.example.permission.PermissionActivity;
 import com.liux.android.example.qrcode.QRCodeActivity;
 import com.liux.android.example.rx.RXActivity;
-import com.liux.android.example.serialport.SerialPortActivity;
+import com.liux.android.example.io.IOActivity;
 import com.liux.android.example.util.UtilActivity;
 import com.liux.android.example.view.ViewActivity;
 
@@ -62,21 +62,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        add("Banner", "一个支持Adapter的Banner封装", BannerActivity.class);
-        add("Abstracts", "对于Activity和Fragment的封装", AbstractsActivity.class);
-        add("Boxing", "基于Boxing封装的图片选择/预览库", BoxingActivity.class);
-        add("Downloader", "全局/单线程/多任务/断点续传HTTP下载器", DownloaderActivity.class);
-        add("Glide", "基于Glide4实现自定义加载过程", GlideActivity.class);
-        add("HTTP", "基于Retorfit/OkHttp的封装", HTTPActivity.class);
-        add("List", "基于RecycleView的封装", ListActivity.class);
+        add("Banner", "一个支持 Adapter 的 Banner 封装", BannerActivity.class);
+        add("Abstracts", "对于 Activity 和 Fragment 的封装", AbstractsActivity.class);
+        add("Boxing", "基于 Boxing 封装的图片选择/预览库", BoxingActivity.class);
+        add("Downloader", "全局/单线程/多任务/断点续传 HTTP 下载器", DownloaderActivity.class);
+        add("Glide", "基于 Glide4 实现自定义加载过程", GlideActivity.class);
+        add("HTTP", "基于 Retorfit/OkHttp 的封装", HTTPActivity.class);
+        add("IO", "基于 Android中Linux内核 的 串口/GPIO/I2C 通信库类的封装", IOActivity.class);
+        add("List", "基于 RecycleView 的封装", ListActivity.class);
         add("Pay", "封装支付宝/微信/银联支付过程", PayActivity.class);
-        add("Permission", "运行时/悬浮窗/安装权限申请过程封装", PermissionActivity.class);
-        add("QRCode", "基于ZXing的一个二维码扫描/生成库", QRCodeActivity.class);
-        add("RX", "基于ReactiveX的RxJava2全家桶部分成员", RXActivity.class);
-        add("SerialPort", "基于谷歌安卓串口通信Api的编译版本", SerialPortActivity.class);
+        add("Permission", "运行时/悬浮窗/安装 权限申请过程封装", PermissionActivity.class);
+        add("QRCode", "基于 ZXing 的一个 QRCode 扫描/生成库", QRCodeActivity.class);
+        add("RX", "基于 ReactiveX 的 RxJava2 全家桶部分成员", RXActivity.class);
         add("Tool", "一些工具类集合", ToolActivity.class);
         add("Util", "一些工具方法集合", UtilActivity.class);
-        add("View", "一些自定义View集合", ViewActivity.class);
+        add("View", "一些自定义 View 集合", ViewActivity.class);
 
         mSimpleAdapter.notifyDataSetChanged();
     }

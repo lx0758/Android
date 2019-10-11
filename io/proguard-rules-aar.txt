@@ -1,0 +1,2 @@
+-dontwarn com.liux.android.io.**
+-keep class com.liux.android.io.** {*;}
