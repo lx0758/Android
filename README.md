@@ -30,6 +30,10 @@ Library
 ---
 	封装OkHttp3和Retrofit2的全局单例Http客户端,并添加了持久化Cookie相关能力
 
+[io](/io/README.md)
+---
+	基于 Android中Linux内核 的 串口/GPIO/I2C 通信库类的封装
+
 [list](/list/README.md)
 ---
 	基于RecyclerView的Adapter,ItemDecoration和ViewHolder的扩展封装
