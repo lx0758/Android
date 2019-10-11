@@ -152,7 +152,7 @@ public class SerialPortActivity extends AppCompatActivity {
     }
 
     private void close() {
-        readThread.interrupt();
+        if (readThread != null) readThread.interrupt();
         if (serialPort != null) serialPort.close();
         serialPort = null;
         spDevice.setEnabled(true);

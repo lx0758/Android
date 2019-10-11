@@ -140,7 +140,7 @@ public class GpioActivity extends AppCompatActivity {
             btnOpen.setText("关闭");
         } catch (IOException |SecurityException e) {
             e.printStackTrace();
-            TT.show("打开串口失败");
+            TT.show("打开端口失败");
         }
     }
 
