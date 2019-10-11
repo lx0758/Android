@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.InputFilter;
 import android.text.TextPaint;
 import android.text.method.MovementMethod;
@@ -16,8 +17,6 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
-
-import androidx.appcompat.widget.AppCompatEditText;
 
 import java.util.Arrays;
 

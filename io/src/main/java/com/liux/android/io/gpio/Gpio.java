@@ -1,9 +1,8 @@
 package com.liux.android.io.gpio;
 
 import android.annotation.SuppressLint;
-
-import androidx.annotation.IntDef;
-import androidx.annotation.StringDef;
+import android.support.annotation.IntDef;
+import android.support.annotation.StringDef;
 
 import java.io.File;
 import java.io.IOException;

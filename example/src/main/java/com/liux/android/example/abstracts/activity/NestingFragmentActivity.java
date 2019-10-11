@@ -1,8 +1,7 @@
 package com.liux.android.example.abstracts.activity;
 
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
+import android.support.annotation.Nullable;
 
 import com.liux.android.abstracts.AbstractsActivity;
 import com.liux.android.example.R;

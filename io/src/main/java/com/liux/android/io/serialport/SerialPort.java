@@ -16,9 +16,8 @@
 
 package com.liux.android.io.serialport;
 
+import android.support.annotation.IntDef;
 import android.util.Log;
-
-import androidx.annotation.IntDef;
 
 import java.io.File;
 import java.io.FileDescriptor;
