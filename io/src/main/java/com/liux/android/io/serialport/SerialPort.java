@@ -32,8 +32,6 @@ import java.lang.annotation.RetentionPolicy;
 
 public class SerialPort {
 
-	public static final int BAUDRATE_DEFAULT = -1;
-	public static final int BAUDRATE_0 = 0;
 	public static final int BAUDRATE_50 = 50;
 	public static final int BAUDRATE_75 = 75;
 	public static final int BAUDRATE_110 = 110;
@@ -65,20 +63,18 @@ public class SerialPort {
 	public static final int BAUDRATE_3500000 = 3500000;
 	public static final int BAUDRATE_4000000 = 4000000;
 
-	public static final int DATABIT_NONE = -1;
 	public static final int DATABIT_5 = 5;
 	public static final int DATABIT_6 = 6;
 	public static final int DATABIT_7 = 7;
 	public static final int DATABIT_8 = 8;
 
-	public static final int STOPBIT_NONE = -1;
 	public static final int STOPBIT_1 = 1;
 	public static final int STOPBIT_2 = 2;
 
-	public static final char CHECKBIT_NONE = ' '; // 忽略校验位
 	public static final char CHECKBIT_O = 'O'; // 奇校验位
 	public static final char CHECKBIT_E = 'E'; // 偶校验位
 	public static final char CHECKBIT_N = 'N'; // 无校验位
+	public static final char CHECKBIT_S = ' '; // 空校验位
 
 	private static final String TAG = "SerialPort";
 
@@ -126,13 +122,21 @@ public class SerialPort {
 			}
 		}
 
-		mFd = open(device.getAbsolutePath(), baudrate, databit, stopbit, checkbit);
+		mFd = _open(device.getAbsolutePath(), baudrate, databit, stopbit, checkbit);
 		if (mFd == null) {
 			Log.e(TAG, "native open returns null");
 			throw new IOException();
 		}
 		mFileInputStream = new FileInputStream(mFd);
 		mFileOutputStream = new FileOutputStream(mFd);
+	}
+
+	public void close() {
+		FileDescriptor fd = mFd;
+		mFd = null;
+		mFileInputStream = null;
+		mFileOutputStream = null;
+		_close(fd);
 	}
 
 	// Getters and setters
@@ -145,15 +149,13 @@ public class SerialPort {
 	}
 
 	// JNI
-	private native static FileDescriptor open(String path, int baudrate, int databit, int stopbit, char checkrule);
-	public native void close();
+	private native FileDescriptor _open(String path, int baudrate, int databit, int stopbit, char checkrule);
+	private native void _close(FileDescriptor fd);
 	static {
 		System.loadLibrary("io-serialport");
 	}
 
 	@IntDef({
-			BAUDRATE_DEFAULT,
-			BAUDRATE_0,
 			BAUDRATE_50,
 			BAUDRATE_75,
 			BAUDRATE_110,
@@ -188,15 +190,15 @@ public class SerialPort {
 	@Retention(RetentionPolicy.SOURCE)
 	public @interface BaudRate {}
 
-	@IntDef({DATABIT_NONE, DATABIT_5, DATABIT_6, DATABIT_7, DATABIT_8})
+	@IntDef({DATABIT_5, DATABIT_6, DATABIT_7, DATABIT_8})
 	@Retention(RetentionPolicy.SOURCE)
 	public @interface DataBit {}
 
-	@IntDef({STOPBIT_NONE, STOPBIT_1, STOPBIT_2})
+	@IntDef({STOPBIT_1, STOPBIT_2})
 	@Retention(RetentionPolicy.SOURCE)
 	public @interface StopBit {}
 
-	//@StringDef({CHECKBIT_NONE, CHECKBIT_O, CHECKBIT_E, CHECKBIT_N})
+	//@StringDef({CHECKBIT_O, CHECKBIT_E, CHECKBIT_N, CHECKBIT_S})
 	//@Retention(RetentionPolicy.SOURCE)
 	//public @interface CheckBit {}
 }

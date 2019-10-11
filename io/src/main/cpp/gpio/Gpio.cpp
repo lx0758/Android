@@ -83,7 +83,7 @@ void *runPoll(void *data) {
     char path[64];
     snprintf(path, sizeof(path), "/sys/class/gpio/gpio%d/value", info->number);
     int fd = open(path, O_RDONLY);
-    if(fd <= 0) {
+    if (fd <= 0) {
         info->callback(TYPE_ERROR, -1);
         close(fd);
         pthread_exit(&info->pthread);
@@ -101,7 +101,7 @@ void *runPoll(void *data) {
             break;
         }
         if (result == 0) continue;
-        if(fds[0].revents & POLLPRI) {
+        if (fds[0].revents & POLLPRI) {
             usleep(10 * 1000);
             char buffer[16];
             if (lseek(fd, 0, SEEK_SET) == -1 || read(fd, buffer, sizeof(buffer)) == -1) {

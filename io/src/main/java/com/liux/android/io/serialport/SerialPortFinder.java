@@ -16,8 +16,6 @@
 
 package com.liux.android.io.serialport;
 
-import android.util.Log;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -43,7 +41,7 @@ public class SerialPortFinder {
 				int i;
 				for (i=0; i<files.length; i++) {
 					if (files[i].getAbsolutePath().startsWith(mDeviceRoot)) {
-						Log.d(TAG, "Found new device: " + files[i]);
+						//Log.d(TAG, "Found new device: " + files[i]);
 						mDevices.add(files[i]);
 					}
 				}
@@ -70,7 +68,7 @@ public class SerialPortFinder {
 				String drivername = l.substring(0, 0x15).trim();
 				String[] w = l.split(" +");
 				if ((w.length >= 5) && (w[w.length-1].equals("serial"))) {
-					Log.d(TAG, "Found new driver " + drivername + " on " + w[w.length-4]);
+					//Log.d(TAG, "Found new driver " + drivername + " on " + w[w.length-4]);
 					mDrivers.add(new Driver(drivername, w[w.length-4]));
 				}
 			}

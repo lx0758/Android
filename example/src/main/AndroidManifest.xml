@@ -85,7 +85,8 @@
         <activity android:name=".io.IOActivity"
             android:label="IO"/>
         <activity android:name=".io.SerialPortActivity"
-            android:label="SerialPort"/>
+            android:label="SerialPort"
+            android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".io.GpioActivity"
             android:label="Gpio"/>
 
