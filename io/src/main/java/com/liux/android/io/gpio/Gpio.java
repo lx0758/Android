@@ -19,7 +19,7 @@ public class Gpio {
     public static final String DIRECTION_IN = "in";
     public static final String DIRECTION_OUT = "out";
 
-    /* 表示引脚为输入，不是中断引脚 */
+    /* 表示引脚为输出，不是中断引脚 */
     public static final String EDGE_NONE = "none";
     /* 表示引脚为中断输入，上升沿触发 */
     public static final String EDGE_RISING = "rising";
@@ -30,6 +30,9 @@ public class Gpio {
 
     public static final int TYPE_ERROR = -1;
     public static final int TYPE_POLL = 1;
+
+    public static final int VALUE_HIGH = 1;
+    public static final int VALUE_LOW = 0;
 
     private static final int RESULT_OK = 0;
 
@@ -58,31 +61,39 @@ public class Gpio {
     public void open() throws SecurityException, IOException {
         close();
         File operate, valueFile = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/value", this.gpio));
+        // 导出引脚
         if (!valueFile.exists()) {
             operate = new File("/sys/class/gpio/export");
             checkAndChangePermission(operate, true, true, false);
             if (execToCode(String.format(Locale.CHINA, "echo %d > %s", this.gpio, operate.getAbsolutePath())) != RESULT_OK) {
                 throw new IOException("Export gpio port " + gpio + " failure");
             }
-            operate = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/direction", this.gpio));
-            checkAndChangePermission(operate, true, true, false);
-            if (execToCode(String.format("echo %s > %s", this.direction, operate.getAbsolutePath())) != RESULT_OK) {
-                throw new IOException("Set gpio port " + gpio + " direction failure");
+        }
+        if (!valueFile.exists()) {
+            throw new IOException("Export gpio port " + gpio + " failure");
+        }
+        // 设置方向
+        operate = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/direction", this.gpio));
+        checkAndChangePermission(operate, true, true, false);
+        if (execToCode(String.format("echo %s > %s", this.direction, operate.getAbsolutePath())) != RESULT_OK) {
+            throw new IOException("Set gpio port " + gpio + " direction failure");
+        }
+        // 设置中断
+        operate = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/edge", this.gpio));
+        checkAndChangePermission(operate, true, true, false);
+        if (DIRECTION_IN.equals(direction)) {
+            if (execToCode(String.format("echo %s > %s", edge, operate.getAbsolutePath())) != RESULT_OK) {
+                throw new IOException("Set gpio port " + gpio + " edge failure");
             }
-            operate = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/edge", this.gpio));
-            checkAndChangePermission(operate, true, true, false);
-            if (DIRECTION_IN.equals(direction)) {
-                if (execToCode(String.format("echo %s > %s", edge, operate.getAbsolutePath())) != RESULT_OK) {
-                    throw new IOException("Set gpio port " + gpio + " edge failure");
-                }
-            }
-            if (!valueFile.exists()) {
-                throw new IOException("Open gpio port " + gpio + " failure");
+        } else {
+            if (execToCode(String.format("echo %s > %s", EDGE_NONE, operate.getAbsolutePath())) != RESULT_OK) {
+                throw new IOException("Set gpio port " + gpio + " edge failure");
             }
         }
+        // 设置监听
         if (DIRECTION_IN.equals(direction)) {
             checkAndChangePermission(valueFile, true, false, false);
-            startPoll(gpio);
+            _startPoll(gpio);
         }
         alreadyOpen = true;
     }
@@ -100,14 +111,14 @@ public class Gpio {
     }
 
     public void close() {
-        stopPoll();
+        _stopPoll();
         if (new File("/sys/class/gpio/unexport").canWrite()) {
             execToCode(String.format(Locale.CHINA, "echo %d > /sys/class/gpio/unexport", this.gpio));
         }
         alreadyOpen = false;
     }
 
-    public boolean set(int value) throws SecurityException {
+    public boolean set(@VALUE int value) throws SecurityException {
         if (!isOpen()) return false;
         if (!DIRECTION_OUT.equals(direction)) return false;
         File valueFile = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/value", gpio));
@@ -115,12 +126,12 @@ public class Gpio {
         return execToCode(String.format(Locale.CHINA, "echo %d > %s", value, valueFile.getAbsolutePath())) == RESULT_OK;
     }
 
-    public int get() throws SecurityException {
-        if (!isOpen()) return 0;
+    public @VALUE int get() throws SecurityException {
+        if (!isOpen()) return VALUE_LOW;
         File valueFile = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/value", gpio));
         if (!valueFile.canRead()) throw new SecurityException();
         String result = execToString(String.format("cat %s", valueFile.getAbsolutePath()));
-        if (result == null) return 0;
+        if (result == null) return VALUE_LOW;
         return Integer.parseInt(result);
     }
 
@@ -198,14 +209,13 @@ public class Gpio {
         return result;
     }
 
-    private native void startPoll(int number);
-    private native void stopPoll();
+    private native void _startPoll(int number);
+    private native void _stopPoll();
+    public void _onCallback(int type, int value) {
+        if (callback != null) callback.onEvent(type, value);
+    }
     static {
         System.loadLibrary("io-gpio");
-    }
-
-    public void onCallback(int type, int value) {
-        if (callback != null) callback.onEvent(type, value);
     }
 
     public interface Callback {
@@ -215,18 +225,22 @@ public class Gpio {
          * @param type
          * @param value
          */
-        void onEvent(@TYPE int type, int value);
+        void onEvent(@TYPE int type, @VALUE int value);
     }
 
     @StringDef({DIRECTION_IN, DIRECTION_OUT})
     @Retention(RetentionPolicy.SOURCE)
     public @interface DIRECTION {}
 
-    @StringDef({EDGE_RISING, EDGE_FALLING})
+    @StringDef({EDGE_RISING, EDGE_FALLING, EDGE_BOTH})
     @Retention(RetentionPolicy.SOURCE)
     public @interface EDGE_IN {}
 
     @IntDef({TYPE_ERROR, TYPE_POLL})
     @Retention(RetentionPolicy.SOURCE)
     public @interface TYPE {}
+
+    @IntDef({VALUE_HIGH, VALUE_LOW})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface VALUE {}
 }

@@ -23,7 +23,7 @@
         android:id="@+id/sp_baud_rate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/serial_port_baud_rate" />
+        android:entries="@array/io_serial_port_baud_rate" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
         android:id="@+id/sp_data_bit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/serial_port_data_bit"/>
+        android:entries="@array/io_serial_port_data_bit"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -45,7 +45,7 @@
         android:id="@+id/sp_stop_bit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/serial_port_stop_bit"/>
+        android:entries="@array/io_serial_port_stop_bit"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -56,7 +56,7 @@
         android:id="@+id/sp_check_bit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/serial_port_check_bit"/>
+        android:entries="@array/io_serial_port_check_bit"/>
 
     <Button
         android:id="@+id/btn_connection"

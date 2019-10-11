@@ -12,7 +12,7 @@
         <item>DELETE</item>
     </string-array>
 
-    <string-array name="serial_port_baud_rate">
+    <string-array name="io_serial_port_baud_rate">
         <item>50</item>
         <item>75</item>
         <item>110</item>
@@ -44,20 +44,29 @@
         <item>3500000</item>
         <item>4000000</item>
     </string-array>
-    <string-array name="serial_port_data_bit">
+    <string-array name="io_serial_port_data_bit">
         <item>5</item>
         <item>6</item>
         <item>7</item>
         <item>8</item>
     </string-array>
-    <string-array name="serial_port_stop_bit">
+    <string-array name="io_serial_port_stop_bit">
         <item>1</item>
         <item>2</item>
     </string-array>
-    <string-array name="serial_port_check_bit">
+    <string-array name="io_serial_port_check_bit">
         <item>O</item>
         <item>E</item>
         <item>N</item>
         <item>S</item>
+    </string-array>
+    <string-array name="io_gpio_direction">
+        <item>in</item>
+        <item>out</item>
+    </string-array>
+    <string-array name="io_gpio_edge">
+        <item>rising</item>
+        <item>falling</item>
+        <item>both</item>
     </string-array>
 </resources>

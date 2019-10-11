@@ -56,7 +56,7 @@ public class SerialPortActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         TT.setContext(this);
-        setContentView(R.layout.activity_serial_port);
+        setContentView(R.layout.activity_io_serial_port);
         ButterKnife.bind(this);
 
         spBaudRate.setSelection(16);
