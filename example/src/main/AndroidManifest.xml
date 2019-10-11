@@ -89,6 +89,8 @@
             android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".io.GpioActivity"
             android:label="Gpio"/>
+        <activity android:name=".io.I2CActivity"
+            android:label="I2C"/>
 
         <activity android:name=".other.ToolActivity"
             android:label="Other"/>

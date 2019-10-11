@@ -21,7 +21,7 @@ public class IOActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.btn_serial_port, R.id.btn_gpio})
+    @OnClick({R.id.btn_serial_port, R.id.btn_gpio, R.id.btn_i2c})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_serial_port:
@@ -29,6 +29,9 @@ public class IOActivity extends AppCompatActivity {
                 break;
             case R.id.btn_gpio:
                 startActivity(new Intent(this, GpioActivity.class));
+                break;
+            case R.id.btn_i2c:
+                startActivity(new Intent(this, I2CActivity.class));
                 break;
         }
     }
