@@ -92,7 +92,7 @@ public class Gpio {
                 throw new IOException("Set gpio port " + number + " edge failure");
             }
         }
-        _create(number);
+        _create();
         // 设置监听
         if (DIRECTION_IN.equals(direction)) {
             checkAndChangePermission(valueFile, true, false, false);
@@ -213,7 +213,7 @@ public class Gpio {
         return result;
     }
 
-    private native void _create(int number);
+    private native void _create();
     private native void _startPoll();
     private native void _stopPoll();
     private native void _destroy();

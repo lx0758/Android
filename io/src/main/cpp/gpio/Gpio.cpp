@@ -1,8 +1,8 @@
 #include "Gpio.h"
 
-Gpio::Gpio(int number) {
-    this->number = number;
-}
+//Gpio::Gpio(int number) {
+//    this->number = number;
+//}
 
 int Gpio::gpio_export() {
     char buffer[64];

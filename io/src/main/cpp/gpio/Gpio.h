@@ -32,9 +32,9 @@ void *pollRun(void *data);
 
 class Gpio {
 public:
-    int number;
+    int number = 0;
 
-    Gpio(int number);
+    //Gpio(int number);
     int gpio_export();
     int gpio_unexport();
     int gpio_direction(char direction);
@@ -48,9 +48,9 @@ public:
     int write_file(const char *path, char *buffer, int len);
 
     int pollRuning = false;
-    JavaVM *pollVM;
-    jobject pollObject;
-    jmethodID pollMethodID;
-    pthread_t pollPthread;
+    JavaVM *pollVM = NULL;
+    jobject pollObject = NULL;
+    jmethodID pollMethodID = NULL;
+    pthread_t pollPthread = NULL;
     void pollCallback(const int type, int value);
 };
