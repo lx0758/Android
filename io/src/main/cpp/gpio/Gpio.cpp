@@ -1,10 +1,7 @@
 #include "Gpio.h"
 
-void *runPoll(void *data);
-
 Gpio::Gpio(int number) {
     this->number = number;
-    this->info = NULL;
 }
 
 int Gpio::gpio_export() {
@@ -58,66 +55,25 @@ int Gpio::gpio_read() {
     return atoi(buffer);
 }
 
-int Gpio::gpio_start_poll(void (*pFunction)(int, int)) {
-    gpio_stop_poll();
-    Info *newInfo = new Info();
-    newInfo->runing = true;
-    newInfo->number = number;
-    newInfo->callback = pFunction;
-    pthread_create(&newInfo->pthread, NULL, runPoll, newInfo);
-    info = newInfo;
+int Gpio::gpio_start_poll(JavaVM *vm, JNIEnv *env, jobject thiz) {
+    gpio_stop_poll(env, thiz);
+    jclass clazz = env->GetObjectClass(thiz);
+
+    pollVM = vm;
+    pollRuning = true;
+    pollObject = env->NewGlobalRef(thiz);
+    pollMethodID = env->GetMethodID(clazz, "_onCallback", "(II)V");
+    pthread_create(&pollPthread, NULL, pollRun, this);
     return 0;
 }
 
-int Gpio::gpio_stop_poll() {
-    if (info != NULL) {
-        info->runing = false;
-        info = NULL;
+int Gpio::gpio_stop_poll(JNIEnv *env, jobject thiz) {
+    pollRuning = false;
+    if (pollObject != NULL) {
+        env->DeleteGlobalRef(pollObject);
+        pollObject = NULL;
     }
     return 0;
-}
-
-void *runPoll(void *data) {
-    Info *info = (Info *) data;
-
-    char path[64];
-    snprintf(path, sizeof(path), "/sys/class/gpio/gpio%d/value", info->number);
-    int fd = open(path, O_RDONLY);
-    if (fd <= 0) {
-        info->callback(TYPE_ERROR, -1);
-        close(fd);
-        pthread_exit(&info->pthread);
-    }
-
-    int result = 0;
-    bool first = true;
-    struct pollfd fds[1];
-    fds[0].fd = fd;
-    fds[0].events = POLLPRI;
-    while (info->runing) {
-        result = poll(fds, 1, 1000);
-        if (result < 0) {
-            if (info->runing) info->callback(TYPE_ERROR, -1);
-            break;
-        }
-        if (result == 0) continue;
-        if (fds[0].revents & POLLPRI) {
-            usleep(10 * 1000);
-            char buffer[16];
-            if (lseek(fd, 0, SEEK_SET) == -1 || read(fd, buffer, sizeof(buffer)) == -1) {
-                if (info->runing) info->callback(TYPE_ERROR, -1);
-                break;
-            }
-            if (first) {
-                first = false;
-                continue;
-            }
-            if (info->runing) info->callback(TYPE_EVENT, atoi(buffer));
-        }
-    }
-
-    close(fd);
-    pthread_exit(&info->pthread);
 }
 
 int Gpio::read_file(const char *path, char *buffer, int len) {
@@ -134,4 +90,53 @@ int Gpio::write_file(const char *path, char *buffer, int len) {
     if (write(fd, buffer, len) < 0) return -1;
     close(fd);
     return 0;
+}
+
+void Gpio::pollCallback(const int type, int value) {
+    JNIEnv *env;
+    pollVM->AttachCurrentThread(&env, NULL);
+    env->CallVoidMethod(pollObject, pollMethodID, type, value);
+    pollVM->DetachCurrentThread();
+}
+
+void *pollRun(void *data) {
+    Gpio *gpio = (Gpio*) data;
+    char path[64];
+    snprintf(path, sizeof(path), "/sys/class/gpio/gpio%d/value", gpio->number);
+    int fd = open(path, O_RDONLY);
+    if (fd <= 0) {
+        gpio->pollCallback(TYPE_ERROR, -1);
+        close(fd);
+        pthread_exit(&gpio->pollPthread);
+    }
+
+    int result = 0;
+    int first = true;
+    struct pollfd fds[1];
+    fds[0].fd = fd;
+    fds[0].events = POLLPRI;
+    while (gpio->pollRuning) {
+        result = poll(fds, 1, 1000);
+        if (result < 0) {
+            if (gpio->pollRuning) gpio->pollCallback(TYPE_ERROR, -1);
+            break;
+        }
+        if (result == 0) continue;
+        if (fds[0].revents & POLLPRI) {
+            usleep(10 * 1000);
+            char buffer[16];
+            if (lseek(fd, 0, SEEK_SET) == -1 || read(fd, buffer, sizeof(buffer)) == -1) {
+                if (gpio->pollRuning) gpio->pollCallback(TYPE_ERROR, -1);
+                break;
+            }
+            if (first) {
+                first = false;
+                continue;
+            }
+            if (gpio->pollRuning) gpio->pollCallback(TYPE_EVENT, atoi(buffer));
+        }
+    }
+
+    close(fd);
+    pthread_exit(&gpio->pollPthread);
 }

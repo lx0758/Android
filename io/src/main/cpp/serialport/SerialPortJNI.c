@@ -25,6 +25,10 @@
 
 #include "android/log.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 static const char *TAG = "[SerialPort]";
 #define LOGI(fmt, args...) __android_log_print(ANDROID_LOG_INFO,  TAG, fmt, ##args)
 #define LOGD(fmt, args...) __android_log_print(ANDROID_LOG_DEBUG, TAG, fmt, ##args)
@@ -187,7 +191,7 @@ int set_opt(struct termios attr, jint databit, jint stopbit, jchar checkbit) {
 }
 
 JNIEXPORT jobject JNICALL Java_com_liux_android_io_serialport_SerialPort__1open
-        (JNIEnv *env, jclass thiz, jstring path, jint baudrate, jint databit, jint stopbit,
+        (JNIEnv *env, jclass jclazz, jstring path, jint baudrate, jint databit, jint stopbit,
          jchar checkbit) {
     int fd;
     speed_t speed;
@@ -259,7 +263,7 @@ JNIEXPORT jobject JNICALL Java_com_liux_android_io_serialport_SerialPort__1open
 }
 
 //JNIEXPORT void JNICALL Java_com_liux_android_io_serialport_SerialPort__1close
-//        (JNIEnv *env, jobject thiz) {
+//        (JNIEnv *env, jclass jclazz) {
 //    jclass SerialPortClass = (*env)->GetObjectClass(env, thiz);
 //    jclass FileDescriptorClass = (*env)->FindClass(env, "java/io/FileDescriptor");
 //
@@ -274,10 +278,14 @@ JNIEXPORT jobject JNICALL Java_com_liux_android_io_serialport_SerialPort__1open
 //}
 
 JNIEXPORT void JNICALL
-Java_com_liux_android_io_serialport_SerialPort__1close(JNIEnv *env, jobject thiz, jobject fd) {
+Java_com_liux_android_io_serialport_SerialPort__1close(JNIEnv *env, jclass jclazz, jobject fd) {
     jclass FileDescriptorClass = (*env)->FindClass(env, "java/io/FileDescriptor");
     jfieldID descriptorID = (*env)->GetFieldID(env, FileDescriptorClass, "descriptor", "I");
     jint descriptor = (*env)->GetIntField(env, fd, descriptorID);
     LOGD("close(fd = %d)", descriptor);
     close(descriptor);
 }
+
+#ifdef __cplusplus
+}
+#endif

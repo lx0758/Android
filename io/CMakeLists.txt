@@ -17,20 +17,20 @@ add_library( # Sets the name of the library.
         SHARED
 
         # Provides a relative path to your source file(s).
-        src/main/cpp/serialport/SerialPort.c
+        src/main/cpp/serialport/SerialPortJNI.c
 )
 
 add_library(
         io-gpio
         SHARED
         src/main/cpp/gpio/Gpio.cpp
-        src/main/cpp/gpio/GpioPoll.cpp
+        src/main/cpp/gpio/GpioJNI.cpp
 )
 
 add_library(
         io-i2c
         SHARED
-        src/main/cpp/i2c/I2C.cpp
+        src/main/cpp/i2c/I2CJNI.c
 )
 
 # Searches for a specified prebuilt library and stores the path as a

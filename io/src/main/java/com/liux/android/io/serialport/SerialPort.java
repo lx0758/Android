@@ -149,8 +149,8 @@ public class SerialPort {
 	}
 
 	// JNI
-	private native FileDescriptor _open(String path, int baudrate, int databit, int stopbit, char checkrule);
-	private native void _close(FileDescriptor fd);
+	private static native FileDescriptor _open(String path, int baudrate, int databit, int stopbit, char checkrule);
+	private static native void _close(FileDescriptor fd);
 	static {
 		System.loadLibrary("io-serialport");
 	}

@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <stdbool.h>
+#include <jni.h>
 
 #include "android/log.h"
 
@@ -26,39 +28,29 @@ const static int TYPE_EVENT = 1;
 
 #endif //ANDROID_DEMO_GPIO_H
 
-struct Info {
-    bool runing;
-    int number;
-    pthread_t pthread;
-
-    void (*callback)(int, int);
-};
+void *pollRun(void *data);
 
 class Gpio {
 public:
-    Gpio(int number);
-
-    int gpio_export();
-
-    int gpio_unexport();
-
-    int gpio_direction(char direction);
-
-    int gpio_edge(char edge);
-
-    int gpio_write(int value);
-
-    int gpio_read();
-
-    int gpio_start_poll(void (*pFunction)(int, int));
-
-    int gpio_stop_poll();
-
-private:
-    Info *info;
     int number;
 
-    int read_file(const char *path, char *buffer, int len);
+    Gpio(int number);
+    int gpio_export();
+    int gpio_unexport();
+    int gpio_direction(char direction);
+    int gpio_edge(char edge);
+    int gpio_write(int value);
+    int gpio_read();
+    int gpio_start_poll(JavaVM *vm, JNIEnv *env, jobject thiz);
+    int gpio_stop_poll(JNIEnv *env, jobject thiz);
 
+    int read_file(const char *path, char *buffer, int len);
     int write_file(const char *path, char *buffer, int len);
+
+    int pollRuning = false;
+    JavaVM *pollVM;
+    jobject pollObject;
+    jmethodID pollMethodID;
+    pthread_t pollPthread;
+    void pollCallback(const int type, int value);
 };

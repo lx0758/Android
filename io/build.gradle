@@ -8,6 +8,9 @@ android {
         targetSdkVersion TARGET_SDK_VERSION as int
         versionCode getLibraryVersionCode()
         versionName getLibraryVersionName()
+        ndk {
+            cFlags "-std=c++11"
+        }
     }
     buildTypes {
         release {
