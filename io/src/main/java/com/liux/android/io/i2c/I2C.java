@@ -35,10 +35,10 @@ public class I2C {
 
     }
 
-    public native FileDescriptor _open(String path);
-    public native int _read(int i2c_adr, byte[] buffer);
-    public native int _write(int i2c_adr, int sub_adr,  byte[] data);
-    public native void _close(FileDescriptor fd);
+    public static native FileDescriptor jniOpen(String path);
+    public static native int jniRead(int i2c_adr, byte[] buffer);
+    public static native int jniWrite(int i2c_adr, int sub_adr,  byte[] data);
+    public static native void jniClose(FileDescriptor fd);
     static {
         System.loadLibrary("io-i2c");
     }

@@ -1,56 +1,96 @@
-#include <jni.h>
-#include "Gpio.h"
+#include "GpioPoll.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+void *pollRun(void *data);
+void pollCallback(GpioPoll *gpio, const int type, int value);
 
-void callback(int type, int value);
-
-Gpio *gpio;
-JavaVM *jvm;
-jobject object;
-jmethodID methodID;
-
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
-    jvm = vm;
-    JNIEnv *env;
-    if (vm->GetEnv((void **) &env, JNI_VERSION_1_6) != JNI_OK) return JNI_ERR;
-    return JNI_VERSION_1_6;
+GpioPoll::GpioPoll(int number) {
+    this->number = number;
 }
 
-JNIEXPORT void JNICALL Java_com_liux_android_io_gpio_Gpio__1startPoll
-        (JNIEnv *env, jobject jo, jint ji) {
-    if (gpio != NULL) {
-        gpio->gpio_stop_poll();
-        gpio = NULL;
-    }
-    object = env->NewGlobalRef(jo);
-    jclass clazz = env->GetObjectClass(object);
-    methodID = env->GetMethodID(clazz, "_onCallback", "(II)V");
-    gpio = new Gpio(ji);
-    gpio->gpio_start_poll(&callback);
-}
-
-JNIEXPORT void JNICALL Java_com_liux_android_io_gpio_Gpio__1stopPoll
-        (JNIEnv *env, jobject jo) {
-    if (gpio != NULL) {
-        gpio->gpio_stop_poll();
-        gpio = NULL;
-    }
-    if (object != NULL) {
-        env->DeleteGlobalRef(object);
-        object = NULL;
-    }
-}
-
-void callback(int type, int value) {
+GpioPoll::~GpioPoll() {
+    pollRuning = false;
+    extern JavaVM *jvm;
     JNIEnv *env;
     jvm->AttachCurrentThread(&env, NULL);
-    env->CallVoidMethod(object, methodID, type, value);
+    if (pollObject != NULL) {
+        env->DeleteGlobalRef(pollObject);
+        pollObject = NULL;
+    }
     jvm->DetachCurrentThread();
+    if (pollFd != 0) {
+        close(pollFd);
+        pollFd = 0;
+    }
 }
 
-#ifdef __cplusplus
+int GpioPoll::start(JNIEnv *env, jobject thiz) {
+    stop(env, thiz);
+    jclass clazz = env->GetObjectClass(thiz);
+
+    pollRuning = true;
+    pollObject = env->NewGlobalRef(thiz);
+    pollMethodID = env->GetMethodID(clazz, "jniPollCallback", "(II)V");
+    pthread_create(&pollPthread, NULL, pollRun, this);
+    return 0;
 }
-#endif
+
+int GpioPoll::stop(JNIEnv *env, jobject thiz) {
+    pollRuning = false;
+    return 0;
+}
+
+void *pollRun(void *data) {
+    GpioPoll *gpioPoll = (GpioPoll*) data;
+    char path[64];
+    snprintf(path, sizeof(path), "/sys/class/gpio/gpio%d/value", gpioPoll->number);
+    int fd = open(path, O_RDONLY);
+    if (fd <= 0) {
+        if (gpioPoll->pollRuning) pollCallback(gpioPoll, TYPE_ERROR, -1);
+        close(fd);
+        pthread_exit(&gpioPoll->pollPthread);
+    }
+    gpioPoll->pollFd = fd;
+
+    int result = 0;
+    int first = true;
+    struct pollfd fds[1];
+    fds[0].fd = gpioPoll->pollFd;
+    fds[0].events = POLLPRI;
+    while (gpioPoll->pollRuning) {
+        result = poll(fds, 1, 1000);
+        if (result < 0) {
+            if (gpioPoll->pollRuning) pollCallback(gpioPoll, TYPE_ERROR, -1);
+            break;
+        }
+        if (result == 0) continue;
+        if (fds[0].revents & POLLPRI) {
+            usleep(10 * 1000);
+            char buffer[16];
+            if (lseek(fd, 0, SEEK_SET) == -1 || read(fd, buffer, sizeof(buffer)) == -1) {
+                if (gpioPoll->pollRuning) pollCallback(gpioPoll, TYPE_ERROR, -1);
+                break;
+            }
+            if (first) {
+                first = false;
+                continue;
+            }
+            if (gpioPoll->pollRuning) pollCallback(gpioPoll, TYPE_EVENT, atoi(buffer));
+        }
+    }
+
+    delete gpioPoll;
+
+    pthread_exit(NULL);
+}
+
+void pollCallback(GpioPoll *gpio, const int type, int value) {
+    if (gpio->pollObject != NULL) {
+        extern JavaVM *jvm;
+        JNIEnv *env;
+        jvm->AttachCurrentThread(&env, NULL);
+        if (gpio->pollObject != NULL) {
+            env->CallVoidMethod(gpio->pollObject, gpio->pollMethodID, type, value);
+        }
+        jvm->DetachCurrentThread();
+    }
+}

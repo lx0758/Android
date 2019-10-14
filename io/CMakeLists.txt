@@ -5,36 +5,32 @@
 
 cmake_minimum_required(VERSION 3.4.1)
 
-include_directories(
-        src/main/cpp/gpio
-)
-
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
 # You can define multiple libraries, and CMake builds them for you.
 # Gradle automatically packages shared libraries with your APK.
 
 add_library( # Sets the name of the library.
-        io-serialport
+        io-gpio
 
         # Sets the library as a shared library.
         SHARED
 
         # Provides a relative path to your source file(s).
-        src/main/cpp/serialport/SerialPort.c
+        src/main/cpp/gpio/GpioJNI.cpp
+        src/main/cpp/gpio/GpioPoll.cpp
 )
 
 add_library(
-        io-gpio
+        io-serialport
         SHARED
-        src/main/cpp/gpio/Gpio.cpp
-        src/main/cpp/gpio/GpioPoll.cpp
+        src/main/cpp/serialport/SerialPortJNI.c
 )
 
 add_library(
         io-i2c
         SHARED
-        src/main/cpp/i2c/I2C.cpp
+        src/main/cpp/i2c/I2CJNI.c
 )
 
 # Searches for a specified prebuilt library and stores the path as a
@@ -56,7 +52,7 @@ find_library( # Sets the name of the path variable.
 # build script, prebuilt third-party libraries, or system libraries.
 
 target_link_libraries( # Specifies the target library.
-        io-serialport
+        io-gpio
 
         # Links the target library to the log library
         # included in the NDK.
@@ -64,7 +60,7 @@ target_link_libraries( # Specifies the target library.
 )
 
 target_link_libraries(
-        io-gpio
+        io-serialport
         ${log-lib}
 )
 

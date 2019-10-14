@@ -54,7 +54,7 @@ static def getLibraryGroupId() {
     return 'com.liux.android'
 }
 static def getLibraryVCSUrl() {
-    return 'https://github.com/lx0758/Android-Librarys.git'
+    return 'https://github.com/lx0758/Android-Librarys'
 }
 static def getLibraryLicense() {
     return 'MIT'
