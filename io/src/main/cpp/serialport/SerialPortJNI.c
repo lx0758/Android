@@ -190,7 +190,7 @@ int set_opt(struct termios attr, jint databit, jint stopbit, jchar checkbit) {
     attr.c_cc[VMIN] = 0;//设置最小接收字符
 }
 
-JNIEXPORT jobject JNICALL Java_com_liux_android_io_serialport_SerialPort__1open
+JNIEXPORT jobject JNICALL Java_com_liux_android_io_serialport_SerialPort_jniOpen
         (JNIEnv *env, jclass jclazz, jstring path, jint baudrate, jint databit, jint stopbit,
          jchar checkbit) {
     int fd;
@@ -262,7 +262,7 @@ JNIEXPORT jobject JNICALL Java_com_liux_android_io_serialport_SerialPort__1open
     return mFileDescriptor;
 }
 
-//JNIEXPORT void JNICALL Java_com_liux_android_io_serialport_SerialPort__1close
+//JNIEXPORT void JNICALL Java_com_liux_android_io_serialport_SerialPort_jniClose
 //        (JNIEnv *env, jclass jclazz) {
 //    jclass SerialPortClass = (*env)->GetObjectClass(env, thiz);
 //    jclass FileDescriptorClass = (*env)->FindClass(env, "java/io/FileDescriptor");
@@ -278,7 +278,7 @@ JNIEXPORT jobject JNICALL Java_com_liux_android_io_serialport_SerialPort__1open
 //}
 
 JNIEXPORT void JNICALL
-Java_com_liux_android_io_serialport_SerialPort__1close(JNIEnv *env, jclass jclazz, jobject fd) {
+Java_com_liux_android_io_serialport_SerialPort_jniClose(JNIEnv *env, jclass jclazz, jobject fd) {
     jclass FileDescriptorClass = (*env)->FindClass(env, "java/io/FileDescriptor");
     jfieldID descriptorID = (*env)->GetFieldID(env, FileDescriptorClass, "descriptor", "I");
     jint descriptor = (*env)->GetIntField(env, fd, descriptorID);

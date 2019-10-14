@@ -36,7 +36,7 @@ public class Gpio {
 
     private static final int RESULT_OK = 0;
 
-    private long handler;
+    private long pollHandler;
 
     private int number;
     private String direction;
@@ -50,7 +50,7 @@ public class Gpio {
         this(number, DIRECTION_OUT, EDGE_NONE);
     }
 
-    public Gpio(int number, @DIRECTION String direction, @EDGE_IN String edge) {
+    public Gpio(int number, @DIRECTION String direction, @EDGE String edge) {
         this.number = number;
         this.direction = direction;
         this.edge = edge;
@@ -92,11 +92,10 @@ public class Gpio {
                 throw new IOException("Set gpio port " + number + " edge failure");
             }
         }
-        _create();
         // 设置监听
         if (DIRECTION_IN.equals(direction)) {
             checkAndChangePermission(valueFile, true, false, false);
-            _startPoll();
+            jniPollStart();
         }
         alreadyOpen = true;
     }
@@ -114,8 +113,7 @@ public class Gpio {
     }
 
     public void close() {
-        _stopPoll();
-        _destroy();
+        jniPollStop();
         if (new File("/sys/class/gpio/unexport").canWrite()) {
             execToCode(String.format(Locale.CHINA, "echo %d > /sys/class/gpio/unexport", number));
         }
@@ -213,11 +211,10 @@ public class Gpio {
         return result;
     }
 
-    private native void _create();
-    private native void _startPoll();
-    private native void _stopPoll();
-    private native void _destroy();
-    public void _onCallback(int type, int value) {
+    private native void jniPollStart();
+    private native void jniPollStop();
+    public void jniPollCallback(int type, int value) {
+        if (type == TYPE_ERROR) close();
         if (callback != null) callback.onEvent(type, value);
     }
     static {
@@ -240,7 +237,7 @@ public class Gpio {
 
     @StringDef({EDGE_RISING, EDGE_FALLING, EDGE_BOTH})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface EDGE_IN {}
+    public @interface EDGE {}
 
     @IntDef({TYPE_ERROR, TYPE_POLL})
     @Retention(RetentionPolicy.SOURCE)

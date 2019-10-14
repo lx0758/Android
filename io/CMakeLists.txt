@@ -11,20 +11,20 @@ cmake_minimum_required(VERSION 3.4.1)
 # Gradle automatically packages shared libraries with your APK.
 
 add_library( # Sets the name of the library.
-        io-serialport
+        io-gpio
 
         # Sets the library as a shared library.
         SHARED
 
         # Provides a relative path to your source file(s).
-        src/main/cpp/serialport/SerialPortJNI.c
+        src/main/cpp/gpio/GpioJNI.cpp
+        src/main/cpp/gpio/GpioPoll.cpp
 )
 
 add_library(
-        io-gpio
+        io-serialport
         SHARED
-        src/main/cpp/gpio/Gpio.cpp
-        src/main/cpp/gpio/GpioJNI.cpp
+        src/main/cpp/serialport/SerialPortJNI.c
 )
 
 add_library(
@@ -52,7 +52,7 @@ find_library( # Sets the name of the path variable.
 # build script, prebuilt third-party libraries, or system libraries.
 
 target_link_libraries( # Specifies the target library.
-        io-serialport
+        io-gpio
 
         # Links the target library to the log library
         # included in the NDK.
@@ -60,7 +60,7 @@ target_link_libraries( # Specifies the target library.
 )
 
 target_link_libraries(
-        io-gpio
+        io-serialport
         ${log-lib}
 )
 

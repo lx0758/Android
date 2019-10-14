@@ -1,14 +1,23 @@
-#include "Gpio.h"
-#include "../ClassBind.h"
+#include <string>
+#include "GpioPoll.h"
+
+using namespace std;
+template<typename T> void set(JNIEnv *env, jobject thiz, T *t, string name){
+    jclass clazz = env->GetObjectClass(thiz);
+    jfieldID fid = env->GetFieldID(clazz, name.c_str(), "J");
+    env->SetLongField(thiz, fid, (jlong) t);
+}
+template<typename T> T * get(JNIEnv *env, jobject thiz, string name){
+    jclass clazz = env->GetObjectClass(thiz);
+    jfieldID fid = env->GetFieldID(clazz, name.c_str(), "J");
+    return (T *) env->GetLongField(thiz, fid);
+}
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 JavaVM *jvm;
-
-Gpio * getGpio(JNIEnv *env, jobject thiz);
-void setGpio(JNIEnv *env, jobject thiz, Gpio *gpio);
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     jvm = vm;
@@ -17,33 +26,23 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     return JNI_VERSION_1_6;
 }
 
-JNIEXPORT void JNICALL Java_com_liux_android_io_gpio_Gpio__1create(JNIEnv *env, jobject thiz) {
-    SET(Gpio);
-    GET(Gpio, gpio);
+JNIEXPORT void JNICALL
+Java_com_liux_android_io_gpio_Gpio_jniPollStart(JNIEnv *env, jobject thiz) {
+    jclass clazz = env->GetObjectClass(thiz);
     jfieldID numberfid = env->GetFieldID(clazz, "number", "I");
-    gpio->number = env->GetIntField(thiz, numberfid);
+    int number = env->GetIntField(thiz, numberfid);
+    GpioPoll *gpioPoll = new GpioPoll(number);
+    gpioPoll->start(env, thiz);
+    set<GpioPoll>(env, thiz, gpioPoll, "pollHandler");
 }
 
-JNIEXPORT void JNICALL Java_com_liux_android_io_gpio_Gpio__1startPoll(JNIEnv *env, jobject thiz) {
-    GET(Gpio, gpio);
-    if (gpio != NULL) {
-        gpio->gpio_start_poll(jvm, env, thiz);
+JNIEXPORT void JNICALL
+Java_com_liux_android_io_gpio_Gpio_jniPollStop(JNIEnv *env, jobject thiz) {
+    GpioPoll *gpioPoll = get<GpioPoll>(env, thiz, "pollHandler");
+    if (gpioPoll != NULL) {
+        gpioPoll->stop(env, thiz);
+        set<GpioPoll>(env, thiz, NULL, "pollHandler");
     }
-}
-
-JNIEXPORT void JNICALL Java_com_liux_android_io_gpio_Gpio__1stopPoll(JNIEnv *env, jobject thiz) {
-    GET(Gpio, gpio);
-    if (gpio != NULL) {
-        gpio->gpio_stop_poll(env, thiz);
-    }
-}
-
-JNIEXPORT void JNICALL Java_com_liux_android_io_gpio_Gpio__1destroy(JNIEnv *env, jobject thiz) {
-    GET(Gpio, gpio);
-    if (gpio != NULL) {
-        //do nothing
-    }
-    CLEAR(Gpio);
 }
 
 #ifdef __cplusplus

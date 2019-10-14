@@ -1,6 +1,8 @@
 package com.liux.android.example.io;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
@@ -120,6 +122,14 @@ public class SerialPortActivity extends AppCompatActivity {
                 // 这里没有处理串口通信协议,所以全部展示数据
                 // 正常情况会根据串口协议进行数据截断
                 private ByteBuffer byteBuffer = ByteBuffer.allocate(0xFFFF);
+                private Handler handler = new Handler(Looper.getMainLooper());
+                private Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        String content = new String(byteBuffer.array());
+                        etReceive.setText(content);
+                    }
+                };
                 @Override
                 public void onRead(byte[] bytes) {
                     try {
@@ -128,13 +138,8 @@ public class SerialPortActivity extends AppCompatActivity {
                         byteBuffer.clear();
                         byteBuffer.put(bytes);
                     }
-                    String content = new String(byteBuffer.array());
-                    etReceive.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            etReceive.setText(content);
-                        }
-                    });
+                    handler.removeCallbacks(runnable);
+                    handler.postDelayed(runnable, 500);
                 }
             });
             readThread.start();

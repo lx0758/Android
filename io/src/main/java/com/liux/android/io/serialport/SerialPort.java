@@ -122,7 +122,7 @@ public class SerialPort {
 			}
 		}
 
-		mFd = _open(device.getAbsolutePath(), baudrate, databit, stopbit, checkbit);
+		mFd = jniOpen(device.getAbsolutePath(), baudrate, databit, stopbit, checkbit);
 		if (mFd == null) {
 			Log.e(TAG, "native open returns null");
 			throw new IOException();
@@ -136,7 +136,7 @@ public class SerialPort {
 		mFd = null;
 		mFileInputStream = null;
 		mFileOutputStream = null;
-		_close(fd);
+		jniClose(fd);
 	}
 
 	// Getters and setters
@@ -149,8 +149,8 @@ public class SerialPort {
 	}
 
 	// JNI
-	private static native FileDescriptor _open(String path, int baudrate, int databit, int stopbit, char checkrule);
-	private static native void _close(FileDescriptor fd);
+	private static native FileDescriptor jniOpen(String path, int baudrate, int databit, int stopbit, char checkrule);
+	private static native void jniClose(FileDescriptor fd);
 	static {
 		System.loadLibrary("io-serialport");
 	}
