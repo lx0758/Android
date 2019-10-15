@@ -136,7 +136,9 @@ public class SerialPort {
 		mFd = null;
 		mFileInputStream = null;
 		mFileOutputStream = null;
-		jniClose(fd);
+		if (fd != null) {
+			jniClose(fd);
+		}
 	}
 
 	// Getters and setters

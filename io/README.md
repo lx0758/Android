@@ -12,7 +12,7 @@ implementation 'com.liux.android:io:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
-    1.
+    1.修正串口重复关闭会崩溃的问题
 
 ### 0.2.1_2019-10-14
     1.改进 Gpio 原生层代码
