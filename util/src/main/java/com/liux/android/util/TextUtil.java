@@ -1,138 +1,100 @@
 package com.liux.android.util;
 
+import android.util.Base64;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.text.DecimalFormat;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
-import javax.crypto.NoSuchPaddingException;
+import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 public class TextUtil {
     private final String TAG = "TextUtil";
 
-    public static String SHA1(String decript) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-1");
-            digest.update(decript.getBytes());
-            byte messageDigest[] = digest.digest();
-            // Create Hex String
-            StringBuilder hexString = new StringBuilder();
-            // 字节数组转换为 十六进制 数
-            for (int i = 0; i < messageDigest.length; i++) {
-                String shaHex = Integer.toHexString(messageDigest[i] & 0xFF);
-                if (shaHex.length() < 2) {
-                    hexString.append(0);
-                }
-                hexString.append(shaHex);
-            }
-            return hexString.toString();
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return "";
+    public static boolean isEmpty(String text) {
+        return text == null || text.isEmpty();
     }
 
-    public static String SHA(String decript) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA");
-            digest.update(decript.getBytes());
-            byte messageDigest[] = digest.digest();
-            // Create Hex String
-            StringBuilder hexString = new StringBuilder();
-            // 字节数组转换为 十六进制 数
-            for (int i = 0; i < messageDigest.length; i++) {
-                String shaHex = Integer.toHexString(messageDigest[i] & 0xFF);
-                if (shaHex.length() < 2) {
-                    hexString.append(0);
-                }
-                hexString.append(shaHex);
-            }
-            return hexString.toString();
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return "";
+    public static String MD5(String content) {
+        return bytes2Hex(digest(content.getBytes(), "MD5"));
     }
 
-    public static String MD5(String input) {
-        try {
-            // 获得MD5摘要算法的 MessageDigest 对象
-            MessageDigest mdInst = MessageDigest.getInstance("MD5");
-            // 使用指定的字节更新摘要
-            mdInst.update(input.getBytes());
-            // 获得密文
-            byte[] md = mdInst.digest();
-            // 把密文转换成十六进制的字符串形式
-            StringBuilder hexString = new StringBuilder();
-            // 字节数组转换为 十六进制 数
-            for (int i = 0; i < md.length; i++) {
-                String shaHex = Integer.toHexString(md[i] & 0xFF);
-                if (shaHex.length() < 2) {
-                    hexString.append(0);
-                }
-                hexString.append(shaHex);
-            }
-            return hexString.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return "";
+    public static String SHA1(String content) {
+        return bytes2Hex(digest(content.getBytes(), "SHA-1"));
+    }
+
+    public static String SHA224(String content) {
+        return bytes2Hex(digest(content.getBytes(), "SHA-224"));
+    }
+
+    public static String SHA256(String content) {
+        return bytes2Hex(digest(content.getBytes(), "SHA-256"));
+    }
+
+    public static String SHA384(String content) {
+        return bytes2Hex(digest(content.getBytes(), "SHA-384"));
+    }
+
+    public static String SHA512(String content) {
+        return bytes2Hex(digest(content.getBytes(), "SHA-512"));
     }
 
     /**
-     * 加密
-     *
-     * @param content  需要加密的内容
-     * @param password 加密密码
+     * 散列算法
+     * @param data
+     * @param algorithm
      * @return
      */
-    public static byte[] encryptAES(String content, String password) {
+    public static byte[] digest(byte[] data, String algorithm) {
+        if (data == null || data.length == 0) throw new NullPointerException();
         try {
-            KeyGenerator kgen = KeyGenerator.getInstance("AES");
-            kgen.init(128, new SecureRandom(password.getBytes()));
-            SecretKey secretKey = kgen.generateKey();
-            byte[] enCodeFormat = secretKey.getEncoded();
-            SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
-            Cipher cipher = Cipher.getInstance("AES");// 创建密码器
-            byte[] byteContent = content.getBytes("utf-8");
-            cipher.init(Cipher.ENCRYPT_MODE, key);// 初始化
-            return cipher.doFinal(byteContent); // 加密
-        } catch (Exception e) {
+            MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
+            messageDigest.update(data);
+            return messageDigest.digest();
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    /**
-     * 解密
-     *
-     * @param content  待解密内容
-     * @param password 解密密钥
-     * @return
-     */
-    public static byte[] decryptAES(byte[] content, String password) {
+    public static String HmacMD5(String content, String key) {
+        return bytes2Hex(Hmac(content.getBytes(), "HmacMD5", key.getBytes()));
+    }
+
+    public static String HmacSHA1(String content, String key) {
+        return bytes2Hex(Hmac(content.getBytes(), "HmacSHA1", key.getBytes()));
+    }
+
+    public static String HmacSHA224(String content, String key) {
+        return bytes2Hex(Hmac(content.getBytes(), "HmacSHA224", key.getBytes()));
+    }
+
+    public static String HmacSHA256(String content, String key) {
+        return bytes2Hex(Hmac(content.getBytes(), "HmacSHA256", key.getBytes()));
+    }
+
+    public static String HmacSHA384(String content, String key) {
+        return bytes2Hex(Hmac(content.getBytes(), "HmacSHA384", key.getBytes()));
+    }
+
+    public static String HmacSHA512(String content, String key) {
+        return bytes2Hex(Hmac(content.getBytes(), "HmacSHA512", key.getBytes()));
+    }
+
+    public static byte[] Hmac(byte[] data, String algorithm, byte[] key) {
+        SecretKey secretKey = new SecretKeySpec(key, algorithm);
+        Mac mac = null;
         try {
-            KeyGenerator kgen = KeyGenerator.getInstance("AES");
-            kgen.init(128, new SecureRandom(password.getBytes()));
-            SecretKey secretKey = kgen.generateKey();
-            byte[] enCodeFormat = secretKey.getEncoded();
-            SecretKeySpec key = new SecretKeySpec(enCodeFormat, "AES");
-            Cipher cipher = Cipher.getInstance("AES");// 创建密码器
-            cipher.init(Cipher.DECRYPT_MODE, key);// 初始化
-            return cipher.doFinal(content); // 加密
-        } catch (Exception e) {
+            mac = Mac.getInstance(algorithm);
+            mac.init(secretKey);
+            return mac.doFinal(data);
+        } catch (NoSuchAlgorithmException|InvalidKeyException e) {
             e.printStackTrace();
         }
         return null;
@@ -144,11 +106,9 @@ public class TextUtil {
      * @param enc 字符编码
      * @return 编码后的字符串
      */
-    public static String URLEncode(String data, String enc) {
+    public static String encodeURL(String data, String enc) {
         try {
-            if (enc == null || enc.isEmpty()) {
-                enc = "utf-8";
-            }
+            if (isEmpty(enc)) enc = "utf-8";
             return URLEncoder.encode(data, enc);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -162,11 +122,9 @@ public class TextUtil {
      * @param enc 字符编码
      * @return 解码后的字符串
      */
-    public static String URLDecode(String data, String enc) {
+    public static String decodeURL(String data, String enc) {
         try {
-            if (enc == null || enc.isEmpty()) {
-                enc = "utf-8";
-            }
+            if (isEmpty(enc)) enc = "utf-8";
             return URLDecoder.decode(data, enc);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -174,18 +132,24 @@ public class TextUtil {
         return data;
     }
 
-
     /**
      * 字符串转换unicode
      */
     public static String string2Unicode(String string) {
         StringBuilder stringBuilder = new StringBuilder();
-
         for (int i = 0; i < string.length(); i++) {
-            // 取出每一个字符
             char c = string.charAt(i);
-            // 转换为unicode
-            stringBuilder.append("\\u").append(Integer.toHexString(c));
+            stringBuilder.append("\\u");
+            String hex = Integer.toHexString(c);
+            switch (hex.length()) {
+                case 2:
+                    stringBuilder.append("00");
+                    break;
+                case 3:
+                    stringBuilder.append("0");
+                    break;
+            }
+            stringBuilder.append(hex);
         }
         return stringBuilder.toString();
     }
@@ -194,79 +158,16 @@ public class TextUtil {
      * unicode 转字符串
      */
     public static String unicode2String(String unicode) {
-        StringBuilder string = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
 
         String[] hex = unicode.split("\\\\u");
 
         for (int i = 1; i < hex.length; i++) {
-            // 转换出每一个代码点
             int data = Integer.parseInt(hex[i], 16);
-            // 追加成string
-            string.append((char) data);
+            stringBuilder.append((char) data);
         }
 
-        return string.toString();
-    }
-
-    /**
-     * 字符转JSON
-     * @param s
-     * @return
-     */
-    public static String string2Json(String s) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            switch (c) {
-                case '\"':
-                    stringBuilder.append("\\\"");
-                    break;
-                case '\\':
-                    stringBuilder.append("\\\\");
-                    break;
-                case '/':
-                    stringBuilder.append("\\/");
-                    break;
-                case '\b':
-                    stringBuilder.append("\\b");
-                    break;
-                case '\f':
-                    stringBuilder.append("\\f");
-                    break;
-                case '\n':
-                    stringBuilder.append("\\n");
-                    break;
-                case '\r':
-                    stringBuilder.append("\\r");
-                    break;
-                case '\t':
-                    stringBuilder.append("\\t");
-                    break;
-                default:
-                    stringBuilder.append(c);
-                    break;
-            }
-        }
         return stringBuilder.toString();
-    }
-
-    /**
-     * JSON转字符
-     * @param json
-     * @return
-     */
-    public static String json2String(String json) {
-        if (json.indexOf('"') == 0) json = json.substring(1);
-        if (json.lastIndexOf('"') == json.length() - 1) json = json.substring(0, json.length() - 1);
-        return json
-                .replace("\\\"", "\"")
-                .replace("\\\\", "\\")
-                .replace("\\/", "/")
-                .replace("\\b", "\b")
-                .replace("\\f", "\f")
-                .replace("\\n", "\n")
-                .replace("\\r", "\r")
-                .replace("\\t", "\t");
     }
 
     /**
@@ -275,7 +176,7 @@ public class TextUtil {
      * @return
      */
     private static DecimalFormat decimalFormat = new DecimalFormat("0.00");
-    public static String getFormetSize(long size) {
+    public static String formetByteLength(long size) {
         String fileSizeString = "";
         if (size < 1024) {
             fileSizeString = size + "B";
@@ -294,11 +195,21 @@ public class TextUtil {
      * @param money
      * @return
      */
-    public static String getChinaMoney(double money) {
+    public static String money2Chinese(double money) {
         long yuan = (long) money;
 
-        String result = getChinaNumber(yuan) + "元";
-        String jiaoFen = getChinaMoneyDecimal(money);
+        String result = number2Chinese(yuan) + "元";
+        String jiaoFen = null;
+        int fen = (int) (money * 100 % 100);
+        if (fen > 0) {
+            jiaoFen = "";
+            if (fen > 9) {
+                jiaoFen += number2Chinese(fen / 10) + "角";
+            }
+            if (fen % 10 != 0) {
+                jiaoFen += number2Chinese(fen % 10) + "分";
+            }
+        }
         if (jiaoFen == null) {
             result += "整";
         } else {
@@ -313,9 +224,9 @@ public class TextUtil {
      * @param money
      * @return
      */
-    public static String getChinaMoneyTraditional(double money) {
-        return getChinaAccountantNumber(
-                getChinaMoney(money)
+    public static String money2ChineseTraditional(double money) {
+        return number2Traditional(
+                money2Chinese(money)
         );
     }
 
@@ -324,43 +235,43 @@ public class TextUtil {
      * @param number
      * @return
      */
-    public static String getChinaNumber(long number) {
+    public static String number2Chinese(long number) {
         String sn = String.valueOf(number);
         String result = "";
         if (sn.length() == 1) { // 个
-            result += getChinaNumber((int) number);
+            result += number2Chinese((int) number);
             return result;
         } else if (sn.length() == 2) { // 十
             if (sn.substring(0, 1).equals("1")) {
                 result += "十";
             } else {
-                result += (getChinaNumber((int) (number / 10)) + "十");
+                result += (number2Chinese((int) (number / 10)) + "十");
             }
-            result += getChinaNumber(number % 10);
+            result += number2Chinese(number % 10);
         } else if (sn.length() == 3) { // 百
-            result += (getChinaNumber((int) (number / 100)) + "百");
+            result += (number2Chinese((int) (number / 100)) + "百");
             if (String.valueOf(number % 100).length() < 2 && number % 100 > 0) {
                 result += "零";
             }
-            result += getChinaNumber(number % 100);
+            result += number2Chinese(number % 100);
         } else if (sn.length() == 4) { // 千
-            result += (getChinaNumber((int) (number / 1000)) + "千");
+            result += (number2Chinese((int) (number / 1000)) + "千");
             if (String.valueOf(number % 1000).length() < 3 && number % 1000 > 0) {
                 result += "零";
             }
-            result += getChinaNumber(number % 1000);
+            result += number2Chinese(number % 1000);
         } else if (sn.length() < 9) { // 万 - 千万
-            result += (getChinaNumber(number / 10000) + "万");
+            result += (number2Chinese(number / 10000) + "万");
             if (String.valueOf(number % 10000).length() < 4 && number % 10000 > 0) {
                 result += "零";
             }
-            result += getChinaNumber(number % 10000);
+            result += number2Chinese(number % 10000);
         } else { // 亿及以上
-            result += (getChinaNumber(number / 100000000) + "亿");
+            result += (number2Chinese(number / 100000000) + "亿");
             if (String.valueOf(number % 100000000).length() < 8 && number % 100000000 > 0) {
                 result += "零";
             }
-            result += getChinaNumber(number % 100000000);
+            result += number2Chinese(number % 100000000);
         }
         return result;
     }
@@ -370,7 +281,7 @@ public class TextUtil {
      * @param input
      * @return
      */
-    private static String getChinaNumber(int input) {
+    private static String number2Chinese(int input) {
         String result = "";
         switch (input) {
             case 1:
@@ -411,7 +322,7 @@ public class TextUtil {
      * @param string
      * @return
      */
-    private static String getChinaAccountantNumber(String string) {
+    private static String number2Traditional(String string) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < string.length(); i++) {
             String s = string.substring(i, i + 1);
@@ -466,36 +377,30 @@ public class TextUtil {
     }
 
     /**
-     * 人民币转中文人民币小数
-     * @param money
-     * @return
-     */
-    private static String getChinaMoneyDecimal(double money) {
-        int fen = (int) (money * 100 % 100);
-        String result = "";
-        if (fen <= 0) return null;
-        if (fen > 9) {
-            result += getChinaNumber(fen / 10) + "角";
-        }
-        if (fen % 10 != 0) {
-            result += getChinaNumber(fen % 10) + "分";
-        }
-        return result;
-    }
-
-    /**
      * 字节数组转16进制
      * @param bytes 需要转换的byte数组
      * @return  转换后的Hex字符串
      */
     public static String bytes2Hex(byte[] bytes) {
+        return bytes2Hex(bytes, false);
+    }
+
+    /**
+     * 字节数组转16进制
+     * @param bytes 需要转换的byte数组
+     * @param space 是否填充空格
+     * @return  转换后的Hex字符串
+     */
+    public static String bytes2Hex(byte[] bytes, boolean space) {
         if (bytes == null) return "";
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (byte aByte : bytes) {
             String hex = Integer.toHexString(aByte & 0xFF);
             if (hex.length() < 2) sb.append(0);
             sb.append(hex);
+            if (space) sb.append(' ');
         }
+        if (space) sb.delete(sb.length() - 1, sb.length());
         return sb.toString();
     }
 
@@ -505,22 +410,38 @@ public class TextUtil {
      * @return  转换后的byte数组结果
      */
     public static byte[] hex2Bytes(String inHex) {
+        if (inHex == null) return new byte[0];
+        inHex = inHex.replace(" ", "");
         int hexlen = inHex.length();
-        byte[] result;
         if (hexlen % 2 == 1) {
-            // 奇数
+            // 奇数个字符高位补0
             hexlen++;
-            result = new byte[(hexlen / 2)];
             inHex = "0" + inHex;
-        } else {
-            // 偶数
-            result = new byte[(hexlen / 2)];
         }
+        byte[] result = new byte[(hexlen / 2)];
         int j = 0;
         for (int i = 0; i < hexlen; i += 2) {
-            result[j] = (byte)Integer.parseInt(inHex.substring(i, i + 2),16);
+            result[j] = (byte) Integer.parseInt(inHex.substring(i, i + 2),16);
             j++;
         }
         return result;
+    }
+
+    /**
+     * Base64 编码
+     * @param content
+     * @return
+     */
+    public static String encodeBase64(byte[] content) {
+        return Base64.encodeToString(content, Base64.NO_WRAP);
+    }
+
+    /**
+     * Base64 解码
+     * @param content
+     * @return
+     */
+    public static byte[] decodeBase64(String content) {
+        return Base64.decode(content, Base64.NO_WRAP);
     }
 }

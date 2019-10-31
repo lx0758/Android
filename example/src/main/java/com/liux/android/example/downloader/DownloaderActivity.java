@@ -28,7 +28,6 @@ import com.liux.android.http.HttpUtil;
 import com.liux.android.list.adapter.MultipleAdapter;
 import com.liux.android.list.adapter.rule.SingleRule;
 import com.liux.android.list.adapter.state.State;
-import com.liux.android.list.adapter.rule.SuperRule;
 import com.liux.android.list.holder.SuperHolder;
 import com.liux.android.permission.Authorizer;
 import com.liux.android.permission.install.OnInstallPermissionListener;
@@ -144,10 +143,10 @@ public class DownloaderActivity extends AppCompatActivity {
                                             .setText(R.id.tv_name, task.getFile().getName())
                                             .setText(R.id.tv_progress, String.format(
                                                     "%s/%s",
-                                                    TextUtil.getFormetSize(task.getCompleted()),
-                                                    TextUtil.getFormetSize(task.getTotal())
+                                                    TextUtil.formetByteLength(task.getCompleted()),
+                                                    TextUtil.formetByteLength(task.getTotal())
                                             ))
-                                            .setText(R.id.tv_speed, task.getStatus() == Status.START ? String.format("%s/s", TextUtil.getFormetSize(task.getSpeed())) : status)
+                                            .setText(R.id.tv_speed, task.getStatus() == Status.START ? String.format("%s/s", TextUtil.formetByteLength(task.getSpeed())) : status)
                                             .setText(R.id.btn_operate, operate)
                                             .setOnClickListener(R.id.btn_operate, onClickListener)
                                             .setOnLongClickListener(onLongClickListener)
