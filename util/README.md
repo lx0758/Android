@@ -10,7 +10,7 @@ implementation 'com.liux.android:util:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
-    1.
+    1.新增一波功能
 
 ### 0.2.0_2019-08-26
     1.支持库迁移至AndroidX

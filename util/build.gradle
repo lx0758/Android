@@ -21,6 +21,7 @@ dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     compileOnly 'androidx.fragment:fragment:1.0.0'
     compileOnly 'androidx.legacy:legacy-support-core-utils:1.0.0'
+    testImplementation 'junit:junit:4.12'
 }
 
 apply from: '../release.gradle'
