@@ -3,11 +3,25 @@ package com.liux.android.util;
 public class ByteUtil {
 
     /**
-     * 字节转整数型(高位在前)
+     * 整数型转字节(大端模式,低地址存放高位)
+     * @param i
+     * @return
+     */
+    public static byte[] int2BytesBigEndian(int i) {
+        byte[] bytes = new byte[4];
+        bytes[0] = (byte) ((i >> 24) & 0xff);
+        bytes[1] = (byte) ((i >> 16) & 0xff);
+        bytes[2] = (byte) ((i >> 8) & 0xff);
+        bytes[3] = (byte) (i & 0xff);
+        return bytes;
+    }
+
+    /**
+     * 字节转整数型(大端模式,低地址存放高位)
      * @param bytes
      * @return
      */
-    public static int bytes2Int(byte... bytes) {
+    public static int bytes2IntBigEndian(byte... bytes) {
         int result = 0;
         if (bytes == null || bytes.length == 0) return result;
         result |= (bytes[0] & 0xff);
@@ -19,25 +33,29 @@ public class ByteUtil {
     }
 
     /**
-     * 整数型转字节(高位在前)
-     * @param i
+     * 长整数型转字节(大端模式,低地址存放高位)
+     * @param l
      * @return
      */
-    public static byte[] int2Bytes(int i) {
-        byte[] bytes = new byte[4];
-        bytes[0] = (byte) (i >> 24 & 0xFF);
-        bytes[1] = (byte) (i >> 16 & 0xFF);
-        bytes[2] = (byte) (i >> 8 & 0xFF);
-        bytes[3] = (byte) (i & 0xFF);
+    public static byte[] long2BytesBigEndian(long l) {
+        byte[] bytes = new byte[8];
+        bytes[0] = (byte) ((l >> 56) & 0xff);
+        bytes[1] = (byte) ((l >> 48) & 0xff);
+        bytes[2] = (byte) ((l >> 40) & 0xff);
+        bytes[3] = (byte) ((l >> 32) & 0xff);
+        bytes[4] = (byte) ((l >> 24) & 0xff);
+        bytes[5] = (byte) ((l >> 16) & 0xff);
+        bytes[6] = (byte) ((l >> 8) & 0xff);
+        bytes[7] = (byte) (l & 0xff);
         return bytes;
     }
 
     /**
-     * 字节转长整数型(高位在前)
+     * 字节转长整数型(大端模式,低地址存放高位)
      * @param bytes
      * @return
      */
-    public static long bytes2Long(byte... bytes) {
+    public static long bytes2LongBigEndian(byte... bytes) {
         long result = 0L;
         if (bytes == null || bytes.length == 0) return result;
         result |= (bytes[0] & 0xff);
@@ -49,21 +67,77 @@ public class ByteUtil {
     }
 
     /**
-     * 长整数型转字节(高位在前)
+     * 整数型转字节(小端模式,低地址存放低位)
+     * @param i
+     * @return
+     */
+    public static byte[] int2BytesLittleEndian(int i) {
+        byte[] bytes = new byte[4];
+        bytes[0] = (byte) (i & 0xff);
+        bytes[1] = (byte) ((i >> 8) & 0xff);
+        bytes[2] = (byte) ((i >> 16) & 0xff);
+        bytes[3] = (byte) ((i >> 24) & 0xff);
+        return bytes;
+    }
+
+    /**
+     * 字节转整数型(小端模式,低地址存放低位)
+     * @param bytes
+     * @return
+     */
+    public static int bytes2IntLittleEndian(byte... bytes) {
+        int result = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            result |= (bytes[i] & 0xFF) << (i * 8);
+            if (i == 3) break;
+        }
+        return result;
+    }
+
+    /**
+     * 长整数型转字节(小端模式,低地址存放低位)
      * @param l
      * @return
      */
-    public static byte[] long2Bytes(long l) {
+    public static byte[] long2BytesLittleEndian(long l) {
         byte[] bytes = new byte[8];
-        bytes[0] = (byte) (l >> 56 & 0xFF);
-        bytes[1] = (byte) (l >> 48 & 0xFF);
-        bytes[2] = (byte) (l >> 40 & 0xFF);
-        bytes[3] = (byte) (l >> 32 & 0xFF);
-        bytes[4] = (byte) (l >> 24 & 0xFF);
-        bytes[5] = (byte) (l >> 16 & 0xFF);
-        bytes[6] = (byte) (l >> 8 & 0xFF);
-        bytes[7] = (byte) (l & 0xFF);
+        bytes[0] = (byte) (l & 0xFF);
+        bytes[1] = (byte) (l >> 8 & 0xFF);
+        bytes[2] = (byte) (l >> 16 & 0xFF);
+        bytes[3] = (byte) (l >> 24 & 0xFF);
+        bytes[4] = (byte) (l >> 32 & 0xFF);
+        bytes[5] = (byte) (l >> 40 & 0xFF);
+        bytes[6] = (byte) (l >> 48 & 0xFF);
+        bytes[7] = (byte) (l >> 56 & 0xFF);
         return bytes;
+    }
+
+    /**
+     * 字节转长整数型(小端模式,低地址存放低位)
+     * @param bytes
+     * @return
+     */
+    public static long bytes2LongLittleEndian(byte... bytes) {
+        long result = 0;
+        for (int i = 0; i < bytes.length; i++) {
+            result |= ((long) (bytes[i] & 0xFF)) << (i * 8);
+            if (i == 7) break;
+        }
+        return result;
+    }
+
+    /**
+     * 将字节数组倒序
+     * @param bytes
+     * @return
+     */
+    public static byte[] reverse(byte... bytes) {
+        int length = bytes.length;
+        byte[] result = new byte[length];
+        for (int i = 0; i < length; i++) {
+            result[length - i - 1] = bytes[i];
+        }
+        return result;
     }
 
     /**
@@ -103,12 +177,11 @@ public class ByteUtil {
     }
 
     /**
-     * CRC16
-     * @param highBefore
+     * CRC16-MODBUS
      * @param datas
      * @return
      */
-    public static int crc16Modbus(boolean highBefore, byte... datas) {
+    public static byte[] crc16Modbus(byte... datas) {
         int CRC = 0x0000ffff;
         int POLYNOMIAL = 0x0000a001;
 
@@ -125,8 +198,6 @@ public class ByteUtil {
             }
         }
 
-        if (!highBefore) CRC = ((CRC & 0x0000FF00) >> 8) | ((CRC & 0x000000FF ) << 8);
-
-        return CRC;
+        return new byte[]{(byte) ((CRC >> 8) & 0xFF), (byte) (CRC & 0xFF)};
     }
 }
