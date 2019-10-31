@@ -10,6 +10,9 @@ implementation 'com.liux.android:util:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
+    1.
+
+### 0.2.2_2019-10-31
     1.修复大小端问题
 
 ### 0.2.1_2019-10-31
