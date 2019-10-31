@@ -381,7 +381,7 @@ public class TextUtil {
      * @param bytes 需要转换的byte数组
      * @return  转换后的Hex字符串
      */
-    public static String bytes2Hex(byte[] bytes) {
+    public static String bytes2Hex(byte... bytes) {
         return bytes2Hex(bytes, false);
     }
 
