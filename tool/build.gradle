@@ -20,6 +20,8 @@ android {
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly 'androidx.fragment:fragment:1.0.0'
+    testImplementation 'junit:junit:4.12'
+    testImplementation project(":util")
 }
 
 apply from: '../release.gradle'
@@ -27,7 +29,7 @@ static def getLibraryArtifactId() {
     return 'tool'
 }
 static def getLibraryVersionName() {
-    return '0.2.0'
+    return '0.2.1'
 }
 static def getLibraryVersionCode() {
     def version = getLibraryVersionName().replace("-SNAPSHOT", "")

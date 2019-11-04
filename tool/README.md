@@ -12,6 +12,9 @@ implementation 'com.liux.android:tool:x.y.z'
 ### x.y.z_201x-xx-xx
     1.
 
+### 0.2.1_2019-11-04
+    1.新增 BytesBuilder 工具
+
 ### 0.2.0_2019-08-26
     1.支持库迁移至AndroidX
 
