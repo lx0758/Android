@@ -207,16 +207,16 @@ public class BytesBuilder {
      * @return
      */
     public int indexOf(byte b) {
-        return indexOf(b, 0);
+        return indexOf(0, b);
     }
 
     /**
      * 查找字节
-     * @param b
      * @param fromIndex
+     * @param b
      * @return
      */
-    public int indexOf(byte b, int fromIndex) {
+    public int indexOf(int fromIndex, byte b) {
         if (fromIndex < 0 || fromIndex >= count) throw new IndexOutOfBoundsException("fromIndex < 0 or fromIndex > max index");
         int result = -1;
         for (int i = fromIndex; i < count; i++) {
@@ -233,8 +233,8 @@ public class BytesBuilder {
      * @param targetBytes
      * @return
      */
-    public int indexOf(byte... targetBytes) {
-        return indexOf(0, targetBytes);
+    public int indexArrayOf(byte... targetBytes) {
+        return indexArrayOf(0, targetBytes);
     }
 
     /**
@@ -243,12 +243,12 @@ public class BytesBuilder {
      * @param targetBytes
      * @return
      */
-    public int indexOf(int fromIndex, byte... targetBytes) {
+    public int indexArrayOf(int fromIndex, byte... targetBytes) {
         if (fromIndex < 0 || fromIndex >= count) throw new IndexOutOfBoundsException("fromIndex < 0 or fromIndex > max index");
         int result = -1;
         if (targetBytes == null || targetBytes.length < 1) return result;
         int i, j, max = count - targetBytes.length;
-        for (i = fromIndex; i < max; i++) {
+        for (i = fromIndex; i <= max; i++) {
             if (bytes[i] == targetBytes[0]) {
                 for (j = 1; j < targetBytes.length; j++) {
                     if (bytes[i + j] != targetBytes[j]) break;
@@ -268,19 +268,19 @@ public class BytesBuilder {
      * @return
      */
     public int lastIndexOf(byte b) {
-        return lastIndexOf(b, count - 1);
+        return lastIndexOf(0, b);
     }
 
     /**
      * 倒序查找字节
-     * @param b
      * @param fromIndex
+     * @param b
      * @return
      */
-    public int lastIndexOf(byte b, int fromIndex) {
+    public int lastIndexOf(int fromIndex, byte b) {
         if (fromIndex < 0 || fromIndex >= count) throw new IndexOutOfBoundsException("fromIndex < 0 or fromIndex > max index");
         int result = -1;
-        for (int i = fromIndex; i >= 0; i--) {
+        for (int i = count - fromIndex - 1; i >= 0; i--) {
             if (bytes[i] == b) {
                 result = i;
                 break;
@@ -294,8 +294,8 @@ public class BytesBuilder {
      * @param targetBytes
      * @return
      */
-    public int lastIndexOf(byte... targetBytes) {
-        return lastIndexOf(count - 1, targetBytes);
+    public int lastIndexArrayOf(byte... targetBytes) {
+        return lastIndexArrayOf(0, targetBytes);
     }
 
     /**
@@ -304,18 +304,20 @@ public class BytesBuilder {
      * @param targetBytes
      * @return
      */
-    public int lastIndexOf(int fromIndex, byte... targetBytes) {
+    public int lastIndexArrayOf(int fromIndex, byte... targetBytes) {
         if (fromIndex < 0 || fromIndex >= count) throw new IndexOutOfBoundsException("fromIndex < 0 or fromIndex > max index");
         int result = -1;
         if (targetBytes == null || targetBytes.length < 1) return result;
-        int i, j, min = targetBytes.length;
-        for (i = fromIndex; i >= min; i--) {
+        int i, j = 0, min = targetBytes.length;
+        for (i = count - fromIndex - 1; i >= min; i--) {
             if (bytes[i] == targetBytes[targetBytes.length - 1]) {
-                for (j = targetBytes.length - 2; j >= 0; j--) {
-                    if (bytes[i - j] != targetBytes[j]) break;
+                if (targetBytes.length > 1) {
+                    for (j = targetBytes.length - 2; j >= 0; j--) {
+                        if (bytes[i - j] != targetBytes[j]) break;
+                    }
                 }
                 if (j == 0) {
-                    result = i;
+                    result = i - targetBytes.length + 1;
                     break;
                 }
             }
