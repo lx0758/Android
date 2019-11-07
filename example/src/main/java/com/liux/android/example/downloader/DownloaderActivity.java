@@ -44,6 +44,14 @@ public class DownloaderActivity extends AppCompatActivity {
     private MultipleAdapter<Task> taskMultipleAdapter;
     private CreateTaskDialog createTaskDialog;
 
+    private OnStatusListener onStatusListener = new UIStatusListener() {
+        @Override
+        protected void onUIUpdate(Task task) {
+            int position = taskMultipleAdapter.getData().indexOf(task);
+            taskMultipleAdapter.notifyItemChanged(position, "");
+        }
+    };
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,116 +62,106 @@ public class DownloaderActivity extends AppCompatActivity {
         taskMultipleAdapter = new MultipleAdapter<Task>()
                 .addRule(new SingleRule<Task>(R.layout.item_downloader) {
                     @Override
-                    public void onDataBind(final SuperHolder holder, Task task, State state, int position) {
-                        OnStatusListener onStatusListener = (OnStatusListener) holder.getItemView().getTag();
-                        if (onStatusListener == null) {
-                            onStatusListener = new UIStatusListener() {
-                                Task task;
-                                View.OnClickListener onClickListener = new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        if (task == null) return;
-                                        if (task.isCompleted()) {
-                                            openFile(DownloaderActivity.this, task.getFile());
-                                        } else if (!task.isStarted()) {
-                                            task.start();
-                                        } else {
-                                            task.stop();
-                                        }
-                                    }
-                                };
-                                View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
-                                    @Override
-                                    public boolean onLongClick(View v) {
-                                        if (task == null) return false;
-                                        final Task deleteTask = task;
-                                        new AlertDialog.Builder(v.getContext())
-                                                .setMessage("确认删除该任务吗?")
-                                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
-                                                    }
-                                                })
-                                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        deleteTask.delete();
-                                                        int pos = taskMultipleAdapter.getData().indexOf(deleteTask);
-                                                        taskMultipleAdapter.getData().remove(deleteTask);
-                                                        taskMultipleAdapter.notifyItemRemoved(pos);
-                                                        dialog.dismiss();
-                                                        TT.show("删除成功");
-                                                    }
-                                                })
-                                                .show();
-                                        return true;
-                                    }
-                                };
-
-                                @Override
-                                protected void onUIUpdate(Task task) {
-                                    this.task = task;
-                                    String status = "", operate = "";
-                                    switch (task.getStatus()) {
-                                        case NEW:
-                                            status = "暂停中";
-                                            operate = "开始";
-                                            break;
-                                        case WAIT:
-                                            status = "等待中";
-                                            operate = "暂停";
-                                            break;
-                                        case CONN:
-                                            status = "连接中";
-                                            operate = "暂停";
-                                            break;
-                                        case START:
-                                            status = "下载中";
-                                            operate = "暂停";
-                                            break;
-                                        case STOP:
-                                            status = "暂停中";
-                                            operate = "继续";
-                                            break;
-                                        case ERROR:
-                                            status = "发生错误";
-                                            operate = "重试";
-                                            break;
-                                        case COMPLETE:
-                                            status = "已完成";
-                                            operate = "打开";
-                                            break;
-                                        case DELETE:
-                                            status = "已删除";
-                                            operate = "";
-                                            break;
-                                    }
-                                    ProgressBar progressBar = holder
-                                            .setText(R.id.tv_name, task.getFile().getName())
-                                            .setText(R.id.tv_progress, String.format(
-                                                    "%s/%s",
-                                                    TextUtil.formetByteLength(task.getCompleted()),
-                                                    TextUtil.formetByteLength(task.getTotal())
-                                            ))
-                                            .setText(R.id.tv_speed, task.getStatus() == Status.START ? String.format("%s/s", TextUtil.formetByteLength(task.getSpeed())) : status)
-                                            .setText(R.id.btn_operate, operate)
-                                            .setOnClickListener(R.id.btn_operate, onClickListener)
-                                            .setOnLongClickListener(onLongClickListener)
-                                            .getView(R.id.pb_progress);
-                                    int progress;
-                                    if (task.getTotal() == 0) {
-                                        progress = 0;
-                                    } else {
-                                        progress = (int) (task.getCompleted() / (task.getTotal() + 0.0) * 100);
-                                    }
-                                    progressBar.setProgress(progress);
-                                }
-                            };
-                            holder.getItemView().setTag(onStatusListener);
+                    public void onDataBind(SuperHolder holder, int position, Task task, List<Object> payloads, State state) {
+                        String statusTitle = "", operateTitle = "";
+                        switch (task.getStatus()) {
+                            case NEW:
+                                statusTitle = "暂停中";
+                                operateTitle = "开始";
+                                break;
+                            case WAIT:
+                                statusTitle = "等待中";
+                                operateTitle = "暂停";
+                                break;
+                            case CONN:
+                                statusTitle = "连接中";
+                                operateTitle = "暂停";
+                                break;
+                            case START:
+                                statusTitle = "下载中";
+                                operateTitle = "暂停";
+                                break;
+                            case STOP:
+                                statusTitle = "暂停中";
+                                operateTitle = "继续";
+                                break;
+                            case ERROR:
+                                statusTitle = "发生错误";
+                                operateTitle = "重试";
+                                break;
+                            case COMPLETE:
+                                statusTitle = "已完成";
+                                operateTitle = "打开";
+                                break;
+                            case DELETE:
+                                statusTitle = "已删除";
+                                operateTitle = "";
+                                break;
                         }
 
-                        task.bindStatusListener(onStatusListener);
+                        ProgressBar progressBar = holder
+                                .setText(R.id.tv_name, task.getFile().getName())
+                                .setText(R.id.tv_progress, String.format(
+                                        "%s/%s",
+                                        TextUtil.formetByteLength(task.getCompleted()),
+                                        TextUtil.formetByteLength(task.getTotal())
+                                ))
+                                .setText(R.id.tv_speed, task.getStatus() == Status.START ? String.format("%s/s", TextUtil.formetByteLength(task.getSpeed())) : statusTitle)
+                                .setText(R.id.btn_operate, operateTitle)
+                                .getView(R.id.pb_progress);
+
+                        if (payloads.isEmpty()) {
+                            holder
+                                    .setOnClickListener(R.id.btn_operate, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if (task == null) return;
+                                            if (task.isCompleted()) {
+                                                openFile(DownloaderActivity.this, task.getFile());
+                                            } else if (!task.isStarted()) {
+                                                task.start();
+                                            } else {
+                                                task.stop();
+                                            }
+                                        }
+                                    })
+                                    .setOnLongClickListener(new View.OnLongClickListener() {
+                                        @Override
+                                        public boolean onLongClick(View v) {
+                                            if (task == null) return false;
+                                            final Task deleteTask = task;
+                                            new AlertDialog.Builder(v.getContext())
+                                                    .setMessage("确认删除该任务吗?")
+                                                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            dialog.dismiss();
+                                                        }
+                                                    })
+                                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            deleteTask.delete();
+                                                            int pos = taskMultipleAdapter.getData().indexOf(deleteTask);
+                                                            taskMultipleAdapter.getData().remove(deleteTask);
+                                                            taskMultipleAdapter.notifyItemRemoved(pos);
+                                                            dialog.dismiss();
+                                                            TT.show("删除成功");
+                                                        }
+                                                    })
+                                                    .show();
+                                            return true;
+                                        }
+                                    });
+                        }
+
+                        int progress;
+                        if (task.getTotal() == 0) {
+                            progress = 0;
+                        } else {
+                            progress = (int) (task.getCompleted() / (task.getTotal() + 0.0) * 100);
+                        }
+                        progressBar.setProgress(progress);
                     }
                 });
 
@@ -184,11 +182,13 @@ public class DownloaderActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
         if (Downloader.isInit()) {
             readDownloaderTasks();
+            Downloader.registerGlobalOnStatusListener(onStatusListener);
         } else {
             Downloader.registerInitCallback(new InitCallback() {
                 @Override
                 public void onInitialized() {
                     readDownloaderTasks();
+                    Downloader.registerGlobalOnStatusListener(onStatusListener);
                 }
             });
             Downloader.init(Config.builder(getApplicationContext())

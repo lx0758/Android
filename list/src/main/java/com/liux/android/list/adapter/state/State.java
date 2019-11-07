@@ -1,5 +1,7 @@
 package com.liux.android.list.adapter.state;
 
+import java.util.Locale;
+
 /**
  * 记录选择状态
  * Created by Liux on 2017/9/19.
@@ -17,86 +19,57 @@ public class State<T> {
         return mData;
     }
 
-
-
-    // 不可选择
-    private static final int STATE_SELECT_DISABLED = -1;
-    // 未选中
-    private static final int STATE_SELECT_UNSELECTED = 0;
-    // 已选中
-    private static final int STATE_SELECT_SELECTED = 1;
-
-    private int mSelectState = STATE_SELECT_UNSELECTED;
-
-    public boolean isSelectDisabled() {
-        return this.mSelectState == STATE_SELECT_DISABLED;
+    private static final int BIT_SUPPORT_SELECT = 0;
+    private static final int BIT_SELECTED = 1;
+    private static final int BIT_SUPPORT_SLIDE = 2;
+    private static final int BIT_SLIDE_OPEN = 3;
+    private int mState = 0;
+    private boolean get(int bit) {
+        return ((mState >> bit) & 0b1) == 0b1;
     }
-    public void setSelectDisabled() {
-        this.mSelectState = STATE_SELECT_DISABLED;
+    private void set(int bit, boolean b) {
+        if (b == get(bit)) return;
+        if (b) {
+            mState |= (1 << bit);
+        } else {
+            mState ^= (1 << bit);
+        }
     }
-
-    public boolean isSelectUnselected() {
-        return this.mSelectState == STATE_SELECT_UNSELECTED;
+    public boolean isSupportSelect() {
+        return get(BIT_SUPPORT_SELECT);
     }
-    public void setSelectUnselected() {
-        this.mSelectState = STATE_SELECT_UNSELECTED;
+    public void setSupportSelect(boolean support) {
+        set(BIT_SUPPORT_SELECT, support);
     }
-
-    public boolean isSelectSelected() {
-        return this.mSelectState == STATE_SELECT_SELECTED;
+    public boolean isSelected() {
+        return get(BIT_SELECTED);
     }
-    public void setSelectSelected() {
-        this.mSelectState = STATE_SELECT_SELECTED;
+    public void setSelected(boolean selected) {
+        set(BIT_SELECTED, selected);
     }
-
-
-
-    // 不可滑动
-    private static final int STATE_SLIDE_DISABLED = -1;
-    // 未滑动
-    private static final int STATE_SLIDE_UNSLIDE = 0;
-    // 已滑动(目前未处理两边滑动的情况)
-    private static final int STATE_SLIDE_SLIDED = 1;
-
-    private int mSlideState = STATE_SLIDE_DISABLED;
-
-    public boolean isSlideDisabled() {
-        return this.mSelectState == STATE_SLIDE_DISABLED;
+    public boolean isSupportSlide() {
+        return get(BIT_SUPPORT_SLIDE);
     }
-    public void setSlideDisabled() {
-        this.mSelectState = STATE_SLIDE_DISABLED;
+    public void setSupportSlide(boolean support) {
+        set(BIT_SUPPORT_SLIDE, support);
     }
-
-    public boolean isSlideUnslide() {
-        return this.mSelectState == STATE_SLIDE_UNSLIDE;
+    public boolean isSlideOpen() {
+        return get(BIT_SLIDE_OPEN);
     }
-    public void setSlideUnslide() {
-        this.mSelectState = STATE_SELECT_UNSELECTED;
+    public void setSlideOpen(boolean open) {
+        set(BIT_SLIDE_OPEN, open);
     }
-
-    public boolean isSlideSlided() {
-        return this.mSelectState == STATE_SLIDE_SLIDED;
-    }
-    public void setSlideSlided() {
-        this.mSelectState = STATE_SLIDE_SLIDED;
-    }
-
-
 
     private Object mTag = null;
-
     public Object getTag() {
         return mTag;
     }
-
     public void setTag(Object tag) {
         this.mTag = tag;
     }
 
-
-
     @Override
     public String toString() {
-        return "[" + mSelectState + "," + mSlideState + "," + mTag + ']';
+        return String.format(Locale.CHINA, "[state:0b%08d, tag:%s]", Integer.parseInt(Integer.toBinaryString(mState)), mTag);
     }
 }

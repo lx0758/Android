@@ -10,7 +10,8 @@ implementation 'com.liux.android:list:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
-    1.
+    1.新增局部刷新支持
+    2.优化状态存储结构
 
 ### 0.2.1_2019-09-19
     1.新增动态创建View能力

@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.liux.android.list.adapter.state.State;
 
+import java.util.List;
+
 /**
  * Bean 和 View 绑定显示规则
  * @param <T> 要处理的类型
@@ -61,9 +63,10 @@ public abstract class Rule<T, VH extends RecyclerView.ViewHolder> {
     /**
      * 绑定数据到 View
      * @param holder
-     * @param t
-     * @param state
      * @param position
+     * @param t
+     * @param payloads
+     * @param state
      */
-    public abstract void onDataBind(VH holder, T t, State state, int position);
+    public abstract void onDataBind(VH holder, int position, T t, List<Object> payloads, State state);
 }

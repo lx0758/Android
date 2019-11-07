@@ -71,7 +71,8 @@ public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position, @NonNull List<Object> payloads) {
+        super.onBindViewHolder(holder, position, payloads);
         if (holder instanceof MarginHolder) {
             return;
         }
@@ -82,9 +83,14 @@ public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
         Rule rule = mRuleProxy.getObjectRule(t);
 
         State<T> state = mStateProxy.getData().getState(position);
-        if (!isEnabledSelect()) state.setSelectDisabled();
+        state.setSupportSelect(isEnabledSelect());
 
-        rule.onDataBind(holder, t, state, position);
+        rule.onDataBind(holder, position, t, payloads, state);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        // do nothing
     }
 
     @Override

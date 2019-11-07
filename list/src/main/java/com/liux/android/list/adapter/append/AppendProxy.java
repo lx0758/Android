@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.liux.android.list.adapter.Payload;
 import com.liux.android.list.holder.MarginHolder;
 
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ public class AppendProxy<T> {
             mIAppend.notifyItemInserted(0);
         } else {
             mHeaders.set(0, new MarginHolder(view));
-            mIAppend.notifyItemChanged(0);
+            mIAppend.notifyItemChanged(0, Payload.APPEND);
         }
     }
 
@@ -88,7 +89,7 @@ public class AppendProxy<T> {
             mIAppend.notifyItemInserted(mIAppend.getItemCount() - 1);
         } else {
             mFooters.set(0, new MarginHolder(view));
-            mIAppend.notifyItemChanged(mIAppend.getItemCount() - 1);
+            mIAppend.notifyItemChanged(mIAppend.getItemCount() - 1, Payload.APPEND);
         }
     }
 
