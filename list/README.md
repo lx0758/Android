@@ -11,6 +11,9 @@ implementation 'com.liux.android:list:x.y.z'
 ---
 ### x.y.z_201x-xx-xx
     1.
+
+### 0.2.3_2019-11-07
+    1.修复单选模式错误
     
 ### 0.2.2_2019-11-07
     1.新增局部刷新支持

@@ -102,6 +102,17 @@ public class StateProxy<T> {
 
         if (isSelect(position) == selected) return selected;
 
+        boolean result = true;
+        if (mOnSelectListener != null) {
+            result = mOnSelectListener.onSelectChange(getData().get(position), position, selected);
+        }
+        if (!result) {
+            //if (mOnSelectListener != null) {
+            //    mOnSelectListener.onSelectFailure();
+            //}
+            return false;
+        }
+
         List<T> selectedAll = getSelectedAll();
         if (selected) {
             if (mMaxSelectCount == 1) {
@@ -109,7 +120,7 @@ public class StateProxy<T> {
                 for (T t : selectedAll) {
                     int index = getData().indexOf(t);
 
-                    boolean result = true;
+                    result = true;
                     if (mOnSelectListener != null) {
                         result = mOnSelectListener.onSelectChange(t, index, false);
                     }
@@ -120,7 +131,7 @@ public class StateProxy<T> {
                         return false;
                     }
 
-                    getData().getState(index).setSelected(true);
+                    getData().getState(index).setSelected(false);
 
                     index = mIState.getShamPosition(index);
                     mIState.notifyItemChanged(index, Payload.STATE);
@@ -132,17 +143,6 @@ public class StateProxy<T> {
                 }
                 return false;
             }
-        }
-
-        boolean result = true;
-        if (mOnSelectListener != null) {
-            result = mOnSelectListener.onSelectChange(getData().get(position), position, selected);
-        }
-        if (!result) {
-            //if (mOnSelectListener != null) {
-            //    mOnSelectListener.onSelectFailure();
-            //}
-            return false;
         }
 
         State<T> state = getData().getState(position);
@@ -284,6 +284,7 @@ public class StateProxy<T> {
     private void enabledSelectState(boolean enabled) {
         for (State<T> state : getData().getStates()) {
             state.setSupportSelect(enabled);
+            state.setSelected(false);
         }
     }
 
