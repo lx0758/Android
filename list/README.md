@@ -10,6 +10,9 @@ implementation 'com.liux.android:list:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
+    1.
+    
+### 0.2.2_2019-11-07
     1.新增局部刷新支持
     2.优化状态存储结构
 

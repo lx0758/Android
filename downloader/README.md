@@ -10,6 +10,9 @@ implementation 'com.liux.android:downloader:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
+    1.
+
+### 0.2.1_2019-11-07
     1.新增全局状态刷新监听
 
 ### 0.2.0_2019-08-26
