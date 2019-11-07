@@ -10,6 +10,9 @@ implementation 'com.liux.android:list:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
+    1.
+
+### 0.2.3_2019-11-07
     1.修复单选模式错误
     
 ### 0.2.2_2019-11-07
