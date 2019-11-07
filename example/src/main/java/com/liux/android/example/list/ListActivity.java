@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.liux.android.example.R;
 import com.liux.android.list.adapter.MultipleAdapter;
+import com.liux.android.list.adapter.Payload;
 import com.liux.android.list.adapter.state.State;
 import com.liux.android.list.adapter.rule.SuperRule;
 import com.liux.android.list.decoration.AbsItemDecoration;
@@ -57,7 +58,7 @@ public class ListActivity extends AppCompatActivity {
                     return null;
                 }
                 ColorDecoration decoration = new ColorDecoration();
-                decoration.color = Color.parseColor("#FF00FF");
+                decoration.color = Color.parseColor("#DDDDDD");
                 decoration.bottom = 15;
                 return decoration;
             }
@@ -72,8 +73,8 @@ public class ListActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onDataBind(SuperHolder holder, String s, State state, final int position) {
-                        holder.setText(android.R.id.text1, String.format("String is %s\n(%s)", s, state));
+                    public void onDataBind(SuperHolder holder, int position, String string, List<Object> payloads, State state) {
+                        holder.setText(android.R.id.text1, String.format("String is %s\n(%s)", string, state));
                         holder.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -89,9 +90,22 @@ public class ListActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onDataBind(SuperHolder holder, Long l, State state, final int position) {
-                        holder.setText(android.R.id.text1, String.format("Long is %s\n(%s)", l.toString(), state));
-                        holder.setText(android.R.id.text2, String.format("I'm a descriptive text %s", l.toString()));
+                    public void onDataBind(SuperHolder holder, int position, Long aLong, List<Object> payloads, State state) {
+                        if (!payloads.isEmpty()) {
+                            // 局部更新示例
+                            for (Object payload : payloads) {
+                                if (payload == Payload.APPEND) {
+
+                                } else if (payload == Payload.STATE) {
+                                    holder.setText(android.R.id.text1, String.format("Long is %s\n(%s)", aLong.toString(), state));
+                                } else {
+
+                                }
+                            }
+                            return;
+                        }
+                        holder.setText(android.R.id.text1, String.format("Long is %s\n(%s)", aLong.toString(), state));
+                        holder.setText(android.R.id.text2, String.format("I'm a descriptive text %s", aLong.toString()));
                         holder.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -104,7 +118,7 @@ public class ListActivity extends AppCompatActivity {
             @Override
             public boolean onSelectChange(Object o, int position, boolean isSelect) {
                 TT.show(o + " requestRuntime select:" + isSelect);
-                return position % 3 != 0;
+                return position % 7 != 0;
             }
 
             @Override

@@ -16,7 +16,7 @@ public interface IAppend<T, R extends RecyclerView.Adapter> {
 
     void notifyItemInserted(int position);
 
-    void notifyItemChanged(int position);
+    void notifyItemChanged(int position, Object payload);
 
 
 

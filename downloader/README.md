@@ -12,6 +12,9 @@ implementation 'com.liux.android:downloader:x.y.z'
 ### x.y.z_201x-xx-xx
     1.
 
+### 0.2.1_2019-11-07
+    1.新增全局状态刷新监听
+
 ### 0.2.0_2019-08-26
     1.支持库迁移至AndroidX
 

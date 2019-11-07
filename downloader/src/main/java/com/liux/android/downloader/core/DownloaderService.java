@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.liux.android.downloader.Config;
 import com.liux.android.downloader.DownloaderCallback;
+import com.liux.android.downloader.OnStatusListener;
 import com.liux.android.downloader.Status;
 import com.liux.android.downloader.network.ConnectFactory;
 import com.liux.android.downloader.storage.DataStorage;
@@ -37,6 +38,13 @@ public class DownloaderService implements TaskDispatch {
     private Config config;
     private List<DownloaderTask> downloaderTasks;
     private DownloaderCallbackDispense downloaderCallbackDispense;
+    private OnStatusListener globalOnStatusListener;
+    private OnStatusListener globalOnStatusListenerWapper = new OnStatusListener() {
+        @Override
+        public void onUpdate(Task task) {
+            if (globalOnStatusListener != null) globalOnStatusListener.onUpdate(task);
+        }
+    };
 
     DownloaderService(Config config) {
         this.config = config;
@@ -51,6 +59,7 @@ public class DownloaderService implements TaskDispatch {
         downloaderTasks.addAll(restoreTasksFromDataStorage(
                 config,
                 this,
+                globalOnStatusListenerWapper,
                 downloaderCallbackDispense
         ));
 
@@ -149,6 +158,7 @@ public class DownloaderService implements TaskDispatch {
                 config.getFileStorage(),
                 config.getConnectFactory(),
                 this,
+                globalOnStatusListenerWapper,
                 downloaderCallbackDispense
         );
         downloaderTasks.add(downloaderTask);
@@ -231,10 +241,26 @@ public class DownloaderService implements TaskDispatch {
     }
 
     /**
-     * 解除所以注册下载任务回调
+     * 解除所有注册下载任务回调
      */
     public void unregisterAllTaskCallback() {
         downloaderCallbackDispense.removeAll();
+    }
+
+    /**
+     * 注册全局状态回调
+     * @param globalOnStatusListener
+     */
+    public void registerGlobalOnStatusListener(OnStatusListener globalOnStatusListener) {
+        this.globalOnStatusListener = globalOnStatusListener;
+    }
+
+    /**
+     * 解除注册全局状态回调
+     * @param globalOnStatusListener
+     */
+    public void unregisterGlobalOnStatusListener(OnStatusListener globalOnStatusListener) {
+        this.globalOnStatusListener = null;
     }
 
     /**
@@ -253,7 +279,7 @@ public class DownloaderService implements TaskDispatch {
      * 从本地数据库中恢复任务，删除单任务只保留普通任务
      * 会将 {@link Status#CONN} 和 {@link Status#START} 的任务重置为 {@link Status#WAIT} 状态
      */
-    private static List<DownloaderTask> restoreTasksFromDataStorage(Config config, TaskDispatch taskDispatch, DownloaderCallback downloaderCallback) {
+    private static List<DownloaderTask> restoreTasksFromDataStorage(Config config, TaskDispatch taskDispatch, OnStatusListener globalOnStatusListener, DownloaderCallback downloaderCallback) {
         List<DownloaderTask> generalTasks = new LinkedList<>();
 
         List<Record> records = config.getDataStorage().onQueryAll();
@@ -273,6 +299,7 @@ public class DownloaderService implements TaskDispatch {
                     config.getFileStorage(),
                     config.getConnectFactory(),
                     taskDispatch,
+                    globalOnStatusListener,
                     downloaderCallback
             );
             generalTasks.add(downloaderTask);
@@ -291,13 +318,14 @@ public class DownloaderService implements TaskDispatch {
      * @param downloaderCallback
      * @return
      */
-    private static DownloaderTask createDownloaderTask(Record record, DataStorage dataStorage, FileStorage fileStorage, ConnectFactory connectFactory, TaskDispatch taskDispatch, DownloaderCallback downloaderCallback) {
+    private static DownloaderTask createDownloaderTask(Record record, DataStorage dataStorage, FileStorage fileStorage, ConnectFactory connectFactory, TaskDispatch taskDispatch, OnStatusListener globalOnStatusListener, DownloaderCallback downloaderCallback) {
         return new DownloaderTask(
                 record,
                 dataStorage,
                 fileStorage,
                 connectFactory,
                 taskDispatch,
+                globalOnStatusListener,
                 downloaderCallback
         );
     }

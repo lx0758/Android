@@ -131,4 +131,20 @@ public class Downloader {
     public static void unregisterTaskCallback(DownloaderCallback downloaderCallback) {
         DownloaderService.get().unregisterTaskCallback(downloaderCallback);
     }
+
+    /**
+     * 注册全局状态监听
+     * @param globalOnStatusListener
+     */
+    public static void registerGlobalOnStatusListener(OnStatusListener globalOnStatusListener) {
+        DownloaderService.get().registerGlobalOnStatusListener(globalOnStatusListener);
+    }
+
+    /**
+     * 取消注册全局状态监听
+     * @param globalOnStatusListener
+     */
+    public static void unregisterGlobalOnStatusListener(OnStatusListener globalOnStatusListener) {
+        DownloaderService.get().unregisterGlobalOnStatusListener(globalOnStatusListener);
+    }
 }

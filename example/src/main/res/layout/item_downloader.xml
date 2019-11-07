@@ -30,7 +30,9 @@
         android:layout_toLeftOf="@id/btn_operate"
         android:layout_marginTop="3dp"
         android:layout_marginBottom="5dp"
-        tools:text="王者荣耀.apk"/>
+        android:singleLine="true"
+        android:ellipsize="start"
+        tools:text="王者荣耀.apk" />
 
     <ProgressBar
         style="@android:style/Widget.Holo.ProgressBar.Horizontal"

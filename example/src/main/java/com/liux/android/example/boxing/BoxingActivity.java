@@ -61,7 +61,7 @@ public class BoxingActivity extends AppCompatActivity {
         mMultipleAdapter = new MultipleAdapter<String>()
                 .addRule(new SingleRule<String>(R.layout.layout_media_item) {
                     @Override
-                    public void onDataBind(SuperHolder holder, String path, State state, final int position) {
+                    public void onDataBind(SuperHolder holder, int position, String path, List<Object> payloads, State state) {
                         ImageView imageView = holder.getView(R.id.iv_image);
                         BoxingMediaLoader.getInstance().displayThumbnail(imageView, path, 150, 150);
                         // GlideApp.with(imageView.getContext()).asBitmap().load(path).override(150, 150).into(imageView);

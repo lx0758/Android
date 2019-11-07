@@ -47,14 +47,16 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
     private File writeFile;
     private Throwable errorInfo;
     private Handler callUpdateTimer;
+    private OnStatusListener globalOnStatusListener;
     private List<OnStatusListener> onStatusListeners = new LinkedList<>();
 
-    DownloaderTask(Record record, DataStorage dataStorage, FileStorage fileStorage, ConnectFactory connectFactory, TaskDispatch taskDispatch, DownloaderCallback downloaderCallback) {
+    DownloaderTask(Record record, DataStorage dataStorage, FileStorage fileStorage, ConnectFactory connectFactory, TaskDispatch taskDispatch, OnStatusListener globalOnStatusListener, DownloaderCallback downloaderCallback) {
         this.record = record;
         this.dataStorage = dataStorage;
         this.fileStorage = fileStorage;
         this.connectFactory = connectFactory;
         this.taskDispatch = taskDispatch;
+        this.globalOnStatusListener = globalOnStatusListener;
         this.downloaderCallback = downloaderCallback;
 
         String fileName;
@@ -522,6 +524,7 @@ class DownloaderTask implements Runnable, Task, TaskInfoSeter {
      * 回调所有状态监听器
      */
     private void callStatusListenerUpdate() {
+        globalOnStatusListener.onUpdate(this);
         for (OnStatusListener onStatusListener : onStatusListeners) {
             onStatusListener.onUpdate(this);
         }
