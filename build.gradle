@@ -1,8 +1,9 @@
 buildscript {
     repositories {
         flatDir { dirs rootProject.projectDir.getAbsolutePath() + File.separator + 'aarlibs' }
-        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/central/' }
         maven { url 'https://maven.aliyun.com/repository/google/' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter/' }
         maven { url 'https://jitpack.io' }
         google()
         //jcenter()
@@ -21,8 +22,9 @@ buildscript {
 allprojects{
     repositories {
         flatDir { dirs rootProject.projectDir.getAbsolutePath() + File.separator + 'aarlibs' }
-        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/central/' }
         maven { url 'https://maven.aliyun.com/repository/google/' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter/' }
         maven { url 'https://jitpack.io' }
         google()
         //jcenter()
