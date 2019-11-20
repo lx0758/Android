@@ -78,8 +78,8 @@ public class GlideModuleConfig extends AppGlideModule {
         }
 
         // 注册视频获取缩略图的扩展
-        VideoModelLoader.Factory factory_videourl = new VideoModelLoader.Factory();
-        registry.append(Video.class, InputStream.class, factory_videourl);
+        VideoModelLoader.Factory factory = new VideoModelLoader.Factory(context);
+        registry.append(Video.class, InputStream.class, factory);
     }
 
     /**

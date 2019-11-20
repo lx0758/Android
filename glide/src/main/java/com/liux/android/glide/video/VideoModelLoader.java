@@ -1,5 +1,7 @@
 package com.liux.android.glide.video;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -16,12 +18,18 @@ import java.io.InputStream;
 
 public class VideoModelLoader implements ModelLoader<Video, InputStream> {
 
+    private Context context;
+
+    public VideoModelLoader(Context context, MultiModelLoaderFactory multiModelLoaderFactory) {
+        this.context = context;
+    }
+
     @Nullable
     @Override
     public LoadData<InputStream> buildLoadData(@NonNull Video video, int width, int height, @NonNull Options options) {
         return new LoadData<InputStream>(
                 video,
-                new VideoDataFetcher(video, width, height)
+                new VideoDataFetcher(context, video, width, height, options)
         );
     }
 
@@ -31,10 +39,17 @@ public class VideoModelLoader implements ModelLoader<Video, InputStream> {
     }
 
     public static class Factory implements ModelLoaderFactory<Video, InputStream> {
+
+        private Context context;
+
+        public Factory(Context context) {
+            this.context = context.getApplicationContext();
+        }
+
         @NonNull
         @Override
         public ModelLoader<Video, InputStream> build(@NonNull MultiModelLoaderFactory multiModelLoaderFactory) {
-            return new VideoModelLoader();
+            return new VideoModelLoader(context, multiModelLoaderFactory);
         }
 
         @Override

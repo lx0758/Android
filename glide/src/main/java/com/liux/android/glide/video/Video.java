@@ -1,9 +1,12 @@
 package com.liux.android.glide.video;
 
+import android.net.Uri;
+
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.load.Key;
 
+import java.io.File;
 import java.net.URL;
 import java.security.MessageDigest;
 
@@ -15,28 +18,29 @@ import java.security.MessageDigest;
 
 public class Video implements Key {
 
-    public static Video from(URL url) {
-        return new Video(url);
+    public static Video fromUrl(String url) {
+        return fromUri(Uri.parse(url));
     }
 
-    public static Video from(String url) {
-        return new Video(url);
+    public static Video fromFile(File file) {
+        return fromUri(Uri.fromFile(file));
     }
 
+    public static Video fromUri(Uri uri) {
+        return new Video(uri);
+    }
+
+    private Uri uri;
 
     private int hashCode;
-    private final URL url;
-    private final String stringUrl;
     private volatile byte[] cacheBytes;
 
-    private Video(URL url) {
-        this.url = url;
-        this.stringUrl = null;
+    private Video(Uri uri) {
+        this.uri = uri;
     }
 
-    private Video(String stringUrl) {
-        this.url = null;
-        this.stringUrl = stringUrl;
+    public Uri getUri() {
+        return uri;
     }
 
     @Override
@@ -62,10 +66,6 @@ public class Video implements Key {
         return hashCode;
     }
 
-    public String getStringUrl() {
-        return stringUrl != null ? stringUrl : url != null ? url.toString() : "";
-    }
-
     private byte[] getCacheBytes() {
         if(cacheBytes == null) {
             cacheBytes = getCacheKey().getBytes(CHARSET);
@@ -74,6 +74,6 @@ public class Video implements Key {
     }
 
     private String getCacheKey() {
-        return "video:" + getStringUrl();
+        return "video:" + getUri().toString();
     }
 }
