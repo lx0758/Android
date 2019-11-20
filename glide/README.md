@@ -10,7 +10,11 @@ implementation 'com.liux.android:glide:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
+    1.
+
+### 0.2.1_2019-11-20
     1.升级 Glide 版本
+    2.更新视频缩略图加载过程
 
 ### 0.2.0_2019-08-26
     1.支持库迁移至AndroidX

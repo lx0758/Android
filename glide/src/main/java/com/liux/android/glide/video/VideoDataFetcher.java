@@ -1,13 +1,15 @@
 package com.liux.android.glide.video;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
-import android.os.Build;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.data.DataFetcher;
 
 import java.io.ByteArrayInputStream;
@@ -21,57 +23,52 @@ import java.util.HashMap;
 
 public class VideoDataFetcher implements DataFetcher<InputStream> {
 
-    private Video mVideo;
-    private int mWidth, mHeight;
+    private Context context;
+    private Video video;
+    private int width, height;
 
-    private MediaMetadataRetriever mMediaMetadataRetriever;
-
-    VideoDataFetcher(Video video, int width, int height) {
-        mVideo = video;
-        mWidth = width;
-        mHeight = height;
+    VideoDataFetcher(Context context, Video video, int width, int height, Options options) {
+        this.context = context;
+        this.video = video;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
     public void loadData(@NonNull Priority priority, @NonNull final DataCallback<? super InputStream> dataCallback) {
-        String url = mVideo.getStringUrl();
-        MediaMetadataRetriever retriever = getMediaMetadataRetriever();
+        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
         try {
-            if (Build.VERSION.SDK_INT >= 14) {
-                retriever.setDataSource(url, new HashMap<String, String>());
+            Uri uri = video.getUri();
+            String scheme = uri.getScheme();
+            if(scheme == null || scheme.length() == 0 || scheme.equals("file")) {
+                mediaMetadataRetriever.setDataSource(uri.getPath());
+            } else if (scheme.equals("http") || scheme.equals("https") || scheme.equals("ftp")){
+                mediaMetadataRetriever.setDataSource(uri.toString(), new HashMap<String, String>());
             } else {
-                retriever.setDataSource(url);
+                mediaMetadataRetriever.setDataSource(context, uri);
             }
 
-            Bitmap bitmap = retriever.getFrameAtTime();
-            if (bitmap == null) {
-                dataCallback.onLoadFailed(new NullPointerException("gets thumbnail failure."));
-                return;
-            }
+            Bitmap bitmap = mediaMetadataRetriever.getFrameAtTime(0);
+            if (bitmap == null) throw new NullPointerException("gets thumbnail failure.");
 
-            Bitmap scaleBitmap = scaleUp(bitmap, mWidth, mHeight);
+            Bitmap scaleBitmap = scaleUp(bitmap, width, height);
             bitmap.recycle();
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            scaleBitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
-            InputStream inputStream = new ByteArrayInputStream(baos.toByteArray());
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            scaleBitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);
+            InputStream inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
 
             dataCallback.onDataReady(inputStream);
         } catch (Exception e) {
             dataCallback.onLoadFailed(e);
         } finally {
-            try {
-                if (retriever != null) retriever.release();
-            } catch (Exception ignore) {}
+            mediaMetadataRetriever.release();
         }
     }
 
     @Override
     public void cleanup() {
-        if (mMediaMetadataRetriever != null) {
-            mMediaMetadataRetriever.release();
-            mMediaMetadataRetriever = null;
-        }
+
     }
 
     @Override
@@ -89,13 +86,6 @@ public class VideoDataFetcher implements DataFetcher<InputStream> {
     @Override
     public DataSource getDataSource() {
         return DataSource.REMOTE;
-    }
-
-    private MediaMetadataRetriever getMediaMetadataRetriever() {
-        if (mMediaMetadataRetriever == null) {
-            mMediaMetadataRetriever = new MediaMetadataRetriever();
-        }
-        return mMediaMetadataRetriever;
     }
 
     /**

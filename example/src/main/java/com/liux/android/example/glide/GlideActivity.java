@@ -1,5 +1,6 @@
 package com.liux.android.example.glide;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,7 +21,8 @@ import butterknife.OnClick;
  */
 
 public class GlideActivity extends AppCompatActivity {
-    private static final String TEST_URL = "http://html.6xyun.cn/media/avi";
+
+    private static final String TEST_URL = "https://html.6xyun.cn/media/dog.mp4";
 
     @BindView(R.id.iv_image)
     ImageView ivImage;
@@ -45,7 +47,7 @@ public class GlideActivity extends AppCompatActivity {
             case R.id.btn_realize:
                 GlideApp.with(ivImage)
                         .asBitmap()
-                        .load(Video.from(TEST_URL))
+                        .load(Video.fromUrl(TEST_URL))
                         .into(ivImage);
                 break;
         }
