@@ -100,7 +100,11 @@ implementation 'com.liux.android:http:x.y.z'
 更新说明
 ---
 ### x.y.z_201x-xx-xx
-    1.升级 OkHttp 版本
+    1.
+
+### 0.2.1_2019-12-18
+    1.DNS 新增重试支持
+    2.升级支持库
 
 ### 0.2.0_2019-08-26
     1.支持库迁移至AndroidX

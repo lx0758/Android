@@ -1,5 +1,7 @@
 package com.liux.android.http.dns;
 
+import androidx.annotation.NonNull;
+
 import com.liux.android.http.Http;
 
 import java.io.IOException;
@@ -17,12 +19,16 @@ import okhttp3.ResponseBody;
 
 public class TencentHttpDns extends HttpDns {
 
-    public TencentHttpDns(int time, TimeUnit timeUnit) {
-        super(time, timeUnit);
+    public TencentHttpDns() {
+        this(500, TimeUnit.MILLISECONDS, 2);
+    }
+
+    public TencentHttpDns(int time, TimeUnit timeUnit, int maxRetryCount) {
+        super(time, timeUnit, maxRetryCount);
     }
 
     @Override
-    public DnsResult lookupHttpDns(String hostname) throws UnknownHostException {
+    public @NonNull DnsResult lookupHttpDns(String hostname) throws UnknownHostException {
         HttpUrl httpUrl = new HttpUrl.Builder()
                 .scheme("http")
                 .host("119.29.29.29")
@@ -34,10 +40,10 @@ public class TencentHttpDns extends HttpDns {
         Call call = getOkHttpClient().newCall(request);
         try {
             Response response = call.execute();
-            if (!response.isSuccessful()) throw new UnknownHostException("Broken system behaviour for dns lookup of " + hostname);
+            if (!response.isSuccessful()) throw new IOException("request failed");
 
             ResponseBody responseBody = response.body();
-            if (responseBody == null || responseBody.contentLength() <= 0) return new DnsResult().setInetAddresses(Collections.<InetAddress>emptyList());
+            if (responseBody == null || responseBody.contentLength() <= 0) throw new IOException("content is empty");
 
             String result = responseBody.string();
 
