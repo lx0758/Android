@@ -75,11 +75,6 @@ public class BodyRequest<T extends BodyRequest> extends QueryRequest<T> {
     }
 
     @Override
-    public T distinguishRequest(boolean distinguish) {
-        return super.distinguishRequest(distinguish);
-    }
-
-    @Override
     public T fragment(String fragment) {
         return super.fragment(fragment);
     }
@@ -334,6 +329,7 @@ public class BodyRequest<T extends BodyRequest> extends QueryRequest<T> {
     }
 
     private RequestBody onCreateRequestBody() {
+        if (mBodyType == null) mBodyType = "";
         if (mBodyObject instanceof String) {
             return RequestBody.create(MediaType.parse(mBodyType), (String) mBodyObject);
         } else if (mBodyObject instanceof ByteString) {

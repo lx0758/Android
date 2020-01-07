@@ -26,7 +26,6 @@ public abstract class HttpDns extends TimeOutDns {
                 .connectTimeout(time, timeUnit)
                 .writeTimeout(time, timeUnit)
                 .readTimeout(time, timeUnit)
-                .retryOnConnectionFailure(false)
                 .build();
     }
 

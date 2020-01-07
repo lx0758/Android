@@ -7,7 +7,10 @@ import com.liux.android.http.interceptor.TimeoutInterceptor;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.FailException;
+import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -22,16 +25,9 @@ import okhttp3.Response;
 
 public abstract class Request<T extends Request> implements Callback {
 
-    private static final String HEADER_REQUEST_NAME = "Request-From";
-    private static final String HEADER_REQUEST_VALUE = "Http";
-
-    public static boolean isManuallyRequest(okhttp3.Request request) {
-        String from = request.header(HEADER_REQUEST_NAME);
-        return !TextUtils.isEmpty(from) && HEADER_REQUEST_VALUE.equals(from);
-    }
-
     private String mUrl;
     private Object mTag;
+    private Map<Class<?>, Object> mTags = Collections.emptyMap();
     private Method mMethod;
     private Result mResult;
     private WeakReference<RequestManager> mRequestManagerWeakReference;
@@ -44,8 +40,6 @@ public abstract class Request<T extends Request> implements Callback {
     public Request(Call.Factory factory, Method method) {
         mFactory = factory;
         mMethod = method;
-
-        distinguishRequest(true);
     }
 
     @Override
@@ -114,17 +108,14 @@ public abstract class Request<T extends Request> implements Callback {
         return (T) this;
     }
 
-    public T distinguishRequest(boolean distinguish) {
-        if (distinguish) {
-            getHeaderHashMap().put(HEADER_REQUEST_NAME, HEADER_REQUEST_VALUE);
-        } else {
-            getHeaderHashMap().remove(HEADER_REQUEST_NAME);
-        }
+    public T tag(Object object) {
+        mTag = object;
         return (T) this;
     }
 
-    public T tag(Object object) {
-        mTag = object;
+    public <TT> T tag(Class<? super TT> type, TT tag) {
+        if (mTags.isEmpty()) mTags = new LinkedHashMap<>();
+        mTags.put(type, type.cast(tag));
         return (T) this;
     }
 
@@ -190,7 +181,10 @@ public abstract class Request<T extends Request> implements Callback {
         okhttp3.Request.Builder builder = new okhttp3.Request.Builder();
         builder = onCreateRequestBuilder(builder);
 
-        builder.url(httpUrl).tag(getTag()).headers(Headers.of(getHeaderHashMap()));
+        builder.url(httpUrl).headers(Headers.of(getHeaderHashMap())).tag(getTag()).tag(Request.class, this);
+        for (Map.Entry<Class<?>, Object> classObjectEntry : getTags().entrySet()) {
+            builder.tag((Class<? super Object>) classObjectEntry.getKey(), classObjectEntry.getValue());
+        }
 
         okhttp3.Request request = builder.build();
         request = onCreateRequest(request);
@@ -205,6 +199,10 @@ public abstract class Request<T extends Request> implements Callback {
 
     protected Object getTag() {
         return mTag;
+    }
+
+    protected Map<Class<?>, Object> getTags() {
+        return mTags;
     }
 
     protected Method getMethod() {

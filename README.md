@@ -63,4 +63,4 @@ Library
 
 License
 ---
-[The MIT License Copyright (c) 2017 Liux](/LICENSE.txt)
+[The MIT License Copyright (c) 2017-2020 Liux](/LICENSE.txt)

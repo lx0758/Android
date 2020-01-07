@@ -124,6 +124,7 @@ public class RequestInterceptor implements Interceptor {
      */
     private void checkBodyRequest(Request request, Request.Builder requestBuilder) throws IOException {
         RequestBody requestBody = request.body();
+        if (requestBody == null) return;
         if (requestBody instanceof WrapperRequestBody) {
             WrapperRequestBody wrapperRequestBody = (WrapperRequestBody) requestBody;
             checkWrapperRequestBodyParams(request, wrapperRequestBody, requestBuilder);
@@ -278,11 +279,12 @@ public class RequestInterceptor implements Interceptor {
         Map<String, String> queryParams = new IdentityHashMap<>();
         resolveQueryParam(request, queryParams);
 
-        OnRequestListener.BodyParam bodyParam = new OnRequestListener.BodyParam();
-        // 读取原始参数
+        OnRequestListener.BodyParam bodyParam = null;
+
         MediaType mediaType = requestBody.contentType();
-        if (mediaType != null) bodyParam.setType(mediaType.toString());
         if (HttpUtil.isTextMediaType(mediaType)) {
+            bodyParam = new OnRequestListener.BodyParam();
+            bodyParam.setType(mediaType.toString());
             Buffer buffer = new Buffer();
             requestBody.writeTo(buffer);
             bodyParam.setString(buffer.readUtf8());
@@ -290,14 +292,13 @@ public class RequestInterceptor implements Interceptor {
 
         mOnRequestListener.onBodyRequest(request, queryParams, bodyParam);
 
-        MediaType contentType = null;
-        if (bodyParam.getType() != null) {
-            contentType = MediaType.parse(bodyParam.getType());
+        if (bodyParam != null) {
+            String typeString = bodyParam.getType();
+            if (typeString == null) typeString = "";
+            String bodyString = bodyParam.getString();
+            if (bodyString == null) bodyString = "";
+            requestBody = RequestBody.create(MediaType.parse(typeString), bodyString);
         }
-        if (bodyParam.getString() == null) {
-            bodyParam.setString("");
-        }
-        requestBody = RequestBody.create(contentType, bodyParam.getString());
 
         HttpUrl httpUrl = revertQueryParam(request, queryParams);
 

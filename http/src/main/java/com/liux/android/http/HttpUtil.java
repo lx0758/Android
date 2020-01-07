@@ -60,7 +60,7 @@ public class HttpUtil {
      * @return
      */
     public static boolean isManuallyRequest(okhttp3.Request request) {
-        return Request.isManuallyRequest(request);
+        return request.tag(Request.class) != null;
     }
 
     /**
@@ -291,67 +291,6 @@ public class HttpUtil {
         MediaType mediaType = getMimeType(file);
         RequestBody body = RequestBody.create(mediaType, file);
         return MultipartBody.Part.createFormData(name, fileName, body);
-    }
-
-    /**
-     * 字符转JSON
-     * @param s
-     * @return
-     */
-    public static String string2Json(String s) {
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            switch (c) {
-                case '\"':
-                    sb.append("\\\"");
-                    break;
-                case '\\':
-                    sb.append("\\\\");
-                    break;
-                case '/':
-                    sb.append("\\/");
-                    break;
-                case '\b':
-                    sb.append("\\b");
-                    break;
-                case '\f':
-                    sb.append("\\f");
-                    break;
-                case '\n':
-                    sb.append("\\n");
-                    break;
-                case '\r':
-                    sb.append("\\r");
-                    break;
-                case '\t':
-                    sb.append("\\t");
-                    break;
-                default:
-                    sb.append(c);
-                    break;
-            }
-        }
-        return sb.toString();
-    }
-
-    /**
-     * JSON转字符
-     * @param json
-     * @return
-     */
-    public static String json2String(String json) {
-        if (json.indexOf('"') == 0) json = json.substring(1);
-        if (json.lastIndexOf('"') == json.length() - 1) json = json.substring(0, json.length() - 1);
-        return json
-                .replace("\\\"", "\"")
-                .replace("\\\\", "\\")
-                .replace("\\/", "/")
-                .replace("\\b", "\b")
-                .replace("\\f", "\f")
-                .replace("\\n", "\n")
-                .replace("\\r", "\r")
-                .replace("\\t", "\t");
     }
 
     /**

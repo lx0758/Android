@@ -50,14 +50,6 @@ public interface OnRequestListener {
         private String type;
         private String string;
 
-        public BodyParam() {
-        }
-
-        public BodyParam(String type, String string) {
-            this.type = type;
-            this.string = string;
-        }
-
         public String getType() {
             return type;
         }
