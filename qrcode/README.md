@@ -9,7 +9,7 @@ implementation 'com.liux.android:qrcode:x.y.z'
 
 更新说明
 ---
-### x.y.z_201x-xx-xx
+### x.y.z_202x-xx-xx
     1.升级 ZXing 版本
 
 ### 0.2.0_2019-08-26

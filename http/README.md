@@ -99,7 +99,10 @@ implementation 'com.liux.android:http:x.y.z'
 
 更新说明
 ---
-### x.y.z_201x-xx-xx
+### x.y.z_202x-xx-xx
+    1.
+    
+### 0.2.2_2020-01-07
     1.优化 HttpDNS 配置
     2.优化请求创建器逻辑
     3.优化请求拦截器逻辑

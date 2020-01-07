@@ -9,7 +9,7 @@ implementation 'com.liux.android:util:x.y.z'
 
 更新说明
 ---
-### x.y.z_201x-xx-xx
+### x.y.z_202x-xx-xx
     1.
 
 ### 0.2.3_2019-12-19
