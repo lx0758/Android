@@ -79,6 +79,7 @@ public class HttpLoggingInterceptor implements Interceptor {
     public enum Level {
         /** No logs. */
         NONE,
+
         /**
          * Logs request and response lines.
          *
@@ -90,6 +91,7 @@ public class HttpLoggingInterceptor implements Interceptor {
          * }</pre>
          */
         BASIC,
+
         /**
          * Logs request and response lines and their respective headers.
          *
@@ -108,6 +110,7 @@ public class HttpLoggingInterceptor implements Interceptor {
          * }</pre>
          */
         HEADERS,
+
         /**
          * Logs request and response lines and their respective headers and bodies (if present).
          *

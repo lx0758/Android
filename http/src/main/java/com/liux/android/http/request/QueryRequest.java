@@ -75,11 +75,6 @@ public class QueryRequest<T extends QueryRequest> extends Request<T> {
     }
 
     @Override
-    public T distinguishRequest(boolean distinguish) {
-        return super.distinguishRequest(distinguish);
-    }
-
-    @Override
     protected HttpUrl.Builder onCreateHttpUrlBuilder(HttpUrl.Builder builder) {
         for (Map.Entry<String, String> param : getQueryHashMap().entrySet()) {
             builder.addEncodedQueryParameter(param.getKey(), param.getValue());
