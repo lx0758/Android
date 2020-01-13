@@ -101,6 +101,9 @@ implementation 'com.liux.android:http:x.y.z'
 ---
 ### x.y.z_202x-xx-xx
     1.
+
+### 0.2.3_2020-01-13
+    1.紧急升级 OKHttp 版本, 旧版本有 BUG
     
 ### 0.2.2_2020-01-07
     1.优化 HttpDNS 配置
