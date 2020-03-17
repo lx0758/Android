@@ -42,9 +42,6 @@ public class AbstractsActivity extends AppCompatActivity {
             case R.id.btn_fragment_nesting:
                 intent = new Intent(this, NestingFragmentActivity.class);
                 break;
-            case R.id.btn_abstracts_dialog:
-                intent = new Intent(this, DialogActivity.class);
-                break;
         }
         startActivity(intent);
     }

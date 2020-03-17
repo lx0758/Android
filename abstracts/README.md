@@ -10,7 +10,7 @@ implementation 'com.liux.android:abstracts:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1.
+    1.移除 Dialog 相关代码
 
 ### 0.2.2_2019-10-07
     1.修复直接添加Fragment时懒加载失效问题

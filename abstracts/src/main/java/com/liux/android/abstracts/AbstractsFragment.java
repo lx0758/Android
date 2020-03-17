@@ -1,5 +1,6 @@
 package com.liux.android.abstracts;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,9 +9,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
 
 import com.liux.android.abstracts.touch.TouchCallback;
 import com.liux.android.abstracts.touch.TouchHost;
+
+import java.lang.reflect.Field;
 
 /**
  * 抽象Fragment,提供以下能力 <br>
@@ -18,17 +24,19 @@ import com.liux.android.abstracts.touch.TouchHost;
  * 2.重定义生命周期细节 {@link #onLazyLoad()} {@link #onVisibleChanged()}
  * 3.修复某些版本某些情况下 Fragent 显示状态不保存的问题
  * Created by Liux on 2017/8/7.
+ * 2020-3-17 <br>
+ * 1.移除代理模式
  */
 
-public abstract class AbstractsFragment extends Fragment implements IAbstractsFragment {
-    private String TAG = "AbstractsFragment";
+public abstract class AbstractsFragment extends Fragment {
+    private static final String STATE_SAVE_IS_HIDDEN = "STATE_SAVE_IS_HIDDEN";
 
-    private AbstractsFragmentProxy mProxy = new AbstractsFragmentProxy(this);
+    private String TAG = "AbstractsFragment";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mProxy.onCreate(savedInstanceState);
+        restoreHideState(savedInstanceState);
     }
 
     @Nullable
@@ -38,92 +46,202 @@ public abstract class AbstractsFragment extends Fragment implements IAbstractsFr
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mProxy.onViewCreated();
+        mViewCreated = true;
+        if (!isViewPagerItem()) mUserVisible = true;
+        checkLazyLoad();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        mProxy.onStart();
+        checkVisibleChanged();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mProxy.onStop();
+        mStopCalled = true;
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        mProxy.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mProxy.onDetach();
+        saveHideState(outState);
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        mProxy.onHiddenChanged(hidden);
+        if (hidden) checkVisibleChanged();
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        mProxy.setUserVisibleHint(isVisibleToUser);
+        boolean callLazyLoad = mCallLazyLoad;
+
+        mUserVisible = isVisibleToUser;
+        checkLazyLoad();
+
+        if (callLazyLoad) checkVisibleChanged();
     }
 
-    @Override
-    public Fragment getTarget() {
-        return this;
+    // ===============================================================
+
+    private void restoreHideState(Bundle savedInstanceState) {
+        if (savedInstanceState != null && savedInstanceState.containsKey(STATE_SAVE_IS_HIDDEN)) {
+            boolean isHidden = savedInstanceState.getBoolean(STATE_SAVE_IS_HIDDEN);
+            savedInstanceState.remove(STATE_SAVE_IS_HIDDEN);
+            Fragment fragment = this;
+            FragmentManager fm = fragment.getFragmentManager();
+            if (fm != null) {
+                FragmentTransaction ft = fm.beginTransaction();
+                if (isHidden) {
+                    ft.hide(fragment);
+                } else {
+                    ft.show(fragment);
+                }
+                ft.commit();
+            }
+        }
     }
 
-    @Override
-    public boolean isHandlerTouch() {
-        return mProxy.isHandlerTouch();
+    private void saveHideState(Bundle outState) {
+        outState.putBoolean(STATE_SAVE_IS_HIDDEN, isHidden());
     }
 
-    @Override
-    public void setHandlerTouch(boolean handlerTouch) {
-        mProxy.setHandlerTouch(handlerTouch);
+    // ===============================================================
+
+    public void onVisibleChanged() {
+
     }
 
-    @Override
-    public boolean hasIgnoreView(View view) {
-        return mProxy.hasIgnoreView(view);
-    }
-
-    @Override
-    public void addIgnoreView(View view) {
-        mProxy.addIgnoreView(view);
-    }
-
-    @Override
-    public void removeIgnoreView(View view) {
-        mProxy.removeIgnoreView(view);
-    }
-
-    @Override
-    public void addTouchCallback(TouchCallback touchCallback) {
-        mProxy.addTouchCallback(touchCallback);
-    }
-
-    @Override
-    public void removeTouchCallback(TouchCallback touchCallback) {
-        mProxy.removeTouchCallback(touchCallback);
-    }
-
-    @Override
     public void onLazyLoad() {
 
     }
 
-    @Override
-    public void onVisibleChanged() {
+    private boolean mViewCreated = false;
+    private boolean mUserVisible = false;
+    private boolean mCallLazyLoad = false;
 
+    /**
+     * 检查是否调用懒加载方法
+     * 保证在视图创建完成后第一次显示时调用一次目标方法
+     */
+    private void checkLazyLoad() {
+        if (mCallLazyLoad) return;
+        if (!mViewCreated) return;
+        if (!mUserVisible) return;
+
+        mCallLazyLoad = true;
+        onLazyLoad();
+    }
+
+    private ViewGroup mContainer;
+
+    /**
+     * 检查是不是 ViewPager 的一个条目
+     * @return
+     */
+    private boolean isViewPagerItem() {
+        if (mContainer == null) {
+            try {
+                Class clazz = Fragment.class;
+                Field[] fields = clazz.getDeclaredFields();
+                Field containerField = null;
+                for (Field field : fields) {
+                    if (field.getType() == ViewGroup.class) {
+                        containerField = field;
+                        break;
+                    }
+                }
+                if (containerField != null) {
+                    containerField.setAccessible(true);
+                    mContainer = (ViewGroup) containerField.get(this);
+                }
+            } catch (Exception ignore) {}
+        }
+        return mContainer instanceof ViewPager;
+    }
+
+    /**
+     * 当Fragment为第一个展示的页面时,会调用 {@link Fragment#onStart()} 方法
+     */
+    private boolean mStopCalled = false;
+
+    /**
+     * 检查视图状态是否已经改变为可视状态
+     * 保证是在懒加载和视图创建完毕之后的生命周期中调用
+     */
+    private void checkVisibleChanged() {
+        if (!mStopCalled) {
+            mStopCalled = true;
+            return;
+        }
+
+        if (!mCallLazyLoad) return;
+        if (!mViewCreated) return;
+        if (!mUserVisible) return;
+
+        onVisibleChanged();
+    }
+
+    // ===============================================================
+
+    public boolean isHandlerTouch() {
+        TouchHost touchHost = getHandlerTouch();
+        if (touchHost == null) return false;
+        if (!touchHost.isHandlerTouch()) return false;
+        if (touchHost.hasIgnoreView(getView())) return false;
+        return true;
+    }
+
+    public void setHandlerTouch(boolean handlerTouch) {
+        TouchHost touchHost = getHandlerTouch();
+        if (touchHost == null) return;
+        if (!touchHost.isHandlerTouch()) return;
+        if (handlerTouch) {
+            touchHost.removeIgnoreView(getView());
+        } else {
+            touchHost.addIgnoreView(getView());
+        }
+    }
+
+    public boolean hasIgnoreView(View view) {
+        TouchHost touchHost = getHandlerTouch();
+        if (touchHost == null) return false;
+        return touchHost.hasIgnoreView(view);
+    }
+
+    public void addIgnoreView(View view) {
+        TouchHost touchHost = getHandlerTouch();
+        if (touchHost == null) return;
+        touchHost.addIgnoreView(view);
+    }
+
+    public void removeIgnoreView(View view) {
+        TouchHost touchHost = getHandlerTouch();
+        if (touchHost == null) return;
+        touchHost.removeIgnoreView(view);
+    }
+
+    public void addTouchCallback(TouchCallback touchCallback) {
+        TouchHost touchHost = getHandlerTouch();
+        if (touchHost == null) return;
+        touchHost.addTouchCallback(touchCallback);
+    }
+
+    public void removeTouchCallback(TouchCallback touchCallback) {
+        TouchHost touchHost = getHandlerTouch();
+        if (touchHost == null) return;
+        touchHost.removeTouchCallback(touchCallback);
+    }
+
+    private TouchHost getHandlerTouch() {
+        Activity activity = getActivity();
+        if (activity instanceof TouchHost) {
+            return (TouchHost) activity;
+        }
+        return null;
     }
 }
