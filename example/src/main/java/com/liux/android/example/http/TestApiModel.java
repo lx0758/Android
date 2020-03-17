@@ -1,11 +1,11 @@
 package com.liux.android.example.http;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSON;
 
 import java.io.File;
 import java.io.InputStream;
 
-import io.reactivex.Observer;
+import io.reactivex.SingleObserver;
 
 /**
  * Created by Liux on 2018/1/16.
@@ -13,23 +13,23 @@ import io.reactivex.Observer;
 
 public interface TestApiModel {
 
-    void queryWeather(String code, Observer<JSONObject> observer);
+    void queryWeather(String code, SingleObserver<JSON> observer);
 
-    void queryIP(String ip, Observer<JSONObject> observer);
+    void queryIP(String ip, SingleObserver<JSON> observer);
 
-    void queryMobile(String mobile, Observer<JSONObject> observer);
+    void queryMobile(String mobile, SingleObserver<JSON> observer);
 
-    void queryExpress(String code, Observer<JSONObject> observer);
+    void queryExpress(String code, SingleObserver<JSON> observer);
 
-    void testTimeout(String data, Observer<JSONObject> observer);
+    void testTimeout(String data, SingleObserver<JSON> observer);
 
-    void testTimeoutGlobal(String data, Observer<JSONObject> observer);
+    void testTimeoutGlobal(String data, SingleObserver<JSON> observer);
 
-    void testGet(int id, String name, Observer<JSONObject> observer);
+    void testGet(int id, String name, SingleObserver<JSON> observer);
 
-    void testPostBody(int id, String name, Observer<JSONObject> observer);
+    void testPostBody(int id, String name, SingleObserver<JSON> observer);
 
-    void testPostForm(int id, String name, Observer<JSONObject> observer);
+    void testPostForm(int id, String name, SingleObserver<JSON> observer);
 
-    void testPostMultipart(int id, String name, File file, byte[] bytes, InputStream stream, Observer<JSONObject> observer);
+    void testPostMultipart(int id, String name, File file, byte[] bytes, InputStream stream, SingleObserver<JSON> observer);
 }

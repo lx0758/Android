@@ -1,9 +1,13 @@
 package com.liux.android.example.http;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.liux.android.http.Http;
 
-import io.reactivex.Observable;
+import java.util.List;
+import java.util.Map;
+
+import io.reactivex.Single;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
@@ -24,19 +28,54 @@ import retrofit2.http.Query;
 public interface TestApi {
 
     @GET("retorfit-get")
-    Observable<JSONObject> testGet(
+    Single<JSONObject> testGet(
             @Query("id") int id,
             @Query("name") String name
     );
 
     @POST("retorfit-post-body")
-    Observable<JSONObject> testPostBody(
+    Single<JSONObject> testPostBody(
             @Body RequestBody body
+    );
+
+    @POST("retorfit-post-body")
+    Single<JSONObject> testPostBody(
+            @Body TestBean testBean
+    );
+
+    @POST("retorfit-post-body")
+    Single<JSONObject> testPostBody(
+            @Body JSON json
+    );
+
+    @POST("retorfit-post-body")
+    Single<JSONObject> testPostBody(
+            @Body int i
+    );
+
+    @POST("retorfit-post-body")
+    Single<JSONObject> testPostBody(
+            @Body String string
+    );
+
+    @POST("retorfit-post-body")
+    Single<JSONObject> testPostBody(
+            @Body Map<String, String> map
+    );
+
+    @POST("retorfit-post-body")
+    Single<JSONObject> testPostBody(
+            @Body List<String> list
+    );
+
+    @POST("retorfit-post-body")
+    Single<JSONObject> testPostBody(
+            @Body String[] strings
     );
 
     @FormUrlEncoded
     @POST("retorfit-post-form")
-    Observable<JSONObject> testPostForm(
+    Single<JSONObject> testPostForm(
             @Query("id") int id,
             @Query("name") String name,
             @Field("id") int id2,
@@ -45,7 +84,7 @@ public interface TestApi {
 
     @Multipart
     @POST("retorfit-post-multipart")
-    Observable<JSONObject> testPostMultipart(
+    Single<JSONObject> testPostMultipart(
             @Query("id") int id,
             @Query("name") String name,
             @Part("id") int id2,
@@ -59,7 +98,7 @@ public interface TestApi {
     @Headers({
             Http.HEADER_BASE_URL + ":http://api.ip138.com/"
     })
-    Observable<JSONObject> queryWeather(
+    Single<JSONObject> queryWeather(
             @Header("token") String token,
             @Query("code") String code,
             @Query("type") String type
@@ -69,20 +108,20 @@ public interface TestApi {
     @Headers({
             Http.HEADER_BASE_RULE + ":138"
     })
-    Observable<JSONObject> queryIP(
+    Single<JSONObject> queryIP(
             @Header("token") String token,
             @Query("ip") String ip
     );
 
     // 以"/"开头的表示从根路径开始
     @GET("mobile/")
-    Observable<JSONObject> queryMobile(
+    Single<JSONObject> queryMobile(
             @Header("token") String token,
             @Query("mobile") String mobile
     );
 
     @GET("/express/info/")
-    Observable<JSONObject> queryExpress(
+    Single<JSONObject> queryExpress(
             @Header("token") String token,
             @Query("no") String no
     );
@@ -94,13 +133,13 @@ public interface TestApi {
             Http.HEADER_TIMEOUT_WRITE + ":6000",
             Http.HEADER_TIMEOUT_READ + ":6000"
     })
-    Observable<JSONObject> testTimeout(
+    Single<JSONObject> testTimeout(
             @Query("data") String data
     );
 
     // 以"/"开头的表示从根路径开始
     @GET("retorfit-timeout-global")
-    Observable<JSONObject> testTimeoutGlobal(
+    Single<JSONObject> testTimeoutGlobal(
             @Query("data") String data
     );
 }

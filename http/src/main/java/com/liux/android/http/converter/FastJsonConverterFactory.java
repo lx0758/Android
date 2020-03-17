@@ -16,32 +16,28 @@ import retrofit2.Converter.Factory;
 import retrofit2.Retrofit;
 
 public class FastJsonConverterFactory extends Factory {
-    private ParserConfig parserConfig = ParserConfig.getGlobalInstance();
-    private int featureValues;
-    private Feature[] features;
-    private SerializeConfig serializeConfig = SerializeConfig.getGlobalInstance();
-    private SerializerFeature[] serializerFeatures;
 
     public static FastJsonConverterFactory create() {
         return new FastJsonConverterFactory();
     }
 
-    private FastJsonConverterFactory() {
-        this.featureValues = JSON.DEFAULT_PARSER_FEATURE;
-        this.features = new Feature[] {
-                Feature.InitStringFieldAsEmpty,
-                Feature.SupportArrayToBean,
-                Feature.SupportNonPublicField,
-                Feature.SupportAutoType
-        };
-        this.serializerFeatures = new SerializerFeature[] {
-                SerializerFeature.WriteMapNullValue,
-                SerializerFeature.WriteNullBooleanAsFalse,
-                SerializerFeature.WriteNullListAsEmpty,
-                SerializerFeature.WriteNullNumberAsZero,
-                SerializerFeature.WriteNullStringAsEmpty
-        };
-    }
+    private ParserConfig parserConfig = ParserConfig.getGlobalInstance();
+    private int featureValues = JSON.DEFAULT_PARSER_FEATURE;
+    private Feature[] features = new Feature[] {
+            Feature.InitStringFieldAsEmpty,
+            Feature.SupportArrayToBean,
+            Feature.SupportNonPublicField,
+            Feature.SupportAutoType
+    };
+
+    private SerializeConfig serializeConfig = SerializeConfig.getGlobalInstance();
+    private SerializerFeature[] serializerFeatures = new SerializerFeature[] {
+            SerializerFeature.WriteMapNullValue,
+            SerializerFeature.WriteNullBooleanAsFalse,
+            SerializerFeature.WriteNullListAsEmpty,
+            SerializerFeature.WriteNullNumberAsZero,
+            SerializerFeature.WriteNullStringAsEmpty
+    };
 
     @Override
     public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {
@@ -59,16 +55,16 @@ public class FastJsonConverterFactory extends Factory {
     }
 
     public ParserConfig getParserConfig() {
-        return this.parserConfig;
+        return parserConfig;
     }
 
-    public FastJsonConverterFactory setParserConfig(ParserConfig config) {
-        this.parserConfig = config;
+    public FastJsonConverterFactory setParserConfig(ParserConfig parserConfig) {
+        this.parserConfig = parserConfig;
         return this;
     }
 
     public int getParserFeatureValues() {
-        return this.featureValues;
+        return featureValues;
     }
 
     public FastJsonConverterFactory setParserFeatureValues(int featureValues) {
@@ -77,7 +73,7 @@ public class FastJsonConverterFactory extends Factory {
     }
 
     public Feature[] getParserFeatures() {
-        return this.features;
+        return features;
     }
 
     public FastJsonConverterFactory setParserFeatures(Feature[] features) {
@@ -86,7 +82,7 @@ public class FastJsonConverterFactory extends Factory {
     }
 
     public SerializeConfig getSerializeConfig() {
-        return this.serializeConfig;
+        return serializeConfig;
     }
 
     public FastJsonConverterFactory setSerializeConfig(SerializeConfig serializeConfig) {
@@ -95,11 +91,11 @@ public class FastJsonConverterFactory extends Factory {
     }
 
     public SerializerFeature[] getSerializerFeatures() {
-        return this.serializerFeatures;
+        return serializerFeatures;
     }
 
-    public FastJsonConverterFactory setSerializerFeatures(SerializerFeature[] features) {
-        this.serializerFeatures = features;
+    public FastJsonConverterFactory setSerializerFeatures(SerializerFeature[] serializerFeatures) {
+        this.serializerFeatures = serializerFeatures;
         return this;
     }
 }

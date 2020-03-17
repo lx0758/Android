@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.liux.android.example.R;
 import com.liux.android.http.Http;
@@ -39,8 +40,8 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.Observer;
-import io.reactivex.observers.DisposableObserver;
+import io.reactivex.SingleObserver;
+import io.reactivex.observers.DisposableSingleObserver;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 
@@ -83,22 +84,17 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
     @OnClick({R.id.btn_retorfit_get, R.id.btn_retorfit_post_body, R.id.btn_retorfit_post_form, R.id.btn_retorfit_post_multipart, R.id.btn_retorfit_base_header, R.id.btn_retorfit_base_header_rule, R.id.btn_retorfit_base_global, R.id.btn_retorfit_base_global_root, R.id.btn_retorfit_timeout_header, R.id.btn_retorfit_timeout_global})
     public void onRetorfitClicked(View view) {
         String data = etData.getText().toString();
-        Observer<JSONObject> observable = new DisposableObserver<JSONObject>() {
+        SingleObserver<JSON> observable = new DisposableSingleObserver<JSON>() {
             @Override
-            public void onNext(JSONObject jsonObject) {
-                Log.d(TAG, "onNext" + jsonObject.toJSONString());
-                showData(jsonObject.toJSONString());
+            public void onSuccess(JSON json) {
+                Log.d(TAG, "onSuccess" + json.toJSONString());
+                showData(json.toJSONString());
             }
 
             @Override
             public void onError(Throwable e) {
                 Log.d(TAG, "onError", e);
                 TT.show("onError" + e);
-            }
-
-            @Override
-            public void onComplete() {
-                Log.d(TAG, "onComplete");
             }
         };
         switch (view.getId()) {

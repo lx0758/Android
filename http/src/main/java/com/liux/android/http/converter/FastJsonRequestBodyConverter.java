@@ -14,9 +14,8 @@ import okhttp3.RequestBody;
 import retrofit2.Converter;
 
 public class FastJsonRequestBodyConverter<T> implements Converter<T, RequestBody> {
-    private static final SerializerFeature[] EMPTY_SERIALIZER_FEATURES = new SerializerFeature[0];
-    private static final MediaType MEDIA_TYPE_TEXT = MediaType.parse("text/plain; charset=UTF-8");
-    private static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json; charset=UTF-8");
+    private static final MediaType MEDIA_TYPE_TEXT = MediaType.parse("text/plain;charset=UTF-8");
+    private static final MediaType MEDIA_TYPE_JSON = MediaType.parse("application/json;charset=UTF-8");
 
     private Type type;
     private SerializeConfig serializeConfig;
@@ -30,28 +29,20 @@ public class FastJsonRequestBodyConverter<T> implements Converter<T, RequestBody
 
     @Override
     public RequestBody convert(@NonNull T value) throws IOException {
-        byte[] content;
-        MediaType mediaType;
-
-        if (this.type != JSON.class) {
-            mediaType = MEDIA_TYPE_TEXT;
-            content = String.valueOf(value).getBytes();
-        } else {
-            mediaType = MEDIA_TYPE_JSON;
-            if(this.serializeConfig != null) {
-                if(this.serializerFeatures != null) {
-                    content = JSON.toJSONBytes(value, this.serializeConfig, this.serializerFeatures);
-                } else {
-                    content = JSON.toJSONBytes(value, this.serializeConfig, EMPTY_SERIALIZER_FEATURES);
-                }
-            } else if(this.serializerFeatures != null) {
-                content = JSON.toJSONBytes(value, this.serializerFeatures);
-            } else {
-                content = JSON.toJSONBytes(value, EMPTY_SERIALIZER_FEATURES);
-            }
+        if (!(value instanceof JSON)) {
+            return RequestBody.create(MEDIA_TYPE_TEXT, String.valueOf(value));
         }
-
-        return RequestBody.create(mediaType, content);
+        byte[] content;
+        if(this.serializeConfig != null && this.serializerFeatures != null) {
+            content = JSON.toJSONBytes(value, this.serializeConfig, this.serializerFeatures);
+        } else if(this.serializeConfig != null) {
+            content = JSON.toJSONBytes(value, this.serializeConfig);
+        } else if(this.serializerFeatures != null) {
+            content = JSON.toJSONBytes(value, this.serializerFeatures);
+        } else {
+            content = JSON.toJSONBytes(value);
+        }
+        return RequestBody.create(MEDIA_TYPE_JSON, content);
     }
 }
 
