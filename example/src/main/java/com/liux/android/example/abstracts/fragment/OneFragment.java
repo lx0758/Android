@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 
 import com.liux.android.abstracts.AbstractsFragment;
 import com.liux.android.example.R;
-import com.liux.android.example.abstracts.activity.DialogActivity;
 import com.liux.android.tool.TT;
 
 import butterknife.BindView;
@@ -48,7 +47,6 @@ public class OneFragment extends AbstractsFragment {
                 TT.show("点击了按钮");
                 break;
             case R.id.btn_button_2:
-                startActivity(new Intent(getContext(), DialogActivity.class));
                 break;
         }
     }

@@ -381,6 +381,7 @@ public class Http {
                     .connectTimeout(5, TimeUnit.SECONDS)
                     .writeTimeout(10, TimeUnit.SECONDS)
                     .readTimeout(10, TimeUnit.SECONDS)
+                    .pingInterval(30, TimeUnit.SECONDS)
                     .cache(new Cache(new File(cacheDir, "okhttp"), 50 * 1024 * 1024))
                     .retryOnConnectionFailure(true)
                     .addInterceptor(mTimeoutInterceptor)

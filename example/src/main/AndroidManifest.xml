@@ -45,8 +45,6 @@
             android:label="Fragment"/>
         <activity android:name=".abstracts.activity.NestingFragmentActivity"
             android:label="Fragment"/>
-        <activity android:name=".abstracts.activity.DialogActivity"
-            android:label="Dialog"/>
 
         <activity android:name=".boxing.BoxingActivity"
             android:label="Boxing"/>
