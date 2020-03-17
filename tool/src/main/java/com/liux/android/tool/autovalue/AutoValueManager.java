@@ -1,27 +1,23 @@
-package com.liux.android.tool.parameter;
+package com.liux.android.tool.autovalue;
 
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import java.lang.reflect.Field;
 
-/**
- * 主要做自动取值和自动存储
- * 在onCreate和onSaveInstance处调用
- * Created by LuoHaifeng on 2017/3/8.
- */
-
-public class ParameterManager {
+public class AutoValueManager {
 
     private static Application.ActivityLifecycleCallbacks activitySupportCallbacks = new Application.ActivityLifecycleCallbacks() {
+
         @Override
-        public void onActivityCreated(Activity activity, Bundle bundle) {
-            ParameterManager.injectValue(activity, activity.getIntent().getExtras(), bundle);
+        public void onActivityCreated(@NonNull Activity activity, Bundle bundle) {
+            AutoValueManager.injectValue(activity, activity.getIntent().getExtras(), bundle);
             if (activity instanceof FragmentActivity) {
                 ((FragmentActivity) activity).getSupportFragmentManager().unregisterFragmentLifecycleCallbacks(fragmentLifecycleCallbacks);
                 ((FragmentActivity) activity).getSupportFragmentManager().registerFragmentLifecycleCallbacks(fragmentLifecycleCallbacks, true);
@@ -29,47 +25,47 @@ public class ParameterManager {
         }
 
         @Override
-        public void onActivityStarted(Activity activity) {
+        public void onActivityStarted(@NonNull Activity activity) {
 
         }
 
         @Override
-        public void onActivityResumed(Activity activity) {
+        public void onActivityResumed(@NonNull Activity activity) {
 
         }
 
         @Override
-        public void onActivityPaused(Activity activity) {
+        public void onActivityPaused(@NonNull Activity activity) {
 
         }
 
         @Override
-        public void onActivityStopped(Activity activity) {
+        public void onActivityStopped(@NonNull Activity activity) {
 
         }
 
         @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
-            ParameterManager.saveValues(activity, bundle);
+        public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle bundle) {
+            AutoValueManager.saveValues(activity, bundle);
         }
 
         @Override
-        public void onActivityDestroyed(Activity activity) {
+        public void onActivityDestroyed(@NonNull Activity activity) {
 
         }
     };
 
     private static FragmentManager.FragmentLifecycleCallbacks fragmentLifecycleCallbacks = new FragmentManager.FragmentLifecycleCallbacks() {
         @Override
-        public void onFragmentPreCreated(FragmentManager fm, Fragment f, Bundle savedInstanceState) {
+        public void onFragmentPreCreated(@NonNull FragmentManager fm, @NonNull Fragment f, Bundle savedInstanceState) {
             super.onFragmentPreCreated(fm, f, savedInstanceState);
-            ParameterManager.injectValue(f, f.getArguments(), savedInstanceState);
+            AutoValueManager.injectValue(f, f.getArguments(), savedInstanceState);
         }
 
         @Override
-        public void onFragmentSaveInstanceState(FragmentManager fm, Fragment f, Bundle outState) {
+        public void onFragmentSaveInstanceState(@NonNull FragmentManager fm, @NonNull Fragment f, @NonNull Bundle outState) {
             super.onFragmentSaveInstanceState(fm, f, outState);
-            ParameterManager.saveValues(f, outState);
+            AutoValueManager.saveValues(f, outState);
         }
     };
 
@@ -83,11 +79,11 @@ public class ParameterManager {
      * @param target 需要注入的对象
      * @param froms 提供内容的Bundle列表
      */
-    public static void injectValue(Object target, Bundle... froms) {
+    private static void injectValue(Object target, Bundle... froms) {
         try {
             Field[] fields = target.getClass().getDeclaredFields();
             for (Field field : fields) {
-                Parameter parameter = field.getAnnotation(Parameter.class);
+                AutoValue parameter = field.getAnnotation(AutoValue.class);
                 if (parameter != null) {
                     field.setAccessible(true);
                     String key = parameter.value();
@@ -105,11 +101,11 @@ public class ParameterManager {
      * @param target 需要解析的对象
      * @param outState 存储容器
      */
-    public static void saveValues(Object target, Bundle outState) {
+    private static void saveValues(Object target, Bundle outState) {
         try {
             Field[] fields = target.getClass().getDeclaredFields();
             for (Field field : fields) {
-                Parameter parameter = field.getAnnotation(Parameter.class);
+                AutoValue parameter = field.getAnnotation(AutoValue.class);
                 if (parameter != null) {
                     field.setAccessible(true);
                     String key = parameter.value();
@@ -127,7 +123,7 @@ public class ParameterManager {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static <T> T getValueFromBundles(String key, T defaultValue, Bundle... froms) {
+    private static <T> T getValueFromBundles(String key, T defaultValue, Bundle... froms) {
         for (Bundle from : froms) {
             if (from != null && from.containsKey(key)) {
                 return (T) from.get(key);

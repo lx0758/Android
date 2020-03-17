@@ -1,4 +1,4 @@
-package com.liux.android.tool.parameter;
+package com.liux.android.tool.autovalue;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -8,11 +8,6 @@ import android.util.Size;
 import android.util.SizeF;
 
 import java.io.Serializable;
-
-/**
- * Bundle 存放Object类型,让其自动选择存放方式
- * Created by LuoHaifeng on 2017/3/8.
- */
 
 public class BundleUtil {
 
