@@ -10,7 +10,7 @@ implementation 'com.liux.android:tool:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1.
+    1.修复 ActivitysManager 一个BUG
 
 ### 0.2.2_2020-03-17
     1.参数自动工具更名

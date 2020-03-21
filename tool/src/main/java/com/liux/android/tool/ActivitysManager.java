@@ -15,18 +15,17 @@ public class ActivitysManager {
     private static Application.ActivityLifecycleCallbacks activityLifecycleCallbacks = new Application.ActivityLifecycleCallbacks() {
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-
+            getInstance().putActivity(activity);
         }
 
         @Override
         public void onActivityStarted(Activity activity) {
-            getInstance().putActivity(activity);
+
         }
 
         @Override
         public void onActivityResumed(Activity activity) {
             getInstance().updateTopActivity(activity);
-
         }
 
         @Override
@@ -36,7 +35,7 @@ public class ActivitysManager {
 
         @Override
         public void onActivityStopped(Activity activity) {
-            getInstance().removeActivity(activity);
+
         }
 
         @Override
@@ -46,7 +45,7 @@ public class ActivitysManager {
 
         @Override
         public void onActivityDestroyed(Activity activity) {
-
+            getInstance().removeActivity(activity);
         }
     };
 
@@ -65,7 +64,7 @@ public class ActivitysManager {
         return instance;
     }
 
-    private WeakReference<Activity> activityWeakReference = null;
+    private WeakReference<Activity> topActivity = null;
     private Stack<WeakReference<Activity>> activityStack = new Stack<>();
 
     /**
@@ -74,16 +73,18 @@ public class ActivitysManager {
      */
     public Activity getTopActivity() {
         // 先检查软引用
-        if (activityWeakReference != null) {
-            Activity activity = activityWeakReference.get();
+        if (topActivity != null) {
+            Activity activity = topActivity.get();
             if (activity != null) return activity;
         }
-        // 在检查堆栈
+        // 再检查堆栈
         for (Iterator<WeakReference<Activity>> iterator = activityStack.iterator(); iterator.hasNext(); ) {
-            WeakReference<Activity> weakReference = iterator.next();
-            Activity activity = weakReference.get();
-            if (activity != null) return activity;
-            iterator.remove();
+            Activity weakActivity = iterator.next().get();
+            if (weakActivity == null) {
+                iterator.remove();
+                continue;
+            }
+            return weakActivity;
         }
         return null;
     }
@@ -94,14 +95,13 @@ public class ActivitysManager {
      */
     public void finishActivity(Class... classes) {
         for (Iterator<WeakReference<Activity>> iterator = activityStack.iterator(); iterator.hasNext(); ) {
-            WeakReference<Activity> weakReference = iterator.next();
-            Activity activity = weakReference.get();
-            if (activity == null) {
+            Activity weakActivity = iterator.next().get();
+            if (weakActivity == null) {
                 iterator.remove();
                 continue;
             }
-            if (checkActivityInClassArray(classes, activity)) {
-                activity.finish();
+            if (checkActivityInClassArray(classes, weakActivity)) {
+                weakActivity.finish();
             }
         }
     }
@@ -112,14 +112,13 @@ public class ActivitysManager {
      */
     public void finishActivity(Activity... activities) {
         for (Iterator<WeakReference<Activity>> iterator = activityStack.iterator(); iterator.hasNext(); ) {
-            WeakReference<Activity> weakReference = iterator.next();
-            Activity activity = weakReference.get();
-            if (activity == null) {
+            Activity weakActivity = iterator.next().get();
+            if (weakActivity == null) {
                 iterator.remove();
                 continue;
             }
-            if (checkActivityInActivityArray(activities, activity)) {
-                activity.finish();
+            if (checkActivityInActivityArray(activities, weakActivity)) {
+                weakActivity.finish();
             }
         }
     }
@@ -129,13 +128,12 @@ public class ActivitysManager {
      */
     public void finishActivityAll() {
         for (Iterator<WeakReference<Activity>> iterator = activityStack.iterator(); iterator.hasNext(); ) {
-            WeakReference<Activity> weakReference = iterator.next();
-            Activity activity = weakReference.get();
-            if (activity == null) {
+            Activity weakActivity = iterator.next().get();
+            if (weakActivity == null) {
                 iterator.remove();
                 continue;
             }
-            activity.finish();
+            weakActivity.finish();
         }
     }
 
@@ -145,14 +143,13 @@ public class ActivitysManager {
      */
     public void finishActivityAll(Class... classes) {
         for (Iterator<WeakReference<Activity>> iterator = activityStack.iterator(); iterator.hasNext(); ) {
-            WeakReference<Activity> weakReference = iterator.next();
-            Activity activity = weakReference.get();
-            if (activity == null) {
+            Activity weakActivity = iterator.next().get();
+            if (weakActivity == null) {
                 iterator.remove();
                 continue;
             }
-            if (!checkActivityInClassArray(classes, activity)) {
-                activity.finish();
+            if (!checkActivityInClassArray(classes, weakActivity)) {
+                weakActivity.finish();
             }
         }
     }
@@ -163,14 +160,13 @@ public class ActivitysManager {
      */
     public void finishActivityAll(Activity... activities) {
         for (Iterator<WeakReference<Activity>> iterator = activityStack.iterator(); iterator.hasNext(); ) {
-            WeakReference<Activity> weakReference = iterator.next();
-            Activity activity = weakReference.get();
-            if (activity == null) {
+            Activity weakActivity = iterator.next().get();
+            if (weakActivity == null) {
                 iterator.remove();
                 continue;
             }
-            if (!checkActivityInActivityArray(activities, activity)) {
-                activity.finish();
+            if (!checkActivityInActivityArray(activities, weakActivity)) {
+                weakActivity.finish();
             }
         }
     }
@@ -180,18 +176,17 @@ public class ActivitysManager {
     }
 
     private void removeActivity(Activity activity) {
-        for (Iterator<WeakReference<Activity>> iterator = activityStack.iterator(); iterator.hasNext(); ) {
-            WeakReference<Activity> weakReference = iterator.next();
-            Activity tempActivity = weakReference.get();
-            if (tempActivity == null || activity == tempActivity) iterator.remove();
+        for (Iterator<WeakReference<Activity>> iterator = activityStack.iterator(); iterator.hasNext();) {
+            Activity weakActivity = iterator.next().get();
+            if (weakActivity == activity) iterator.remove();
         }
     }
 
     private void updateTopActivity(Activity activity) {
         if (activity != null) {
-            activityWeakReference = new WeakReference<>(activity);
+            topActivity = new WeakReference<>(activity);
         } else {
-            activityWeakReference = null;
+            topActivity = null;
         }
     }
 
@@ -205,8 +200,8 @@ public class ActivitysManager {
 
     private boolean checkActivityInActivityArray(Activity[] activities, Activity activity) {
         if (activities == null || activity == null) return false;
-        for (Activity tempActivity : activities) {
-            if (tempActivity == activity) return true;
+        for (Activity weakActivity : activities) {
+            if (weakActivity == activity) return true;
         }
         return false;
     }
