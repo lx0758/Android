@@ -12,6 +12,9 @@ implementation 'com.liux.android:tool:x.y.z'
 ### x.y.z_202x-xx-xx
     1.
 
+### 0.2.3_2020-03-21
+    1.修复 ActivitysManager 一个BUG
+
 ### 0.2.2_2020-03-17
     1.参数自动工具更名
 
