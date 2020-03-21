@@ -10,15 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * lx0758@qq.com
  */
 
-public interface IAppend<T, R extends RecyclerView.Adapter> {
-
-    int getItemCount();
-
-    void notifyItemInserted(int position);
-
-    void notifyItemChanged(int position, Object payload);
-
-
+public interface IAppendAdapter<T, R extends RecyclerView.Adapter> {
 
     /**
      * 设置页眉布局

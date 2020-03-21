@@ -62,7 +62,7 @@ public class DownloaderActivity extends AppCompatActivity {
         taskMultipleAdapter = new MultipleAdapter<Task>()
                 .addRule(new SingleRule<Task>(R.layout.item_downloader) {
                     @Override
-                    public void onDataBind(SuperHolder holder, int position, Task task, List<Object> payloads, State state) {
+                    public void onDataBind(SuperHolder holder, int position, Task task, List<Object> payloads, State iState) {
                         String statusTitle = "", operateTitle = "";
                         switch (task.getStatus()) {
                             case NEW:
