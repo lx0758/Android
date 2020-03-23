@@ -10,18 +10,19 @@ public interface OnSelectListener<T> {
      * 选择状态变化
      * @param t
      * @param position
-     * @param isSelect
+     * @param select
      * @return
      */
-    boolean onSelectChange(T t, int position, boolean isSelect);
+    boolean onSelectPre(T t, int position, boolean select);
 
     /**
      * 选择个数大于最大限制数
+     * 或者数据不支持选择
      */
     void onSelectFailure();
 
     /**
      * 选择个数达到最大限制数
      */
-    void onSelectComplete();
+    void onSelectFull();
 }

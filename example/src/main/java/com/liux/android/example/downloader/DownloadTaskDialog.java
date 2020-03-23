@@ -3,7 +3,6 @@ package com.liux.android.example.downloader;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,11 +14,6 @@ import com.liux.android.downloader.Status;
 import com.liux.android.downloader.UIStatusListener;
 import com.liux.android.downloader.core.Task;
 import com.liux.android.example.R;
-import com.liux.android.http.HttpUtil;
-import com.liux.android.tool.TT;
-import com.liux.android.util.UriUtil;
-
-import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

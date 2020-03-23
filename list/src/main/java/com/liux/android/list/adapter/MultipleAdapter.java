@@ -7,16 +7,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.liux.android.list.adapter.append.AppendProxy;
-import com.liux.android.list.adapter.append.IAppend;
-import com.liux.android.list.adapter.rule.IRule;
+import com.liux.android.list.adapter.append.IAppendAdapter;
+import com.liux.android.list.adapter.rule.IRuleAdapter;
 import com.liux.android.list.adapter.rule.Rule;
 import com.liux.android.list.adapter.rule.RuleProxy;
-import com.liux.android.list.adapter.state.IState;
-import com.liux.android.list.adapter.state.State;
-import com.liux.android.list.adapter.state.StateProxy;
 import com.liux.android.list.holder.MarginHolder;
-import com.liux.android.list.listener.OnSelectListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,14 +34,21 @@ import java.util.List;
  */
 
 public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
-        IRule<T, MultipleAdapter>, IState<T, MultipleAdapter>, IAppend<T, MultipleAdapter> {
+        IRuleAdapter<T, MultipleAdapter<T>>, IAppendAdapter<T, MultipleAdapter<T>> {
 
-    private RuleProxy<T> mRuleProxy = new RuleProxy<>(this);
-    private StateProxy<T> mStateProxy = new StateProxy<>(this);
-    private AppendProxy<T> mAppendProxy = new AppendProxy<>(this);
+    private List<T> mData;
+
+    private RuleProxy<T, MultipleAdapter<T>> mRuleProxy;
+    private AppendProxy<T, MultipleAdapter<T>> mAppendProxy;
 
     public MultipleAdapter() {
+        this(new ArrayList<T>());
+    }
 
+    public MultipleAdapter(List<T> data) {
+        mData = data;
+        mRuleProxy = new RuleProxy<>(this);
+        mAppendProxy = new AppendProxy<>(this);
     }
 
     @Override
@@ -54,8 +58,7 @@ public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         position = mAppendProxy.getRealPosition(position);
-
-        T t = getData().get(position);
+        T t = mData.get(position);
         return mRuleProxy.getRuleType(t);
     }
 
@@ -73,19 +76,11 @@ public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position, @NonNull List<Object> payloads) {
         super.onBindViewHolder(holder, position, payloads);
-        if (holder instanceof MarginHolder) {
-            return;
-        }
+        if (holder instanceof MarginHolder) return;
 
-        position = getRealPosition(position);
-
-        T t = getData().get(position);
+        T t = mData.get(getRealPosition(position));
         Rule rule = mRuleProxy.getObjectRule(t);
-
-        State<T> state = mStateProxy.getData().getState(position);
-        state.setSupportSelect(isEnabledSelect());
-
-        rule.onDataBind(holder, position, t, payloads, state);
+        rule.onDataBind(holder, position, t, payloads);
     }
 
     @Override
@@ -97,7 +92,7 @@ public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
     public int getItemCount() {
         int count = 0;
         count += mAppendProxy.getAppendItemCount();
-        count += mStateProxy.getData().size();
+        count += mData.size();
         return count;
     }
 
@@ -115,20 +110,17 @@ public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public MultipleAdapter<T> addRule(@NonNull Rule<? extends T, ? extends RecyclerView.ViewHolder> rule) {
-        mRuleProxy.addRule(rule);
-        return this;
+        return mRuleProxy.addRule(rule);
     }
 
     @Override
     public MultipleAdapter<T> setHeader(@NonNull View view) {
-        mAppendProxy.setHeader(view);
-        return this;
+        return mAppendProxy.setHeader(view);
     }
 
     @Override
     public MultipleAdapter<T> setFooter(@NonNull View view) {
-        mAppendProxy.setFooter(view);
-        return this;
+        return mAppendProxy.setFooter(view);
     }
 
     @Override
@@ -151,149 +143,7 @@ public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
         return mAppendProxy.isFooterPosition(position);
     }
 
-    @Override
     public List<T> getData() {
-        return mStateProxy.getData();
-    }
-
-    @Override
-    public List<State<T>> getState() {
-        return mStateProxy.getState();
-    }
-
-    @Override
-    public boolean isEnabledSelect() {
-        return mStateProxy.isEnabledSelect();
-    }
-
-    @Override
-    public MultipleAdapter<T> setEnabledSelect(boolean enabled) {
-        mStateProxy.setOpenSelect(enabled);
-        return this;
-    }
-
-    @Override
-    public MultipleAdapter<T> setEnabledSelect(boolean enabled, int maxSelectCount) {
-        mStateProxy.setOpenSelect(enabled, maxSelectCount);
-        return this;
-    }
-
-    @Override
-    public int getMaxSelectCount() {
-        return mStateProxy.getMaxSelectCount();
-    }
-
-    @Override
-    public MultipleAdapter<T> setMaxSelectCount(int count) {
-        mStateProxy.setMaxSelectCount(count);
-        return this;
-    }
-
-    @Override
-    public boolean toggleSelect(@NonNull T t) {
-        return mStateProxy.toggleSelect(t);
-    }
-
-    @Override
-    public boolean toggleSelect(int position) {
-        return mStateProxy.toggleSelect(position);
-    }
-
-    @Override
-    public boolean isSelect(@NonNull T t) {
-        return mStateProxy.isSelect(t);
-    }
-
-    @Override
-    public boolean isSelect(int position) {
-        return mStateProxy.isSelect(position);
-    }
-
-    @Override
-    public boolean setSelect(T t, boolean selected) {
-        return mStateProxy.setSelect(t, selected);
-    }
-
-    @Override
-    public boolean setSelect(int position, boolean selected) {
-        return mStateProxy.setSelect(position, selected);
-    }
-
-    @Override
-    public boolean selectAll() {
-        return mStateProxy.selectAll();
-    }
-
-    @Override
-    public boolean unSelectAll() {
-        return mStateProxy.unSelectAll();
-    }
-
-    @Override
-    public boolean reverseSelectAll() {
-        return mStateProxy.reverseSelectAll();
-    }
-
-    @Override
-    public List<T> getSelectedAll() {
-        return mStateProxy.getSelectedAll();
-    }
-
-    @Override
-    public List<T> getUnselectedAll() {
-        return mStateProxy.getUnselectedAll();
-    }
-
-    @Override
-    public MultipleAdapter<T> setOnSelectListener(OnSelectListener<T> listener) {
-        mStateProxy.setOnSelectListener(listener);
-        return this;
-    }
-
-    @Override
-    public boolean isEnabledSlide() {
-        return mStateProxy.isEnabledSlide();
-    }
-
-    @Override
-    public MultipleAdapter<T> setEnabledSlide(boolean enabled) {
-        mStateProxy.setEnabledSlide(enabled);
-        return this;
-    }
-
-    @Override
-    public MultipleAdapter<T> setEnabledSlide(boolean enabled, boolean single) {
-        mStateProxy.setEnabledSlide(enabled, single);
-        return this;
-    }
-
-    @Override
-    public void toggleSlide(T t) {
-        mStateProxy.toggleSlide(t);
-    }
-
-    @Override
-    public void toggleSlide(int position) {
-        mStateProxy.toggleSlide(position);
-    }
-
-    @Override
-    public boolean isSlide(T t) {
-        return mStateProxy.isSlide(t);
-    }
-
-    @Override
-    public boolean isSlide(int position) {
-        return mStateProxy.isSlide(position);
-    }
-
-    @Override
-    public void setSlide(T t, boolean slided) {
-        mStateProxy.setSlide(t, slided);
-    }
-
-    @Override
-    public void setSlide(int position, boolean slided) {
-        mStateProxy.setSlide(position, slided);
+        return mData;
     }
 }

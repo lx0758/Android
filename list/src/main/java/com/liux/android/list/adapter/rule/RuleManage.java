@@ -14,7 +14,7 @@ public class RuleManage<T> {
 
     /**
      * 添加规则
-     * {@link IRule#addRule(Rule)}
+     * {@link IRuleAdapter#addRule(Rule)}
      * @param rule
      */
     public void addRule(Rule<? extends T, ? extends RecyclerView.ViewHolder> rule) {

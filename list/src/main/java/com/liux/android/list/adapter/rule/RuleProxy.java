@@ -8,18 +8,20 @@ import androidx.recyclerview.widget.RecyclerView;
  * lx0758@qq.com
  */
 
-public class RuleProxy<T> {
+public class RuleProxy<T, R extends RecyclerView.Adapter> implements IRuleAdapter<T, R> {
 
-    private IRule mIRule;
+    private R mAdapter;
 
     private RuleManage<T> mRuleManage = new RuleManage<>();
 
-    public RuleProxy(IRule iRule) {
-        mIRule = iRule;
+    public RuleProxy(R adapter) {
+        mAdapter = adapter;
     }
 
-    public void addRule(Rule<? extends T, ? extends RecyclerView.ViewHolder> rule) {
+    @Override
+    public R addRule(Rule<? extends T, ? extends RecyclerView.ViewHolder> rule) {
         mRuleManage.addRule(rule);
+        return mAdapter;
     }
 
     public int getRuleType(T t) {

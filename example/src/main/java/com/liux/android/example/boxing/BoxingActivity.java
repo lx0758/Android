@@ -25,7 +25,6 @@ import com.liux.android.boxing.OnVideoSelectListener;
 import com.liux.android.example.R;
 import com.liux.android.list.adapter.MultipleAdapter;
 import com.liux.android.list.adapter.rule.SingleRule;
-import com.liux.android.list.adapter.state.State;
 import com.liux.android.list.decoration.GridItemDecoration;
 import com.liux.android.list.holder.SuperHolder;
 import com.liux.android.tool.TT;
@@ -61,7 +60,7 @@ public class BoxingActivity extends AppCompatActivity {
         mMultipleAdapter = new MultipleAdapter<String>()
                 .addRule(new SingleRule<String>(R.layout.layout_media_item) {
                     @Override
-                    public void onDataBind(SuperHolder holder, int position, String path, List<Object> payloads, State state) {
+                    public void onDataBind(SuperHolder holder, int position, String path, List<Object> payloads) {
                         ImageView imageView = holder.getView(R.id.iv_image);
                         BoxingMediaLoader.getInstance().displayThumbnail(imageView, path, 150, 150);
                         // GlideApp.with(imageView.getContext()).asBitmap().load(path).override(150, 150).into(imageView);

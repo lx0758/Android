@@ -5,8 +5,6 @@ import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.liux.android.list.adapter.state.State;
-
 import java.util.List;
 
 /**
@@ -66,7 +64,6 @@ public abstract class Rule<T, VH extends RecyclerView.ViewHolder> {
      * @param position
      * @param t
      * @param payloads
-     * @param state
      */
-    public abstract void onDataBind(VH holder, int position, T t, List<Object> payloads, State state);
+    public abstract void onDataBind(VH holder, int position, T t, List<Object> payloads);
 }

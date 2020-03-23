@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * lx0758@qq.com
  */
 
-public interface IRule<T, R extends RecyclerView.Adapter> {
+public interface IRuleAdapter<T, R extends RecyclerView.Adapter> {
 
     /**
      * 添加数据和视图关联规则

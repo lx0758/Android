@@ -27,7 +27,6 @@ import com.liux.android.example.R;
 import com.liux.android.http.HttpUtil;
 import com.liux.android.list.adapter.MultipleAdapter;
 import com.liux.android.list.adapter.rule.SingleRule;
-import com.liux.android.list.adapter.state.State;
 import com.liux.android.list.holder.SuperHolder;
 import com.liux.android.permission.Authorizer;
 import com.liux.android.permission.install.OnInstallPermissionListener;
@@ -62,7 +61,7 @@ public class DownloaderActivity extends AppCompatActivity {
         taskMultipleAdapter = new MultipleAdapter<Task>()
                 .addRule(new SingleRule<Task>(R.layout.item_downloader) {
                     @Override
-                    public void onDataBind(SuperHolder holder, int position, Task task, List<Object> payloads, State state) {
+                    public void onDataBind(SuperHolder holder, int position, Task task, List<Object> payloads) {
                         String statusTitle = "", operateTitle = "";
                         switch (task.getStatus()) {
                             case NEW:

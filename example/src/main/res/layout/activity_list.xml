@@ -45,7 +45,7 @@
         android:layout_height="wrap_content">
 
         <Button
-            android:id="@+id/btn_open5"
+            android:id="@+id/btn_4"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
             android:text="open_5" />
 
         <Button
-            android:id="@+id/btn_set8"
+            android:id="@+id/btn_5"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
             android:text=""/>
 
         <Button
-            android:id="@+id/btn_close"
+            android:id="@+id/btn_6"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
