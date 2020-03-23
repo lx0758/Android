@@ -10,7 +10,7 @@ implementation 'com.liux.android:list:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1.
+    1.新增选择状态辅助工具
 
 ### 0.2.4_2020-03-23
     1.选择状态应该交给数据控制, 移除选择管理能力
