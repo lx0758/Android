@@ -4,7 +4,6 @@ import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.liux.android.list.adapter.Payload;
 import com.liux.android.list.holder.MarginHolder;
 
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ public class AppendProxy<T, R extends RecyclerView.Adapter> implements IAppendAd
             mAdapter.notifyItemInserted(0);
         } else {
             mHeaders.set(0, new MarginHolder(view));
-            mAdapter.notifyItemChanged(0, Payload.APPEND);
+            mAdapter.notifyItemChanged(0);
         }
         return mAdapter;
     }
@@ -48,7 +47,7 @@ public class AppendProxy<T, R extends RecyclerView.Adapter> implements IAppendAd
             mAdapter.notifyItemInserted(mAdapter.getItemCount() - 1);
         } else {
             mFooters.set(0, new MarginHolder(view));
-            mAdapter.notifyItemChanged(mAdapter.getItemCount() - 1, Payload.APPEND);
+            mAdapter.notifyItemChanged(mAdapter.getItemCount() - 1);
         }
         return mAdapter;
     }

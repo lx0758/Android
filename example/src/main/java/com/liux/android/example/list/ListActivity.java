@@ -12,14 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.liux.android.example.R;
 import com.liux.android.list.adapter.MultipleAdapter;
-import com.liux.android.list.adapter.Payload;
 import com.liux.android.list.adapter.rule.SuperRule;
-import com.liux.android.list.adapter.state.State;
 import com.liux.android.list.decoration.AbsItemDecoration;
 import com.liux.android.list.holder.SuperHolder;
-import com.liux.android.list.listener.OnSelectListener;
 import com.liux.android.util.DateUtil;
-import com.liux.android.tool.TT;
 
 import java.util.Date;
 import java.util.List;
@@ -71,20 +67,13 @@ public class ListActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onDataBind(SuperHolder holder, int position, Bean bean, List<Object> payloads, State state) {
-                        if (!payloads.isEmpty()) {
-                            for (Object payload : payloads) {
-                                if (payload == Payload.STATE) {
-                                    holder.setText(android.R.id.text1, String.format("bean is %s\ntype is %s\nstate is %s", bean, bean.getObject().getClass().getSimpleName(), state.getState("key")));
-                                }
-                            }
-                            return;
-                        }
-                        holder.setText(android.R.id.text1, String.format("bean is %s\ntype is %s\nstate is %s", bean, bean.getObject().getClass().getSimpleName(), state.getState("key")));
+                    public void onDataBind(SuperHolder holder, int position, Bean bean, List<Object> payloads) {
+                        holder.setText(android.R.id.text1, String.format("bean type is %s\nselected %s", bean.getObject().getClass().getSimpleName(), bean.isSelected()));
                         holder.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                state.putState("key", System.currentTimeMillis(), true);
+                                bean.setSelected(!bean.isSelected());
+                                mMultipleAdapter.notifyItemChanged(position, 0);
                             }
                         });
                     }
@@ -96,21 +85,14 @@ public class ListActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onDataBind(SuperHolder holder, int position, Bean bean, List<Object> payloads, State state) {
-                        if (!payloads.isEmpty()) {
-                            for (Object payload : payloads) {
-                                if (payload == Payload.STATE) {
-                                    holder.setText(android.R.id.text1, String.format("bean is %s\ntype is %s\nstate is %s", bean, bean.getObject().getClass().getSimpleName(), state.getState("key")));
-                                }
-                            }
-                            return;
-                        }
-                        holder.setText(android.R.id.text1, String.format("bean is %s\ntype is %s\nstate is %s", bean, bean.getObject().getClass().getSimpleName(), state.getState("key")));
+                    public void onDataBind(SuperHolder holder, int position, Bean bean, List<Object> payloads) {
+                        holder.setText(android.R.id.text1, String.format("bean type is %s\nselected %s", bean.getObject().getClass().getSimpleName(), bean.isSelected()));
                         holder.setText(android.R.id.text2, "I'm a descriptive text");
                         holder.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                state.putState("key", System.currentTimeMillis(), true);
+                                bean.setSelected(!bean.isSelected());
+                                mMultipleAdapter.notifyItemChanged(position);
                             }
                         });
                     }
@@ -118,7 +100,7 @@ public class ListActivity extends AppCompatActivity {
         rvList.setAdapter(mMultipleAdapter);
     }
 
-    @OnClick({R.id.btn_add_string, R.id.btn_add_long, R.id.btn_del_first, R.id.btn_open5, R.id.btn_set8, R.id.btn_close})
+    @OnClick({R.id.btn_add_string, R.id.btn_add_long, R.id.btn_del_first, R.id.btn_4, R.id.btn_5, R.id.btn_6})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_add_string:
@@ -131,11 +113,11 @@ public class ListActivity extends AppCompatActivity {
                 if (mMultipleAdapter.getData().isEmpty()) return;
                 mMultipleAdapter.getData().remove(0);
                 break;
-            case R.id.btn_open5:
+            case R.id.btn_4:
                 break;
-            case R.id.btn_set8:
+            case R.id.btn_5:
                 break;
-            case R.id.btn_close:
+            case R.id.btn_6:
                 break;
         }
         mMultipleAdapter.notifyDataSetChanged();

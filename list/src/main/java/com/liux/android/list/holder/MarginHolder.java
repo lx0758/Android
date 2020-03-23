@@ -14,12 +14,9 @@ public class MarginHolder extends RecyclerView.ViewHolder {
 
     public MarginHolder(View itemView) {
         super(itemView);
-        checkParent(itemView);
-    }
 
-    private void checkParent(View itemView) {
         ViewParent viewParent = itemView.getParent();
-        if (viewParent != null && viewParent instanceof ViewGroup) {
+        if (viewParent instanceof ViewGroup) {
             ((ViewGroup) viewParent).removeView(itemView);
         }
     }

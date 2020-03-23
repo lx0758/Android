@@ -1,13 +1,9 @@
 package com.liux.android.example.list;
 
-import com.liux.android.list.adapter.state.IStateBean;
-
-import java.util.HashMap;
-import java.util.Map;
-
-public class Bean implements IStateBean {
+public class Bean {
 
     private Object object;
+    private boolean selected;
 
     public Bean(Object object) {
         this.object = object;
@@ -17,20 +13,17 @@ public class Bean implements IStateBean {
         return object;
     }
 
-    public Bean setObject(Object o) {
-        this.object = o;
+    public Bean setObject(Object object) {
+        this.object = object;
         return this;
     }
 
-    private Map<String, Object> state = new HashMap<>();
-
-    @Override
-    public Object getState(String key) {
-        return state.get(key);
+    public boolean isSelected() {
+        return selected;
     }
 
-    @Override
-    public void putState(String key, Object tag) {
-        state.put(key, tag);
+    public Bean setSelected(boolean selected) {
+        this.selected = selected;
+        return this;
     }
 }

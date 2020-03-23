@@ -11,8 +11,6 @@ import com.liux.android.list.adapter.append.IAppendAdapter;
 import com.liux.android.list.adapter.rule.IRuleAdapter;
 import com.liux.android.list.adapter.rule.Rule;
 import com.liux.android.list.adapter.rule.RuleProxy;
-import com.liux.android.list.adapter.state.IStateAdapter;
-import com.liux.android.list.adapter.state.StateProxy;
 import com.liux.android.list.holder.MarginHolder;
 
 import java.util.ArrayList;
@@ -36,12 +34,11 @@ import java.util.List;
  */
 
 public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements
-        IRuleAdapter<T, MultipleAdapter<T>>, IStateAdapter<T, MultipleAdapter<T>>, IAppendAdapter<T, MultipleAdapter<T>> {
+        IRuleAdapter<T, MultipleAdapter<T>>, IAppendAdapter<T, MultipleAdapter<T>> {
 
     private List<T> mData;
 
     private RuleProxy<T, MultipleAdapter<T>> mRuleProxy;
-    private StateProxy<T, MultipleAdapter<T>> mStateProxy;
     private AppendProxy<T, MultipleAdapter<T>> mAppendProxy;
 
     public MultipleAdapter() {
@@ -51,7 +48,6 @@ public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
     public MultipleAdapter(List<T> data) {
         mData = data;
         mRuleProxy = new RuleProxy<>(this);
-        mStateProxy = new StateProxy<>(this, mData, mAppendProxy);
         mAppendProxy = new AppendProxy<>(this);
     }
 
@@ -82,10 +78,9 @@ public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
         super.onBindViewHolder(holder, position, payloads);
         if (holder instanceof MarginHolder) return;
 
-        int realPosition = getRealPosition(position);
-        T t = mData.get(realPosition);
+        T t = mData.get(getRealPosition(position));
         Rule rule = mRuleProxy.getObjectRule(t);
-        rule.onDataBind(holder, realPosition, t, payloads, mStateProxy.getState(realPosition));
+        rule.onDataBind(holder, position, t, payloads);
     }
 
     @Override
