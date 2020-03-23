@@ -1,9 +1,10 @@
 package com.liux.android.example.list;
 
-public class Bean {
+import com.liux.android.list.helper.SelectBean;
+
+public class Bean implements SelectBean {
 
     private Object object;
-    private boolean selected;
 
     public Bean(Object object) {
         this.object = object;
@@ -13,17 +14,19 @@ public class Bean {
         return object;
     }
 
-    public Bean setObject(Object object) {
+    public void setObject(Object object) {
         this.object = object;
-        return this;
     }
 
+    private boolean selected;
+
+    @Override
     public boolean isSelected() {
         return selected;
     }
 
-    public Bean setSelected(boolean selected) {
+    @Override
+    public void setSelected(boolean selected) {
         this.selected = selected;
-        return this;
     }
 }

@@ -14,6 +14,8 @@ import com.liux.android.example.R;
 import com.liux.android.list.adapter.MultipleAdapter;
 import com.liux.android.list.adapter.rule.SuperRule;
 import com.liux.android.list.decoration.AbsItemDecoration;
+import com.liux.android.list.helper.SelectCallback;
+import com.liux.android.list.helper.SelectHelper;
 import com.liux.android.list.holder.SuperHolder;
 import com.liux.android.util.DateUtil;
 
@@ -34,6 +36,7 @@ public class ListActivity extends AppCompatActivity {
     RecyclerView rvList;
 
     private MultipleAdapter<Bean> mMultipleAdapter;
+    private SelectHelper<Bean> mSelectHelper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,7 +49,6 @@ public class ListActivity extends AppCompatActivity {
         rvList.addItemDecoration(new AbsItemDecoration() {
             @Override
             public Decoration getItemOffsets(int position) {
-                // 划重点
                 if (mMultipleAdapter.isHeaderPosition(position) ||
                         mMultipleAdapter.isFooterPosition(position)) {
                     return null;
@@ -72,8 +74,7 @@ public class ListActivity extends AppCompatActivity {
                         holder.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                bean.setSelected(!bean.isSelected());
-                                mMultipleAdapter.notifyItemChanged(position, 0);
+                                mSelectHelper.toggleSelect(position);
                             }
                         });
                     }
@@ -91,13 +92,35 @@ public class ListActivity extends AppCompatActivity {
                         holder.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                bean.setSelected(!bean.isSelected());
-                                mMultipleAdapter.notifyItemChanged(position);
+                                mSelectHelper.toggleSelect(position);
                             }
                         });
                     }
                 });
         rvList.setAdapter(mMultipleAdapter);
+
+        mSelectHelper = new SelectHelper<>(mMultipleAdapter, 3);
+        mSelectHelper.setSelectCallback(new SelectCallback<Bean>() {
+            @Override
+            public boolean onSelectBefore(Bean bean) {
+                return true;
+            }
+
+            @Override
+            public void onSelect(Bean bean, boolean selected) {
+
+            }
+
+            @Override
+            public void onSelectFailure() {
+
+            }
+
+            @Override
+            public void onSelectFull() {
+
+            }
+        });
     }
 
     @OnClick({R.id.btn_add_string, R.id.btn_add_long, R.id.btn_del_first, R.id.btn_4, R.id.btn_5, R.id.btn_6})
@@ -105,13 +128,16 @@ public class ListActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.btn_add_string:
                 mMultipleAdapter.getData().add(new Bean(DateUtil.date2string(new Date())));
+                mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getData().size() - 1);
                 break;
             case R.id.btn_add_long:
                 mMultipleAdapter.getData().add(new Bean(new Date().getTime()));
+                mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getData().size() - 1);
                 break;
             case R.id.btn_del_first:
                 if (mMultipleAdapter.getData().isEmpty()) return;
                 mMultipleAdapter.getData().remove(0);
+                mMultipleAdapter.notifyItemRemoved(0);
                 break;
             case R.id.btn_4:
                 break;
@@ -120,6 +146,5 @@ public class ListActivity extends AppCompatActivity {
             case R.id.btn_6:
                 break;
         }
-        mMultipleAdapter.notifyDataSetChanged();
     }
 }
