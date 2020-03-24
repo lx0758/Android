@@ -17,6 +17,7 @@ import com.liux.android.list.decoration.AbsItemDecoration;
 import com.liux.android.list.helper.SelectCallback;
 import com.liux.android.list.helper.SelectHelper;
 import com.liux.android.list.holder.SuperHolder;
+import com.liux.android.tool.TT;
 import com.liux.android.util.DateUtil;
 
 import java.util.Date;
@@ -41,6 +42,8 @@ public class ListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        TT.setContext(getApplicationContext());
 
         setContentView(R.layout.activity_list);
         ButterKnife.bind(this);
@@ -74,7 +77,7 @@ public class ListActivity extends AppCompatActivity {
                         holder.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                mSelectHelper.toggleSelect(position);
+                                mSelectHelper.toggleSelect(bean);
                             }
                         });
                     }
@@ -92,14 +95,14 @@ public class ListActivity extends AppCompatActivity {
                         holder.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                mSelectHelper.toggleSelect(position);
+                                mSelectHelper.toggleSelect(bean);
                             }
                         });
                     }
                 });
         rvList.setAdapter(mMultipleAdapter);
 
-        mSelectHelper = new SelectHelper<>(mMultipleAdapter, 3);
+        mSelectHelper = new SelectHelper<>(mMultipleAdapter, 10);
         mSelectHelper.setSelectCallback(new SelectCallback<Bean>() {
             @Override
             public boolean onSelectBefore(Bean bean) {
@@ -108,17 +111,17 @@ public class ListActivity extends AppCompatActivity {
 
             @Override
             public void onSelect(Bean bean, boolean selected) {
-
+                TT.show("onSelect(pos:" + mMultipleAdapter.getData().indexOf(bean) + ", selected is:" + selected + ")");
             }
 
             @Override
-            public void onSelectFailure() {
-
+            public void onSelectFailure(int type) {
+                TT.show("onSelectFailure(type:" + type + ")");
             }
 
             @Override
             public void onSelectFull() {
-
+                TT.show("onSelectFull()");
             }
         });
     }
@@ -128,16 +131,16 @@ public class ListActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.btn_add_string:
                 mMultipleAdapter.getData().add(new Bean(DateUtil.date2string(new Date())));
-                mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getData().size() - 1);
+                mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getAdapterPosition(mMultipleAdapter.getData().size() - 1));
                 break;
             case R.id.btn_add_long:
                 mMultipleAdapter.getData().add(new Bean(new Date().getTime()));
-                mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getData().size() - 1);
+                mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getAdapterPosition(mMultipleAdapter.getData().size() - 1));
                 break;
             case R.id.btn_del_first:
                 if (mMultipleAdapter.getData().isEmpty()) return;
                 mMultipleAdapter.getData().remove(0);
-                mMultipleAdapter.notifyItemRemoved(0);
+                mMultipleAdapter.notifyItemRemoved(mMultipleAdapter.getAdapterPosition(0));
                 break;
             case R.id.btn_4:
                 break;

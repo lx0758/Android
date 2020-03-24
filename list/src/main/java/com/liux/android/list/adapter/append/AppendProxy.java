@@ -53,14 +53,14 @@ public class AppendProxy<T, R extends RecyclerView.Adapter> implements IAppendAd
     }
 
     @Override
-    public boolean isHeaderPosition(int position) {
-        return position >= 0 && position < mHeaders.size();
+    public boolean isHeaderPosition(int adapterPosition) {
+        return adapterPosition >= 0 && adapterPosition < mHeaders.size();
     }
 
     @Override
-    public boolean isFooterPosition(int position) {
-        return position >= mAdapter.getItemCount() - mFooters.size() &&
-                position < mAdapter.getItemCount();
+    public boolean isFooterPosition(int adapterPosition) {
+        return adapterPosition >= mAdapter.getItemCount() - mFooters.size() &&
+                adapterPosition < mAdapter.getItemCount();
     }
 
     public boolean isAppendPosition(int position) {
@@ -96,12 +96,12 @@ public class AppendProxy<T, R extends RecyclerView.Adapter> implements IAppendAd
         return mHeaders.size() + mFooters.size();
     }
 
-    public int getRealPosition(int position) {
-        return position - mHeaders.size();
+    public int getDataPosition(int adapterPosition) {
+        return adapterPosition - mHeaders.size();
     }
 
-    public int getShamPosition(int position) {
-        return position + mHeaders.size();
+    public int getAdapterPosition(int dataPosition) {
+        return dataPosition + mHeaders.size();
     }
 
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {

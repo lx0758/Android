@@ -26,29 +26,29 @@ public interface IAppendAdapter<T, R extends RecyclerView.Adapter> {
 
     /**
      * 获取除去 Header/Footer 之后真实的位置
-     * @param position 绘图定位
+     * @param adapterPosition 适配器定位
      * @return 真实定位
      */
-    int getRealPosition(int position);
+    int getDataPosition(int adapterPosition);
 
     /**
      * 获取包含 Header/Footer 之后真实的位置
-     * @param position 绘图定位
+     * @param dataPosition 绘图定位
      * @return 真实定位
      */
-    int getShamPosition(int position);
+    int getAdapterPosition(int dataPosition);
 
     /**
      * 检查是否是页眉布局
-     * @param position 绘图定位
+     * @param adapterPosition 适配器定位
      * @return 是否是页眉布局
      */
-    boolean isHeaderPosition(int position);
+    boolean isHeaderPosition(int adapterPosition);
 
     /**
      * 检查是否是页脚布局
-     * @param position 绘图定位
+     * @param adapterPosition 适配器定位
      * @return 是否是页脚布局
      */
-    boolean isFooterPosition(int position);
+    boolean isFooterPosition(int adapterPosition);
 }
