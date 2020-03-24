@@ -9,6 +9,7 @@ public class SelectHelper<T extends SelectBean> {
 
     private MultipleAdapter<T> mMultipleAdapter;
 
+    private boolean mEnableSelect;
     private int mMaxSelectCount;
     private SelectCallback<T> mSelectCallback;
 
@@ -18,7 +19,31 @@ public class SelectHelper<T extends SelectBean> {
 
     public SelectHelper(MultipleAdapter<T> multipleAdapter, int maxSelectCount) {
         this.mMultipleAdapter = multipleAdapter;
+        setEnableSelect(true, false);
         setMaxSelectCount(maxSelectCount);
+    }
+
+    /**
+     * 是都开启选择
+     * @return
+     */
+    public boolean isEnableSelect() {
+        return mEnableSelect;
+    }
+
+    /**
+     * 设置是否开启选择
+     * @param enableSelect
+     * @param reset
+     */
+    public void setEnableSelect(boolean enableSelect, boolean reset) {
+        mEnableSelect = enableSelect;
+        if (reset) {
+            for (T t : mMultipleAdapter.getData()) {
+                t.setSelected(false);
+            }
+            mMultipleAdapter.notifyDataSetChanged();
+        }
     }
 
     /**
@@ -43,38 +68,45 @@ public class SelectHelper<T extends SelectBean> {
     /**
      * 某条数据是否选中
      *
-     * @param position 数据位置
+     * @param t 数据
      * @return 是否选中
      */
-    public boolean isSelected(int position) {
-        return mMultipleAdapter.getData().get(mMultipleAdapter.getRealPosition(position)).isSelected();
+    public boolean isSelected(T t) {
+        return t.isSelected();
     }
 
     /**
      * 设置某条数据选中状态
      *
-     * @param position 数据位置
+     * @param t 数据
      * @param selected 选中状态
      * @return 是否选中
      */
-    public boolean setSelected(int position, boolean selected) {
+    public boolean setSelected(T t, boolean selected) {
+        if (!mEnableSelect || mMultipleAdapter.getData().indexOf(t) == -1) {
+            if (mSelectCallback != null) mSelectCallback.onSelectFailure(SelectCallback.TYPE_NOT_SUPPORT);
+            return false;
+        }
         if (mSelectCallback != null) {
-            if (!mSelectCallback.onSelectBefore(mMultipleAdapter.getData().get(mMultipleAdapter.getRealPosition(position)))) return false;
+            if (!mSelectCallback.onSelectBefore(t)) {
+                if (mSelectCallback != null) mSelectCallback.onSelectFailure(SelectCallback.TYPE_CALLBACK_PROHIBIT);
+                return false;
+            }
         }
         if (selected)
-            return selected(position);
+            return selected(t);
         else
-            return unselected(position);
+            return unselected(t);
     }
 
     /**
      * 切换某条数据选中状态
      *
-     * @param position 数据位置
+     * @param t 数据
      * @return 是否选中
      */
-    public boolean toggleSelect(int position) {
-        return setSelected(position, !mMultipleAdapter.getData().get(mMultipleAdapter.getRealPosition(position)).isSelected());
+    public boolean toggleSelect(T t) {
+        return setSelected(t, !t.isSelected());
     }
 
     /**
@@ -83,8 +115,8 @@ public class SelectHelper<T extends SelectBean> {
      * @return 是否全选成功
      */
     boolean selectAll() {
-        if (mMultipleAdapter.getData().size() > mMaxSelectCount) {
-            if (mSelectCallback != null) mSelectCallback.onSelectFailure();
+        if (!mEnableSelect || mMultipleAdapter.getData().size() > mMaxSelectCount) {
+            if (mSelectCallback != null) mSelectCallback.onSelectFailure(SelectCallback.TYPE_NOT_SUPPORT);
             return false;
         }
         for (T t : mMultipleAdapter.getData()) {
@@ -100,6 +132,10 @@ public class SelectHelper<T extends SelectBean> {
      * @return 是否全不选成功
      */
     public boolean unselectAll() {
+        if (!mEnableSelect) {
+            if (mSelectCallback != null) mSelectCallback.onSelectFailure(SelectCallback.TYPE_NOT_SUPPORT);
+            return false;
+        }
         for (T t : mMultipleAdapter.getData()) {
             t.setSelected(false);
         }
@@ -113,8 +149,8 @@ public class SelectHelper<T extends SelectBean> {
      * @return 是否反选成功
      */
     public boolean reverseSelectAll() {
-        if (getUnselectedAll().size() > mMaxSelectCount) {
-            if (mSelectCallback != null) mSelectCallback.onSelectFailure();
+        if (!mEnableSelect || getUnselectedAll().size() > mMaxSelectCount) {
+            if (mSelectCallback != null) mSelectCallback.onSelectFailure(SelectCallback.TYPE_NOT_SUPPORT);
             return false;
         }
         for (T t : mMultipleAdapter.getData()) {
@@ -161,11 +197,12 @@ public class SelectHelper<T extends SelectBean> {
 
     /**
      * 选中某条数据
-     * @param position
+     * @param t
      * @return
      */
-    private boolean selected(int position) {
+    private boolean selected(T t) {
         List<T> selectedTs = getSelectedAll();
+
         if (mMaxSelectCount == 1) {
             int selectedCount = selectedTs.size();
             if (selectedCount == 1) {
@@ -173,7 +210,7 @@ public class SelectHelper<T extends SelectBean> {
                 T selectedT = selectedTs.get(0);
                 selectedT.setSelected(false);
                 if (mSelectCallback != null) mSelectCallback.onSelect(selectedT, false);
-                int selectedPosition = mMultipleAdapter.getShamPosition(mMultipleAdapter.getData().indexOf(selectedT));
+                int selectedPosition = mMultipleAdapter.getAdapterPosition(mMultipleAdapter.getData().indexOf(selectedT));
                 mMultipleAdapter.notifyItemChanged(selectedPosition, SelectHelper.this);
             } else if (selectedCount > 1) {
                 // 有多个被选中对象, 需要先批量取消选中之前的数据, 再选中当前数据
@@ -183,35 +220,36 @@ public class SelectHelper<T extends SelectBean> {
                 }
                 mMultipleAdapter.notifyDataSetChanged();
             }
-            T t = mMultipleAdapter.getData().get(mMultipleAdapter.getRealPosition(position));
             t.setSelected(true);
             if (mSelectCallback != null) mSelectCallback.onSelect(t, true);
+            int position = mMultipleAdapter.getAdapterPosition(mMultipleAdapter.getData().indexOf(t));
             mMultipleAdapter.notifyItemChanged(position, SelectHelper.this);
             return true;
         }
+
         if (selectedTs.size() + 1 > mMaxSelectCount) {
-            if (mSelectCallback != null) mSelectCallback.onSelectFailure();
+            if (mSelectCallback != null) mSelectCallback.onSelectFailure(SelectCallback.TYPE_COUNT_FULL);
             return false;
         }
-        T t = mMultipleAdapter.getData().get(mMultipleAdapter.getRealPosition(position));
         t.setSelected(true);
         if (mSelectCallback != null) {
             mSelectCallback.onSelect(t, true);
             if (selectedTs.size() + 1 == mMaxSelectCount && mMaxSelectCount > 1) mSelectCallback.onSelectFull();
         }
+        int position = mMultipleAdapter.getAdapterPosition(mMultipleAdapter.getData().indexOf(t));
         mMultipleAdapter.notifyItemChanged(position, SelectHelper.this);
         return true;
     }
 
     /**
      * 取消选择某条数据
-     * @param position
+     * @param t
      * @return
      */
-    private boolean unselected(int position) {
-        T t = mMultipleAdapter.getData().get(mMultipleAdapter.getRealPosition(position));
+    private boolean unselected(T t) {
         t.setSelected(false);
         if (mSelectCallback != null) mSelectCallback.onSelect(t, false);
+        int position = mMultipleAdapter.getAdapterPosition(mMultipleAdapter.getData().indexOf(t));
         mMultipleAdapter.notifyItemChanged(position, SelectHelper.this);
         return true;
     }

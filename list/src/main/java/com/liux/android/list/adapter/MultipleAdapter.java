@@ -57,7 +57,7 @@ public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
             return mAppendProxy.getAppendPositionType(position);
         }
 
-        position = mAppendProxy.getRealPosition(position);
+        position = mAppendProxy.getDataPosition(position);
         T t = mData.get(position);
         return mRuleProxy.getRuleType(t);
     }
@@ -78,7 +78,7 @@ public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
         super.onBindViewHolder(holder, position, payloads);
         if (holder instanceof MarginHolder) return;
 
-        T t = mData.get(getRealPosition(position));
+        T t = mData.get(getDataPosition(position));
         Rule rule = mRuleProxy.getObjectRule(t);
         rule.onDataBind(holder, position, t, payloads);
     }
@@ -124,23 +124,23 @@ public class MultipleAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public int getRealPosition(int position) {
-        return mAppendProxy.getRealPosition(position);
+    public int getDataPosition(int adapterPosition) {
+        return mAppendProxy.getDataPosition(adapterPosition);
     }
 
     @Override
-    public int getShamPosition(int position) {
-        return mAppendProxy.getShamPosition(position);
+    public int getAdapterPosition(int dataPosition) {
+        return mAppendProxy.getAdapterPosition(dataPosition);
     }
 
     @Override
-    public boolean isHeaderPosition(int position) {
-        return mAppendProxy.isHeaderPosition(position);
+    public boolean isHeaderPosition(int adapterPosition) {
+        return mAppendProxy.isHeaderPosition(adapterPosition);
     }
 
     @Override
-    public boolean isFooterPosition(int position) {
-        return mAppendProxy.isFooterPosition(position);
+    public boolean isFooterPosition(int adapterPosition) {
+        return mAppendProxy.isFooterPosition(adapterPosition);
     }
 
     public List<T> getData() {
