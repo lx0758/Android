@@ -135,16 +135,17 @@ public abstract class Request<T extends Request> implements Callback {
         return response;
     }
 
-    public void async() {
-        async(null);
+    public T async() {
+        return async(null);
     }
 
-    public void async(Result result) {
+    public T async(Result result) {
         checkUrl();
         cancelCall();
         addManager();
         mResult = result;
         handlerCall().enqueue(this);
+        return (T) this;
     }
 
     public void cancel() {
@@ -244,7 +245,7 @@ public abstract class Request<T extends Request> implements Callback {
 
     private void cancelCall() {
         Call call = getCall();
-        if (call != null && !call.isCanceled() && !call.isExecuted()) {
+        if (call != null && !call.isCanceled()) {
             call.cancel();
         }
     }

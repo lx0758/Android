@@ -100,7 +100,7 @@ implementation 'com.liux.android:http:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1.
+    1.修正 Request 无法被取消的问题
 
 ### 0.2.4_2020-03-17
     1.调整 WebSocket 心跳
