@@ -10,7 +10,7 @@ implementation 'com.liux.android:util:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1.
+    1.优化 Intent / Uri 工具类
 
 ### 0.2.3_2019-12-19
     1.修复大小端问题
