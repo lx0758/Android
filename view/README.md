@@ -10,7 +10,7 @@ implementation 'com.liux.android:view:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1.
+    1.添加换行的 RadioGroup
 
 ### 0.2.1_2019-09-25
     1.添加车牌输入框

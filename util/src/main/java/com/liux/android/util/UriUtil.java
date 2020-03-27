@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
-import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.util.List;
@@ -22,7 +21,7 @@ public class UriUtil {
      * @return
      */
     public static String getAuthority(Context context) {
-        return context.getPackageName() + ".uriutil.provider";
+        return context.getPackageName() + ".UriUtilFileProvider";
     }
 
     /**
@@ -33,7 +32,7 @@ public class UriUtil {
      */
     public static Uri getProviderUri(Context context, File file) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return UriFileProvider.getUriForFile(context, getAuthority(context), file);
+            return UriUtilFileProvider.getUriForFile(context, getAuthority(context), file);
         }
         return Uri.fromFile(file);
     }
@@ -70,10 +69,4 @@ public class UriUtil {
             context.grantUriPermission(packageName, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         }
     }
-
-    /**
-     * 用于适配Android 7.0 的 FileProvider
-     * 继承之后可以解决一个项目存在多个FileProvider的情况
-     */
-    public static class UriFileProvider extends FileProvider {}
 }
