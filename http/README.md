@@ -100,6 +100,9 @@ implementation 'com.liux.android:http:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
+    1.
+
+### 0.2.6_2020-03-29
     1.优化日志打印拦截器逻辑
     2.优化进度监听回调逻辑
     3.移除 Http 缓存配置
