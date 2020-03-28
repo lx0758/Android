@@ -61,8 +61,9 @@ public class ProgressRequestBody extends AbstractRequestBody implements WrapperR
         private RequestBody mRequestBody;
         private OnRequestProgressListener mOnRequestProgressListener;
 
-        private long mContentLength = 0L;
+        private long mContentLength = -1L;
         private long mTotalBytesWrite = 0L;
+        private boolean mDone = false;
 
         public WrapperForwardingSink(BufferedSink sink, HttpUrl httpUrl, RequestBody requestBody, OnRequestProgressListener onRequestProgressListener) {
             super(sink);
@@ -75,17 +76,15 @@ public class ProgressRequestBody extends AbstractRequestBody implements WrapperR
         public void write(Buffer source, long byteCount) throws IOException {
             super.write(source, byteCount);
 
-            if (mContentLength == 0) {
-                mContentLength = mRequestBody.contentLength();
-            }
+            if (mContentLength == -1) mContentLength = mRequestBody.contentLength();
 
-            //增加当前写入的字节数
+            // 增加当前写入的字节数
             long totalBytesWrite = mTotalBytesWrite + byteCount;
 
-            //回调
-            if (totalBytesWrite == 0 || totalBytesWrite != mTotalBytesWrite) {
+            // 回调
+            if ((totalBytesWrite == 0 || totalBytesWrite != mTotalBytesWrite) && !mDone) {
                 mTotalBytesWrite = totalBytesWrite;
-                mOnRequestProgressListener.onRequestProgress(mHttpUrl, mTotalBytesWrite, mContentLength, mTotalBytesWrite == mContentLength);
+                mOnRequestProgressListener.onRequestProgress(mHttpUrl, mTotalBytesWrite, mContentLength, (mDone = mTotalBytesWrite == mContentLength));
             }
         }
     }

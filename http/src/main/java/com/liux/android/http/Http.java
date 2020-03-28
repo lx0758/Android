@@ -369,9 +369,6 @@ public class Http {
      */
     private OkHttpClient initOkHttpClient(OkHttpClient.Builder okHttpBuilder) {
         if (okHttpBuilder == null) {
-            File cacheDir = mContext.getExternalCacheDir();
-            if (cacheDir == null || !cacheDir.exists()) cacheDir = mContext.getCacheDir();
-
             return new OkHttpClient.Builder()
                     .cookieJar(new PersistentCookieJar(
                             new SetCookieCache(),
@@ -382,7 +379,6 @@ public class Http {
                     .writeTimeout(10, TimeUnit.SECONDS)
                     .readTimeout(10, TimeUnit.SECONDS)
                     .pingInterval(30, TimeUnit.SECONDS)
-                    .cache(new Cache(new File(cacheDir, "okhttp"), 50 * 1024 * 1024))
                     .retryOnConnectionFailure(true)
                     .addInterceptor(mTimeoutInterceptor)
                     .addInterceptor(mBaseUrlInterceptor)

@@ -58,7 +58,7 @@ import okio.BufferedSource;
  * a stable logging format, use your own interceptor.
  */
 public class HttpLoggingInterceptor implements Interceptor {
-    private static final int MAX_LOG_LENGTH = 10000;
+    private static final int MAX_LOG_LENGTH = 100 * 1024;
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private static final String SEPARATOR = System.getProperty("line.separator");
     private static final String DIVIDE_0 = "┃";
@@ -140,7 +140,8 @@ public class HttpLoggingInterceptor implements Interceptor {
 
         /** A {@link HttpLoggingInterceptor.Logger} defaults output appropriate for the current platform. */
         HttpLoggingInterceptor.Logger DEFAULT = new HttpLoggingInterceptor.Logger() {
-            @Override public void log(String message) {
+            @Override
+            public void log(String message) {
                 //Platform.get().log(INFO, message, null);
                 for (int i = 0, length = message.length(); i < length; i++) {
                     int newline = message.indexOf(SEPARATOR, i);
@@ -241,6 +242,10 @@ public class HttpLoggingInterceptor implements Interceptor {
             } else if (bodyEncoded(request.headers())) {
                 //logger.log("--> END " + request.method() + " (encoded body omitted)");
                 addLog(stringBuffer, "--> END " + request.method() + " (encoded body omitted)");
+            } else if (requestBody.contentLength() == -1) {
+                addLog(stringBuffer, "--> END HTTP (length is unknown)");
+            } else if (requestBody.contentLength() >= MAX_LOG_LENGTH) {
+                addLog(stringBuffer, "--> END HTTP (length outride " + MAX_LOG_LENGTH + ")");
             } else {
                 Buffer buffer = new Buffer();
                 requestBody.writeTo(buffer);
@@ -313,6 +318,10 @@ public class HttpLoggingInterceptor implements Interceptor {
             } else if (bodyEncoded(response.headers())) {
                 //logger.log("<-- END HTTP (encoded body omitted)");
                 addLog(stringBuffer, "<-- END HTTP (encoded body omitted)");
+            } else if (contentLength == -1) {
+                addLog(stringBuffer, "<-- END HTTP (length is unknown)");
+            } else if (contentLength >= MAX_LOG_LENGTH) {
+                addLog(stringBuffer, "<-- END HTTP (length outride " + MAX_LOG_LENGTH + ")");
             } else {
                 BufferedSource source = responseBody.source();
                 source.request(Long.MAX_VALUE); // Buffer the entire body.

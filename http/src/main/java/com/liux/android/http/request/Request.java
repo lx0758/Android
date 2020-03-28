@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
@@ -23,13 +22,13 @@ import okhttp3.Response;
  * Created by Liux on 2018/2/26.
  */
 
-public abstract class Request<T extends Request> implements Callback {
+public abstract class Request<T extends Request> implements okhttp3.Callback {
 
     private String mUrl;
     private Object mTag;
     private Map<Class<?>, Object> mTags = Collections.emptyMap();
     private Method mMethod;
-    private Result mResult;
+    private Callback mCallback;
     private WeakReference<RequestManager> mRequestManagerWeakReference;
 
     private Call mCall;
@@ -44,8 +43,8 @@ public abstract class Request<T extends Request> implements Callback {
 
     @Override
     public void onFailure(Call call, IOException e) {
-        Result result = getResult();
-        if (result != null) result.onFailure(call, e);
+        Callback callback = getCallback();
+        if (callback != null) callback.onFailure(this, e);
         cancel();
     }
 
@@ -53,8 +52,8 @@ public abstract class Request<T extends Request> implements Callback {
     public void onResponse(Call call, Response response) throws IOException {
         if (!response.isSuccessful()) onFailure(call, new FailException(response));
         response = handlerResponse(response);
-        Result result = getResult();
-        if (result != null) result.onSucceed(call, response);
+        Callback callback = getCallback();
+        if (callback != null) callback.onSucceed(this, response);
         cancel();
     }
 
@@ -139,11 +138,11 @@ public abstract class Request<T extends Request> implements Callback {
         return async(null);
     }
 
-    public T async(Result result) {
+    public T async(Callback callback) {
         checkUrl();
         cancelCall();
         addManager();
-        mResult = result;
+        mCallback = callback;
         handlerCall().enqueue(this);
         return (T) this;
     }
@@ -151,7 +150,7 @@ public abstract class Request<T extends Request> implements Callback {
     public void cancel() {
         cancelCall();
         removeManager();
-        mResult = null;
+        mCallback = null;
     }
 
     protected abstract HttpUrl.Builder onCreateHttpUrlBuilder(HttpUrl.Builder builder);
@@ -210,8 +209,8 @@ public abstract class Request<T extends Request> implements Callback {
         return mMethod;
     }
 
-    protected Result getResult() {
-        return mResult;
+    protected Callback getCallback() {
+        return mCallback;
     }
 
     protected RequestManager getCancelManager() {

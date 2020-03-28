@@ -60,8 +60,9 @@ public class ProgressResponseBody extends AbstractResponseBody implements Wrappe
         private ResponseBody mResponseBody;
         private OnResponseProgressListener mResponseProgressListener;
 
-        private long mContentLength = 0L;
+        private long mContentLength = -1L;
         private long mTotalBytesRead = 0L;
+        private boolean mDone = false;
 
         public WrapperForwardingSource(HttpUrl httpUrl, ResponseBody responseBody, OnResponseProgressListener onResponseProgressListener) {
             super(responseBody.source());
@@ -74,17 +75,15 @@ public class ProgressResponseBody extends AbstractResponseBody implements Wrappe
         public long read(Buffer sink, long byteCount) throws IOException {
             long bytesRead = super.read(sink, byteCount);
 
-            if (mContentLength == 0) {
-                mContentLength = mResponseBody.contentLength();
-            }
+            if (mContentLength == -1) mContentLength = mResponseBody.contentLength();
 
-            //增加当前读取的字节数，如果读取完成了bytesRead会返回-1
+            // 增加当前读取的字节数，如果读取完成了 bytesRead 会返回 -1
             long totalBytesRead = mTotalBytesRead + (bytesRead != -1 ? bytesRead : 0);
 
-            //回调，如果contentLength()不知道长度，会返回-1
-            if (totalBytesRead == 0 || totalBytesRead != mTotalBytesRead) {
+            // 回调，如果 contentLength() 不知道长度，会返回-1
+            if ((totalBytesRead == 0 || totalBytesRead != mTotalBytesRead) && !mDone) {
                 mTotalBytesRead = totalBytesRead;
-                mResponseProgressListener.onResponseProgress(mHttpUrl, mTotalBytesRead, mContentLength, bytesRead != byteCount);
+                mResponseProgressListener.onResponseProgress(mHttpUrl, mTotalBytesRead, mContentLength, (mDone = bytesRead == -1));
             }
 
             return bytesRead;

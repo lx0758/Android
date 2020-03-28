@@ -3,6 +3,7 @@ package com.liux.android.http.request;
 import com.liux.android.http.progress.OnResponseProgressListener;
 import com.liux.android.http.progress.ProgressResponseBody;
 
+import java.io.File;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -150,7 +151,13 @@ public class QueryRequest<T extends QueryRequest> extends Request<T> {
         return (T) this;
     }
 
-    protected IdentityHashMap<String, String> getQueryHashMap() {
+    public T download(File saveFile, DownloadCallback downloadCallback) {
+        DownloadProxy downloadProxy = new DownloadProxy(saveFile, downloadCallback);
+        progress(downloadProxy);
+        return async(downloadProxy);
+    }
+
+   protected IdentityHashMap<String, String> getQueryHashMap() {
         if (mQueryHashMap == null) {
             mQueryHashMap = new IdentityHashMap<>();
         }
