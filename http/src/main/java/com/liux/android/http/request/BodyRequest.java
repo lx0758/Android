@@ -133,6 +133,11 @@ public class BodyRequest<T extends BodyRequest> extends QueryRequest<T> {
         return super.removeQueryAll(name);
     }
 
+    @Override
+    public T download(File saveFile, DownloadCallback downloadCallback) {
+        return super.download(saveFile, downloadCallback);
+    }
+
     public T body(String type, String string) {
         bodyObject(type, string);
         return (T) this;

@@ -16,8 +16,9 @@ import com.liux.android.http.Http;
 import com.liux.android.http.HttpUtil;
 import com.liux.android.http.progress.OnProgressListener;
 import com.liux.android.http.progress.OnResponseProgressListener;
-import com.liux.android.http.request.Result;
-import com.liux.android.http.request.UIResult;
+import com.liux.android.http.request.Callback;
+import com.liux.android.http.request.DownloadCallback;
+import com.liux.android.http.request.UICallback;
 import com.liux.android.http.request.Request;
 import com.liux.android.http.request.RequestManager;
 import com.liux.android.tool.TT;
@@ -157,7 +158,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
         }
     }
 
-    @OnClick({R.id.btn_request_get, R.id.btn_request_post_body, R.id.btn_request_post_form, R.id.btn_request_post_multipart, R.id.btn_request_timeout_header, R.id.btn_request_timeout_global})
+    @OnClick({R.id.btn_request_get, R.id.btn_request_post_body, R.id.btn_request_post_form, R.id.btn_request_post_multipart, R.id.btn_request_download, R.id.btn_request_timeout_header, R.id.btn_request_timeout_global})
     public void onRequestClicked(View view) {
         String url = etData.getText().toString();
         if (HttpUrl.parse(url) == null) {
@@ -174,37 +175,37 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                         //.fragment("testFragment")
                         .progress(new OnResponseProgressListener() {
                             @Override
-                            public void onResponseProgress(final HttpUrl httpUrl, final long bytesRead, final long contentLength, final boolean done) {
-                                System.out.println("onResponseProgress:" + httpUrl + "," + bytesRead + "," + contentLength + "," + done);
+                            public void onResponseProgress(final HttpUrl httpUrl, final long totalBytesRead, final long contentLength, final boolean done) {
+                                System.out.println("onResponseProgress:" + httpUrl + "," + totalBytesRead + "," + contentLength + "," + done);
                                 etData.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        TT.show("onResponseProgress:" + httpUrl + "," + bytesRead + "," + contentLength + "," + done);
+                                        TT.show("onResponseProgress:" + httpUrl + "," + totalBytesRead + "," + contentLength + "," + done);
                                     }
                                 });
                             }
                         })
                         .manager(mRequestManager)
-                        .async(new Result() {
+                        .async(new Callback() {
                             @Override
-                            public void onFailure(final IOException e) {
-                                System.out.println("onFailure:" + e);
-                                etData.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        TT.show("onFailure:" + e);
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void onSucceed(Response response) throws IOException {
+                            public void onSucceed(Request request, Response response) throws IOException {
                                 final String result = response.body().string();
                                 System.out.println("onSucceed:" + result.length());
                                 etData.post(new Runnable() {
                                     @Override
                                     public void run() {
                                         showData(result);
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onFailure(Request request, IOException e) {
+                                System.out.println("onFailure:" + e);
+                                etData.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        TT.show("onFailure:" + e);
                                     }
                                 });
                             }
@@ -218,18 +219,18 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                         .addQuery("Request-Query-Id", "btn_request_post_body")
                         .body(HttpUtil.parseJson(jsonObject.toJSONString()))
                         .manager(this)
-                        .async(new UIResult() {
+                        .async(new UICallback() {
                             @Override
-                            public void onFailure(IOException e) {
-                                System.out.println("onFailure:" + e);
-                                TT.show("onFailure:" + e);
-                            }
-
-                            @Override
-                            public void onSucceed(Response response) throws IOException {
+                            protected void onUISucceed(Request request, Response response) throws IOException {
                                 String result = response.body().string();
                                 System.out.println("onSucceed:" + result.length());
                                 showData(result);
+                            }
+
+                            @Override
+                            protected void onUIFailure(Request request, IOException e) {
+                                System.out.println("onFailure:" + e);
+                                TT.show("onFailure:" + e);
                             }
                         });
                 break;
@@ -239,18 +240,18 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                         .addQuery("Request-Query-Id", "btn_request_post_form")
                         .addParam("Request-Param-Id", "btn_request_post_form")
                         .manager(this)
-                        .async(new UIResult() {
+                        .async(new UICallback() {
                             @Override
-                            public void onFailure(IOException e) {
-                                System.out.println("onFailure:" + e);
-                                TT.show("onFailure:" + e);
-                            }
-
-                            @Override
-                            public void onSucceed(Response response) throws IOException {
+                            public void onUISucceed(Request request, Response response) throws IOException {
                                 String result = response.body().string();
                                 System.out.println("onSucceed:" + result.length());
                                 showData(result);
+                            }
+
+                            @Override
+                            public void onUIFailure(Request request, IOException e) {
+                                System.out.println("onFailure:" + e);
+                                TT.show("onFailure:" + e);
                             }
                         });
                 break;
@@ -277,31 +278,59 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                             }
 
                             @Override
-                            public void onResponseProgress(final HttpUrl httpUrl, final long bytesRead, final long contentLength, final boolean done) {
-                                System.out.println("onResponseProgress:" + httpUrl + "," + bytesRead + "," + contentLength + "," + done);
+                            public void onResponseProgress(final HttpUrl httpUrl, final long totalBytesRead, final long contentLength, final boolean done) {
+                                System.out.println("onResponseProgress:" + httpUrl + "," + totalBytesRead + "," + contentLength + "," + done);
                                 etData.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        TT.show("onResponseProgress:" + httpUrl + "," + bytesRead + "," + contentLength + "," + done);
+                                        TT.show("onResponseProgress:" + httpUrl + "," + totalBytesRead + "," + contentLength + "," + done);
                                     }
                                 });
                             }
                         })
                         .manager(this)
-                        .async(new UIResult() {
+                        .async(new UICallback() {
                             @Override
-                            public void onFailure(IOException e) {
-                                System.out.println("onFailure:" + e);
-                                TT.show("onFailure:" + e);
-                            }
-
-                            @Override
-                            public void onSucceed(Response response) throws IOException {
+                            public void onUISucceed(Request request, Response response) throws IOException {
                                 String result = response.body().string();
                                 System.out.println("onSucceed:" + result.length());
                                 showData(result);
                             }
+
+                            @Override
+                            public void onUIFailure(Request request, IOException e) {
+                                System.out.println("onFailure:" + e);
+                                TT.show("onFailure:" + e);
+                            }
                         });
+                break;
+            case R.id.btn_request_download:
+                Http.get().get(url)
+                        .addQuery("t", String.valueOf(System.currentTimeMillis()))
+                        .manager(this)
+                        .download(new File(getCacheDir(), String.valueOf(System.currentTimeMillis())), new DownloadCallback() {
+                            @Override
+                            public void onProgress(long totalBytesRead, long contentLength) {
+                                System.out.println("onProgress:" + totalBytesRead + ", " + contentLength);
+                                tvLog.append("onProgress:" + totalBytesRead + ", " + contentLength);
+                                tvLog.append("\n");
+                            }
+
+                            @Override
+                            public void onSucceed(File file) {
+                                System.out.println("onSucceed:" + file.getAbsolutePath());
+                                tvLog.append("onSucceed:" + file.getAbsolutePath());
+                                tvLog.append("\n");
+                            }
+
+                            @Override
+                            public void onFailure(IOException e) {
+                                System.out.println("onFailure:" + e);
+                                tvLog.append("onFailure:" + e);
+                                tvLog.append("\n");
+                            }
+                        });
+                tvLog.setText(null);
                 break;
             case R.id.btn_request_timeout_header:
                 Http.get().post(url + "request-timeout")
@@ -312,18 +341,18 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                         .writeTimeout(10, TimeUnit.SECONDS)
                         .readTimeout(10, TimeUnit.SECONDS)
                         .manager(this)
-                        .async(new UIResult() {
+                        .async(new UICallback() {
                             @Override
-                            public void onFailure(IOException e) {
-                                System.out.println("onFailure:" + e);
-                                TT.show("onFailure:" + e);
-                            }
-
-                            @Override
-                            public void onSucceed(Response response) throws IOException {
+                            public void onUISucceed(Request request, Response response) throws IOException {
                                 String result = response.body().string();
                                 System.out.println("onSucceed:" + result.length());
                                 showData(result);
+                            }
+
+                            @Override
+                            public void onUIFailure(Request request, IOException e) {
+                                System.out.println("onFailure:" + e);
+                                TT.show("onFailure:" + e);
                             }
                         });
                 break;
@@ -331,23 +360,23 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                 Http.get().setOverallConnectTimeout(5, TimeUnit.SECONDS);
                 Http.get().setOverallWriteTimeout(20, TimeUnit.SECONDS);
                 Http.get().setOverallReadTimeout(20, TimeUnit.SECONDS);
-                Http.get().post(url + "request-timeout-global")
+                Http.get().post(url)
                         .addHeader("Request-Header-Id", "btn_request_timeout_header")
                         .addQuery("Request-Query-Id", "btn_request_timeout_header")
                         .addParam("Request-Param-Id", "btn_request_timeout_header")
                         .manager(this)
-                        .async(new UIResult() {
+                        .async(new UICallback() {
                             @Override
-                            public void onFailure(IOException e) {
-                                System.out.println("onFailure:" + e);
-                                TT.show("onFailure:" + e);
-                            }
-
-                            @Override
-                            public void onSucceed(Response response) throws IOException {
+                            public void onUISucceed(Request request, Response response) throws IOException {
                                 String result = response.body().string();
                                 System.out.println("onSucceed:" + result.length());
                                 showData(result);
+                            }
+
+                            @Override
+                            public void onUIFailure(Request request, IOException e) {
+                                System.out.println("onFailure:" + e);
+                                TT.show("onFailure:" + e);
                             }
                         });
                 break;
