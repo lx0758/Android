@@ -175,12 +175,12 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                         //.fragment("testFragment")
                         .progress(new OnResponseProgressListener() {
                             @Override
-                            public void onResponseProgress(final HttpUrl httpUrl, final long totalBytesRead, final long contentLength, final boolean done) {
-                                System.out.println("onResponseProgress:" + httpUrl + "," + totalBytesRead + "," + contentLength + "," + done);
+                            public void onResponseProgress(final HttpUrl httpUrl, final long downloadLength, final long totalLength, final boolean completed) {
+                                System.out.println("onResponseProgress:" + httpUrl + "," + downloadLength + "," + totalLength + "," + completed);
                                 etData.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        TT.show("onResponseProgress:" + httpUrl + "," + totalBytesRead + "," + contentLength + "," + done);
+                                        TT.show("onResponseProgress:" + httpUrl + "," + downloadLength + "," + totalLength + "," + completed);
                                     }
                                 });
                             }
@@ -267,23 +267,23 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                         .addParam("stream", getTempInputStream())
                         .progress(new OnProgressListener() {
                             @Override
-                            public void onRequestProgress(final HttpUrl httpUrl, final long bytesWrite, final long contentLength, final boolean done) {
-                                System.out.println("onRequestProgress:" + httpUrl + "," + bytesWrite + "," + contentLength + "," + done);
+                            public void onRequestProgress(final HttpUrl httpUrl, long transmittedLength, long totalLength, final boolean done) {
+                                System.out.println("onRequestProgress:" + httpUrl + "," + transmittedLength + "," + totalLength + "," + done);
                                 etData.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        TT.show("onRequestProgress:" + httpUrl + "," + bytesWrite + "," + contentLength + "," + done);
+                                        TT.show("onRequestProgress:" + httpUrl + "," + transmittedLength + "," + totalLength + "," + done);
                                     }
                                 });
                             }
 
                             @Override
-                            public void onResponseProgress(final HttpUrl httpUrl, final long totalBytesRead, final long contentLength, final boolean done) {
-                                System.out.println("onResponseProgress:" + httpUrl + "," + totalBytesRead + "," + contentLength + "," + done);
+                            public void onResponseProgress(final HttpUrl httpUrl, long transmittedLength, long totalLength, final boolean completed) {
+                                System.out.println("onResponseProgress:" + httpUrl + "," + transmittedLength + "," + totalLength + "," + completed);
                                 etData.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        TT.show("onResponseProgress:" + httpUrl + "," + totalBytesRead + "," + contentLength + "," + done);
+                                        TT.show("onResponseProgress:" + httpUrl + "," + transmittedLength + "," + totalLength + "," + completed);
                                     }
                                 });
                             }
@@ -310,9 +310,9 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                         .manager(this)
                         .download(new File(getCacheDir(), String.valueOf(System.currentTimeMillis())), new DownloadCallback() {
                             @Override
-                            public void onProgress(long totalBytesRead, long contentLength) {
-                                System.out.println("onProgress:" + totalBytesRead + ", " + contentLength);
-                                tvLog.append("onProgress:" + totalBytesRead + ", " + contentLength);
+                            public void onProgress(long transmittedLength, long totalLength) {
+                                System.out.println("onProgress:" + transmittedLength + ", " + totalLength);
+                                tvLog.append("onProgress:" + transmittedLength + ", " + totalLength);
                                 tvLog.append("\n");
                             }
 

@@ -2,6 +2,9 @@ package com.liux.android.http.request;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
+
+import androidx.annotation.NonNull;
 
 import com.liux.android.http.progress.OnResponseProgressListener;
 
@@ -14,21 +17,15 @@ import java.io.OutputStream;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 
-public class DownloadProxy implements OnResponseProgressListener, Callback {
+public class DownloadProxy implements Callback {
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
     private File mSaveFile;
     private DownloadCallback mDownloadCallback;
 
-    private long mTotalBytesRead, mContentLength;
-    private Runnable mRunable = new Runnable() {
-        @Override
-        public void run() {
-            mDownloadCallback.onProgress(mTotalBytesRead, mContentLength);
-            mHandler.postDelayed(mRunable, 200L);
-        }
-    };
+    private boolean mCompleted = false;
+    private long mTransmittedLength, mTotalLength;
 
     public DownloadProxy(File saveFile, DownloadCallback downloadCallback) {
         mSaveFile = saveFile;
@@ -36,30 +33,37 @@ public class DownloadProxy implements OnResponseProgressListener, Callback {
     }
 
     @Override
-    public void onResponseProgress(HttpUrl httpUrl, final long totalBytesRead, final long contentLength, boolean done) {
-        long cache = mContentLength;
-        mTotalBytesRead = totalBytesRead;
-        mContentLength = contentLength;
-        if (cache == 0) mHandler.post(mRunable);
-    }
-
-    @Override
     public void onSucceed(Request request, Response response) throws IOException {
+        mTotalLength = response.body().contentLength();
         InputStream inputStream = response.body().byteStream();
         OutputStream outputStream = new FileOutputStream(mSaveFile);
         int len = 0;
-        byte[] buffer = new byte[2048];
+        boolean firstCallProgress = true;
+        byte[] buffer = new byte[8192];
         while ((len = inputStream.read(buffer)) != -1) {
             outputStream.write(buffer, 0, len);
+            mTransmittedLength += len;
+
+            if (firstCallProgress) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mCompleted) return;
+                        mDownloadCallback.onProgress(mTransmittedLength, mTotalLength);
+                        mHandler.postDelayed(this, 200L);
+                    }
+                });
+                firstCallProgress = false;
+            }
         }
         outputStream.flush();
         outputStream.close();
         inputStream.close();
-        mHandler.removeCallbacks(mRunable);
+        mCompleted = true;
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mDownloadCallback.onProgress(mTotalBytesRead, mContentLength);
+                mDownloadCallback.onProgress(mTransmittedLength, mTotalLength);
                 mDownloadCallback.onSucceed(mSaveFile);
             }
         });
@@ -67,6 +71,7 @@ public class DownloadProxy implements OnResponseProgressListener, Callback {
 
     @Override
     public void onFailure(Request request, final IOException e) {
+        mCompleted = true;
         mHandler.post(new Runnable() {
             @Override
             public void run() {

@@ -152,9 +152,7 @@ public class QueryRequest<T extends QueryRequest> extends Request<T> {
     }
 
     public T download(File saveFile, DownloadCallback downloadCallback) {
-        DownloadProxy downloadProxy = new DownloadProxy(saveFile, downloadCallback);
-        progress(downloadProxy);
-        return async(downloadProxy);
+        return async(new DownloadProxy(saveFile, downloadCallback));
     }
 
    protected IdentityHashMap<String, String> getQueryHashMap() {
