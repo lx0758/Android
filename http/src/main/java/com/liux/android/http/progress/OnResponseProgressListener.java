@@ -10,5 +10,5 @@ import okhttp3.HttpUrl;
 
 public interface OnResponseProgressListener {
 
-    void onResponseProgress(HttpUrl httpUrl, long totalBytesRead, long contentLength, boolean done);
+    void onResponseProgress(HttpUrl httpUrl, long transmittedLength, long totalLength, boolean completed);
 }

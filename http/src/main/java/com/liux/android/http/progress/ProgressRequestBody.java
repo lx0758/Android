@@ -61,9 +61,9 @@ public class ProgressRequestBody extends AbstractRequestBody implements WrapperR
         private RequestBody mRequestBody;
         private OnRequestProgressListener mOnRequestProgressListener;
 
-        private long mContentLength = -1L;
-        private long mTotalBytesWrite = 0L;
-        private boolean mDone = false;
+        private long mTransmittedLength = 0L;
+        private long mTotalLength = -1L;
+        private boolean mCallCompleted = false;
 
         public WrapperForwardingSink(BufferedSink sink, HttpUrl httpUrl, RequestBody requestBody, OnRequestProgressListener onRequestProgressListener) {
             super(sink);
@@ -76,15 +76,19 @@ public class ProgressRequestBody extends AbstractRequestBody implements WrapperR
         public void write(Buffer source, long byteCount) throws IOException {
             super.write(source, byteCount);
 
-            if (mContentLength == -1) mContentLength = mRequestBody.contentLength();
+            // 获取总长度
+            if (mTotalLength == -1) mTotalLength = mRequestBody.contentLength();
 
             // 增加当前写入的字节数
-            long totalBytesWrite = mTotalBytesWrite + byteCount;
+            mTransmittedLength += byteCount;
 
-            // 回调
-            if ((totalBytesWrite == 0 || totalBytesWrite != mTotalBytesWrite) && !mDone) {
-                mTotalBytesWrite = totalBytesWrite;
-                mOnRequestProgressListener.onRequestProgress(mHttpUrl, mTotalBytesWrite, mContentLength, (mDone = mTotalBytesWrite == mContentLength));
+            // 是否完成标志
+            boolean completed = mTransmittedLength == mTotalLength;
+
+            // 回调进度
+            if (!mCallCompleted) {
+                mOnRequestProgressListener.onRequestProgress(mHttpUrl, mTransmittedLength, mTotalLength, completed);
+                if (completed) mCallCompleted = true;
             }
         }
     }
