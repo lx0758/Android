@@ -58,6 +58,7 @@ import okio.BufferedSource;
  * a stable logging format, use your own interceptor.
  */
 public class HttpLoggingInterceptor implements Interceptor {
+
     private static final int MAX_LOG_LENGTH = 100 * 1024;
     private static final Charset UTF8 = Charset.forName("UTF-8");
     private static final String SEPARATOR = System.getProperty("line.separator");
@@ -65,7 +66,6 @@ public class HttpLoggingInterceptor implements Interceptor {
     private static final String DIVIDE_1;
     private static final String DIVIDE_2;
     private static final String DIVIDE_3;
-
     static {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < 200; i++) {
@@ -209,7 +209,6 @@ public class HttpLoggingInterceptor implements Interceptor {
         if (!logHeaders && hasRequestBody) {
             requestStartMessage += " (" + requestBody.contentLength() + "-byte body)";
         }
-        //logger.log(requestStartMessage);
         addLog(stringBuffer, requestStartMessage);
 
         if (logHeaders) {
@@ -217,11 +216,9 @@ public class HttpLoggingInterceptor implements Interceptor {
                 // Request body headers are only present when installed as a network interceptor. Force
                 // them to be included (when available) so there values are known.
                 if (requestBody.contentType() != null) {
-                    //logger.log("Content-Type: " + requestBody.contentType());
                     addLog(stringBuffer, "Content-Type: " + requestBody.contentType());
                 }
                 if (requestBody.contentLength() != -1) {
-                    //logger.log("Content-Length: " + requestBody.contentLength());
                     addLog(stringBuffer, "Content-Length: " + requestBody.contentLength());
                 }
             }
@@ -231,21 +228,18 @@ public class HttpLoggingInterceptor implements Interceptor {
                 String name = headers.name(i);
                 // Skip headers from the request body as they are explicitly logged above.
                 if (!"Content-Type".equalsIgnoreCase(name) && !"Content-Length".equalsIgnoreCase(name)) {
-                    //logger.log(name + ": " + headers.value(i));
                     addLog(stringBuffer, name + ": " + headers.value(i));
                 }
             }
 
             if (!logBody || !hasRequestBody) {
-                //logger.log("--> END " + request.method());
                 addLog(stringBuffer, "--> END " + request.method());
             } else if (bodyEncoded(request.headers())) {
-                //logger.log("--> END " + request.method() + " (encoded body omitted)");
                 addLog(stringBuffer, "--> END " + request.method() + " (encoded body omitted)");
-            } else if (requestBody.contentLength() == -1) {
-                addLog(stringBuffer, "--> END HTTP (length is unknown)");
             } else if (requestBody.contentLength() >= MAX_LOG_LENGTH) {
                 addLog(stringBuffer, "--> END HTTP (length outride " + MAX_LOG_LENGTH + ")");
+            } else if (requestBody.contentLength() == -1 && !isPlaintext(requestBody.contentType())) {
+                addLog(stringBuffer, "--> END HTTP (content length is unknown and type is not supported)");
             } else {
                 Buffer buffer = new Buffer();
                 requestBody.writeTo(buffer);
@@ -256,18 +250,12 @@ public class HttpLoggingInterceptor implements Interceptor {
                     charset = contentType.charset(UTF8);
                 }
 
-                //logger.log("");
                 addLog(stringBuffer, "");
                 if (isPlaintext(buffer)) {
-                    //logger.log(buffer.readString(charset));
                     addLog(stringBuffer, buffer.readString(charset));
-                    //logger.log("--> END " + request.method()
-                    //        + " (" + requestBody.contentLength() + "-byte body)");
                     addLog(stringBuffer, "--> END " + request.method()
                             + " (" + requestBody.contentLength() + "-byte body)");
                 } else {
-                    //logger.log("--> END " + request.method() + " (binary "
-                    //        + requestBody.contentLength() + "-byte body omitted)");
                     addLog(stringBuffer, "--> END " + request.method() + " (binary "
                             + requestBody.contentLength() + "-byte body omitted)");
                 }
@@ -282,7 +270,6 @@ public class HttpLoggingInterceptor implements Interceptor {
         try {
             response = chain.proceed(request);
         } catch (Exception e) {
-            //logger.log("<-- HTTP FAILED: " + e);
             long tookMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startNs);
             addLog(stringBuffer, "<-- HTTP FAILED: " + e + " (" + tookMs + "ms)");
             addLog(stringBuffer, DIVIDE_3);
@@ -294,11 +281,6 @@ public class HttpLoggingInterceptor implements Interceptor {
         ResponseBody responseBody = response.body();
         long contentLength = responseBody.contentLength();
         String bodySize = contentLength != -1 ? contentLength + "-byte" : "unknown-length";
-        //logger.log("<-- "
-        //        + response.code()
-        //        + (response.message().isEmpty() ? "" : ' ' + response.message())
-        //        + ' ' + response.request().url()
-        //        + " (" + tookMs + "ms" + (!logHeaders ? ", " + bodySize + " body" : "") + ')');
         addLog(stringBuffer, "<-- "
                 + response.code()
                 + (response.message().isEmpty() ? "" : ' ' + response.message())
@@ -308,20 +290,17 @@ public class HttpLoggingInterceptor implements Interceptor {
         if (logHeaders) {
             Headers headers = response.headers();
             for (int i = 0, count = headers.size(); i < count; i++) {
-                //logger.log(headers.name(i) + ": " + headers.value(i));
                 addLog(stringBuffer, headers.name(i) + ": " + headers.value(i));
             }
 
             if (!logBody || !HttpHeaders.hasBody(response)) {
-                //logger.log("<-- END HTTP");
                 addLog(stringBuffer, "<-- END HTTP");
             } else if (bodyEncoded(response.headers())) {
-                //logger.log("<-- END HTTP (encoded body omitted)");
                 addLog(stringBuffer, "<-- END HTTP (encoded body omitted)");
-            } else if (contentLength == -1) {
-                addLog(stringBuffer, "<-- END HTTP (length is unknown)");
             } else if (contentLength >= MAX_LOG_LENGTH) {
                 addLog(stringBuffer, "<-- END HTTP (length outride " + MAX_LOG_LENGTH + ")");
+            } else if (contentLength == -1 && !isPlaintext(responseBody.contentType())) {
+                addLog(stringBuffer, "<-- END HTTP (content length is unknown and type is not supported)");
             } else {
                 BufferedSource source = responseBody.source();
                 source.request(Long.MAX_VALUE); // Buffer the entire body.
@@ -334,21 +313,16 @@ public class HttpLoggingInterceptor implements Interceptor {
                 }
 
                 if (!isPlaintext(buffer)) {
-                    //logger.log("");
                     addLog(stringBuffer, "");
-                    //logger.log("<-- END HTTP (binary " + buffer.size() + "-byte body omitted)");
                     addLog(stringBuffer, "<-- END HTTP (binary " + buffer.size() + "-byte body omitted)");
                     return response;
                 }
 
                 if (contentLength != 0) {
-                    //logger.log("");
                     addLog(stringBuffer, "");
-                    //logger.log(buffer.clone().readString(charset));
                     addLog(stringBuffer, buffer.clone().readString(charset));
                 }
 
-                //logger.log("<-- END HTTP (" + buffer.size() + "-byte body)");
                 addLog(stringBuffer, "<-- END HTTP (" + buffer.size() + "-byte body)");
             }
         }
@@ -363,7 +337,7 @@ public class HttpLoggingInterceptor implements Interceptor {
      * Returns true if the body in question probably contains human readable text. Uses a small sample
      * of code points to detect unicode control characters commonly used in binary file signatures.
      */
-    static boolean isPlaintext(Buffer buffer) {
+    private static boolean isPlaintext(Buffer buffer) {
         try {
             Buffer prefix = new Buffer();
             long byteCount = buffer.size() < 64 ? buffer.size() : 64;
@@ -381,6 +355,14 @@ public class HttpLoggingInterceptor implements Interceptor {
         } catch (EOFException e) {
             return false; // Truncated UTF-8 sequence.
         }
+    }
+
+    private boolean isPlaintext(MediaType contentType) {
+        if (contentType == null) return false;
+        return "text".equals(contentType.type()) ||
+                "javascript".equals(contentType.subtype()) ||
+                "json".equals(contentType.subtype()) ||
+                "xml".equals(contentType.subtype());
     }
 
     private boolean bodyEncoded(Headers headers) {
