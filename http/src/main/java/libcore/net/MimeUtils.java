@@ -1,4 +1,5 @@
-// https://android.googlesource.com/platform/libcore/+/android-9.0.0_r12/luni/src/main/java/libcore/net/MimeUtils.java
+// https://android.googlesource.com/platform/libcore/+/refs/tags/android-9.0.0_r54/luni/src/main/java/libcore/net/MimeUtils.java
+
 /*
  * Copyright (C) 2010 The Android Open Source Project
  *

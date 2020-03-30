@@ -100,7 +100,7 @@ implementation 'com.liux.android:http:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1.
+    1.优化日志打印拦截器
 
 ### 0.2.8_2020-03-29
     1.改变文件下载实现
