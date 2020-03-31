@@ -24,79 +24,71 @@ import javax.xml.transform.stream.StreamSource;
 public class Logger {
     private static final String TAG = "[Logger]";
     private static final String SEPARATOR = System.getProperty("line.separator");
-    private static final String DIVIDE_1 = "================================================================================================";
-    private static final String DIVIDE_2 = "------------------------------------------------------------------------------------------------";
+    private static final String DIVIDE_0 = "┃";
+    private static final String DIVIDE_1 = "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
+    private static final String DIVIDE_2 = "┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
+    private static final String DIVIDE_3 = "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
 
     public static boolean DEBUG = true;
 
-    public static int v(String msg) {
-        if (!DEBUG) return -1;
-        String stackTrace = getStackTrace();
-        String info = formatText(stackTrace, msg);
-        return Log.v(TAG, info);
+    public static void v(String msg) {
+        if (!DEBUG) return;
+        print(msg, null, Log.VERBOSE);
     }
 
-    public static int v(String msg, Throwable tr) {
-        if (!DEBUG) return -1;
-        String stackTrace = getStackTrace();
-        String info = formatText(stackTrace, msg);
-        return Log.v(TAG, info, tr);
+    public static void v(String msg, Throwable tr) {
+        if (!DEBUG) return;
+        print(msg, tr, Log.VERBOSE);
     }
 
-    public static int d(String msg) {
-        if (!DEBUG) return -1;
-        String stackTrace = getStackTrace();
-        String info = formatText(stackTrace, msg);
-        return Log.d(TAG, info);
+    public static void d(String msg) {
+        if (!DEBUG) return;
+        print(msg, null, Log.DEBUG);
     }
 
-    public static int d(String msg, Throwable tr) {
-        if (!DEBUG) return -1;
-        String stackTrace = getStackTrace();
-        String info = formatText(stackTrace, msg);
-        return Log.d(TAG, info, tr);
+    public static void d(String msg, Throwable tr) {
+        if (!DEBUG) return;
+        print(msg, tr, Log.DEBUG);
     }
 
-    public static int i(String msg) {
-        if (!DEBUG) return -1;
-        String stackTrace = getStackTrace();
-        String info = formatText(stackTrace, msg);
-        return Log.i(TAG, info);
+    public static void i(String msg) {
+        if (!DEBUG) return;
+        print(msg, null, Log.INFO);
     }
 
-    public static int i(String msg, Throwable tr) {
-        if (!DEBUG) return -1;
-        String stackTrace = getStackTrace();
-        String info = formatText(stackTrace, msg);
-        return Log.i(TAG, info, tr);
+    public static void i(String msg, Throwable tr) {
+        if (!DEBUG) return;
+        print(msg, tr, Log.INFO);
     }
 
-    public static int w(String msg) {
-        if (!DEBUG) return -1;
-        String stackTrace = getStackTrace();
-        String info = formatText(stackTrace, msg);
-        return Log.w(TAG, info);
+    public static void w(String msg) {
+        if (!DEBUG) return;
+        print(msg, null, Log.WARN);
     }
 
-    public static int w(String msg, Throwable tr) {
-        if (!DEBUG) return -1;
-        String stackTrace = getStackTrace();
-        String info = formatText(stackTrace, msg);
-        return Log.w(TAG, info, tr);
+    public static void w(String msg, Throwable tr) {
+        if (!DEBUG) return;
+        print(msg, tr, Log.WARN);
     }
 
-    public static int e(String msg) {
-        if (!DEBUG) return -1;
-        String stackTrace = getStackTrace();
-        String info = formatText(stackTrace, msg);
-        return Log.e(TAG, info);
+    public static void e(String msg) {
+        if (!DEBUG) return;
+        print(msg, null, Log.ERROR);
     }
 
-    public static int e(String msg, Throwable tr) {
-        if (!DEBUG) return -1;
-        String stackTrace = getStackTrace();
-        String info = formatText(stackTrace, msg);
-        return Log.e(TAG, info, tr);
+    public static void e(String msg, Throwable tr) {
+        if (!DEBUG) return;
+        print(msg, tr, Log.ERROR);
+    }
+
+    public static void a(String msg) {
+        if (!DEBUG) return;
+        print(msg, null, Log.ASSERT);
+    }
+
+    public static void a(String msg, Throwable tr) {
+        if (!DEBUG) return;
+        print(msg, tr, Log.ASSERT);
     }
 
     /**
@@ -105,7 +97,7 @@ public class Logger {
      */
     private static String getStackTrace() {
         StackTraceElement[] stackTraceElements = new Throwable().getStackTrace();
-        StackTraceElement stackTraceElement = stackTraceElements[2];
+        StackTraceElement stackTraceElement = stackTraceElements[3];
 
         String className = stackTraceElement.getClassName();
         String[] classNameInfo = className.split("\\.");
@@ -129,17 +121,29 @@ public class Logger {
 
     /**
      * 格式化文本
-     * @param text
+     * @param msg
+     * @param tr
+     * @param priority
      * @return
      */
-    private static String formatText(String stackTrace, String text) {
-        text = formatJson(text);
-        text = formatXml(text);
-        return DIVIDE_1 + SEPARATOR +
-                stackTrace + SEPARATOR +
-                DIVIDE_2 + SEPARATOR +
-                text + SEPARATOR +
-                DIVIDE_1;
+    private synchronized static void print(String msg, Throwable tr, int priority) {
+        String stackTrace = getStackTrace();
+
+        msg = formatJson(msg);
+        msg = formatXml(msg);
+        msg = msg + '\n' + Log.getStackTraceString(tr);
+
+        Log.println(priority, TAG, DIVIDE_1);
+        String[] stackTraces = stackTrace.split("\n");
+        for (String trace : stackTraces) {
+            Log.println(priority, TAG, DIVIDE_0 + trace);
+        }
+        Log.println(priority, TAG, DIVIDE_2);
+        String[] msgs = msg.split("\n");
+        for (String m : msgs) {
+            Log.println(priority, TAG, DIVIDE_0 + m);
+        }
+        Log.println(priority, TAG, DIVIDE_3);
     }
 
     /**
