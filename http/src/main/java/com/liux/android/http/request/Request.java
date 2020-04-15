@@ -130,7 +130,6 @@ public abstract class Request<T extends Request> implements okhttp3.Callback {
         Response response = handlerCall().execute();
         if (!response.isSuccessful()) throw new FailException(response);
         response = handlerResponse(response);
-        cancel();
         return response;
     }
 
