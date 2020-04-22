@@ -30,24 +30,36 @@ public class AppendProxy<T, R extends RecyclerView.Adapter> implements IAppendAd
 
     @Override
     public R setHeader(View view) {
-        if (mHeaders.isEmpty()) {
-            mHeaders.add(0, new MarginHolder(view));
-            mAdapter.notifyItemInserted(0);
+        if (view != null) {
+            if (mHeaders.isEmpty()) {
+                mHeaders.add(0, new MarginHolder(view));
+                mAdapter.notifyItemInserted(0);
+            } else {
+                mHeaders.set(0, new MarginHolder(view));
+                mAdapter.notifyItemChanged(0);
+            }
         } else {
-            mHeaders.set(0, new MarginHolder(view));
-            mAdapter.notifyItemChanged(0);
+            boolean hasHeaders = !mHeaders.isEmpty();
+            mHeaders.clear();
+            if (hasHeaders) mAdapter.notifyItemRemoved(0);
         }
         return mAdapter;
     }
 
     @Override
     public R setFooter(View view) {
-        if (mFooters.isEmpty()) {
-            mFooters.add(0, new MarginHolder(view));
-            mAdapter.notifyItemInserted(mAdapter.getItemCount() - 1);
+        if (view != null) {
+            if (mFooters.isEmpty()) {
+                mFooters.add(0, new MarginHolder(view));
+                mAdapter.notifyItemInserted(mAdapter.getItemCount() - 1);
+            } else {
+                mFooters.set(0, new MarginHolder(view));
+                mAdapter.notifyItemChanged(mAdapter.getItemCount() - 1);
+            }
         } else {
-            mFooters.set(0, new MarginHolder(view));
-            mAdapter.notifyItemChanged(mAdapter.getItemCount() - 1);
+            boolean hasFooters = !mFooters.isEmpty();
+            mFooters.clear();
+            if (hasFooters) mAdapter.notifyItemRemoved(mAdapter.getItemCount());
         }
         return mAdapter;
     }
