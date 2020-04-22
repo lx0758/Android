@@ -9,6 +9,12 @@ implementation 'com.liux.android:list:x.y.z'
 
 更新说明
 ---
+### x.y.z_202x-xx-xx
+    1.
+    
+### 0.2.7_2020-04-22
+    1.新增清除 Header/Footer
+    
 ### 0.2.6_2020-03-24
     1.选择辅助工具改为数据驱动
     2.修正适配器方法以及参数名称
