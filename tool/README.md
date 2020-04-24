@@ -10,7 +10,7 @@ implementation 'com.liux.android:tool:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1.
+    1.新增计次工具
 
 ### 0.2.4_2020-03-31
     1.优化 Logger 工具
