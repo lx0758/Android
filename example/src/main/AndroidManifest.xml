@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
 
@@ -46,20 +47,17 @@
         <activity android:name=".abstracts.activity.NestingFragmentActivity"
             android:label="Fragment"/>
 
-        <activity android:name=".boxing.BoxingActivity"
-            android:label="Boxing"/>
-
         <activity android:name=".downloader.DownloaderActivity"
             android:label="Downloader"/>
-
-        <activity android:name=".glide.GlideActivity"
-            android:label="Glide"/>
 
         <activity android:name=".http.HTTPActivity"
             android:label="HTTP"/>
 
         <activity android:name=".list.ListActivity"
             android:label="List"/>
+
+        <activity android:name=".picturer.MediaerActivity"
+            android:label="Mediaer"/>
 
         <activity android:name=".pay.PayActivity"
             android:label="Pay"/>

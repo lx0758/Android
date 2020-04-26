@@ -13,9 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.liux.android.example.banner.BannerActivity;
 import com.liux.android.example.abstracts.activity.AbstractsActivity;
-import com.liux.android.example.boxing.BoxingActivity;
+import com.liux.android.example.picturer.MediaerActivity;
 import com.liux.android.example.downloader.DownloaderActivity;
-import com.liux.android.example.glide.GlideActivity;
 import com.liux.android.example.http.HTTPActivity;
 import com.liux.android.example.list.ListActivity;
 import com.liux.android.example.other.ToolActivity;
@@ -64,12 +63,11 @@ public class MainActivity extends AppCompatActivity {
 
         add("Banner", "一个支持 Adapter 的 Banner 封装", BannerActivity.class);
         add("Abstracts", "对于 Activity 和 Fragment 的封装", AbstractsActivity.class);
-        add("Boxing", "基于 Boxing 封装的图片选择/预览库", BoxingActivity.class);
         add("Downloader", "全局/单线程/多任务/断点续传 HTTP 下载器", DownloaderActivity.class);
-        add("Glide", "基于 Glide4 实现自定义加载过程", GlideActivity.class);
         add("HTTP", "基于 Retorfit/OkHttp 的封装", HTTPActivity.class);
         add("IO", "基于 Android中Linux内核 的 串口/GPIO/I2C 通信库类的封装", IOActivity.class);
         add("List", "基于 RecycleView 的封装", ListActivity.class);
+        add("Mediaer", "媒体文件选取/拍摄/录制/加载的库类", MediaerActivity.class);
         add("Pay", "封装支付宝/微信/银联支付过程", PayActivity.class);
         add("Permission", "运行时/悬浮窗/安装 权限申请过程封装", PermissionActivity.class);
         add("QRCode", "基于 ZXing 的一个 QRCode 扫描/生成库", QRCodeActivity.class);

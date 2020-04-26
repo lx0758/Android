@@ -14,10 +14,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.liux.android.boxing.Boxinger;
-import com.liux.android.boxing.OnTakeListener;
+import com.liux.android.mediaer.Mediaer;
+import com.liux.android.mediaer.MediaerException;
+import com.liux.android.mediaer.listener.OnTakeListener;
 import com.liux.android.example.R;
-import com.liux.android.glide.GlideApp;
+import com.liux.android.mediaer.glide.GlideApp;
 import com.liux.android.permission.Authorizer;
 import com.liux.android.permission.Continue;
 import com.liux.android.permission.OnContinueListener;
@@ -25,7 +26,6 @@ import com.liux.android.permission.floats.OnFloatPermissionListener;
 import com.liux.android.permission.install.OnInstallPermissionListener;
 import com.liux.android.permission.runtime.OnRuntimePermissionListener;
 import com.liux.android.tool.TT;
-import com.liux.android.util.UriUtil;
 
 import java.util.List;
 
@@ -118,8 +118,8 @@ public class PermissionActivity extends AppCompatActivity {
                             @Override
                             public void onRuntimePermission(List<String> allow, List<String> reject, List<String> prohibit) {
                                 if (allow.contains(Manifest.permission.CAMERA)) {
-                                    Boxinger.with(PermissionActivity.this)
-                                            .take(UriUtil.getAuthority(PermissionActivity.this))
+                                    Mediaer.with(PermissionActivity.this)
+                                            .take()
                                             .listener(new OnTakeListener() {
                                                 @Override
                                                 public void onSucceed(Uri uri) {
@@ -130,7 +130,7 @@ public class PermissionActivity extends AppCompatActivity {
                                                 }
 
                                                 @Override
-                                                public void onFailure(int type) {
+                                                public void onFailure(MediaerException e) {
 
                                                 }
                                             })
@@ -177,8 +177,8 @@ public class PermissionActivity extends AppCompatActivity {
                                 }
 
                                 if (allow.contains(Manifest.permission.CAMERA)) {
-                                    Boxinger.with(PermissionActivity.this)
-                                            .take(UriUtil.getAuthority(PermissionActivity.this))
+                                    Mediaer.with(PermissionActivity.this)
+                                            .take()
                                             .listener(new OnTakeListener() {
                                                 @Override
                                                 public void onSucceed(Uri uri) {
@@ -189,7 +189,7 @@ public class PermissionActivity extends AppCompatActivity {
                                                 }
 
                                                 @Override
-                                                public void onFailure(int type) {
+                                                public void onFailure(MediaerException e) {
 
                                                 }
                                             })

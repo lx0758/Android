@@ -3,19 +3,16 @@ package com.liux.android.example.qrcode;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bilibili.boxing.BoxingCrop;
-import com.bilibili.boxing.BoxingMediaLoader;
-import com.bilibili.boxing.model.entity.impl.ImageMedia;
-import com.liux.android.boxing.BoxingGlideLoader;
-import com.liux.android.boxing.Boxinger;
-import com.liux.android.boxing.BoxingUcrop;
-import com.liux.android.boxing.OnSingleSelectListener;
+import com.liux.android.mediaer.Mediaer;
+import com.liux.android.mediaer.MediaerException;
+import com.liux.android.mediaer.listener.OnSingleSelectListener;
 import com.liux.android.example.R;
 import com.liux.android.qrcode.QRCodeDecoder;
 import com.liux.android.qrcode.QRCodeScanningActivity;
@@ -39,10 +36,6 @@ public class QRCodeActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_qrcode);
         ButterKnife.bind(this);
-
-        /* 初始化Boxing */
-        BoxingCrop.getInstance().init(new BoxingUcrop());
-        BoxingMediaLoader.getInstance().init(new BoxingGlideLoader());
     }
 
     @OnClick({R.id.btn_default_scan, R.id.btn_customize_scan, R.id.btn_bitmap_decode, R.id.btn_bytes_decode, R.id.btn_file_decode, R.id.btn_file_descriptor_decode, R.id.btn_input_stream_decode, R.id.btn_generate})
@@ -68,14 +61,17 @@ public class QRCodeActivity extends AppCompatActivity {
                 break;
             case R.id.btn_bitmap_decode:
                 // FIXME: memory overflow may occur here
-                Boxinger.with(this)
+                Mediaer.with(this)
                         .singleSelect()
-                        .useCamera(true)
-                        .useCrop(false)
                         .listener(new OnSingleSelectListener() {
                             @Override
-                            public void onSingleSelect(ImageMedia imageMedia) {
-                                File file = new File(imageMedia.getPath());
+                            public void onFailure(MediaerException e) {
+                                TT.show("出错了!");
+                            }
+
+                            @Override
+                            public void onSingleSelect(Uri uri) {
+                                File file = new File(uri.getPath());
 
                                 BitmapFactory.Options opts = new BitmapFactory.Options();
                                 opts.inPreferredConfig = Bitmap.Config.RGB_565;
@@ -91,14 +87,17 @@ public class QRCodeActivity extends AppCompatActivity {
                         .start();
                 break;
             case R.id.btn_bytes_decode:
-                Boxinger.with(this)
+                Mediaer.with(this)
                         .singleSelect()
-                        .useCamera(true)
-                        .useCrop(false)
                         .listener(new OnSingleSelectListener() {
                             @Override
-                            public void onSingleSelect(ImageMedia imageMedia) {
-                                File file = new File(imageMedia.getPath());
+                            public void onFailure(MediaerException e) {
+                                TT.show("出错了!");
+                            }
+
+                            @Override
+                            public void onSingleSelect(Uri uri) {
+                                File file = new File(uri.getPath());
 
                                 FileInputStream fileInputStream = null;
                                 ByteArrayOutputStream byteArrayOutputStream = null;
@@ -127,14 +126,17 @@ public class QRCodeActivity extends AppCompatActivity {
                         .start();
                 break;
             case R.id.btn_file_decode:
-                Boxinger.with(this)
+                Mediaer.with(this)
                         .singleSelect()
-                        .useCamera(true)
-                        .useCrop(false)
                         .listener(new OnSingleSelectListener() {
                             @Override
-                            public void onSingleSelect(ImageMedia imageMedia) {
-                                File file = new File(imageMedia.getPath());
+                            public void onFailure(MediaerException e) {
+                                TT.show("出错了!");
+                            }
+
+                            @Override
+                            public void onSingleSelect(Uri uri) {
+                                File file = new File(uri.getPath());
 
                                 String result = QRCodeDecoder.decode(file);
                                 TT.show(result != null ? ("解码成功:\n" + result) : "解码失败");
@@ -143,14 +145,17 @@ public class QRCodeActivity extends AppCompatActivity {
                         .start();
                 break;
             case R.id.btn_file_descriptor_decode:
-                Boxinger.with(this)
+                Mediaer.with(this)
                         .singleSelect()
-                        .useCamera(true)
-                        .useCrop(false)
                         .listener(new OnSingleSelectListener() {
                             @Override
-                            public void onSingleSelect(ImageMedia imageMedia) {
-                                File file = new File(imageMedia.getPath());
+                            public void onFailure(MediaerException e) {
+                                TT.show("出错了!");
+                            }
+
+                            @Override
+                            public void onSingleSelect(Uri uri) {
+                                File file = new File(uri.getPath());
 
                                 FileInputStream fileInputStream = null;
                                 try {
@@ -170,14 +175,17 @@ public class QRCodeActivity extends AppCompatActivity {
                         .start();
                 break;
             case R.id.btn_input_stream_decode:
-                Boxinger.with(this)
+                Mediaer.with(this)
                         .singleSelect()
-                        .useCamera(true)
-                        .useCrop(false)
                         .listener(new OnSingleSelectListener() {
                             @Override
-                            public void onSingleSelect(ImageMedia imageMedia) {
-                                File file = new File(imageMedia.getPath());
+                            public void onFailure(MediaerException e) {
+                                TT.show("出错了!");
+                            }
+
+                            @Override
+                            public void onSingleSelect(Uri uri) {
+                                File file = new File(uri.getPath());
 
                                 InputStream inputStream = null;
                                 FileInputStream fileInputStream = null;

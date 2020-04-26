@@ -16,7 +16,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.liux.android.example.R;
-import com.liux.android.glide.GlideApp;
+import com.liux.android.mediaer.glide.GlideApp;
 import com.liux.android.qrcode.QRCodeEncoder;
 import com.liux.android.tool.TT;
 
