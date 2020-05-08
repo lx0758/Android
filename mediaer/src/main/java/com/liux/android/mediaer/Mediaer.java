@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.liux.android.mediaer.builder.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -123,5 +124,27 @@ public class Mediaer {
      */
     public PreviewBuilder preview(List<Uri> medias) {
         return new PreviewBuilder(config().getPreviewFactory().createAction(), target, medias);
+    }
+
+    /**
+     * 预览图片
+     * @param medias
+     * @return
+     */
+    public PreviewBuilder previewForPath(String... medias) {
+        return previewForPath(Arrays.asList(medias));
+    }
+
+    /**
+     * 预览图片
+     * @param medias
+     * @return
+     */
+    public PreviewBuilder previewForPath(List<String> medias) {
+        List<Uri> uris = new ArrayList<>();
+        for (String media : medias) {
+            uris.add(Uri.parse(media));
+        }
+        return preview(uris);
     }
 }
