@@ -96,4 +96,9 @@ public class RecordBuilder extends Builder<RecordBuilder, IntentAction<RecordBui
             }
         });
     }
+
+    public interface Factory {
+
+        IntentAction<RecordBuilder, Uri> createAction();
+    }
 }

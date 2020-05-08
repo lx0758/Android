@@ -69,4 +69,9 @@ public class VideoSelectBuilder extends Builder<VideoSelectBuilder, IntentAction
             }
         });
     }
+
+    public interface Factory {
+
+        IntentAction<VideoSelectBuilder, Uri> createAction();
+    }
 }

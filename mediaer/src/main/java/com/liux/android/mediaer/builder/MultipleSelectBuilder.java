@@ -75,4 +75,9 @@ public class MultipleSelectBuilder extends Builder<MultipleSelectBuilder, Intent
             }
         });
     }
+
+    public interface Factory {
+
+        IntentAction<MultipleSelectBuilder, List<Uri>> createAction();
+    }
 }

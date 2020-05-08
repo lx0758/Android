@@ -103,4 +103,9 @@ public class TakeBuilder extends Builder<TakeBuilder, IntentAction<TakeBuilder, 
             }
         });
     }
+
+    public interface Factory {
+
+        IntentAction<TakeBuilder, Uri> createAction();
+    }
 }

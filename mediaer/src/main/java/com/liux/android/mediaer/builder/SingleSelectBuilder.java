@@ -93,4 +93,9 @@ public class SingleSelectBuilder extends Builder<SingleSelectBuilder, IntentActi
             }
         });
     }
+
+    public interface Factory {
+
+        IntentAction<SingleSelectBuilder, Uri> createAction();
+    }
 }

@@ -13,6 +13,7 @@ import com.liux.android.mediaer.builder.CropBuilder;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.util.BitmapLoadUtils;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,7 +39,7 @@ public class UCropCropAction implements IntentAction<CropBuilder, Uri> {
         switch (resultCode) {
             case Activity.RESULT_OK:
                 try {
-                    copyFileToUri(context, UCrop.getOutput(data), builder.outUri);
+                    copyFileToUri(context, new File(UCrop.getOutput(data).getPath()), builder.outUri);
                 } catch (IOException e) {
                     throw new MediaerException(MediaerException.TYPE_UNKNOWN, e);
                 }
@@ -51,11 +52,11 @@ public class UCropCropAction implements IntentAction<CropBuilder, Uri> {
         throw new MediaerException(MediaerException.TYPE_UNKNOWN, null);
     }
 
-    private void copyFileToUri(Context context, Uri source, Uri target) throws IOException {
+    private void copyFileToUri(Context context, File source, Uri target) throws IOException {
         InputStream inputStream = null;
         OutputStream outputStream = null;
         try {
-            inputStream = new FileInputStream(source.getPath());
+            inputStream = new FileInputStream(source);
             switch (target.getScheme()) {
                 case "file":
                     outputStream = new FileOutputStream(target.getPath());
@@ -64,10 +65,10 @@ public class UCropCropAction implements IntentAction<CropBuilder, Uri> {
                     outputStream = context.getContentResolver().openOutputStream(target);
                     break;
                 default:
-                    throw new IllegalArgumentException("Invalid Uri scheme" + target.getScheme());
+                    throw new IllegalArgumentException("Invalid Uri scheme:" + target.getScheme());
             }
 
-            byte buffer[] = new byte[1024];
+            byte buffer[] = new byte[4096];
             int length;
             while ((length = inputStream.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, length);

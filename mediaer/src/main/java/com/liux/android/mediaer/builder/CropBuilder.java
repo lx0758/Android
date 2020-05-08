@@ -88,4 +88,9 @@ public class CropBuilder extends Builder<CropBuilder, IntentAction<CropBuilder, 
             }
         });
     }
+
+    public interface Factory {
+
+        IntentAction<CropBuilder, Uri> createAction();
+    }
 }

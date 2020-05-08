@@ -58,4 +58,9 @@ public class PreviewBuilder extends Builder<PreviewBuilder, CallAction<PreviewBu
             }
         });
     }
+
+    public interface Factory {
+
+        CallAction<PreviewBuilder> createAction();
+    }
 }
