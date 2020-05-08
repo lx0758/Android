@@ -6,8 +6,8 @@
     <application>
 
         <provider
-            android:name=".UriUtilFileProvider"
-            android:authorities="${applicationId}.UriUtilFileProvider"
+            android:name=".extra.ExtraFileProvider"
+            android:authorities="${applicationId}.extra.ExtraFileProvider"
             android:grantUriPermissions="true"
             android:exported="false">
             <!-- grantUriPermissions:true，表示授予 URI 临时访问权限。 -->

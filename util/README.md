@@ -12,6 +12,9 @@ implementation 'com.liux.android:util:x.y.z'
 ### x.y.z_202x-xx-xx
     1.
 
+### 0.2.5_2020-05-08
+    1.解决类冲突
+
 ### 0.2.4_2020-03-27
     1.优化 Intent / Uri 工具类
 

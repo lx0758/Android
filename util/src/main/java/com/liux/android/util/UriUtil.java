@@ -7,6 +7,8 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 
+import com.liux.android.util.extra.ExtraFileProvider;
+
 import java.io.File;
 import java.util.List;
 
@@ -21,7 +23,7 @@ public class UriUtil {
      * @return
      */
     public static String getAuthority(Context context) {
-        return context.getPackageName() + ".UriUtilFileProvider";
+        return context.getPackageName() + ".extra.ExtraFileProvider";
     }
 
     /**
@@ -32,7 +34,7 @@ public class UriUtil {
      */
     public static Uri getProviderUri(Context context, File file) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return UriUtilFileProvider.getUriForFile(context, getAuthority(context), file);
+            return ExtraFileProvider.getUriForFile(context, getAuthority(context), file);
         }
         return Uri.fromFile(file);
     }
