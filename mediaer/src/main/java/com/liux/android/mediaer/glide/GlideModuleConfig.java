@@ -2,6 +2,8 @@ package com.liux.android.mediaer.glide;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.Registry;
@@ -33,7 +35,7 @@ import okhttp3.Call;
 public class GlideModuleConfig extends AppGlideModule {
 
     @Override
-    public void applyOptions(Context context, GlideBuilder glideBuilder) {
+    public void applyOptions(@NonNull Context context, GlideBuilder glideBuilder) {
         /* 自定义内存和图片池大小 */
         // 取1/8最大内存作为最大缓存
         int memorySize = (int) (Runtime.getRuntime().maxMemory()) / 8;
@@ -70,7 +72,7 @@ public class GlideModuleConfig extends AppGlideModule {
      * @param registry
      */
     @Override
-    public void registerComponents(Context context, Glide glide, Registry registry) {
+    public void registerComponents(@NonNull Context context, @NonNull Glide glide, @NonNull Registry registry) {
         // 注册全局OkHttp客户端(Http先于Glide初始化完成的情况下会使用)
         Object httpClient = getHttpClient();
         if (httpClient != null) {
