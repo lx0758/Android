@@ -28,7 +28,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
-            android:text="图片多选"/>
+            android:text="图片多选"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/btn_select_video"
@@ -59,11 +60,6 @@
             android:layout_weight="1"
             android:text="录制视频"
             android:textAllCaps="false" />
-
-        <Space
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="0dp"/>
 
     </LinearLayout>
 

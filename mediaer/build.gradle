@@ -19,6 +19,7 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
+    api 'com.github.chrisbanes:PhotoView:2.0.0'
     api ('com.github.yalantis:ucrop:2.2.4', {
         exclude group: 'com.squareup.okhttp3'
     })

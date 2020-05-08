@@ -55,16 +55,24 @@ public class MediaerActivity extends AppCompatActivity {
                 .addRule(new SingleRule<Uri>(R.layout.layout_media_item) {
                     @Override
                     public void onDataBind(SuperHolder holder, int position, Uri uri, List<Object> payloads) {
-                        ImageView imageView = holder.getView(R.id.iv_image);
+                        ImageView imageView = holder
+                                .setOnClickListener(R.id.tv_del, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        int pos = mMultipleAdapter.getData().indexOf(uri);
+                                        mMultipleAdapter.getData().remove(pos);
+                                        mMultipleAdapter.notifyItemRemoved(pos);
+                                    }
+                                })
+                                .setOnClickListener(v -> {
+                                    Mediaer
+                                            .with(MediaerActivity.this)
+                                            .preview(mMultipleAdapter.getData())
+                                            .position(position)
+                                            .start();
+                                })
+                                .getView(R.id.iv_image);
                         GlideApp.with(imageView.getContext()).asBitmap().load(uri).override(150, 150).into(imageView);
-
-                        holder.setOnClickListener(v -> {
-                            Mediaer
-                                    .with(MediaerActivity.this)
-                                    .preview(mMultipleAdapter.getData())
-                                    .position(position)
-                                    .start();
-                        });
                     }
                 });
         rvList.setAdapter(mMultipleAdapter);
@@ -97,9 +105,8 @@ public class MediaerActivity extends AppCompatActivity {
 
                             @Override
                             public void onSingleSelect(Uri uri) {
-                                mMultipleAdapter.getData().clear();
                                 mMultipleAdapter.getData().add(uri);
-                                mMultipleAdapter.notifyDataSetChanged();
+                                mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getData().size() - 1);
                             }
                         })
                         .start();
@@ -127,7 +134,6 @@ public class MediaerActivity extends AppCompatActivity {
 
                             @Override
                             public void onMultiSelect(List<Uri> uris) {
-                                mMultipleAdapter.getData().clear();
                                 mMultipleAdapter.getData().addAll(uris);
                                 mMultipleAdapter.notifyDataSetChanged();
                             }
@@ -157,9 +163,8 @@ public class MediaerActivity extends AppCompatActivity {
 
                             @Override
                             public void onVideoSelect(Uri uri) {
-                                mMultipleAdapter.getData().clear();
                                 mMultipleAdapter.getData().add(uri);
-                                mMultipleAdapter.notifyDataSetChanged();
+                                mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getData().size() - 1);
                             }
                         })
                         .start();
@@ -188,9 +193,8 @@ public class MediaerActivity extends AppCompatActivity {
 
                             @Override
                             public void onSucceed(Uri uri) {
-                                mMultipleAdapter.getData().clear();
                                 mMultipleAdapter.getData().add(uri);
-                                mMultipleAdapter.notifyDataSetChanged();
+                                mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getData().size() - 1);
                             }
                         })
                         .start();
@@ -220,9 +224,8 @@ public class MediaerActivity extends AppCompatActivity {
 
                             @Override
                             public void onSucceed(Uri uri) {
-                                mMultipleAdapter.getData().clear();
                                 mMultipleAdapter.getData().add(uri);
-                                mMultipleAdapter.notifyDataSetChanged();
+                                mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getData().size() - 1);
                             }
                         })
                         .start();

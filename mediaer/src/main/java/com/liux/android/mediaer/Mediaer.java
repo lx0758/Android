@@ -47,9 +47,12 @@ public class Mediaer {
 
     /**
      * 图片多选
+     * 由于系统自带选择器没有多选能力, 并且本库类也没有去实现
+     * 多选功能用的是单选的结果
      * @param maxQuantity
      * @return
      */
+    @Deprecated
     public MultipleSelectBuilder multipleSelect(int maxQuantity) {
         return new MultipleSelectBuilder(config().getMultipleSelectAction(), target, maxQuantity);
     }
