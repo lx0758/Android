@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 
-import androidx.exifinterface.media.ExifInterface;
+import com.liux.android.util.extra.ExtraExifInterface;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -81,9 +81,9 @@ public class CompressUtil {
         byte[] inData = DiskUtil.readStream(in);
         if (inData == null) throw new NullPointerException("Input read failed");
 
-        ExifInterface exifInterface = null;
+        ExtraExifInterface extraExifInterface = null;
         try {
-            exifInterface = new ExifInterface(new ByteArrayInputStream(inData));
+            extraExifInterface = new ExtraExifInterface(new ByteArrayInputStream(inData));
         } catch (IOException ignore) {}
 
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -96,7 +96,7 @@ public class CompressUtil {
         options.inSampleSize = computeSize(srcWidth, srcHeight);
         options.inPreferredConfig = Bitmap.Config.ARGB_4444;
         Bitmap decodeBitmap = BitmapFactory.decodeByteArray(inData, 0, inData.length, options);
-        Bitmap rotatingBitmap = rotatingImage(decodeBitmap, exifInterface);
+        Bitmap rotatingBitmap = rotatingImage(decodeBitmap, extraExifInterface);
         if (decodeBitmap != rotatingBitmap) decodeBitmap.recycle();
 
         rotatingBitmap.compress(Bitmap.CompressFormat.JPEG, 70, out);
@@ -139,19 +139,19 @@ public class CompressUtil {
      * @param srcExif
      * @return
      */
-    private static Bitmap rotatingImage(Bitmap bitmap, ExifInterface srcExif) {
+    private static Bitmap rotatingImage(Bitmap bitmap, ExtraExifInterface srcExif) {
         if (srcExif == null) return bitmap;
         Matrix matrix = new Matrix();
         int angle = 0;
-        int orientation = srcExif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        int orientation = srcExif.getAttributeInt(ExtraExifInterface.TAG_ORIENTATION, ExtraExifInterface.ORIENTATION_NORMAL);
         switch (orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_90:
+            case ExtraExifInterface.ORIENTATION_ROTATE_90:
                 angle = 90;
                 break;
-            case ExifInterface.ORIENTATION_ROTATE_180:
+            case ExtraExifInterface.ORIENTATION_ROTATE_180:
                 angle = 180;
                 break;
-            case ExifInterface.ORIENTATION_ROTATE_270:
+            case ExtraExifInterface.ORIENTATION_ROTATE_270:
                 angle = 270;
                 break;
         }

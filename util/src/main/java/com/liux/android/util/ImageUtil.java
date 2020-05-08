@@ -13,7 +13,8 @@ import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 
 import androidx.annotation.RequiresApi;
-import androidx.exifinterface.media.ExifInterface;
+
+import com.liux.android.util.extra.ExtraExifInterface;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -100,14 +101,14 @@ public class ImageUtil {
      */
     public static boolean copyExifInterface(String oldFilePath, String newFilePath) {
         try {
-            ExifInterface oldExif = new ExifInterface(oldFilePath);
-            ExifInterface newExif = new ExifInterface(newFilePath);
-            Class clazz = ExifInterface.class;
+            ExtraExifInterface oldExif = new ExtraExifInterface(oldFilePath);
+            ExtraExifInterface newExif = new ExtraExifInterface(newFilePath);
+            Class clazz = ExtraExifInterface.class;
             Field[] fields = clazz.getFields();
             for (Field field : fields) {
-                if (field.getType() == ExifInterface.ExifTag[].class) {
-                    ExifInterface.ExifTag[] exifTags = (ExifInterface.ExifTag[]) field.get(clazz);
-                    for (ExifInterface.ExifTag exifTag : exifTags) {
+                if (field.getType() == ExtraExifInterface.ExifTag[].class) {
+                    ExtraExifInterface.ExifTag[] exifTags = (ExtraExifInterface.ExifTag[]) field.get(clazz);
+                    for (ExtraExifInterface.ExifTag exifTag : exifTags) {
                         String attribute = oldExif.getAttribute(exifTag.name);
                         newExif.setAttribute(exifTag.name, attribute);
                     }

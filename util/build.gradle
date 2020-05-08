@@ -19,7 +19,7 @@ android {
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-    compileOnly 'androidx.fragment:fragment:1.0.0'
+    compileOnly 'androidx.fragment:fragment:1.2.4'
     compileOnly 'androidx.legacy:legacy-support-core-utils:1.0.0'
     testImplementation 'junit:junit:4.12'
 }
@@ -29,7 +29,7 @@ static def getLibraryArtifactId() {
     return 'util'
 }
 static def getLibraryVersionName() {
-    return '0.2.4'
+    return '0.2.5'
 }
 static def getLibraryVersionCode() {
     def version = getLibraryVersionName().replace("-SNAPSHOT", "")

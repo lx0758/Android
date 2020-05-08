@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package androidx.exifinterface.media;
+package com.liux.android.util.extra;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -69,8 +69,8 @@ import java.util.regex.Pattern;
  * <p>
  * Attribute mutation is supported for JPEG image files.
  */
-public class ExifInterface {
-    private static final String TAG = "ExifInterface";
+public class ExtraExifInterface {
+    private static final String TAG = "SuperExifInterface";
     private static final boolean DEBUG = Log.isLoggable(TAG, Log.DEBUG);
     // The Exif tag names. See JEITA CP-3451C specifications (Exif 2.3) Section 3-8.
     // A. Tags related to image data structure
@@ -3643,7 +3643,7 @@ public class ExifInterface {
     /**
      * Reads Exif tags from the specified image file.
      */
-    public ExifInterface(@NonNull File file) throws IOException {
+    public ExtraExifInterface(@NonNull File file) throws IOException {
         if (file == null) {
             throw new NullPointerException("file cannot be null");
         }
@@ -3652,7 +3652,7 @@ public class ExifInterface {
     /**
      * Reads Exif tags from the specified image file.
      */
-    public ExifInterface(@NonNull String filename) throws IOException {
+    public ExtraExifInterface(@NonNull String filename) throws IOException {
         if (filename == null) {
             throw new NullPointerException("filename cannot be null");
         }
@@ -3663,7 +3663,7 @@ public class ExifInterface {
      * for writable and seekable file descriptors only. This constructor will not rewind the offset
      * of the given file descriptor. Developers should close the file descriptor after use.
      */
-    public ExifInterface(@NonNull FileDescriptor fileDescriptor) throws IOException {
+    public ExtraExifInterface(@NonNull FileDescriptor fileDescriptor) throws IOException {
         if (fileDescriptor == null) {
             throw new NullPointerException("fileDescriptor cannot be null");
         }
@@ -3701,7 +3701,7 @@ public class ExifInterface {
      * should close the input stream after use. This constructor is not intended to be used with
      * an input stream that performs any networking operations.
      */
-    public ExifInterface(@NonNull InputStream inputStream) throws IOException {
+    public ExtraExifInterface(@NonNull InputStream inputStream) throws IOException {
         if (inputStream == null) {
             throw new NullPointerException("inputStream cannot be null");
         }
@@ -4585,7 +4585,7 @@ public class ExifInterface {
         if (location == null) {
             return;
         }
-        setAttribute(ExifInterface.TAG_GPS_PROCESSING_METHOD, location.getProvider());
+        setAttribute(ExtraExifInterface.TAG_GPS_PROCESSING_METHOD, location.getProvider());
         setLatLong(location.getLatitude(), location.getLongitude());
         setAltitude(location.getAltitude());
         // Location objects store speeds in m/sec. Translates it to km/hr here.
@@ -4593,8 +4593,8 @@ public class ExifInterface {
         setAttribute(TAG_GPS_SPEED, new Rational(location.getSpeed()
                 * TimeUnit.HOURS.toSeconds(1) / 1000).toString());
         String[] dateTime = sFormatter.format(new Date(location.getTime())).split("\\s+", -1);
-        setAttribute(ExifInterface.TAG_GPS_DATESTAMP, dateTime[0]);
-        setAttribute(ExifInterface.TAG_GPS_TIMESTAMP, dateTime[1]);
+        setAttribute(ExtraExifInterface.TAG_GPS_DATESTAMP, dateTime[0]);
+        setAttribute(ExtraExifInterface.TAG_GPS_TIMESTAMP, dateTime[1]);
     }
     /**
      * Sets the latitude and longitude values.
@@ -4654,7 +4654,7 @@ public class ExifInterface {
         setAttribute(TAG_SUBSEC_TIME, Long.toString(sub));
     }
     /**
-     * Returns parsed {@link ExifInterface#TAG_DATETIME} value as number of milliseconds since
+     * Returns parsed {@link ExtraExifInterface#TAG_DATETIME} value as number of milliseconds since
      * Jan. 1, 1970, midnight local time.
      * Returns -1 if date time information is unavailable or invalid.
      *
@@ -4666,7 +4666,7 @@ public class ExifInterface {
                 getAttribute(TAG_SUBSEC_TIME));
     }
     /**
-     * Returns parsed {@link ExifInterface#TAG_DATETIME_DIGITIZED} value as number of
+     * Returns parsed {@link ExtraExifInterface#TAG_DATETIME_DIGITIZED} value as number of
      * milliseconds since Jan. 1, 1970, midnight local time.
      * Returns -1 if digitized date time information is unavailable or invalid.
      *
@@ -4678,7 +4678,7 @@ public class ExifInterface {
                 getAttribute(TAG_SUBSEC_TIME_DIGITIZED));
     }
     /**
-     * Returns parsed {@link ExifInterface#TAG_DATETIME_ORIGINAL} value as number of
+     * Returns parsed {@link ExtraExifInterface#TAG_DATETIME_ORIGINAL} value as number of
      * milliseconds since Jan. 1, 1970, midnight local time.
      * Returns -1 if original date time information is unavailable or invalid.
      *
@@ -5254,17 +5254,17 @@ public class ExifInterface {
                         ExifAttribute.createUShort(Integer.parseInt(height), mExifByteOrder));
             }
             if (rotation != null) {
-                int orientation = ExifInterface.ORIENTATION_NORMAL;
+                int orientation = ExtraExifInterface.ORIENTATION_NORMAL;
                 // all rotation angles in CW
                 switch (Integer.parseInt(rotation)) {
                     case 90:
-                        orientation = ExifInterface.ORIENTATION_ROTATE_90;
+                        orientation = ExtraExifInterface.ORIENTATION_ROTATE_90;
                         break;
                     case 180:
-                        orientation = ExifInterface.ORIENTATION_ROTATE_180;
+                        orientation = ExtraExifInterface.ORIENTATION_ROTATE_180;
                         break;
                     case 270:
-                        orientation = ExifInterface.ORIENTATION_ROTATE_270;
+                        orientation = ExtraExifInterface.ORIENTATION_ROTATE_270;
                         break;
                 }
                 mAttributes[IFD_TYPE_PRIMARY].put(TAG_ORIENTATION,
