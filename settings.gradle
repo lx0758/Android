@@ -1,19 +1,18 @@
 rootProject.name='Android-Librarys'
 
-include ':example'
-
 include ':abstracts'
 include ':banner'
-include ':boxing'
 include ':downloader'
-include ':glide'
 include ':http'
 include ':list'
 include ':pay'
 include ':permission'
+include ':mediaer'
 include ':qrcode'
 include ':io'
 include ':rx'
 include ':tool'
 include ':util'
 include ':view'
+
+include ':example'

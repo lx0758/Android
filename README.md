@@ -14,17 +14,9 @@ Library
 ---
 	实现一个适配器模式的伪无限滚动的Banner
 
-[boxing](/boxing/README.md)
----
-	对bilibili的Boxing媒体选择器组件封装
-
 [downloader](/downloader/README.md)
 ---
 	全局/单线程/多任务/断点续传HTTP下载器
-
-[glide](/glide/README.md)
----
-	Glide转换器,自定义Glide4配置和实现视屏缩略图的自定义加载过程
 
 [http](/http/README.md)
 ---
@@ -40,6 +32,10 @@ Library
 	封装选择控制,数据源类型加载,Header/Footer能力的Adapter
 	封装类似ListView中分割线控制的ColorDecoration
 	封装灵活的Holder,内部缓存控件提升性能
+
+[mediaer](/mediaer/README.md)
+---
+	媒体文件选取/拍摄/录制/加载的库类
 
 [pay](/pay/README.md)
 ---

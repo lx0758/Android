@@ -23,20 +23,21 @@
             android:text="图片单选" />
 
         <Button
-            android:id="@+id/btn_select_pic_clip"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:text="单选裁剪"/>
-
-        <Button
             android:id="@+id/btn_select_pics"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
-            android:text="图片多选"/>
+            android:text="图片多选"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btn_select_video"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="视频单选"
+            android:textAllCaps="false" />
 
     </LinearLayout>
 
@@ -45,28 +46,20 @@
         android:layout_height="wrap_content">
 
         <Button
-            android:id="@+id/btn_select_video"
+            android:id="@+id/btn_take"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:text="视频单选" />
-
-        <Button
-            android:id="@+id/btn_take_and_crop"
-            android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:text="拍照裁剪" />
+            android:text="拍摄照片"
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/btn_record"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:text="视频录制" />
+            android:layout_weight="1"
+            android:text="录制视频"
+            android:textAllCaps="false" />
 
     </LinearLayout>
 

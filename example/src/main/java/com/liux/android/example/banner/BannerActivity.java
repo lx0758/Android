@@ -12,7 +12,7 @@ import com.liux.android.banner.BannerHolder;
 import com.liux.android.banner.BannerView;
 import com.liux.android.banner.DefaultIndicator;
 import com.liux.android.example.R;
-import com.liux.android.glide.GlideApp;
+import com.liux.android.mediaer.glide.GlideApp;
 import com.liux.android.tool.TT;
 
 import java.util.ArrayList;
