@@ -78,7 +78,7 @@ public class CompressUtil {
         if (in == null) throw new NullPointerException("Input can not be empty");
         if (out == null) throw new NullPointerException("Output cannot be empty");
 
-        byte[] inData = DiskUtil.readStream(in);
+        byte[] inData = StreamUtil.readStream(in);
         if (inData == null) throw new NullPointerException("Input read failed");
 
         ExtraExifInterface extraExifInterface = null;

@@ -10,7 +10,7 @@ implementation 'com.liux.android:util:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1.
+    1.兼容 Q, 强化 Uri 工具类
 
 ### 0.2.5_2020-05-08
     1.解决类冲突
