@@ -39,7 +39,7 @@ public class AndroidRecordAction implements IntentAction<RecordBuilder, Uri> {
 
     @Override
     public Uri onFinish(Context context, RecordBuilder builder, int resultCode, Intent data) throws MediaerException {
-        if (resultCode != Activity.RESULT_OK) throw new MediaerException(MediaerException.TYPE_CANCEL, null);
+        if (resultCode != Activity.RESULT_OK) throw new MediaerException(MediaerException.TYPE_CANCEL);
         return builder.outUri;
     }
 }

@@ -32,7 +32,7 @@ public class AndroidMultipleSelectAction implements IntentAction<MultipleSelectB
 
     @Override
     public List<Uri> onFinish(Context context, MultipleSelectBuilder builder, int resultCode, Intent data) throws MediaerException {
-        if (resultCode != Activity.RESULT_OK) throw new MediaerException(MediaerException.TYPE_CANCEL, null);
+        if (resultCode != Activity.RESULT_OK) throw new MediaerException(MediaerException.TYPE_CANCEL);
         return Collections.singletonList(data.getData());
     }
 }

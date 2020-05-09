@@ -60,7 +60,7 @@ public abstract class Builder<T extends Builder, A extends Action> {
 
             @Override
             protected void onReject() {
-                onFailure(new MediaerException(MediaerException.TYPE_PERMISSION, null));
+                onFailure(new MediaerException(MediaerException.TYPE_PERMISSION));
             }
         });
     }

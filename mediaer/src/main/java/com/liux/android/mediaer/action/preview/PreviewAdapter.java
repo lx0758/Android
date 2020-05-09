@@ -4,12 +4,12 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.bumptech.glide.Glide;
-import com.github.chrisbanes.photoview.PhotoView;
 import com.liux.android.mediaer.R;
 
 import java.util.List;
@@ -28,11 +28,13 @@ public class PreviewAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         View view = LayoutInflater.from(container.getContext()).inflate(R.layout.item_preview, container, false);
+        view.setOnClickListener(onClickListener);
+
         container.addView(view);
 
-        PhotoView photoView = view.findViewById(R.id.pv_photo);
-        photoView.setOnClickListener(onClickListener);
-        Glide.with(photoView).load(medias.get(position)).fitCenter().into(photoView);
+        ImageView ivPhoto = view.findViewById(R.id.iv_photo);
+        ivPhoto.setOnClickListener(onClickListener);
+        Glide.with(ivPhoto).load(medias.get(position)).fitCenter().into(ivPhoto);
 
         return view;
     }

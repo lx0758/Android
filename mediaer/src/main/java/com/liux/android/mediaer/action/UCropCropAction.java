@@ -45,11 +45,11 @@ public class UCropCropAction implements IntentAction<CropBuilder, Uri> {
                 }
                 return builder.outUri;
             case Activity.RESULT_CANCELED:
-                throw new MediaerException(MediaerException.TYPE_CANCEL, null);
+                throw new MediaerException(MediaerException.TYPE_CANCEL);
             case UCrop.RESULT_ERROR:
                 throw new MediaerException(MediaerException.TYPE_UNKNOWN, UCrop.getError(data));
         }
-        throw new MediaerException(MediaerException.TYPE_UNKNOWN, null);
+        throw new MediaerException(MediaerException.TYPE_UNKNOWN);
     }
 
     private void copyFileToUri(Context context, File source, Uri target) throws IOException {

@@ -28,7 +28,7 @@ public class AndroidVideoSelectAction implements IntentAction<VideoSelectBuilder
 
     @Override
     public Uri onFinish(Context context, VideoSelectBuilder builder, int resultCode, Intent data) throws MediaerException {
-        if (resultCode != Activity.RESULT_OK) throw new MediaerException(MediaerException.TYPE_CANCEL, null);
+        if (resultCode != Activity.RESULT_OK) throw new MediaerException(MediaerException.TYPE_CANCEL);
         return data.getData();
     }
 }

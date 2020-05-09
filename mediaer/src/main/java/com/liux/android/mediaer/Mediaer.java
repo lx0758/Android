@@ -1,12 +1,14 @@
 package com.liux.android.mediaer;
 
 import android.net.Uri;
+import android.text.TextUtils;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.liux.android.mediaer.builder.*;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -143,7 +145,14 @@ public class Mediaer {
     public PreviewBuilder previewForPath(List<String> medias) {
         List<Uri> uris = new ArrayList<>();
         for (String media : medias) {
-            uris.add(Uri.parse(media));
+            if (media == null) continue;
+            Uri uri;
+            if (media.startsWith(File.separator)) {
+                uri = Uri.fromFile(new File(media));
+            } else {
+                uri = Uri.parse(media);
+            }
+            uris.add(uri);
         }
         return preview(uris);
     }
