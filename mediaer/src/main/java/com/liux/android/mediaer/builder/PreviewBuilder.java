@@ -47,6 +47,12 @@ public class PreviewBuilder extends Builder<PreviewBuilder, CallAction<PreviewBu
 
     @Override
     void onStart() {
+        if (medias == null || medias.isEmpty()) {
+            onFailure(new MediaerException(MediaerException.TYPE_UNKNOWN));
+            return;
+        }
+        if (position < 0) position = 0;
+        if (position >= medias.size()) position = medias.size() - 1;
         executeTask(new CallTask() {
             @Override
             public void onExecute(Fragment fragment) {

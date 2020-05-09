@@ -6,18 +6,17 @@
     android:minWidth="1000dp"
     android:background="#A0000000">
 
-    <androidx.viewpager.widget.ViewPager
+    <com.liux.android.mediaer.action.preview.PhotoViewPager
         android:id="@+id/vp_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <TextView
         android:id="@+id/tv_indicator"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="50dp"
-        android:gravity="center"
         android:textColor="#FFFFFF"
         android:textSize="12dp"
         tools:text="1/10"/>

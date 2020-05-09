@@ -37,7 +37,7 @@ public class AndroidTakeAction implements IntentAction<TakeBuilder, Uri> {
 
     @Override
     public Uri onFinish(Context context, TakeBuilder builder, int resultCode, Intent data) throws MediaerException {
-        if (resultCode != Activity.RESULT_OK) throw new MediaerException(MediaerException.TYPE_CANCEL, null);
+        if (resultCode != Activity.RESULT_OK) throw new MediaerException(MediaerException.TYPE_CANCEL);
         return builder.outUri;
     }
 }
