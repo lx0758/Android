@@ -1,5 +1,8 @@
 package com.liux.android.http.request;
 
+import android.net.Uri;
+
+import com.liux.android.http.Http;
 import com.liux.android.http.HttpUtil;
 import com.liux.android.http.progress.OnProgressListener;
 import com.liux.android.http.progress.OnRequestProgressListener;
@@ -341,12 +344,14 @@ public class BodyRequest<T extends BodyRequest> extends QueryRequest<T> {
             return RequestBody.create(MediaType.parse(mBodyType), (ByteString) mBodyObject);
         } else if (mBodyObject instanceof byte[]) {
             return RequestBody.create(MediaType.parse(mBodyType), (byte[]) mBodyObject);
-        } else if (mBodyObject instanceof InputStream) {
-            return HttpUtil.parseInputStream(mBodyType, (InputStream) mBodyObject);
         } else if (mBodyObject instanceof File) {
             return RequestBody.create(MediaType.parse(mBodyType), (File) mBodyObject);
         } else if ((mBodyObject instanceof RequestBody)) {
             return (RequestBody) mBodyObject;
+        } else if (mBodyObject instanceof InputStream) {
+            return HttpUtil.parseInputStreamBody(mBodyType, (InputStream) mBodyObject);
+        } else if (mBodyObject instanceof Uri) {
+            return HttpUtil.parseUriBody(mBodyType, (Uri) mBodyObject);
         }
         return null;
     }
@@ -375,11 +380,11 @@ public class BodyRequest<T extends BodyRequest> extends QueryRequest<T> {
             Object value = entry.getValue();
             if (name != null && value != null) {
                 if (value instanceof String){
-                    builder.addFormDataPart(name, null, HttpUtil.parseString((String) value));
+                    builder.addFormDataPart(name, null, HttpUtil.parseStringBody((String) value));
                 } else if (value instanceof MultipartBody.Part) {
                     builder.addPart((MultipartBody.Part) value);
                 } else {
-                    builder.addFormDataPart(name, null, HttpUtil.parseString(value.toString()));
+                    builder.addFormDataPart(name, null, HttpUtil.parseStringBody(value.toString()));
                 }
             }
         }

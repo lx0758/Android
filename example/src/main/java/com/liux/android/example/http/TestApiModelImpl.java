@@ -113,7 +113,7 @@ public class TestApiModelImpl implements TestApiModel {
 
     @Override
     public void testPostBody(int id, String name, SingleObserver<JSON> observer) {
-        RequestBody requestBody = HttpUtil.parseString("Hello");
+        RequestBody requestBody = HttpUtil.parseStringBody("Hello");
 
         TestBean testBean = new TestBean();
         testBean.setId(id);
