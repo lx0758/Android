@@ -100,7 +100,7 @@ implementation 'com.liux.android:http:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1.
+    1.兼容 Q 支持上传 Uri 方式
 
 ### 0.2.10_2020-04-15
     1.修复手动请求异常中断问题

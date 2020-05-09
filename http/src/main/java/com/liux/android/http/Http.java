@@ -136,6 +136,10 @@ public class Http {
         return new BodyRequest(getOkHttpClient(), BodyRequest.Method.PATCH).url(url);
     }
 
+    public Context getContext() {
+        return mContext;
+    }
+
     /**
      * 取 OkHttpClient 实例
      * @return

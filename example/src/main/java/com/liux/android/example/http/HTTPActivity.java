@@ -217,7 +217,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                 Http.get().post(url + "request-post-body")
                         .addHeader("Request-Header-Id", "btn_request_post_body")
                         .addQuery("Request-Query-Id", "btn_request_post_body")
-                        .body(HttpUtil.parseJson(jsonObject.toJSONString()))
+                        .body(HttpUtil.parseJsonBody(jsonObject.toJSONString()))
                         .manager(this)
                         .async(new UICallback() {
                             @Override

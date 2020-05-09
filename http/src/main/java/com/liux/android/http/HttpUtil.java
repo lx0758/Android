@@ -1,13 +1,19 @@
 package com.liux.android.http;
 
+import android.content.ContentResolver;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import com.liux.android.http.request.Request;
-import com.liux.android.http.stream.StreamPart;
-import com.liux.android.http.stream.StreamRequestBody;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -16,6 +22,8 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.internal.http.HttpMethod;
+import okio.BufferedSink;
+import okio.Okio;
 import retrofit2.CallAdapter;
 
 /**
@@ -107,7 +115,6 @@ public class HttpUtil {
      */
     public static MediaType getMimeType(File file) {
         if (file == null) return TYPE_UNKNOWN;
-
         return getMimeType(file.getName());
     }
 
@@ -173,8 +180,8 @@ public class HttpUtil {
      * @param content
      * @return
      */
-    public static RequestBody parseXml(String content) {
-        return parseString(TYPE_XML.toString(), content);
+    public static RequestBody parseXmlBody(String content) {
+        return parseStringBody(TYPE_XML.toString(), content);
     }
 
     /**
@@ -182,8 +189,8 @@ public class HttpUtil {
      * @param content
      * @return
      */
-    public static RequestBody parseJson(String content) {
-        return parseString(TYPE_JSON.toString(), content);
+    public static RequestBody parseJsonBody(String content) {
+        return parseStringBody(TYPE_JSON.toString(), content);
     }
 
     /**
@@ -191,8 +198,8 @@ public class HttpUtil {
      * @param content
      * @return
      */
-    public static RequestBody parseString(String content) {
-        return parseString(TYPE_TEXT.toString(), content);
+    public static RequestBody parseStringBody(String content) {
+        return parseStringBody(TYPE_TEXT.toString(), content);
     }
 
     /**
@@ -200,7 +207,7 @@ public class HttpUtil {
      * @param content
      * @return
      */
-    public static RequestBody parseString(String type, String content) {
+    public static RequestBody parseStringBody(String type, String content) {
         MediaType mediaType = null;
         if (!TextUtils.isEmpty(type)) {
             mediaType = MediaType.parse(type);
@@ -213,7 +220,7 @@ public class HttpUtil {
      * @param bytes
      * @return
      */
-    public static RequestBody parseByte(String type, byte[] bytes) {
+    public static RequestBody parseByteBody(String type, byte[] bytes) {
         MediaType mediaType = null;
         if (!TextUtils.isEmpty(type)) {
             mediaType = MediaType.parse(type);
@@ -226,12 +233,82 @@ public class HttpUtil {
      * @param inputStream
      * @return
      */
-    public static RequestBody parseInputStream(String type, InputStream inputStream) {
+    public static RequestBody parseInputStreamBody(String type, InputStream inputStream) {
         MediaType mediaType = null;
         if (!TextUtils.isEmpty(type)) {
             mediaType = MediaType.parse(type);
         }
-        return StreamRequestBody.create(mediaType, inputStream);
+
+        if (inputStream == null) throw new NullPointerException("inputStream == null");
+        if (!inputStream.markSupported()) {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            copyStream(inputStream, byteArrayOutputStream);
+            inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+        }
+
+        final MediaType finalMediaType = mediaType;
+        final InputStream finalInputStream = inputStream;
+        return new RequestBody() {
+            @Override
+            public MediaType contentType() {
+                return finalMediaType;
+            }
+
+            @Override
+            public long contentLength() throws IOException {
+                return finalInputStream.available();
+            }
+
+            @Override
+            public void writeTo(BufferedSink sink) throws IOException {
+                if (finalInputStream.markSupported()) finalInputStream.reset();
+                sink.writeAll(Okio.source(finalInputStream));
+            }
+        };
+    }
+
+    /**
+     * 生成一个指定类型请求体
+     * @param uri
+     * @return
+     */
+    public static RequestBody parseUriBody(String type, final Uri uri) {
+        MediaType mediaType = null;
+        if (!TextUtils.isEmpty(type)) {
+            mediaType = MediaType.parse(type);
+        }
+
+        final MediaType finalMediaType = mediaType;
+        return new RequestBody() {
+            @Override
+            public MediaType contentType() {
+                return finalMediaType;
+            }
+
+            @Override
+            public long contentLength() throws IOException {
+                return getContentLength();
+            }
+
+            @Override
+            public void writeTo(BufferedSink sink) throws IOException {
+                sink.writeAll(Okio.source(getInputStream()));
+            }
+
+            private Long contentLength;
+            private long getContentLength() throws IOException {
+                if (contentLength == null) {
+                    InputStream inputStream = getInputStream();
+                    contentLength = (long) inputStream.available();
+                    inputStream.close();
+                }
+                return contentLength;
+            }
+
+            private InputStream getInputStream() throws IOException {
+                return Http.get().getContext().getContentResolver().openInputStream(uri);
+            }
+        };
     }
 
     /**
@@ -242,8 +319,7 @@ public class HttpUtil {
      * @return
      */
     public static MultipartBody.Part parseStringPart(String name, String type, String string) {
-        if (type == null) return StreamPart.createFormData(name, string);
-        return StreamPart.createFormData(name, type, string);
+        return MultipartBody.Part.createFormData(name, null, parseStringBody(type, string));
     }
 
     /**
@@ -254,8 +330,18 @@ public class HttpUtil {
      * @return
      */
     public static MultipartBody.Part parseBytePart(String name, String type, byte[] bytes) {
-        if (type == null) return StreamPart.createFormData(name, bytes);
-        return StreamPart.createFormData(name, type, bytes);
+        return parseBytePart(name, null, type, bytes);
+    }
+
+    /**
+     * 生成一个 {@link MultipartBody.Part}
+     * @param name
+     * @param type
+     * @param bytes
+     * @return
+     */
+    public static MultipartBody.Part parseBytePart(String name, String filename, String type, byte[] bytes) {
+        return MultipartBody.Part.createFormData(name, filename, parseByteBody(type, bytes));
     }
 
     /**
@@ -266,8 +352,19 @@ public class HttpUtil {
      * @return
      */
     public static MultipartBody.Part parseInputStreamPart(String name, String type, InputStream inputStream) {
-        if (type == null) return StreamPart.createFormData(name, inputStream);
-        return StreamPart.createFormData(name, type, inputStream);
+        return parseInputStreamPart(name, null, type, inputStream);
+    }
+
+    /**
+     * 生成一个 {@link MultipartBody.Part}
+     * @param name
+     * @param filename
+     * @param type
+     * @param inputStream
+     * @return
+     */
+    public static MultipartBody.Part parseInputStreamPart(String name, String filename, String type, InputStream inputStream) {
+        return MultipartBody.Part.createFormData(name, filename, parseInputStreamBody(type, inputStream));
     }
 
     /**
@@ -284,13 +381,62 @@ public class HttpUtil {
      * 生成一个 {@link MultipartBody.Part}
      * @param name
      * @param file
-     * @param fileName
+     * @param filename
      * @return
      */
-    public static MultipartBody.Part parseFilePart(String name, String fileName, File file) {
+    public static MultipartBody.Part parseFilePart(String name, String filename, File file) {
         MediaType mediaType = getMimeType(file);
-        RequestBody body = RequestBody.create(mediaType, file);
-        return MultipartBody.Part.createFormData(name, fileName, body);
+        return MultipartBody.Part.createFormData(name, filename, RequestBody.create(mediaType, file));
+    }
+
+    /**
+     * 生成一个 {@link MultipartBody.Part}
+     * @param name
+     * @param uri
+     * @return
+     */
+    public static MultipartBody.Part parseUriPart(String name, Uri uri) {
+        String filename = null;
+        String type = null;
+
+        String scheme = uri.getScheme();
+        switch (scheme) {
+            case ContentResolver.SCHEME_CONTENT:
+                Cursor cursor = null;
+                try {
+                    cursor = Http.get().getContext().getContentResolver().query(uri, new String[]{MediaStore.MediaColumns.DISPLAY_NAME, MediaStore.MediaColumns.MIME_TYPE}, null, null, null);
+                    if (cursor != null && cursor.moveToFirst()) {
+                        int filenameColumns = cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME);
+                        int typeColumns = cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE);
+                        filename = filenameColumns != -1 ? cursor.getString(filenameColumns) : "unknown";
+                        type = typeColumns != -1 ? cursor.getString(1) : getMimeType(filename).toString();
+                    } else {
+                        filename = "unknown";
+                        type = getMimeType(filename).toString();
+                    }
+                } finally {
+                    if (cursor != null) cursor.close();
+                }
+                break;
+            case ContentResolver.SCHEME_FILE:
+                filename = new File(uri.getPath()).getName();
+                type = getMimeType(filename).toString();
+                break;
+        }
+
+        return parseUriPart(name, filename, type, uri);
+    }
+
+    /**
+     * 生成一个 {@link MultipartBody.Part}
+     * @param name
+     * @param filename
+     * @param uri
+     * @return
+     */
+    public static MultipartBody.Part parseUriPart(String name, String filename, String type, Uri uri) {
+        if (type == null) type = getMimeType(filename).toString();
+        return MultipartBody.Part.createFormData(name, filename, parseUriBody(type, uri));
     }
 
     /**
@@ -340,5 +486,30 @@ public class HttpUtil {
             return (CallAdapter.Factory) factory;
         } catch (Exception ignore) {}
         return null;
+    }
+
+    /**
+     * 流拷贝
+     * @param inputStream
+     * @param outputStream
+     */
+    private static void copyStream(InputStream inputStream, OutputStream outputStream) {
+        try {
+            int length;
+            byte[] buffer = new byte[4096];
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+            outputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (inputStream != null) inputStream.close();
+            } catch (Exception ignore) {}
+            try {
+                if (outputStream != null) outputStream.close();
+            } catch (Exception ignore) {}
+        }
     }
 }
