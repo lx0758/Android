@@ -11,6 +11,7 @@ implementation 'com.liux.android:qrcode:x.y.z'
 ---
 ### x.y.z_202x-xx-xx
     1.升级 ZXing 版本
+    2.移除自带权限声明
 
 ### 0.2.0_2019-08-26
     1.支持库迁移至AndroidX

@@ -43,8 +43,10 @@ public class SingleSelectBuilder extends Builder<SingleSelectBuilder, IntentActi
 
     @Override
     String[] onDeclarePermissions() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) return null;
-        return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            return new String[]{Manifest.permission.READ_EXTERNAL_STORAGE};
+        }
+        return null;
     }
 
     @Override

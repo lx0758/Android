@@ -15,9 +15,12 @@ public class AndroidVideoSelectAction implements IntentAction<VideoSelectBuilder
     @Override
     public void onStart(Context context, Fragment fragment, VideoSelectBuilder builder, int requestCode) throws MediaerException {
         try {
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_GET_CONTENT);
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.setType("video/*");
+            if (intent.resolveActivity(context.getPackageManager()) == null) {
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+            }
             fragment.startActivityForResult(intent, requestCode);
         } catch (ActivityNotFoundException e) {
             throw new MediaerException(MediaerException.TYPE_INTENT, e);

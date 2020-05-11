@@ -56,19 +56,16 @@ public class MediaerActivity extends AppCompatActivity {
                     @Override
                     public void onDataBind(SuperHolder holder, int position, Uri uri, List<Object> payloads) {
                         ImageView imageView = holder
-                                .setOnClickListener(R.id.tv_del, new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        int pos = mMultipleAdapter.getData().indexOf(uri);
-                                        mMultipleAdapter.getData().remove(pos);
-                                        mMultipleAdapter.notifyItemRemoved(pos);
-                                    }
+                                .setOnClickListener(R.id.tv_del, v -> {
+                                    int pos = mMultipleAdapter.getData().indexOf(uri);
+                                    mMultipleAdapter.getData().remove(pos);
+                                    mMultipleAdapter.notifyItemRemoved(pos);
                                 })
                                 .setOnClickListener(v -> {
                                     Mediaer
                                             .with(MediaerActivity.this)
                                             .preview(mMultipleAdapter.getData())
-                                            .position(position)
+                                            .position(mMultipleAdapter.getData().indexOf(uri))
                                             .start();
                                 })
                                 .getView(R.id.iv_image);
