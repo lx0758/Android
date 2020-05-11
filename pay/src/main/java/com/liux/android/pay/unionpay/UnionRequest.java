@@ -43,14 +43,6 @@ public abstract class UnionRequest extends Request<String, UnionResult> {
         activity.startActivityForResult(intent, UnionPayActivity.REQUEST_CODE);
     }
 
-    /**
-     * 安装银联支付插件
-     * 下载地址 <a href="http://mobile.unionpay.com/getclient?platform=android&type=securepayplugin">下载地址</a>
-     */
-    public void installPlugin() {
-        UPPayAssistEx.installUPPayPlugin(activity);
-    }
-
     private boolean checkConfig() {
         Payer.println("银联支付预检查:" + bill);
 

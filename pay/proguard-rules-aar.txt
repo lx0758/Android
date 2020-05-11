@@ -18,6 +18,11 @@
 -keep class com.alipay.tscenter.** { *; }
 -keep class com.ta.utdid2.** { *;}
 -keep class com.ut.device.** { *;}
+-dontwarn com.ta.utdid2.**
+-dontwarn com.ut.device.**
+-dontwarn com.alipay.mobilesecuritysdk.**
+-dontwarn com.alipay.security.**
+-dontwarn android.net.SSLCertificateSocketFactory
 ## SDK 包可能不包含 utdid
 -dontwarn com.ta.utdid2.**
 -dontwarn com.ut.device.**
