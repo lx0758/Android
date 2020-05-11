@@ -38,6 +38,9 @@ implementation 'com.liux.android:pay:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
+    1.
+
+### 0.2.3_2020-05-11
     1.移除自带权限声明
     2.升级微信SDK版本(6.6.4)
     3.升级支付宝SDK版本(15.7.5)

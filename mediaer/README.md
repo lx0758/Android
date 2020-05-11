@@ -10,6 +10,9 @@ implementation 'com.liux.android:mediaer:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
+    1.
+
+### 0.2.2_2020-05-11
     1.新增图片多选支持
     2.优先从相册选取图片和视频
 
