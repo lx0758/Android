@@ -2,9 +2,9 @@ package com.liux.android.rx.lifecycle;
 
 import androidx.annotation.NonNull;
 
-import com.trello.rxlifecycle2.LifecycleProvider;
-import com.trello.rxlifecycle2.LifecycleTransformer;
-import com.trello.rxlifecycle2.RxLifecycle;
+import com.trello.rxlifecycle3.LifecycleProvider;
+import com.trello.rxlifecycle3.LifecycleTransformer;
+import com.trello.rxlifecycle3.RxLifecycle;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
