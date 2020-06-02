@@ -22,13 +22,22 @@ android {
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-    api 'com.squareup.okhttp3:okhttp:3.12.11'
-    api ('com.squareup.retrofit2:retrofit:2.7.2', {
+    api 'com.squareup.okhttp3:okhttp:3.12.12'
+    api ('com.squareup.retrofit2:retrofit:2.9.0', {
         exclude group: 'com.squareup.okhttp3'
     })
-    api("com.squareup.retrofit2:adapter-rxjava2:2.7.2", {
+    api("com.squareup.retrofit2:adapter-rxjava:2.9.0", {
+        exclude group: 'com.squareup.retrofit2'
+        exclude group: 'io.reactivex'
+    })
+    api("com.squareup.retrofit2:adapter-rxjava2:2.9.0", {
         exclude group: 'com.squareup.retrofit2'
         exclude group: 'io.reactivex.rxjava2'
+        exclude group: 'org.reactivestreams'
+    })
+    api("com.squareup.retrofit2:adapter-rxjava3:2.9.0", {
+        exclude group: 'com.squareup.retrofit2'
+        exclude group: 'io.reactivex.rxjava3'
         exclude group: 'org.reactivestreams'
     })
     // noinspection GradleDependency
