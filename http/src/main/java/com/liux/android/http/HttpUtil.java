@@ -240,12 +240,11 @@ public class HttpUtil {
         }
 
         if (inputStream == null) throw new NullPointerException("inputStream == null");
-        if (!inputStream.markSupported()) {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            copyStream(inputStream, byteArrayOutputStream);
-            inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-        }
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        copyStream(inputStream, byteArrayOutputStream);
+        inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
 
+        final int contentLength = byteArrayOutputStream.size();
         final MediaType finalMediaType = mediaType;
         final InputStream finalInputStream = inputStream;
         return new RequestBody() {
@@ -256,12 +255,12 @@ public class HttpUtil {
 
             @Override
             public long contentLength() throws IOException {
-                return finalInputStream.available();
+                return contentLength;
             }
 
             @Override
             public void writeTo(BufferedSink sink) throws IOException {
-                if (finalInputStream.markSupported()) finalInputStream.reset();
+                finalInputStream.reset();
                 sink.writeAll(Okio.source(finalInputStream));
             }
         };
@@ -461,29 +460,37 @@ public class HttpUtil {
     }
 
     /**
-     * 尝试获取 RxJava2 的Retrofit适配器
-     * @return
-     */
-    public static CallAdapter.Factory getRxJava2CallAdapterFactory() {
-        try {
-            Class check = Class.forName("io.reactivex.Observable");
-            Class clazz = Class.forName("retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory");
-            Object factory = clazz.getMethod("create").invoke(null);
-            return (CallAdapter.Factory) factory;
-        } catch (Exception ignore) {}
-        return null;
-    }
-
-    /**
      * 尝试获取 RxJava 的Retrofit适配器
      * @return
      */
     public static CallAdapter.Factory getRxJavaCallAdapterFactory() {
         try {
-            Class check = Class.forName("rx.Observable");
-            Class clazz = Class.forName("retrofit2.adapter.rxjava.RxJavaCallAdapterFactory");
-            Object factory = clazz.getMethod("create").invoke(null);
-            return (CallAdapter.Factory) factory;
+            Class.forName("rx.Observable");
+            return retrofit2.adapter.rxjava.RxJavaCallAdapterFactory.create();
+        } catch (Exception ignore) {}
+        return null;
+    }
+
+    /**
+     * 尝试获取 RxJava2 的Retrofit适配器
+     * @return
+     */
+    public static CallAdapter.Factory getRxJava2CallAdapterFactory() {
+        try {
+            Class.forName("io.reactivex.Observable");
+            return retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory.create();
+        } catch (Exception ignore) {}
+        return null;
+    }
+
+    /**
+     * 尝试获取 RxJava3 的Retrofit适配器
+     * @return
+     */
+    public static CallAdapter.Factory getRxJava3CallAdapterFactory() {
+        try {
+            Class.forName("io.reactivex.rxjava3.core.Observable");
+            return retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory.create();
         } catch (Exception ignore) {}
         return null;
     }

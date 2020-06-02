@@ -3,8 +3,8 @@ package com.liux.android.rx.lifecycle;
 import android.app.Activity;
 import android.app.Fragment;
 
-import com.trello.rxlifecycle2.android.ActivityEvent;
-import com.trello.rxlifecycle2.android.FragmentEvent;
+import com.trello.rxlifecycle3.android.ActivityEvent;
+import com.trello.rxlifecycle3.android.FragmentEvent;
 
 /**
  * 2018/3/15

@@ -407,16 +407,19 @@ public class Http {
      * @return
      */
     private Retrofit initRetorfit(Retrofit.Builder retrofitBuilder) {
-        retrofitBuilder
-                .client(mOkHttpClient)
-                .addConverterFactory(FastJsonConverterFactory.create());
+        retrofitBuilder.client(mOkHttpClient);
+        retrofitBuilder.addConverterFactory(FastJsonConverterFactory.create());
 
         CallAdapter.Factory factory;
+        factory = HttpUtil.getRxJavaCallAdapterFactory();
+        if (factory != null) {
+            retrofitBuilder.addCallAdapterFactory(factory);
+        }
         factory = HttpUtil.getRxJava2CallAdapterFactory();
         if (factory != null) {
             retrofitBuilder.addCallAdapterFactory(factory);
         }
-        factory = HttpUtil.getRxJavaCallAdapterFactory();
+        factory = HttpUtil.getRxJava3CallAdapterFactory();
         if (factory != null) {
             retrofitBuilder.addCallAdapterFactory(factory);
         }

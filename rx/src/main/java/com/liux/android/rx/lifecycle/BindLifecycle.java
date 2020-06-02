@@ -1,6 +1,6 @@
 package com.liux.android.rx.lifecycle;
 
-import com.trello.rxlifecycle2.LifecycleTransformer;
+import com.trello.rxlifecycle3.LifecycleTransformer;
 
 /**
  * 2018/2/13
