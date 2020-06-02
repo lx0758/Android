@@ -100,6 +100,9 @@ implementation 'com.liux.android:http:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
+    1. 
+
+### 0.2.12_2020-06-02
     1. 升级 OkHttp/Retorfit 依赖版本
     2. 修复不能上传流的 BUG
 

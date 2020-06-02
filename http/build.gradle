@@ -53,7 +53,7 @@ static def getLibraryArtifactId() {
     return 'http'
 }
 static def getLibraryVersionName() {
-    return '0.2.11'
+    return '0.2.12'
 }
 static def getLibraryVersionCode() {
     def version = getLibraryVersionName().replace("-SNAPSHOT", "")
