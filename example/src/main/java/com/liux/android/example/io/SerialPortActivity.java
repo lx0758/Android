@@ -1,8 +1,6 @@
 package com.liux.android.example.io;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
@@ -16,14 +14,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.liux.android.example.R;
-import com.liux.android.io.serialport.ReadThread;
 import com.liux.android.io.serialport.SerialPort;
 import com.liux.android.io.serialport.SerialPortFinder;
 import com.liux.android.tool.TT;
+import com.liux.android.util.TextUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,8 +36,8 @@ public class SerialPortActivity extends AppCompatActivity {
     Spinner spDataBit;
     @BindView(R.id.sp_stop_bit)
     Spinner spStopBit;
-    @BindView(R.id.sp_check_bit)
-    Spinner spCheckBit;
+    @BindView(R.id.sp_parity)
+    Spinner spParity;
     @BindView(R.id.btn_connection)
     Button btnConnection;
     @BindView(R.id.et_receive)
@@ -64,7 +61,7 @@ public class SerialPortActivity extends AppCompatActivity {
         spBaudRate.setSelection(16);
         spDataBit.setSelection(3);
         spStopBit.setSelection(0);
-        spCheckBit.setSelection(2);
+        spParity.setSelection(2);
         etReceive.setMovementMethod(new ScrollingMovementMethod());
         btnSend.setEnabled(false);
     }
@@ -94,8 +91,9 @@ public class SerialPortActivity extends AppCompatActivity {
                 break;
             case R.id.btn_send:
                 String content = etSend.getText().toString();
+                byte[] bytes = TextUtil.hex2Bytes(content);
                 try {
-                    serialPort.getOutputStream().write(content.getBytes());
+                    serialPort.getOutputStream().write(bytes);
                 } catch (IOException e) {
                     e.printStackTrace();
                     TT.show("写串口失败");
@@ -110,36 +108,33 @@ public class SerialPortActivity extends AppCompatActivity {
             TT.show("请选择设备");
             return;
         }
-        int baudRate = Integer.valueOf((String) spBaudRate.getSelectedItem());
-        int dataBit = Integer.valueOf((String) spDataBit.getSelectedItem());
-        int stopBit = Integer.valueOf((String) spStopBit.getSelectedItem());
-        String checkBitString = (String) spCheckBit.getSelectedItem();
+        int baudRate = Integer.parseInt((String) spBaudRate.getSelectedItem());
+        int dataBit = Integer.parseInt((String) spDataBit.getSelectedItem());
+        int stopBit = Integer.parseInt((String) spStopBit.getSelectedItem());
+        String checkBitString = (String) spParity.getSelectedItem();
         char checkBit = checkBitString.charAt(0);
 
         try {
             serialPort = new SerialPort(new File(device), baudRate, dataBit, stopBit, checkBit);
-            readThread = new ReadThread(serialPort, new ReadThread.ReadCallback() {
-                // 这里没有处理串口通信协议,所以全部展示数据
-                // 正常情况会根据串口协议进行数据截断
-                private ByteBuffer byteBuffer = ByteBuffer.allocate(0xFFFF);
-                private Handler handler = new Handler(Looper.getMainLooper());
-                private Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        String content = new String(byteBuffer.array());
-                        etReceive.setText(content);
-                    }
-                };
+            readThread = new Thread(new Runnable() {
                 @Override
-                public void onRead(byte[] bytes) {
+                public void run() {
                     try {
-                        byteBuffer.put(bytes);
-                    } catch (Exception e) {
-                        byteBuffer.clear();
-                        byteBuffer.put(bytes);
+                        while (!Thread.interrupted()) {
+                            byte[] bytes = serialPort.readBytes();
+                            if (bytes != null && bytes.length > 0) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        etReceive.getText().append(TextUtil.bytes2Hex(bytes, true)).append(' ');
+                                    }
+                                });
+                            }
+                            Thread.sleep(100);
+                        }
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    handler.removeCallbacks(runnable);
-                    handler.postDelayed(runnable, 500);
                 }
             });
             readThread.start();
@@ -147,7 +142,7 @@ public class SerialPortActivity extends AppCompatActivity {
             spBaudRate.setEnabled(false);
             spDataBit.setEnabled(false);
             spStopBit.setEnabled(false);
-            spCheckBit.setEnabled(false);
+            spParity.setEnabled(false);
             btnConnection.setText("断开连接");
             btnSend.setEnabled(true);
         } catch (IOException|SecurityException e) {
@@ -164,7 +159,7 @@ public class SerialPortActivity extends AppCompatActivity {
         spBaudRate.setEnabled(true);
         spDataBit.setEnabled(true);
         spStopBit.setEnabled(true);
-        spCheckBit.setEnabled(true);
+        spParity.setEnabled(true);
         btnConnection.setText("连接");
         btnSend.setEnabled(false);
     }

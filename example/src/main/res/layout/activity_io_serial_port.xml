@@ -53,10 +53,10 @@
         android:text="请选择检验位"/>
 
     <Spinner
-        android:id="@+id/sp_check_bit"
+        android:id="@+id/sp_parity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/io_serial_port_check_bit"/>
+        android:entries="@array/io_serial_port_parity"/>
 
     <Button
         android:id="@+id/btn_connection"
