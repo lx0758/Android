@@ -54,11 +54,10 @@
         <item>1</item>
         <item>2</item>
     </string-array>
-    <string-array name="io_serial_port_check_bit">
+    <string-array name="io_serial_port_parity">
         <item>O</item>
         <item>E</item>
         <item>N</item>
-        <item>S</item>
     </string-array>
     <string-array name="io_gpio_direction">
         <item>in</item>

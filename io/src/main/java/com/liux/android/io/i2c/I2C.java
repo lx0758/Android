@@ -23,11 +23,11 @@ public class I2C {
         }
     }
 
-    public byte[] read() {
+    public byte[] read(int i2c_adr) {
         return null;
     }
 
-    public void write(byte[] data) {
+    public void write(int i2c_adr, int sub_adr, byte[] data) {
 
     }
 
@@ -37,7 +37,7 @@ public class I2C {
 
     public static native FileDescriptor jniOpen(String path);
     public static native int jniRead(int i2c_adr, byte[] buffer);
-    public static native int jniWrite(int i2c_adr, int sub_adr,  byte[] data);
+    public static native int jniWrite(int i2c_adr, int sub_adr, byte[] data);
     public static native void jniClose(FileDescriptor fd);
     static {
         System.loadLibrary("io-i2c");
