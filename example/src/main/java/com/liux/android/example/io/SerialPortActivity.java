@@ -111,11 +111,9 @@ public class SerialPortActivity extends AppCompatActivity {
         int baudRate = Integer.parseInt((String) spBaudRate.getSelectedItem());
         int dataBit = Integer.parseInt((String) spDataBit.getSelectedItem());
         int stopBit = Integer.parseInt((String) spStopBit.getSelectedItem());
-        String checkBitString = (String) spParity.getSelectedItem();
-        char checkBit = checkBitString.charAt(0);
-
+        String parity = (String) spParity.getSelectedItem();
         try {
-            serialPort = new SerialPort(new File(device), baudRate, dataBit, stopBit, checkBit);
+            serialPort = new SerialPort(new File(device), baudRate, dataBit, stopBit, parity);
             readThread = new Thread(new Runnable() {
                 @Override
                 public void run() {

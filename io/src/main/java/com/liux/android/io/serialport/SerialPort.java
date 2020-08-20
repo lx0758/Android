@@ -19,6 +19,7 @@ package com.liux.android.io.serialport;
 import android.util.Log;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.StringDef;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -71,16 +72,17 @@ public class SerialPort {
     public static final int STOPBIT_1 = 1;
     public static final int STOPBIT_2 = 2;
 
-    public static final int PARITY_O = 'O'; // 奇校验位
-    public static final int PARITY_E = 'E'; // 偶校验位
-    public static final int PARITY_N = 'N'; // 无校验位
+    public static final String PARITY_O = "O"; // 奇校验位
+    public static final String PARITY_E = "E"; // 偶校验位
+    public static final String PARITY_N = "N"; // 无校验位
 
     private static final String TAG = "SerialPort";
 
     /*
      * Do not remove or rename the field mFd: it is used by native method close();
      */
-	private int baudrate, dataBit, stopBit, parity;
+	private int baudrate, dataBit, stopBit;
+	private String parity;
     private FileDescriptor mFileDescriptor;
     private FileInputStream mFileInputStream;
     private FileOutputStream mFileOutputStream;
@@ -96,7 +98,7 @@ public class SerialPort {
      * @throws SecurityException
      * @throws IOException
      */
-    public SerialPort(File device, @BaudRate int baudrate, @DataBit int dataBit, @StopBit int stopBit, @CheckBit int parity) throws SecurityException, IOException {
+    public SerialPort(File device, @BaudRate int baudrate, @DataBit int dataBit, @StopBit int stopBit, @Parity String parity) throws SecurityException, IOException {
 
         /* Check access permission */
         if (!device.canRead() || !device.canWrite()) {
@@ -113,7 +115,7 @@ public class SerialPort {
             }
         }
 
-        mFileDescriptor = jniOpen(device.getAbsolutePath(), baudrate, dataBit, stopBit, (char) parity);
+        mFileDescriptor = jniOpen(device.getAbsolutePath(), baudrate, dataBit, stopBit, parity.charAt(0));
         if (mFileDescriptor == null) {
             Log.e(TAG, "native open returns null");
             throw new IOException();
@@ -150,7 +152,7 @@ public class SerialPort {
         return stopBit;
     }
 
-    public int getParity() {
+    public String getParity() {
         return parity;
     }
 
@@ -254,7 +256,7 @@ public class SerialPort {
     public @interface StopBit {
     }
 
-    @IntDef({PARITY_O, PARITY_E, PARITY_N})
+    @StringDef({PARITY_O, PARITY_E, PARITY_N})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface CheckBit {}
+    public @interface Parity {}
 }
