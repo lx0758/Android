@@ -81,7 +81,7 @@ public class SerialPort {
     /*
      * Do not remove or rename the field mFd: it is used by native method close();
      */
-	private int baudrate, dataBit, stopBit;
+	private int baudRate, dataBit, stopBit;
 	private String parity;
     private FileDescriptor mFileDescriptor;
     private FileInputStream mFileInputStream;
@@ -91,14 +91,14 @@ public class SerialPort {
      * 打开一个串口设备
      *
      * @param device
-     * @param baudrate 波特率
-     * @param dataBit  数据位 (5/6/7/8)
-     * @param stopBit  停止位 (1/2)
-     * @param parity   校验规则 (O_奇/E_偶/N_无)
+     * @param baudRate  波特率
+     * @param dataBit   数据位 (5/6/7/8)
+     * @param stopBit   停止位 (1/2)
+     * @param parity    校验规则 (O_奇/E_偶/N_无)
      * @throws SecurityException
      * @throws IOException
      */
-    public SerialPort(File device, @BaudRate int baudrate, @DataBit int dataBit, @StopBit int stopBit, @Parity String parity) throws SecurityException, IOException {
+    public SerialPort(File device, @BaudRate int baudRate, @DataBit int dataBit, @StopBit int stopBit, @Parity String parity) throws SecurityException, IOException {
 
         /* Check access permission */
         if (!device.canRead() || !device.canWrite()) {
@@ -115,13 +115,13 @@ public class SerialPort {
             }
         }
 
-        mFileDescriptor = jniOpen(device.getAbsolutePath(), baudrate, dataBit, stopBit, parity.charAt(0));
+        mFileDescriptor = jniOpen(device.getAbsolutePath(), baudRate, dataBit, stopBit, parity.charAt(0));
         if (mFileDescriptor == null) {
             Log.e(TAG, "native open returns null");
             throw new IOException();
         }
 
-        this.baudrate = baudrate;
+        this.baudRate = baudRate;
         this.dataBit = dataBit;
         this.stopBit = stopBit;
         this.parity = parity;
@@ -140,8 +140,8 @@ public class SerialPort {
         }
     }
 
-    public int getBaudrate() {
-        return baudrate;
+    public int getBaudRate() {
+        return baudRate;
     }
 
     public int getDataBit() {
@@ -202,10 +202,8 @@ public class SerialPort {
     }
 
     // JNI
-    private static native FileDescriptor jniOpen(String path, int baudrate, int dataBit, int stopBit, char parity);
-
+    private static native FileDescriptor jniOpen(String path, int baudRate, int dataBit, int stopBit, char parity);
     private static native void jniClose(FileDescriptor fd);
-
     static {
         System.loadLibrary("io-serialport");
     }
