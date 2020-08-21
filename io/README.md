@@ -14,6 +14,9 @@ implementation 'com.liux.android:io:x.y.z'
 ### x.y.z_202x-xx-xx
     1.
 
+### 0.2.5_2020-08-21
+    1.改串口为非阻塞式
+
 ### 0.2.4_2020-08-19
     1.修正串口参数未应用成功的BUG
 

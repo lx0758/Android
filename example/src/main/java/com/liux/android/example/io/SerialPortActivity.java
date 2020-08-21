@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +22,7 @@ import com.liux.android.util.TextUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,6 +55,7 @@ public class SerialPortActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM, WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 
         TT.setContext(this);
         setContentView(R.layout.activity_io_serial_port);
@@ -111,26 +114,21 @@ public class SerialPortActivity extends AppCompatActivity {
         int baudRate = Integer.parseInt((String) spBaudRate.getSelectedItem());
         int dataBit = Integer.parseInt((String) spDataBit.getSelectedItem());
         int stopBit = Integer.parseInt((String) spStopBit.getSelectedItem());
-        String checkBitString = (String) spParity.getSelectedItem();
-        char checkBit = checkBitString.charAt(0);
-
+        String parity = (String) spParity.getSelectedItem();
         try {
-            serialPort = new SerialPort(new File(device), baudRate, dataBit, stopBit, checkBit);
+            serialPort = new SerialPort(new File(device), baudRate, dataBit, stopBit, parity);
             readThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
+                        int len;
+                        byte[] buffer = new byte[2048];
                         while (!Thread.interrupted()) {
-                            byte[] bytes = serialPort.readBytes();
-                            if (bytes != null && bytes.length > 0) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        etReceive.getText().append(TextUtil.bytes2Hex(bytes, true)).append(' ');
-                                    }
-                                });
+                            if ((len = serialPort.read(buffer)) != -1) {
+                                byte[] bytes = Arrays.copyOf(buffer, len);
+                                runOnUiThread(() -> etReceive.getText().append(TextUtil.bytes2Hex(bytes, true)).append(' '));
                             }
-                            Thread.sleep(100);
+                            Thread.sleep(0);
                         }
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();

@@ -34,8 +34,8 @@ static const char *TAG = "[SerialPort]";
 #define LOGD(fmt, args...) __android_log_print(ANDROID_LOG_DEBUG, TAG, fmt, ##args)
 #define LOGE(fmt, args...) __android_log_print(ANDROID_LOG_ERROR, TAG, fmt, ##args)
 
-static speed_t getBaudrate(jint baudrate) {
-    switch(baudrate) {
+static speed_t getBaudRate(jint baudRate) {
+    switch (baudRate) {
         case 0: return B0;
         case 50: return B50;
         case 75: return B75;
@@ -72,16 +72,16 @@ static speed_t getBaudrate(jint baudrate) {
 }
 
 JNIEXPORT jobject JNICALL Java_com_liux_android_io_serialport_SerialPort_jniOpen
-        (JNIEnv *env, jclass jclazz, jstring path, jint baudrate, jint dataBit, jint stopBit, jchar parity) {
+        (JNIEnv *env, jclass jclazz, jstring path, jint baudRate, jint dataBit, jint stopBit, jchar parity) {
     int fd;
     speed_t speed;
     jobject fileDescriptor;
 
     /* Check arguments */
     {
-        speed = getBaudrate(baudrate);
+        speed = getBaudRate(baudRate);
         if (speed == -1) {
-            LOGE("Invalid baudrate");
+            LOGE("Invalid baudRate");
             return NULL;
         }
         if (dataBit < 5 || dataBit > 8) {
@@ -96,13 +96,13 @@ JNIEXPORT jobject JNICALL Java_com_liux_android_io_serialport_SerialPort_jniOpen
 
     /* Opening device */
     {
-        jint flags = 0;
-        jboolean iscopy;
-        const char *path_utf = (*env)->GetStringUTFChars(env, path, &iscopy);
-        LOGD("Opening serial port %s with flags 0x%x", path_utf, O_RDWR | flags);
-        fd = open(path_utf, O_RDWR | flags);
+        jboolean isCopy;
+        const char *localPath = (*env)->GetStringUTFChars(env, path, &isCopy);
+        int flags = O_RDWR | O_NOCTTY;
+        LOGD("Opening serial port %s with flags 0x%x", localPath, flags);
+        fd = open(localPath, flags);
         LOGD("open() fd = %d", fd);
-        (*env)->ReleaseStringUTFChars(env, path, path_utf);
+        (*env)->ReleaseStringUTFChars(env, path, localPath);
         if (fd == -1) {
             LOGE("Cannot open port");
             return NULL;
@@ -111,83 +111,91 @@ JNIEXPORT jobject JNICALL Java_com_liux_android_io_serialport_SerialPort_jniOpen
 
     /* Configure device */
     {
-        struct termios cfg;
+        struct termios option;
+
         LOGD("Configuring serial port");
-        if (tcgetattr(fd, &cfg)) {
+        if (tcgetattr(fd, &option)) {
             LOGE("tcgetattr() failed");
             close(fd);
             return NULL;
         }
 
-        cfmakeraw(&cfg);
-        cfsetispeed(&cfg, speed);
-        cfsetospeed(&cfg, speed);
+        // cfmakeraw(&option);
+        option.c_iflag &= ~(IGNBRK|BRKINT|PARMRK|ISTRIP|INLCR|IGNCR|ICRNL|IXON);
+        option.c_oflag &= ~OPOST;
+        option.c_lflag &= ~(ECHO|ECHONL|ICANON|ISIG|IEXTEN);
+        option.c_cflag &= ~(CSIZE|PARENB);
+
+        cfsetispeed(&option, speed);
+        cfsetospeed(&option, speed);
 
         // 设置数据位数
-        cfg.c_cflag &= ~CSIZE;
-        switch (dataBit){
+        switch (dataBit) {
             case 5:
-                cfg.c_cflag |= CS5;
+                option.c_cflag |= CS5;
                 LOGD("set dataBit is 5");
                 break;
             case 6:
-                cfg.c_cflag |= CS6;
+                option.c_cflag |= CS6;
                 LOGD("set dataBit is 6");
                 break;
             case 7:
-                cfg.c_cflag |= CS7;
+                option.c_cflag |= CS7;
                 LOGD("set dataBit is 7");
                 break;
             case 8:
-                cfg.c_cflag |= CS8;
+                option.c_cflag |= CS8;
                 LOGD("set dataBit is 8");
                 break;
             default:
-                cfg.c_cflag |= CS8;
+                option.c_cflag |= CS8;
                 LOGD("set dataBit is 8 [default]");
                 break;
         }
         // 设置停止位
-        switch (stopBit){
+        switch (stopBit) {
             case 1:
-                cfg.c_cflag &= ~CSTOPB;
+                option.c_cflag &= ~CSTOPB;
                 LOGD("set stopBit is 1");
                 break;
             case 2:
-                cfg.c_cflag |= CSTOPB;
+                option.c_cflag |= CSTOPB;
                 LOGD("set stopBit is 2");
                 break;
             default:
-                cfg.c_cflag &= ~CSTOPB;
+                option.c_cflag &= ~CSTOPB;
                 LOGD("set stopBit is 1 [default]");
                 break;
         }
         // 设置校验位
-        switch (parity){
+        switch (parity) {
             case 'o':
             case 'O':
-                cfg.c_cflag |= PARENB;
-                cfg.c_cflag |= PARODD;
+                option.c_cflag |= PARENB;
+                option.c_cflag |= PARODD;
                 LOGD("set parity is O");
                 break;
             case 'e':
             case 'E':
-                cfg.c_cflag |= PARENB;
-                cfg.c_cflag &= ~PARODD;
+                option.c_cflag |= PARENB;
+                option.c_cflag &= ~PARODD;
                 LOGD("set parity is E");
                 break;
             case 'n':
             case 'N':
-                cfg.c_cflag &= ~PARENB;
+                option.c_cflag &= ~PARENB;
                 LOGD("set parity is N");
                 break;
             default:
-                cfg.c_cflag &= ~PARENB;
+                option.c_cflag &= ~PARENB;
                 LOGD("set parity is N [default]");
                 break;
         }
+        // 超时设置
+        option.c_cc[VTIME] = 0;
+        option.c_cc[VMIN] = 0;
 
-        if (tcsetattr(fd, TCSANOW, &cfg)) {
+        if (tcsetattr(fd, TCSANOW, &option)) {
             LOGE("tcsetattr() failed");
             close(fd);
             return NULL;
