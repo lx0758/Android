@@ -8,22 +8,21 @@ import android.widget.ImageView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.liux.android.example.R;
 import com.liux.android.example.databinding.ActivityBoxingDemoBinding;
-import com.liux.android.mediaer.glide.GlideApp;
+import com.liux.android.list.adapter.MultipleAdapter;
+import com.liux.android.list.adapter.rule.SingleRule;
+import com.liux.android.list.decoration.GridItemDecoration;
+import com.liux.android.list.holder.SuperHolder;
 import com.liux.android.mediaer.Mediaer;
 import com.liux.android.mediaer.MediaerException;
+import com.liux.android.mediaer.glide.GlideApp;
 import com.liux.android.mediaer.listener.OnMultiSelectListener;
 import com.liux.android.mediaer.listener.OnRecordListener;
 import com.liux.android.mediaer.listener.OnSingleSelectListener;
 import com.liux.android.mediaer.listener.OnTakeListener;
 import com.liux.android.mediaer.listener.OnVideoSelectListener;
-import com.liux.android.example.R;
-import com.liux.android.list.adapter.MultipleAdapter;
-import com.liux.android.list.adapter.rule.SingleRule;
-import com.liux.android.list.decoration.GridItemDecoration;
-import com.liux.android.list.holder.SuperHolder;
 import com.liux.android.tool.TT;
 
 import java.util.List;

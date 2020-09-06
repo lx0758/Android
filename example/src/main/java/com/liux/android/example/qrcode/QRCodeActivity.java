@@ -10,10 +10,10 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.liux.android.example.R;
 import com.liux.android.mediaer.Mediaer;
 import com.liux.android.mediaer.MediaerException;
 import com.liux.android.mediaer.listener.OnSingleSelectListener;
-import com.liux.android.example.R;
 import com.liux.android.qrcode.QRCodeDecoder;
 import com.liux.android.qrcode.QRCodeScanningActivity;
 import com.liux.android.tool.ActivityStarter;

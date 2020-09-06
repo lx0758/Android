@@ -2,16 +2,13 @@ package com.liux.android.example.downloader;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
 
 import com.liux.android.downloader.OnStatusListener;
 import com.liux.android.downloader.Status;
 import com.liux.android.downloader.UIStatusListener;
 import com.liux.android.downloader.core.Task;
-import com.liux.android.example.R;
 import com.liux.android.example.databinding.DialogTaskDownloadBinding;
 
 public class DownloadTaskDialog extends Dialog {

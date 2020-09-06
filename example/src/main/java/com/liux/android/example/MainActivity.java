@@ -11,17 +11,17 @@ import android.widget.SimpleAdapter;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.liux.android.example.banner.BannerActivity;
 import com.liux.android.example.abstracts.activity.AbstractsActivity;
-import com.liux.android.example.picturer.MediaerActivity;
+import com.liux.android.example.banner.BannerActivity;
 import com.liux.android.example.downloader.DownloaderActivity;
 import com.liux.android.example.http.HTTPActivity;
+import com.liux.android.example.io.IOActivity;
 import com.liux.android.example.list.ListActivity;
 import com.liux.android.example.other.ToolActivity;
 import com.liux.android.example.pay.PayActivity;
 import com.liux.android.example.permission.PermissionActivity;
+import com.liux.android.example.picturer.MediaerActivity;
 import com.liux.android.example.qrcode.QRCodeActivity;
-import com.liux.android.example.io.IOActivity;
 import com.liux.android.example.util.UtilActivity;
 import com.liux.android.example.view.ViewActivity;
 

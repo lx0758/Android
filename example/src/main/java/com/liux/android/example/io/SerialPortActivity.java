@@ -3,18 +3,13 @@ package com.liux.android.example.io;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.liux.android.example.R;
 import com.liux.android.example.databinding.ActivityIoSerialPortBinding;
 import com.liux.android.io.serialport.SerialPort;
 import com.liux.android.io.serialport.SerialPortFinder;

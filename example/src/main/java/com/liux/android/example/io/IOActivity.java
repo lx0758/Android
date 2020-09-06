@@ -2,7 +2,6 @@ package com.liux.android.example.io;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;

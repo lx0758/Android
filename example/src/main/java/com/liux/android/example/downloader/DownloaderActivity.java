@@ -15,8 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.liux.android.downloader.Downloader;
 import com.liux.android.downloader.Config;
+import com.liux.android.downloader.Downloader;
 import com.liux.android.downloader.InitCallback;
 import com.liux.android.downloader.OnStatusListener;
 import com.liux.android.downloader.Status;

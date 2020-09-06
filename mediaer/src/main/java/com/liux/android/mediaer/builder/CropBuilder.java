@@ -7,9 +7,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.liux.android.mediaer.MediaerException;
+import com.liux.android.mediaer.MediaerUtil;
 import com.liux.android.mediaer.action.IntentAction;
 import com.liux.android.mediaer.inject.IntentTask;
-import com.liux.android.mediaer.MediaerUtil;
 import com.liux.android.mediaer.listener.OnCancelListener;
 import com.liux.android.mediaer.listener.OnCropListener;
 import com.liux.android.mediaer.listener.OnFailureListener;

@@ -8,18 +8,17 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.liux.android.example.R;
 import com.liux.android.example.databinding.ActivityPermissionBinding;
 import com.liux.android.mediaer.Mediaer;
 import com.liux.android.mediaer.MediaerException;
-import com.liux.android.mediaer.listener.OnTakeListener;
-import com.liux.android.example.R;
 import com.liux.android.mediaer.glide.GlideApp;
+import com.liux.android.mediaer.listener.OnTakeListener;
 import com.liux.android.permission.Authorizer;
 import com.liux.android.permission.Continue;
 import com.liux.android.permission.OnContinueListener;

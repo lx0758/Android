@@ -1,14 +1,12 @@
 package com.liux.android.example.abstracts.activity;
 
 import android.os.Bundle;
+import android.widget.RadioGroup;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
-import android.view.LayoutInflater;
-import android.widget.RadioGroup;
 
 import com.liux.android.abstracts.AbstractsActivity;
 import com.liux.android.example.R;
