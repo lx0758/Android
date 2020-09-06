@@ -11,18 +11,17 @@ import android.widget.SimpleAdapter;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.liux.android.example.banner.BannerActivity;
 import com.liux.android.example.abstracts.activity.AbstractsActivity;
-import com.liux.android.example.picturer.MediaerActivity;
+import com.liux.android.example.banner.BannerActivity;
 import com.liux.android.example.downloader.DownloaderActivity;
 import com.liux.android.example.http.HTTPActivity;
+import com.liux.android.example.io.IOActivity;
 import com.liux.android.example.list.ListActivity;
 import com.liux.android.example.other.ToolActivity;
 import com.liux.android.example.pay.PayActivity;
 import com.liux.android.example.permission.PermissionActivity;
+import com.liux.android.example.picturer.MediaerActivity;
 import com.liux.android.example.qrcode.QRCodeActivity;
-import com.liux.android.example.rx.RXActivity;
-import com.liux.android.example.io.IOActivity;
 import com.liux.android.example.util.UtilActivity;
 import com.liux.android.example.view.ViewActivity;
 
@@ -71,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
         add("Pay", "封装支付宝/微信/银联支付过程", PayActivity.class);
         add("Permission", "运行时/悬浮窗/安装 权限申请过程封装", PermissionActivity.class);
         add("QRCode", "基于 ZXing 的一个 QRCode 扫描/生成库", QRCodeActivity.class);
-        add("RX", "基于 ReactiveX 的 RxJava2 全家桶部分成员", RXActivity.class);
         add("Tool", "一些工具类集合", ToolActivity.class);
         add("Util", "一些工具方法集合", UtilActivity.class);
         add("View", "一些自定义 View 集合", ViewActivity.class);

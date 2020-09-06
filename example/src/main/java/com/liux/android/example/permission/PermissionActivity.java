@@ -8,17 +8,17 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.liux.android.example.R;
+import com.liux.android.example.databinding.ActivityPermissionBinding;
 import com.liux.android.mediaer.Mediaer;
 import com.liux.android.mediaer.MediaerException;
-import com.liux.android.mediaer.listener.OnTakeListener;
-import com.liux.android.example.R;
 import com.liux.android.mediaer.glide.GlideApp;
+import com.liux.android.mediaer.listener.OnTakeListener;
 import com.liux.android.permission.Authorizer;
 import com.liux.android.permission.Continue;
 import com.liux.android.permission.OnContinueListener;
@@ -29,29 +29,28 @@ import com.liux.android.tool.TT;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 /**
  * Created by Liux on 2017/11/28.
  */
 
 public class PermissionActivity extends AppCompatActivity {
 
-    @BindView(R.id.iv_preview)
-    ImageView ivPreview;
+    private ActivityPermissionBinding mViewBinding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_permission);
-        ButterKnife.bind(this);
+        mViewBinding = ActivityPermissionBinding.inflate(getLayoutInflater());
+        setContentView(mViewBinding.getRoot());
+
+        mViewBinding.btnCall.setOnClickListener(this::onViewClicked);
+        mViewBinding.btnCamera.setOnClickListener(this::onViewClicked);
+        mViewBinding.btnCallCamera.setOnClickListener(this::onViewClicked);
+        mViewBinding.btnInstall.setOnClickListener(this::onViewClicked);
     }
 
     @SuppressLint("MissingPermission")
-    @OnClick({R.id.btn_call, R.id.btn_camera, R.id.btn_call_camera, R.id.btn_floats, R.id.btn_install})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_call:
@@ -123,10 +122,10 @@ public class PermissionActivity extends AppCompatActivity {
                                             .listener(new OnTakeListener() {
                                                 @Override
                                                 public void onSucceed(Uri uri) {
-                                                    GlideApp.with(ivPreview)
+                                                    GlideApp.with(mViewBinding.ivPreview)
                                                             .asBitmap()
                                                             .load(uri)
-                                                            .into(ivPreview);
+                                                            .into(mViewBinding.ivPreview);
                                                 }
 
                                                 @Override
@@ -182,10 +181,10 @@ public class PermissionActivity extends AppCompatActivity {
                                             .listener(new OnTakeListener() {
                                                 @Override
                                                 public void onSucceed(Uri uri) {
-                                                    GlideApp.with(ivPreview)
+                                                    GlideApp.with(mViewBinding.ivPreview)
                                                             .asBitmap()
                                                             .load(uri)
-                                                            .into(ivPreview);
+                                                            .into(mViewBinding.ivPreview);
                                                 }
 
                                                 @Override

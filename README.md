@@ -49,10 +49,6 @@ Library
 ---
 	基于[zxing](https://github.com/zxing/zxing)的一个二维码扫描/识别/生成库
 
-[rx](/rx/README.md)
----
-	基于ReactiveX的RxJava2全家桶部分成员
-
 [tool](/tool/README.md)/[util](/util/README.md)/[view](/view/README.md)
 ---
 	其他一些库类/组件/控件的集合

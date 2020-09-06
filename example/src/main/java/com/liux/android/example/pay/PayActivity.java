@@ -18,9 +18,6 @@ import com.liux.android.tool.TT;
 import com.tencent.mm.opensdk.modelpay.PayReq;
 import com.tencent.mm.opensdk.modelpay.PayResp;
 
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 /**
  * Created by Liux on 2017/11/28.
  */
@@ -31,12 +28,15 @@ public class PayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_pay);
-        ButterKnife.bind(this);
+
+        findViewById(R.id.btn_ali).setOnClickListener(this::onViewClicked);
+        findViewById(R.id.btn_ali_v2).setOnClickListener(this::onViewClicked);
+        findViewById(R.id.btn_wx).setOnClickListener(this::onViewClicked);
+        findViewById(R.id.btn_union).setOnClickListener(this::onViewClicked);
 
         Payer.DEBUG = true;
     }
 
-    @OnClick({R.id.btn_ali, R.id.btn_ali_v2, R.id.btn_wx, R.id.btn_union})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_ali:

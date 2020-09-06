@@ -3,24 +3,24 @@ package com.liux.android.example.http;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.liux.android.example.ApplocationInstance;
 import com.liux.android.example.R;
+import com.liux.android.example.databinding.ActivityHttpBinding;
 import com.liux.android.http.Http;
 import com.liux.android.http.HttpUtil;
 import com.liux.android.http.progress.OnProgressListener;
 import com.liux.android.http.progress.OnResponseProgressListener;
 import com.liux.android.http.request.Callback;
 import com.liux.android.http.request.DownloadCallback;
-import com.liux.android.http.request.UICallback;
 import com.liux.android.http.request.Request;
 import com.liux.android.http.request.RequestManager;
+import com.liux.android.http.request.UICallback;
 import com.liux.android.tool.TT;
 
 import org.json.JSONArray;
@@ -33,14 +33,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.reactivex.SingleObserver;
 import io.reactivex.observers.DisposableSingleObserver;
 import okhttp3.HttpUrl;
@@ -50,14 +46,41 @@ import okhttp3.Response;
  * Created by Liux on 2017/11/28.
  */
 
-public class HTTPActivity extends AppCompatActivity implements RequestManager {
+public class HTTPActivity extends AppCompatActivity {
     private static final String TAG = "HTTPActivity";
+    
+    private ActivityHttpBinding mViewbinding;
 
-    @BindView(R.id.tv_log)
-    TextView tvLog;
-    @BindView(R.id.et_data)
-    EditText etData;
+    static {
+        // 初始化
+        Http.init(ApplocationInstance.getApplication(), "https://api.6xyun.cn/v1.0/");
+        // 动态规则
+        Http.get().putDomainRule("138", "http://api.ip138.com/");
+        // 动态设置全局BaseUrl
+        Http.get().setBaseUrl("http://api.6xyun.cn/");
+        // 拦截器
+        Http.get().setCallback(new com.liux.android.http.Callback() {
+            @Override
+            public void onHeaders(okhttp3.Request request, Map<String, String> headers) {
 
+            }
+
+            @Override
+            public void onQueryRequest(okhttp3.Request request, Map<String, String> queryParams) {
+
+            }
+
+            @Override
+            public void onBodyRequest(okhttp3.Request request, Map<String, String> queryParams, Map<String, String> bodyParams) {
+
+            }
+
+            @Override
+            public void onBodyRequest(okhttp3.Request request, Map<String, String> queryParams, BodyParam bodyParam) {
+
+            }
+        });
+    }
     private TestApiModel mTestApiModle = new TestApiModelImpl();
     private RequestManager mRequestManager = RequestManager.Builder.build();
 
@@ -65,26 +88,39 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 动态设置全局BaseUrl
-        Http.get().setBaseUrl("http://api.6xyun.cn/");
+        mViewbinding = ActivityHttpBinding.inflate(getLayoutInflater());
+        setContentView(mViewbinding.getRoot());
 
-        // 动态设置全局BaseUrl规则
-        Http.get().putDomainRule("138", "http://api.ip138.com/");
-
-        setContentView(R.layout.activity_http);
-        ButterKnife.bind(this);
+        mViewbinding.btnRetorfitGet.setOnClickListener(this::onRetorfitClicked);
+        mViewbinding.btnRetorfitPostForm.setOnClickListener(this::onRetorfitClicked);
+        mViewbinding.btnRetorfitPostBody.setOnClickListener(this::onRetorfitClicked);
+        mViewbinding.btnRetorfitPostMultipart.setOnClickListener(this::onRetorfitClicked);
+        mViewbinding.btnRetorfitBaseHeader.setOnClickListener(this::onRetorfitClicked);
+        mViewbinding.btnRetorfitBaseHeaderRule.setOnClickListener(this::onRetorfitClicked);
+        mViewbinding.btnRetorfitBaseGlobal.setOnClickListener(this::onRetorfitClicked);
+        mViewbinding.btnRetorfitBaseGlobalRoot.setOnClickListener(this::onRetorfitClicked);
+        mViewbinding.btnRequestTimeoutHeader.setOnClickListener(this::onRetorfitClicked);
+        mViewbinding.btnRequestTimeoutGlobal.setOnClickListener(this::onRetorfitClicked);
+        
+        mViewbinding.btnRequestGet.setOnClickListener(this::onRequestClicked);
+        mViewbinding.btnRequestPostForm.setOnClickListener(this::onRequestClicked);
+        mViewbinding.btnRequestPostBody.setOnClickListener(this::onRequestClicked);
+        mViewbinding.btnRequestPostMultipart.setOnClickListener(this::onRequestClicked);
+        mViewbinding.btnRequestDownload.setOnClickListener(this::onRequestClicked);
+        mViewbinding.btnRequestTimeoutHeader.setOnClickListener(this::onRequestClicked);
+        mViewbinding.btnRequestTimeoutGlobal.setOnClickListener(this::onRequestClicked);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mRequestManager.cancelAll();
-        cancelAll();
+        Http.release();
     }
 
-    @OnClick({R.id.btn_retorfit_get, R.id.btn_retorfit_post_body, R.id.btn_retorfit_post_form, R.id.btn_retorfit_post_multipart, R.id.btn_retorfit_base_header, R.id.btn_retorfit_base_header_rule, R.id.btn_retorfit_base_global, R.id.btn_retorfit_base_global_root, R.id.btn_retorfit_timeout_header, R.id.btn_retorfit_timeout_global})
     public void onRetorfitClicked(View view) {
-        String data = etData.getText().toString();
+        showData("");
+        String data = mViewbinding.etData.getText().toString();
         SingleObserver<JSON> observable = new DisposableSingleObserver<JSON>() {
             @Override
             public void onSuccess(JSON json) {
@@ -158,12 +194,12 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
         }
     }
 
-    @OnClick({R.id.btn_request_get, R.id.btn_request_post_body, R.id.btn_request_post_form, R.id.btn_request_post_multipart, R.id.btn_request_download, R.id.btn_request_timeout_header, R.id.btn_request_timeout_global})
     public void onRequestClicked(View view) {
-        String url = etData.getText().toString();
+        showData("");
+        String url = mViewbinding.etData.getText().toString();
         if (HttpUrl.parse(url) == null) {
             TT.show("URL不正确,必须形如 http://www.domain.com/");
-            etData.setText("http://api.6xyun.cn/");
+            mViewbinding.etData.setText("http://api.6xyun.cn/");
             return;
         }
         switch (view.getId()) {
@@ -177,7 +213,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                             @Override
                             public void onResponseProgress(final HttpUrl httpUrl, final long downloadLength, final long totalLength, final boolean completed) {
                                 System.out.println("onResponseProgress:" + httpUrl + "," + downloadLength + "," + totalLength + "," + completed);
-                                etData.post(new Runnable() {
+                                mViewbinding.etData.post(new Runnable() {
                                     @Override
                                     public void run() {
                                         TT.show("onResponseProgress:" + httpUrl + "," + downloadLength + "," + totalLength + "," + completed);
@@ -191,7 +227,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                             public void onSucceed(Request request, Response response) throws IOException {
                                 final String result = response.body().string();
                                 System.out.println("onSucceed:" + result.length());
-                                etData.post(new Runnable() {
+                                mViewbinding.etData.post(new Runnable() {
                                     @Override
                                     public void run() {
                                         showData(result);
@@ -202,7 +238,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                             @Override
                             public void onFailure(Request request, IOException e) {
                                 System.out.println("onFailure:" + e);
-                                etData.post(new Runnable() {
+                                mViewbinding.etData.post(new Runnable() {
                                     @Override
                                     public void run() {
                                         TT.show("onFailure:" + e);
@@ -218,7 +254,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                         .addHeader("Request-Header-Id", "btn_request_post_body")
                         .addQuery("Request-Query-Id", "btn_request_post_body")
                         .body(HttpUtil.parseJsonBody(jsonObject.toJSONString()))
-                        .manager(this)
+                        .manager(mRequestManager)
                         .async(new UICallback() {
                             @Override
                             protected void onUISucceed(Request request, Response response) throws IOException {
@@ -239,7 +275,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                         .addHeader("Request-Header-Id", "btn_request_post_form")
                         .addQuery("Request-Query-Id", "btn_request_post_form")
                         .addParam("Request-Param-Id", "btn_request_post_form")
-                        .manager(this)
+                        .manager(mRequestManager)
                         .async(new UICallback() {
                             @Override
                             public void onUISucceed(Request request, Response response) throws IOException {
@@ -269,7 +305,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                             @Override
                             public void onRequestProgress(final HttpUrl httpUrl, long transmittedLength, long totalLength, final boolean done) {
                                 System.out.println("onRequestProgress:" + httpUrl + "," + transmittedLength + "," + totalLength + "," + done);
-                                etData.post(new Runnable() {
+                                mViewbinding.etData.post(new Runnable() {
                                     @Override
                                     public void run() {
                                         TT.show("onRequestProgress:" + httpUrl + "," + transmittedLength + "," + totalLength + "," + done);
@@ -280,7 +316,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                             @Override
                             public void onResponseProgress(final HttpUrl httpUrl, long transmittedLength, long totalLength, final boolean completed) {
                                 System.out.println("onResponseProgress:" + httpUrl + "," + transmittedLength + "," + totalLength + "," + completed);
-                                etData.post(new Runnable() {
+                                mViewbinding.etData.post(new Runnable() {
                                     @Override
                                     public void run() {
                                         TT.show("onResponseProgress:" + httpUrl + "," + transmittedLength + "," + totalLength + "," + completed);
@@ -288,7 +324,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                                 });
                             }
                         })
-                        .manager(this)
+                        .manager(mRequestManager)
                         .async(new UICallback() {
                             @Override
                             public void onUISucceed(Request request, Response response) throws IOException {
@@ -307,30 +343,30 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
             case R.id.btn_request_download:
                 Http.get().get(url)
                         .addQuery("t", String.valueOf(System.currentTimeMillis()))
-                        .manager(this)
+                        .manager(mRequestManager)
                         .download(new File(getCacheDir(), String.valueOf(System.currentTimeMillis())), new DownloadCallback() {
                             @Override
                             public void onProgress(long transmittedLength, long totalLength) {
                                 System.out.println("onProgress:" + transmittedLength + ", " + totalLength);
-                                tvLog.append("onProgress:" + transmittedLength + ", " + totalLength);
-                                tvLog.append("\n");
+                                mViewbinding.tvLog.append("onProgress:" + transmittedLength + ", " + totalLength);
+                                mViewbinding.tvLog.append("\n");
                             }
 
                             @Override
                             public void onSucceed(File file) {
                                 System.out.println("onSucceed:" + file.getAbsolutePath());
-                                tvLog.append("onSucceed:" + file.getAbsolutePath());
-                                tvLog.append("\n");
+                                mViewbinding.tvLog.append("onSucceed:" + file.getAbsolutePath());
+                                mViewbinding.tvLog.append("\n");
                             }
 
                             @Override
                             public void onFailure(IOException e) {
                                 System.out.println("onFailure:" + e);
-                                tvLog.append("onFailure:" + e);
-                                tvLog.append("\n");
+                                mViewbinding.tvLog.append("onFailure:" + e);
+                                mViewbinding.tvLog.append("\n");
                             }
                         });
-                tvLog.setText(null);
+                mViewbinding.tvLog.setText(null);
                 break;
             case R.id.btn_request_timeout_header:
                 Http.get().post(url + "request-timeout")
@@ -340,7 +376,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                         .connectTimeout(5, TimeUnit.SECONDS)
                         .writeTimeout(10, TimeUnit.SECONDS)
                         .readTimeout(10, TimeUnit.SECONDS)
-                        .manager(this)
+                        .manager(mRequestManager)
                         .async(new UICallback() {
                             @Override
                             public void onUISucceed(Request request, Response response) throws IOException {
@@ -364,7 +400,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
                         .addHeader("Request-Header-Id", "btn_request_timeout_header")
                         .addQuery("Request-Query-Id", "btn_request_timeout_header")
                         .addParam("Request-Param-Id", "btn_request_timeout_header")
-                        .manager(this)
+                        .manager(mRequestManager)
                         .async(new UICallback() {
                             @Override
                             public void onUISucceed(Request request, Response response) throws IOException {
@@ -474,7 +510,7 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
 
     private void showData(String data) {
         data = formatJson(data);
-        tvLog.setText(data);
+        mViewbinding.tvLog.setText(data);
     }
 
     /**
@@ -494,27 +530,5 @@ public class HTTPActivity extends AppCompatActivity implements RequestManager {
 
         }
         return json;
-    }
-
-    List<Request> mRequests = new LinkedList<>();
-
-    @Override
-    public void add(Request request) {
-        if (!mRequests.contains(request)) {
-            mRequests.add(request);
-        }
-    }
-
-    @Override
-    public void remove(Request cancel) {
-        mRequests.remove(cancel);
-    }
-
-    @Override
-    public void cancelAll() {
-        for (Request cancel : mRequests) {
-            if (cancel != null) cancel.cancel();
-        }
-        mRequests.clear();
     }
 }

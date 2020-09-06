@@ -2,11 +2,6 @@ package com.liux.android.http.request;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
-
-import androidx.annotation.NonNull;
-
-import com.liux.android.http.progress.OnResponseProgressListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import okhttp3.HttpUrl;
 import okhttp3.Response;
 
 public class DownloadProxy implements Callback {

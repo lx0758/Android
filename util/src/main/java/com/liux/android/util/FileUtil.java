@@ -6,7 +6,6 @@ import android.os.StatFs;
 import android.text.TextUtils;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

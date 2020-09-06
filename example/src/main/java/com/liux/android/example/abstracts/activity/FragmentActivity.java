@@ -1,13 +1,12 @@
 package com.liux.android.example.abstracts.activity;
 
 import android.os.Bundle;
+import android.widget.RadioGroup;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
-import android.widget.RadioGroup;
 
 import com.liux.android.abstracts.AbstractsActivity;
 import com.liux.android.example.R;
@@ -15,9 +14,7 @@ import com.liux.android.example.abstracts.fragment.FourFragment;
 import com.liux.android.example.abstracts.fragment.OneFragment;
 import com.liux.android.example.abstracts.fragment.ThreeFragment;
 import com.liux.android.example.abstracts.fragment.TwoFragment;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.liux.android.example.databinding.ActivityAbstractsFragmentBinding;
 
 /**
  * Created by Liux on 2017/12/3.
@@ -25,19 +22,16 @@ import butterknife.ButterKnife;
 
 public class FragmentActivity extends AbstractsActivity {
 
-    @BindView(R.id.vp_content)
-    ViewPager vpContent;
-    @BindView(R.id.rg_select)
-    RadioGroup rgSelect;
+    private ActivityAbstractsFragmentBinding mViewBinding;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_abstracts_fragment);
 
-        ButterKnife.bind(this);
+        mViewBinding = ActivityAbstractsFragmentBinding.inflate(getLayoutInflater());
+        setContentView(mViewBinding.getRoot());
 
-        vpContent.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
+        mViewBinding.vpContent.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
                 switch (position) {
@@ -59,7 +53,7 @@ public class FragmentActivity extends AbstractsActivity {
                 return 4;
             }
         });
-        vpContent.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mViewBinding.vpContent.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -69,16 +63,16 @@ public class FragmentActivity extends AbstractsActivity {
             public void onPageSelected(int position) {
                 switch (position) {
                     case 0:
-                        rgSelect.check(R.id.rb_one);
+                        mViewBinding.rgSelect.check(R.id.rb_one);
                         break;
                     case 1:
-                        rgSelect.check(R.id.rb_two);
+                        mViewBinding.rgSelect.check(R.id.rb_two);
                         break;
                     case 2:
-                        rgSelect.check(R.id.rb_three);
+                        mViewBinding.rgSelect.check(R.id.rb_three);
                         break;
                     case 3:
-                        rgSelect.check(R.id.rb_four);
+                        mViewBinding.rgSelect.check(R.id.rb_four);
                         break;
                     default:
                         break;
@@ -91,21 +85,21 @@ public class FragmentActivity extends AbstractsActivity {
             }
         });
 
-        rgSelect.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        mViewBinding.rgSelect.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.rb_one:
-                        vpContent.setCurrentItem(0);
+                        mViewBinding.vpContent.setCurrentItem(0);
                         break;
                     case R.id.rb_two:
-                        vpContent.setCurrentItem(1);
+                        mViewBinding.vpContent.setCurrentItem(1);
                         break;
                     case R.id.rb_three:
-                        vpContent.setCurrentItem(2);
+                        mViewBinding.vpContent.setCurrentItem(2);
                         break;
                     case R.id.rb_four:
-                        vpContent.setCurrentItem(3);
+                        mViewBinding.vpContent.setCurrentItem(3);
                         break;
                     default:
                         break;
@@ -113,6 +107,6 @@ public class FragmentActivity extends AbstractsActivity {
             }
         });
 
-        rgSelect.check(R.id.rb_one);
+        mViewBinding.rgSelect.check(R.id.rb_one);
     }
 }

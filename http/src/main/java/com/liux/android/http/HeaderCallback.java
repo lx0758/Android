@@ -9,7 +9,7 @@ import okhttp3.Request;
  * Created by Liux on 2017/11/29.
  */
 
-public interface OnHeaderListener {
+public interface HeaderCallback {
 
     /**
      * Header 回调, 支持一个 key 对应多个 value <br>

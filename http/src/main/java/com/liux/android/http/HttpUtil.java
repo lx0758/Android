@@ -1,6 +1,7 @@
 package com.liux.android.http;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -271,7 +272,7 @@ public class HttpUtil {
      * @param uri
      * @return
      */
-    public static RequestBody parseUriBody(String type, final Uri uri) {
+    public static RequestBody parseUriBody(final Context context, String type, final Uri uri) {
         MediaType mediaType = null;
         if (!TextUtils.isEmpty(type)) {
             mediaType = MediaType.parse(type);
@@ -305,7 +306,7 @@ public class HttpUtil {
             }
 
             private InputStream getInputStream() throws IOException {
-                return Http.get().getContext().getContentResolver().openInputStream(uri);
+                return context.getContentResolver().openInputStream(uri);
             }
         };
     }
@@ -394,7 +395,7 @@ public class HttpUtil {
      * @param uri
      * @return
      */
-    public static MultipartBody.Part parseUriPart(String name, Uri uri) {
+    public static MultipartBody.Part parseUriPart(Context context, String name, Uri uri) {
         String filename = null;
         String type = null;
 
@@ -403,7 +404,7 @@ public class HttpUtil {
             case ContentResolver.SCHEME_CONTENT:
                 Cursor cursor = null;
                 try {
-                    cursor = Http.get().getContext().getContentResolver().query(uri, new String[]{MediaStore.MediaColumns.DISPLAY_NAME, MediaStore.MediaColumns.MIME_TYPE}, null, null, null);
+                    cursor = context.getContentResolver().query(uri, new String[]{MediaStore.MediaColumns.DISPLAY_NAME, MediaStore.MediaColumns.MIME_TYPE}, null, null, null);
                     if (cursor != null && cursor.moveToFirst()) {
                         int filenameColumns = cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME);
                         int typeColumns = cursor.getColumnIndex(MediaStore.MediaColumns.MIME_TYPE);
@@ -423,19 +424,21 @@ public class HttpUtil {
                 break;
         }
 
-        return parseUriPart(name, filename, type, uri);
+        return parseUriPart(context, name, filename, type, uri);
     }
 
     /**
      * 生成一个 {@link MultipartBody.Part}
+     *
+     * @param context
      * @param name
      * @param filename
      * @param uri
      * @return
      */
-    public static MultipartBody.Part parseUriPart(String name, String filename, String type, Uri uri) {
+    public static MultipartBody.Part parseUriPart(Context context, String name, String filename, String type, Uri uri) {
         if (type == null) type = getMimeType(filename).toString();
-        return MultipartBody.Part.createFormData(name, filename, parseUriBody(type, uri));
+        return MultipartBody.Part.createFormData(name, filename, parseUriBody(context, type, uri));
     }
 
     /**

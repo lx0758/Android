@@ -5,7 +5,6 @@ import android.graphics.PixelFormat;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;

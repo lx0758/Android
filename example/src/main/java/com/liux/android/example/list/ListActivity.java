@@ -2,15 +2,14 @@ package com.liux.android.example.list;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.liux.android.example.R;
+import com.liux.android.example.databinding.ActivityListBinding;
 import com.liux.android.list.adapter.MultipleAdapter;
 import com.liux.android.list.adapter.rule.SuperRule;
 import com.liux.android.list.decoration.AbsItemDecoration;
@@ -23,18 +22,13 @@ import com.liux.android.util.DateUtil;
 import java.util.Date;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 /**
  * Created by Liux on 2017/11/28.
  */
 
 public class ListActivity extends AppCompatActivity {
 
-    @BindView(R.id.rv_list)
-    RecyclerView rvList;
+    private ActivityListBinding mViewBinding;
 
     private MultipleAdapter<Bean> mMultipleAdapter;
     private SelectHelper<Bean> mSelectHelper;
@@ -43,13 +37,11 @@ public class ListActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        TT.setContext(getApplicationContext());
+        mViewBinding = ActivityListBinding.inflate(getLayoutInflater());
+        setContentView(mViewBinding.getRoot());
 
-        setContentView(R.layout.activity_list);
-        ButterKnife.bind(this);
-
-        rvList.setLayoutManager(new LinearLayoutManager(this));
-        rvList.addItemDecoration(new AbsItemDecoration() {
+        mViewBinding.rvList.setLayoutManager(new LinearLayoutManager(this));
+        mViewBinding.rvList.addItemDecoration(new AbsItemDecoration() {
             @Override
             public Decoration getItemOffsets(int position) {
                 if (mMultipleAdapter.isHeaderPosition(position) ||
@@ -63,8 +55,8 @@ public class ListActivity extends AppCompatActivity {
             }
         });
         mMultipleAdapter = new MultipleAdapter<Bean>()
-                .setHeader(LayoutInflater.from(this).inflate(R.layout.layout_header, rvList, false))
-                .setFooter(LayoutInflater.from(this).inflate(R.layout.layout_footer, rvList, false))
+                .setHeader(getLayoutInflater().inflate(R.layout.layout_header, mViewBinding.rvList, false))
+                .setFooter(getLayoutInflater().inflate(R.layout.layout_footer, mViewBinding.rvList, false))
                 .addRule(new SuperRule<Bean>(android.R.layout.simple_list_item_1) {
                     @Override
                     public boolean canBindData(Bean bean) {
@@ -100,7 +92,7 @@ public class ListActivity extends AppCompatActivity {
                         });
                     }
                 });
-        rvList.setAdapter(mMultipleAdapter);
+        mViewBinding.rvList.setAdapter(mMultipleAdapter);
 
         mSelectHelper = new SelectHelper<>(mMultipleAdapter, 10);
         mSelectHelper.setSelectCallback(new SelectCallback<Bean>() {
@@ -124,30 +116,28 @@ public class ListActivity extends AppCompatActivity {
                 TT.show("onSelectFull()");
             }
         });
-    }
 
-    @OnClick({R.id.btn_add_string, R.id.btn_add_long, R.id.btn_del_first, R.id.btn_4, R.id.btn_5, R.id.btn_6})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.btn_add_string:
-                mMultipleAdapter.getData().add(new Bean(DateUtil.date2string(new Date())));
-                mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getAdapterPosition(mMultipleAdapter.getData().size() - 1));
-                break;
-            case R.id.btn_add_long:
-                mMultipleAdapter.getData().add(new Bean(new Date().getTime()));
-                mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getAdapterPosition(mMultipleAdapter.getData().size() - 1));
-                break;
-            case R.id.btn_del_first:
-                if (mMultipleAdapter.getData().isEmpty()) return;
-                mMultipleAdapter.getData().remove(0);
-                mMultipleAdapter.notifyItemRemoved(mMultipleAdapter.getAdapterPosition(0));
-                break;
-            case R.id.btn_4:
-                break;
-            case R.id.btn_5:
-                break;
-            case R.id.btn_6:
-                break;
-        }
+        mViewBinding.btnAddString.setOnClickListener(view -> {
+            mMultipleAdapter.getData().add(new Bean(DateUtil.date2string(new Date())));
+            mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getAdapterPosition(mMultipleAdapter.getData().size() - 1));
+        });
+        mViewBinding.btnAddLong.setOnClickListener(view -> {
+            mMultipleAdapter.getData().add(new Bean(new Date().getTime()));
+            mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getAdapterPosition(mMultipleAdapter.getData().size() - 1));
+        });
+        mViewBinding.btnDelFirst.setOnClickListener(view -> {
+            if (mMultipleAdapter.getData().isEmpty()) return;
+            mMultipleAdapter.getData().remove(0);
+            mMultipleAdapter.notifyItemRemoved(mMultipleAdapter.getAdapterPosition(0));
+        });
+        mViewBinding.btn4.setOnClickListener(view -> {
+
+        });
+        mViewBinding.btn5.setOnClickListener(view -> {
+
+        });
+        mViewBinding.btn6.setOnClickListener(view -> {
+
+        });
     }
 }

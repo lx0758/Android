@@ -2,6 +2,7 @@ package com.liux.android.downloader.core;
 
 import android.os.Handler;
 import android.os.Looper;
+
 import com.liux.android.downloader.Config;
 import com.liux.android.downloader.InitCallback;
 

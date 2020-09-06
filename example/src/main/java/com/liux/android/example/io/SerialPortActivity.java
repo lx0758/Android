@@ -3,18 +3,14 @@ package com.liux.android.example.io;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.liux.android.example.R;
+import com.liux.android.example.databinding.ActivityIoSerialPortBinding;
 import com.liux.android.io.serialport.SerialPort;
 import com.liux.android.io.serialport.SerialPortFinder;
 import com.liux.android.tool.TT;
@@ -24,30 +20,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class SerialPortActivity extends AppCompatActivity {
 
-    @BindView(R.id.sp_device)
-    Spinner spDevice;
-    @BindView(R.id.sp_baud_rate)
-    Spinner spBaudRate;
-    @BindView(R.id.sp_data_bit)
-    Spinner spDataBit;
-    @BindView(R.id.sp_stop_bit)
-    Spinner spStopBit;
-    @BindView(R.id.sp_parity)
-    Spinner spParity;
-    @BindView(R.id.btn_connection)
-    Button btnConnection;
-    @BindView(R.id.et_receive)
-    EditText etReceive;
-    @BindView(R.id.et_send)
-    EditText etSend;
-    @BindView(R.id.btn_send)
-    Button btnSend;
+    private ActivityIoSerialPortBinding mViewBinding;
 
     private Thread readThread;
     private SerialPort serialPort;
@@ -57,16 +32,33 @@ public class SerialPortActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM, WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 
-        TT.setContext(this);
-        setContentView(R.layout.activity_io_serial_port);
-        ButterKnife.bind(this);
+        mViewBinding = ActivityIoSerialPortBinding.inflate(getLayoutInflater());
+        setContentView(mViewBinding.getRoot());
 
-        spBaudRate.setSelection(16);
-        spDataBit.setSelection(3);
-        spStopBit.setSelection(0);
-        spParity.setSelection(2);
-        etReceive.setMovementMethod(new ScrollingMovementMethod());
-        btnSend.setEnabled(false);
+        mViewBinding.spBaudRate.setSelection(16);
+        mViewBinding.spDataBit.setSelection(3);
+        mViewBinding.spStopBit.setSelection(0);
+        mViewBinding.spParity.setSelection(2);
+        mViewBinding.etReceive.setMovementMethod(new ScrollingMovementMethod());
+        mViewBinding.btnSend.setEnabled(false);
+
+        mViewBinding.btnConnection.setOnClickListener(view -> {
+            if (serialPort == null) {
+                open();
+            } else {
+                close();
+            }
+        });
+        mViewBinding.btnConnection.setOnClickListener(view -> {
+            String content = mViewBinding.etSend.getText().toString();
+            byte[] bytes = TextUtil.hex2Bytes(content);
+            try {
+                serialPort.getOutputStream().write(bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+                TT.show("写串口失败");
+            }
+        });
     }
 
     @Override
@@ -79,42 +71,19 @@ public class SerialPortActivity extends AppCompatActivity {
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         SpinnerAdapter adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, new SerialPortFinder().getAllDevicesPath());
-        spDevice.setAdapter(adapter);
-    }
-
-    @OnClick({R.id.btn_connection, R.id.btn_send})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.btn_connection:
-                if (serialPort == null) {
-                    open();
-                } else {
-                    close();
-                }
-                break;
-            case R.id.btn_send:
-                String content = etSend.getText().toString();
-                byte[] bytes = TextUtil.hex2Bytes(content);
-                try {
-                    serialPort.getOutputStream().write(bytes);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    TT.show("写串口失败");
-                }
-                break;
-        }
+        mViewBinding.spDevice.setAdapter(adapter);
     }
 
     private void open() {
-        String device = (String) spDevice.getSelectedItem();
+        String device = (String) mViewBinding.spDevice.getSelectedItem();
         if (TextUtils.isEmpty(device)) {
             TT.show("请选择设备");
             return;
         }
-        int baudRate = Integer.parseInt((String) spBaudRate.getSelectedItem());
-        int dataBit = Integer.parseInt((String) spDataBit.getSelectedItem());
-        int stopBit = Integer.parseInt((String) spStopBit.getSelectedItem());
-        String parity = (String) spParity.getSelectedItem();
+        int baudRate = Integer.parseInt((String) mViewBinding.spBaudRate.getSelectedItem());
+        int dataBit = Integer.parseInt((String) mViewBinding.spDataBit.getSelectedItem());
+        int stopBit = Integer.parseInt((String) mViewBinding.spStopBit.getSelectedItem());
+        String parity = (String) mViewBinding.spParity.getSelectedItem();
         try {
             serialPort = new SerialPort(new File(device), baudRate, dataBit, stopBit, parity);
             readThread = new Thread(new Runnable() {
@@ -126,7 +95,7 @@ public class SerialPortActivity extends AppCompatActivity {
                         while (!Thread.interrupted()) {
                             if ((len = serialPort.read(buffer)) != -1) {
                                 byte[] bytes = Arrays.copyOf(buffer, len);
-                                runOnUiThread(() -> etReceive.getText().append(TextUtil.bytes2Hex(bytes, true)).append(' '));
+                                runOnUiThread(() -> mViewBinding.etReceive.getText().append(TextUtil.bytes2Hex(bytes, true)).append(' '));
                             }
                             Thread.sleep(0);
                         }
@@ -136,13 +105,13 @@ public class SerialPortActivity extends AppCompatActivity {
                 }
             });
             readThread.start();
-            spDevice.setEnabled(false);
-            spBaudRate.setEnabled(false);
-            spDataBit.setEnabled(false);
-            spStopBit.setEnabled(false);
-            spParity.setEnabled(false);
-            btnConnection.setText("断开连接");
-            btnSend.setEnabled(true);
+            mViewBinding.spDevice.setEnabled(false);
+            mViewBinding.spBaudRate.setEnabled(false);
+            mViewBinding.spDataBit.setEnabled(false);
+            mViewBinding.spStopBit.setEnabled(false);
+            mViewBinding.spParity.setEnabled(false);
+            mViewBinding.btnConnection.setText("断开连接");
+            mViewBinding.btnSend.setEnabled(true);
         } catch (IOException|SecurityException e) {
             e.printStackTrace();
             TT.show("打开串口失败");
@@ -153,12 +122,12 @@ public class SerialPortActivity extends AppCompatActivity {
         if (readThread != null) readThread.interrupt();
         if (serialPort != null) serialPort.close();
         serialPort = null;
-        spDevice.setEnabled(true);
-        spBaudRate.setEnabled(true);
-        spDataBit.setEnabled(true);
-        spStopBit.setEnabled(true);
-        spParity.setEnabled(true);
-        btnConnection.setText("连接");
-        btnSend.setEnabled(false);
+        mViewBinding.spDevice.setEnabled(true);
+        mViewBinding.spBaudRate.setEnabled(true);
+        mViewBinding.spDataBit.setEnabled(true);
+        mViewBinding.spStopBit.setEnabled(true);
+        mViewBinding.spParity.setEnabled(true);
+        mViewBinding.btnConnection.setText("连接");
+        mViewBinding.btnSend.setEnabled(false);
     }
 }
