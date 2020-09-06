@@ -100,6 +100,9 @@ implementation 'com.liux.android:http:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
+    1.
+
+### 0.2.14_2020-09-07
     1. 移除 Cookie 处理器
 
 ### 0.2.12_2020-06-02
