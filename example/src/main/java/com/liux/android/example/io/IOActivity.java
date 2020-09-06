@@ -2,37 +2,32 @@ package com.liux.android.example.io;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.view.LayoutInflater;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.liux.android.example.R;
-
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+import com.liux.android.example.databinding.ActivityIoBinding;
 
 public class IOActivity extends AppCompatActivity {
+
+    private ActivityIoBinding mViewBinding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_io);
-        ButterKnife.bind(this);
-    }
 
-    @OnClick({R.id.btn_serial_port, R.id.btn_gpio, R.id.btn_i2c})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.btn_serial_port:
-                startActivity(new Intent(this, SerialPortActivity.class));
-                break;
-            case R.id.btn_gpio:
-                startActivity(new Intent(this, GpioActivity.class));
-                break;
-            case R.id.btn_i2c:
-                startActivity(new Intent(this, I2CActivity.class));
-                break;
-        }
+        mViewBinding = ActivityIoBinding.inflate(getLayoutInflater());
+        setContentView(mViewBinding.getRoot());
+
+        mViewBinding.btnSerialPort.setOnClickListener(view -> {
+            startActivity(new Intent(this, SerialPortActivity.class));
+        });
+        mViewBinding.btnGpio.setOnClickListener(view -> {
+            startActivity(new Intent(this, GpioActivity.class));
+        });
+        mViewBinding.btnI2c.setOnClickListener(view -> {
+            startActivity(new Intent(this, I2CActivity.class));
+        });
     }
 }

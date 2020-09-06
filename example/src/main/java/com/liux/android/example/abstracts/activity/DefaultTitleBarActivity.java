@@ -1,20 +1,14 @@
 package com.liux.android.example.abstracts.activity;
 
 import android.os.Bundle;
-import android.view.View;
-import android.widget.EditText;
 
 import androidx.annotation.Nullable;
 
 import com.liux.android.abstracts.AbstractsActivity;
 import com.liux.android.abstracts.titlebar.DefaultTitleBar;
 import com.liux.android.abstracts.titlebar.TitleBar;
-import com.liux.android.example.R;
+import com.liux.android.example.databinding.ActivityAbstractsDemoBinding;
 import com.liux.android.tool.TT;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by Liux on 2017/12/3.
@@ -22,8 +16,7 @@ import butterknife.OnClick;
 
 public class DefaultTitleBarActivity extends AbstractsActivity {
 
-    @BindView(R.id.et_text1)
-    EditText etText1;
+    private ActivityAbstractsDemoBinding mViewBinding;
 
     @Override
     public TitleBar onInitTitleBar() {
@@ -53,21 +46,18 @@ public class DefaultTitleBarActivity extends AbstractsActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_abstracts_demo);
-        ButterKnife.bind(this);
+
+        mViewBinding = ActivityAbstractsDemoBinding.inflate(getLayoutInflater());
+        setContentView(mViewBinding.getRoot());
+
+        mViewBinding.btnButton1.setOnClickListener(view -> {
+            TT.show("点击了按钮1");
+        });
+        mViewBinding.btnButton2.setOnClickListener(view -> {
+            TT.show("点击了按钮2");
+        });
 
         // 忽略某控件
-        addIgnoreView(findViewById(R.id.btn_button_1));
-    }
-
-    @OnClick({R.id.btn_button_1, R.id.btn_button_2})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.btn_button_1:
-                TT.show("点击了按钮");
-                break;
-            case R.id.btn_button_2:
-                break;
-        }
+        addIgnoreView(mViewBinding.btnButton1);
     }
 }

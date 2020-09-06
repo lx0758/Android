@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.liux.android.example.databinding.ActivityBoxingDemoBinding;
 import com.liux.android.mediaer.glide.GlideApp;
 import com.liux.android.mediaer.Mediaer;
 import com.liux.android.mediaer.MediaerException;
@@ -27,18 +28,13 @@ import com.liux.android.tool.TT;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 /**
  * Created by Liux on 2017/11/28.
  */
 
 public class MediaerActivity extends AppCompatActivity {
 
-    @BindView(R.id.rv_list)
-    RecyclerView rvList;
+    private ActivityBoxingDemoBinding mViewBinding;
 
     private MultipleAdapter<Uri> mMultipleAdapter;
 
@@ -46,11 +42,11 @@ public class MediaerActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_boxing_demo);
-        ButterKnife.bind(this);
+        mViewBinding = ActivityBoxingDemoBinding.inflate(getLayoutInflater());
+        setContentView(mViewBinding.getRoot());
 
-        rvList.addItemDecoration(new GridItemDecoration(10, 3));
-        rvList.setLayoutManager(new GridLayoutManager(this, 3));
+        mViewBinding.rvList.addItemDecoration(new GridItemDecoration(10, 3));
+        mViewBinding.rvList.setLayoutManager(new GridLayoutManager(this, 3));
         mMultipleAdapter = new MultipleAdapter<Uri>()
                 .addRule(new SingleRule<Uri>(R.layout.layout_media_item) {
                     @Override
@@ -72,10 +68,15 @@ public class MediaerActivity extends AppCompatActivity {
                         GlideApp.with(imageView.getContext()).asBitmap().load(uri).override(150, 150).into(imageView);
                     }
                 });
-        rvList.setAdapter(mMultipleAdapter);
+        mViewBinding.rvList.setAdapter(mMultipleAdapter);
+
+        mViewBinding.btnSelectPic.setOnClickListener(this::onViewClicked);
+        mViewBinding.btnSelectPics.setOnClickListener(this::onViewClicked);
+        mViewBinding.btnSelectVideo.setOnClickListener(this::onViewClicked);
+        mViewBinding.btnTake.setOnClickListener(this::onViewClicked);
+        mViewBinding.btnRecord.setOnClickListener(this::onViewClicked);
     }
 
-    @OnClick({R.id.btn_select_pic, R.id.btn_select_pics, R.id.btn_select_video,R.id.btn_take,R.id.btn_record})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_select_pic:

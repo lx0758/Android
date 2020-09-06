@@ -25,9 +25,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class QRCodeActivity extends AppCompatActivity {
 
     @Override
@@ -35,10 +32,17 @@ public class QRCodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_qrcode);
-        ButterKnife.bind(this);
+
+        findViewById(R.id.btn_default_scan).setOnClickListener(this::onViewClicked);
+        findViewById(R.id.btn_customize_scan).setOnClickListener(this::onViewClicked);
+        findViewById(R.id.btn_bitmap_decode).setOnClickListener(this::onViewClicked);
+        findViewById(R.id.btn_bytes_decode).setOnClickListener(this::onViewClicked);
+        findViewById(R.id.btn_file_decode).setOnClickListener(this::onViewClicked);
+        findViewById(R.id.btn_file_descriptor_decode).setOnClickListener(this::onViewClicked);
+        findViewById(R.id.btn_input_stream_decode).setOnClickListener(this::onViewClicked);
+        findViewById(R.id.btn_generate).setOnClickListener(this::onViewClicked);
     }
 
-    @OnClick({R.id.btn_default_scan, R.id.btn_customize_scan, R.id.btn_bitmap_decode, R.id.btn_bytes_decode, R.id.btn_file_decode, R.id.btn_file_descriptor_decode, R.id.btn_input_stream_decode, R.id.btn_generate})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_default_scan:
