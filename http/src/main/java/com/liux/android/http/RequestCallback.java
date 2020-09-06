@@ -9,7 +9,7 @@ import okhttp3.Request;
  * Created by Liux on 2017/11/29.
  */
 
-public interface OnRequestListener {
+public interface RequestCallback {
 
     /**
      * 不带请求体的请求回调,在此处修改键值 <br>

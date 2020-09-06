@@ -1,8 +1,8 @@
 package com.liux.android.http.interceptor;
 
+import com.liux.android.http.HeaderCallback;
 import com.liux.android.http.HttpUtil;
-import com.liux.android.http.OnHeaderListener;
-import com.liux.android.http.OnRequestListener;
+import com.liux.android.http.RequestCallback;
 import com.liux.android.http.wrapper.WrapperRequestBody;
 
 import java.io.IOException;
@@ -30,8 +30,8 @@ import okio.Buffer;
 
 public class RequestInterceptor implements Interceptor {
 
-    private OnHeaderListener mOnHeaderListener;
-    private OnRequestListener mOnRequestListener;
+    private HeaderCallback mHeaderCallback;
+    private RequestCallback mRequestCallback;
 
     @Override
     public Response intercept(Chain chain) throws IOException {
@@ -40,7 +40,7 @@ public class RequestInterceptor implements Interceptor {
         Request.Builder requestBuilder = request.newBuilder();
 
         /* 请求定制：自定义请求头 */
-        if (mOnHeaderListener != null) {
+        if (mHeaderCallback != null) {
             try {
                 checkHeader(request, requestBuilder);
             } catch (Exception e) {
@@ -49,7 +49,7 @@ public class RequestInterceptor implements Interceptor {
         }
 
         /* 请求体定制：自定义参数(针对文本型) */
-        if (mOnRequestListener != null) {
+        if (mRequestCallback != null) {
             try {
                 String method = request.method();
                 if (HttpUtil.notRequiresRequestBody(method)) {
@@ -69,12 +69,12 @@ public class RequestInterceptor implements Interceptor {
         return chain.proceed(request);
     }
 
-    public void setOnHeaderListener(OnHeaderListener listener) {
-        mOnHeaderListener = listener;
+    public void setHeaderCallback(HeaderCallback listener) {
+        mHeaderCallback = listener;
     }
 
-    public void setOnRequestListener(OnRequestListener listener) {
-        mOnRequestListener = listener;
+    public void setRequestCallback(RequestCallback listener) {
+        mRequestCallback = listener;
     }
 
     /**
@@ -93,7 +93,7 @@ public class RequestInterceptor implements Interceptor {
             }
         }
 
-        mOnHeaderListener.onHeaders(request, headers);
+        mHeaderCallback.onHeaders(request, headers);
 
         // 合成新的 Header
         Headers okHeaders = Headers.of(headers);
@@ -110,7 +110,7 @@ public class RequestInterceptor implements Interceptor {
         Map<String, String> queryParams = new IdentityHashMap<>();
         resolveQueryParam(request, queryParams);
 
-        mOnRequestListener.onQueryRequest(request, queryParams);
+        mRequestCallback.onQueryRequest(request, queryParams);
 
         HttpUrl httpUrl = revertQueryParam(request, queryParams);
 
@@ -178,7 +178,7 @@ public class RequestInterceptor implements Interceptor {
             }
         }
 
-        mOnRequestListener.onBodyRequest(request, queryParams, bodyParams);
+        mRequestCallback.onBodyRequest(request, queryParams, bodyParams);
 
         if (wrapperRequestBody.isMultipartBody()) {
             // 恢复参数并组合成新的 MultipartBody
@@ -233,7 +233,7 @@ public class RequestInterceptor implements Interceptor {
             }
         }
 
-        mOnRequestListener.onBodyRequest(request, queryParams, bodyParams);
+        mRequestCallback.onBodyRequest(request, queryParams, bodyParams);
 
         // 恢复参数并组合成新的 MultipartBody
         MultipartBody.Builder bodyBuilder = new MultipartBody.Builder();
@@ -261,7 +261,7 @@ public class RequestInterceptor implements Interceptor {
             bodyParams.put(new String(formBody.name(i)), formBody.value(i));
         }
 
-        mOnRequestListener.onBodyRequest(request, queryParams, bodyParams);
+        mRequestCallback.onBodyRequest(request, queryParams, bodyParams);
 
         // 组合成新的  FormBody
         FormBody.Builder bodyBuilder = new FormBody.Builder();
@@ -279,18 +279,18 @@ public class RequestInterceptor implements Interceptor {
         Map<String, String> queryParams = new IdentityHashMap<>();
         resolveQueryParam(request, queryParams);
 
-        OnRequestListener.BodyParam bodyParam = null;
+        RequestCallback.BodyParam bodyParam = null;
 
         MediaType mediaType = requestBody.contentType();
         if (HttpUtil.isTextMediaType(mediaType)) {
-            bodyParam = new OnRequestListener.BodyParam();
+            bodyParam = new RequestCallback.BodyParam();
             bodyParam.setType(mediaType.toString());
             Buffer buffer = new Buffer();
             requestBody.writeTo(buffer);
             bodyParam.setString(buffer.readUtf8());
         }
 
-        mOnRequestListener.onBodyRequest(request, queryParams, bodyParam);
+        mRequestCallback.onBodyRequest(request, queryParams, bodyParam);
 
         if (bodyParam != null) {
             String typeString = bodyParam.getType();

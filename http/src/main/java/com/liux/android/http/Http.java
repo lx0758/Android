@@ -4,29 +4,22 @@ import android.content.Context;
 
 import androidx.annotation.IntDef;
 
-import com.franmontiel.persistentcookiejar.PersistentCookieJar;
-import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
-import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.liux.android.http.converter.FastJsonConverterFactory;
-import com.liux.android.http.dns.HttpDns;
-import com.liux.android.http.dns.TencentHttpDns;
 import com.liux.android.http.dns.TimeOutDns;
-import com.liux.android.http.interceptor.RequestInterceptor;
-import com.liux.android.http.interceptor.HttpLoggingInterceptor;
 import com.liux.android.http.interceptor.BaseUrlInterceptor;
+import com.liux.android.http.interceptor.HttpLoggingInterceptor;
+import com.liux.android.http.interceptor.RequestInterceptor;
 import com.liux.android.http.interceptor.TimeoutInterceptor;
 import com.liux.android.http.interceptor.UserAgentInterceptor;
 import com.liux.android.http.request.BodyRequest;
 import com.liux.android.http.request.QueryRequest;
 
-import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Cache;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import retrofit2.CallAdapter;
@@ -59,8 +52,15 @@ public class Http {
     public static void init(Context context, String baseUrl) {
         init(
                 context,
-                null,
-                new Retrofit.Builder().baseUrl(baseUrl)
+                new OkHttpClient.Builder()
+                        .dns(new TimeOutDns(5, TimeUnit.SECONDS, 2))
+                        .connectTimeout(5, TimeUnit.SECONDS)
+                        .writeTimeout(10, TimeUnit.SECONDS)
+                        .readTimeout(10, TimeUnit.SECONDS)
+                        .pingInterval(30, TimeUnit.SECONDS)
+                        .retryOnConnectionFailure(true),
+                new Retrofit.Builder()
+                        .baseUrl(baseUrl)
         );
     }
     public static void init(Context context, OkHttpClient.Builder okHttpBuilder, Retrofit.Builder retrofitBuilder) {
@@ -72,8 +72,8 @@ public class Http {
     }
     public static void release() {
         if (mInstance != null) {
-            mInstance.mRequestInterceptor.setOnHeaderListener(null);
-            mInstance.mRequestInterceptor.setOnRequestListener(null);
+            mInstance.mRequestInterceptor.setHeaderCallback(null);
+            mInstance.mRequestInterceptor.setRequestCallback(null);
             mInstance.mOkHttpClient.dispatcher().executorService().shutdown();
             mInstance.mOkHttpClient.connectionPool().evictAll();
             mInstance = null;
@@ -93,9 +93,11 @@ public class Http {
     private HttpLoggingInterceptor mHttpLoggingInterceptor;
 
     private Http(Context context, OkHttpClient.Builder okHttpBuilder, Retrofit.Builder retrofitBuilder) {
-        if (context == null) throw new NullPointerException("Context required.");
+        if (context == null) throw new NullPointerException("Context required");
+        if (okHttpBuilder == null) throw new NullPointerException("OkHttpClient.Builder required");
+        if (retrofitBuilder == null) throw new NullPointerException("Retorfit.Builder required");
 
-        mContext = context.getApplicationContext();
+        mContext = context;
 
         mTimeoutInterceptor = new TimeoutInterceptor();
         mBaseUrlInterceptor = new BaseUrlInterceptor(this);
@@ -103,9 +105,26 @@ public class Http {
         mRequestInterceptor = new RequestInterceptor();
         mHttpLoggingInterceptor = new HttpLoggingInterceptor();
 
-        mOkHttpClient = initOkHttpClient(okHttpBuilder);
+        okHttpBuilder
+                .addInterceptor(mTimeoutInterceptor)
+                .addInterceptor(mBaseUrlInterceptor)
+                .addInterceptor(mUserAgentInterceptor)
+                .addInterceptor(mRequestInterceptor)
+                .addInterceptor(mHttpLoggingInterceptor);
+        mOkHttpClient = okHttpBuilder.build();
 
-        mRetrofit = initRetorfit(retrofitBuilder);
+        retrofitBuilder
+                .client(mOkHttpClient)
+                .validateEagerly(true)
+                .addConverterFactory(FastJsonConverterFactory.create());
+        CallAdapter.Factory factory;
+        factory = HttpUtil.getRxJavaCallAdapterFactory();
+        if (factory != null) retrofitBuilder.addCallAdapterFactory(factory);
+        factory = HttpUtil.getRxJava2CallAdapterFactory();
+        if (factory != null) retrofitBuilder.addCallAdapterFactory(factory);
+        factory = HttpUtil.getRxJava3CallAdapterFactory();
+        if (factory != null) retrofitBuilder.addCallAdapterFactory(factory);
+        mRetrofit = retrofitBuilder.build();
 
         mTimeoutInterceptor.setOverallConnectTimeout(mOkHttpClient.connectTimeoutMillis(), TimeUnit.MILLISECONDS);
         mTimeoutInterceptor.setOverallWriteTimeout(mOkHttpClient.writeTimeoutMillis(), TimeUnit.MILLISECONDS);
@@ -121,19 +140,19 @@ public class Http {
     }
 
     public BodyRequest post(String url) {
-        return new BodyRequest(getOkHttpClient(), BodyRequest.Method.POST).url(url);
+        return new BodyRequest(mContext, getOkHttpClient(), BodyRequest.Method.POST).url(url);
     }
 
     public BodyRequest delete(String url) {
-        return new BodyRequest(getOkHttpClient(), BodyRequest.Method.DELETE).url(url);
+        return new BodyRequest(mContext, getOkHttpClient(), BodyRequest.Method.DELETE).url(url);
     }
 
     public BodyRequest put(String url) {
-        return new BodyRequest(getOkHttpClient(), BodyRequest.Method.PUT).url(url);
+        return new BodyRequest(mContext, getOkHttpClient(), BodyRequest.Method.PUT).url(url);
     }
 
     public BodyRequest patch(String url) {
-        return new BodyRequest(getOkHttpClient(), BodyRequest.Method.PATCH).url(url);
+        return new BodyRequest(mContext, getOkHttpClient(), BodyRequest.Method.PATCH).url(url);
     }
 
     public Context getContext() {
@@ -190,47 +209,58 @@ public class Http {
     public static final int LOG_LEVEL_BODY = 3;
     /**
      * 设置打印日志级别
-     * @param level
+     * @param logLevel
      * @return
      */
-    public Http setLoggingLevel(@LogLevel int level) {
-        HttpLoggingInterceptor.Level l;
-        switch (level) {
+    public Http setLoggingLevel(@LogLevel int logLevel) {
+        HttpLoggingInterceptor.Level level;
+        switch (logLevel) {
             case LOG_LEVEL_BODY:
-                l = HttpLoggingInterceptor.Level.BODY;
+                level = HttpLoggingInterceptor.Level.BODY;
                 break;
             case LOG_LEVEL_HEADERS:
-                l = HttpLoggingInterceptor.Level.HEADERS;
+                level = HttpLoggingInterceptor.Level.HEADERS;
                 break;
             case LOG_LEVEL_BASIC:
-                l = HttpLoggingInterceptor.Level.BASIC;
+                level = HttpLoggingInterceptor.Level.BASIC;
                 break;
             case LOG_LEVEL_NONE:
             default:
-                l = HttpLoggingInterceptor.Level.NONE;
+                level = HttpLoggingInterceptor.Level.NONE;
                 break;
         }
-        mHttpLoggingInterceptor.setLevel(l);
+        mHttpLoggingInterceptor.setLevel(level);
+        return this;
+    }
+
+    /**
+     * 设置监听
+     * @param callback
+     * @return
+     */
+    public Http setCallback(Callback callback) {
+        setHeaderCallback(callback);
+        setRequestCallback(callback);
         return this;
     }
 
     /**
      * 设置请求头监听
-     * @param listener
+     * @param callback
      * @return
      */
-    public Http setOnHeaderListener(OnHeaderListener listener) {
-        mRequestInterceptor.setOnHeaderListener(listener);
+    public Http setHeaderCallback(HeaderCallback callback) {
+        mRequestInterceptor.setHeaderCallback(callback);
         return this;
     }
 
     /**
      * 设置请求监听
-     * @param listener
+     * @param callback
      * @return
      */
-    public Http setOnRequestListener(OnRequestListener listener) {
-        mRequestInterceptor.setOnRequestListener(listener);
+    public Http setRequestCallback(RequestCallback callback) {
+        mRequestInterceptor.setRequestCallback(callback);
         return this;
     }
 
@@ -364,67 +394,6 @@ public class Http {
     public Http setOverallReadTimeout(int overallReadTimeout, TimeUnit timeUnit) {
         mTimeoutInterceptor.setOverallConnectTimeout(overallReadTimeout, timeUnit);
         return this;
-    }
-
-    /**
-     * 初始化 OkHttpClient
-     * @param okHttpBuilder
-     * @return
-     */
-    private OkHttpClient initOkHttpClient(OkHttpClient.Builder okHttpBuilder) {
-        if (okHttpBuilder == null) {
-            return new OkHttpClient.Builder()
-                    .cookieJar(new PersistentCookieJar(
-                            new SetCookieCache(),
-                            new SharedPrefsCookiePersistor(mContext)
-                    ))
-                    .dns(new TimeOutDns(2, TimeUnit.SECONDS, 2))
-                    .connectTimeout(5, TimeUnit.SECONDS)
-                    .writeTimeout(10, TimeUnit.SECONDS)
-                    .readTimeout(10, TimeUnit.SECONDS)
-                    .pingInterval(30, TimeUnit.SECONDS)
-                    .retryOnConnectionFailure(true)
-                    .addInterceptor(mTimeoutInterceptor)
-                    .addInterceptor(mBaseUrlInterceptor)
-                    .addInterceptor(mUserAgentInterceptor)
-                    .addInterceptor(mRequestInterceptor)
-                    .addInterceptor(mHttpLoggingInterceptor)
-                    .build();
-        } else {
-            return okHttpBuilder
-                    .addInterceptor(mTimeoutInterceptor)
-                    .addInterceptor(mBaseUrlInterceptor)
-                    .addInterceptor(mUserAgentInterceptor)
-                    .addInterceptor(mRequestInterceptor)
-                    .addInterceptor(mHttpLoggingInterceptor)
-                    .build();
-        }
-    }
-
-    /**
-     * 初始化 Retorfit
-     * @param retrofitBuilder
-     * @return
-     */
-    private Retrofit initRetorfit(Retrofit.Builder retrofitBuilder) {
-        retrofitBuilder.client(mOkHttpClient);
-        retrofitBuilder.addConverterFactory(FastJsonConverterFactory.create());
-
-        CallAdapter.Factory factory;
-        factory = HttpUtil.getRxJavaCallAdapterFactory();
-        if (factory != null) {
-            retrofitBuilder.addCallAdapterFactory(factory);
-        }
-        factory = HttpUtil.getRxJava2CallAdapterFactory();
-        if (factory != null) {
-            retrofitBuilder.addCallAdapterFactory(factory);
-        }
-        factory = HttpUtil.getRxJava3CallAdapterFactory();
-        if (factory != null) {
-            retrofitBuilder.addCallAdapterFactory(factory);
-        }
-
-        return retrofitBuilder.build();
     }
 
     /**

@@ -2,12 +2,9 @@ package com.liux.android.http.dns;
 
 import androidx.annotation.NonNull;
 
-import com.liux.android.http.Http;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +33,7 @@ public class TencentHttpDns extends HttpDns {
                 .addQueryParameter("dn", hostname)
                 .addQueryParameter("ttl", "1")
                 .build();
-        Request request = new Request.Builder().addHeader("User-Agent", Http.get().getUserAgent()).url(httpUrl).build();
+        Request request = new Request.Builder().url(httpUrl).build();
         Call call = getOkHttpClient().newCall(request);
         try {
             Response response = call.execute();

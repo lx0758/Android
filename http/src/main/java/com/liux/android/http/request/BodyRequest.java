@@ -1,8 +1,8 @@
 package com.liux.android.http.request;
 
+import android.content.Context;
 import android.net.Uri;
 
-import com.liux.android.http.Http;
 import com.liux.android.http.HttpUtil;
 import com.liux.android.http.progress.OnProgressListener;
 import com.liux.android.http.progress.OnRequestProgressListener;
@@ -16,8 +16,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okio.ByteString;
 
 /**
@@ -30,6 +34,8 @@ public class BodyRequest<T extends BodyRequest> extends QueryRequest<T> {
 
     private int mType = TYPE_NORMAL;
 
+    private Context mContext;
+
     private String mBodyType;
     private Object mBodyObject;
 
@@ -38,8 +44,9 @@ public class BodyRequest<T extends BodyRequest> extends QueryRequest<T> {
 
     private OnRequestProgressListener mOnRequestProgressListener;
 
-    public BodyRequest(Call.Factory factory, Method method) {
+    public BodyRequest(Context context, Call.Factory factory, Method method) {
         super(factory, method);
+        mContext = context;
     }
 
     @Override
@@ -351,7 +358,7 @@ public class BodyRequest<T extends BodyRequest> extends QueryRequest<T> {
         } else if (mBodyObject instanceof InputStream) {
             return HttpUtil.parseInputStreamBody(mBodyType, (InputStream) mBodyObject);
         } else if (mBodyObject instanceof Uri) {
-            return HttpUtil.parseUriBody(mBodyType, (Uri) mBodyObject);
+            return HttpUtil.parseUriBody(mContext, mBodyType, (Uri) mBodyObject);
         }
         return null;
     }

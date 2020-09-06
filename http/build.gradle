@@ -42,10 +42,7 @@ dependencies {
     })
     // noinspection GradleDependency
     api 'com.alibaba:fastjson:1.1.71.android'
-    api ('com.github.franmontiel:PersistentCookieJar:v1.0.1', {
-        exclude group: 'com.squareup.okhttp3'
-    })
-    compileOnly 'androidx.annotation:annotation:1.0.0'
+    compileOnly 'androidx.annotation:annotation:1.1.0'
 }
 
 apply from: '../release.gradle'
