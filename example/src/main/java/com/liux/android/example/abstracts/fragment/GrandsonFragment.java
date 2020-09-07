@@ -56,16 +56,4 @@ public class GrandsonFragment extends AbstractsFragment {
         super.setUserVisibleHint(isVisibleToUser);
         Log.d(TAG, "Grandson:setUserVisibleHint");
     }
-
-    @Override
-    public void onLazyLoad() {
-        super.onLazyLoad();
-        Log.d(TAG, "Grandson:onLazyLoad");
-    }
-
-    @Override
-    public void onVisibleChanged() {
-        super.onVisibleChanged();
-        Log.d(TAG, "Grandson:onVisibleChanged");
-    }
 }

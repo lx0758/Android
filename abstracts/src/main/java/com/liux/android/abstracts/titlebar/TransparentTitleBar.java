@@ -21,7 +21,7 @@ import java.util.IllegalFormatFlagsException;
  * http://www.jianshu.com/p/140be70b84cd <br>
  * https://juejin.im/post/5989ded56fb9a03c3b6c8bde
  */
-public class TransparentTitleBar extends TitleBar<TransparentTitleBar> {
+public class TransparentTitleBar extends TitleBar {
 
     public TransparentTitleBar(AppCompatActivity activity) {
         super(activity);
@@ -69,13 +69,13 @@ public class TransparentTitleBar extends TitleBar<TransparentTitleBar> {
     }
 
     @Override
-    public TransparentTitleBar setTitle(CharSequence title) {
-        return this;
+    public void setTitle(CharSequence title) {
+
     }
 
     @Override
-    public TransparentTitleBar setTitleColor(int color) {
-        return this;
+    public void setTitleColor(int color) {
+
     }
 
     /**

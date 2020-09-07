@@ -1,6 +1,8 @@
 package com.liux.android.example.abstracts.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,5 +45,59 @@ public class OneFragment extends AbstractsFragment {
         mViewBinding.btnButton2.setOnClickListener(view1 -> {
             TT.show("点击了按钮2");
         });
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d("FG", "One:onCreate");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d("FG", "One:onStart");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("FG", "One:onStop");
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        Log.d("FG", "One:onAttach");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("FG", "One:onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("FG", "One:onPause");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d("FG", "One:onDestroyView");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("FG", "One:onDestroy");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d("FG", "One:onDetach");
     }
 }

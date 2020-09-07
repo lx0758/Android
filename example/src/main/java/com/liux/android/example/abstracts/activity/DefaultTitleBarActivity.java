@@ -22,23 +22,22 @@ public class DefaultTitleBarActivity extends AbstractsActivity {
     public TitleBar onInitTitleBar() {
         DefaultTitleBar defaultTitleBar = (DefaultTitleBar) super.onInitTitleBar();
 
-//        defaultTitleBar
-//                .setTitleBarColor()
-//                .setStatusBarColor()
-//                .setOnTitleBarListener()
-//                .setStatusBarMode(false)
-//                .setTitle()
-//                .setTitleColor()
-//                .hasBack()
-//                .getBack()
-//                .getBackIcon()
-//                .getBackText()
-//                .hasMore()
-//                .getMore()
-//                .getMoreIcon()
-//                .getMoreText();
+//        defaultTitleBar.setTitleBarColor();
+//        defaultTitleBar.setStatusBarColor();
+//        defaultTitleBar.setOnTitleBarListener();
+//        defaultTitleBar.setTitle();
+//        defaultTitleBar.setTitleColor();
+//        defaultTitleBar.hasBack();
+//        defaultTitleBar.getBack();
+//        defaultTitleBar.getBackIcon();
+//        defaultTitleBar.getBackText();
+//        defaultTitleBar.hasMore();
+//        defaultTitleBar.getMore();
+//        defaultTitleBar.getMoreIcon();
+//        defaultTitleBar.getMoreText();
 
-        defaultTitleBar.hasMore(true).getMoreText().setText("测试");
+        defaultTitleBar.hasMore(true);
+        defaultTitleBar.getMoreText().setText("测试");
 
         return defaultTitleBar;
     }

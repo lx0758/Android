@@ -64,16 +64,4 @@ public class ChildFragment extends AbstractsFragment {
         super.setUserVisibleHint(isVisibleToUser);
         Log.d(TAG, "Chlid:setUserVisibleHint");
     }
-
-    @Override
-    public void onLazyLoad() {
-        super.onLazyLoad();
-        Log.d(TAG, "Chlid:onLazyLoad");
-    }
-
-    @Override
-    public void onVisibleChanged() {
-        super.onVisibleChanged();
-        Log.d(TAG, "Chlid:onVisibleChanged");
-    }
 }

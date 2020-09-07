@@ -19,7 +19,7 @@ import com.liux.android.abstracts.util.TitleBarUtil;
  *
  * http://blog.csdn.net/yewei02538/article/details/60979075
  */
-public class DefaultTitleBar extends TitleBar<DefaultTitleBar> {
+public class DefaultTitleBar extends TitleBar {
     private View mRoot, mBack, mMore;
     private TextView mTitle, mBackText, mMoreText;
     private ImageView mBackImage, mMoreImage;
@@ -76,42 +76,35 @@ public class DefaultTitleBar extends TitleBar<DefaultTitleBar> {
     }
 
     @Override
-    public DefaultTitleBar setTitle(CharSequence title) {
+    public void setTitle(CharSequence title) {
         mTitle.setText(title);
-        return this;
     }
 
     @Override
-    public DefaultTitleBar setTitleColor(int color) {
+    public void setTitleColor(int color) {
         mTitle.setTextColor(color);
-        return this;
     }
 
-    public DefaultTitleBar hasBack(boolean has) {
+    public void hasBack(boolean has) {
         mBack.setVisibility(has ? View.VISIBLE : View.GONE);
-        return this;
     }
 
-    public DefaultTitleBar hasMore(boolean has) {
+    public void hasMore(boolean has) {
         mMore.setVisibility(has ? View.VISIBLE : View.GONE);
-        return this;
     }
 
-    public DefaultTitleBar setStatusBarColor(int color) {
+    public void setStatusBarColor(int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().getWindow().setStatusBarColor(color);
         }
-        return this;
     }
 
-    public DefaultTitleBar setTitleBarColor(int color) {
+    public void setTitleBarColor(int color) {
         mRoot.setBackgroundColor(color);
-        return this;
     }
 
-    public DefaultTitleBar setOnTitleBarListener(OnTitleBarListener listener) {
+    public void setOnTitleBarListener(OnTitleBarListener listener) {
         mOnTitleBarListener = listener;
-        return this;
     }
 
     public View getView() {

@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
  * Created by Liux on 2017/11/7.
  */
 
-public class NoTitleBar extends TitleBar<NoTitleBar> {
+public class NoTitleBar extends TitleBar {
 
     public NoTitleBar(AppCompatActivity activity) {
         super(activity);
@@ -22,19 +22,18 @@ public class NoTitleBar extends TitleBar<NoTitleBar> {
     }
 
     @Override
-    public NoTitleBar setTitle(CharSequence title) {
-        return this;
+    public void setTitle(CharSequence title) {
+
     }
 
     @Override
-    public NoTitleBar setTitleColor(int color) {
-        return this;
+    public void setTitleColor(int color) {
+
     }
 
-    public NoTitleBar setStatusBarColor(int color) {
+    public void setStatusBarColor(int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().getWindow().setStatusBarColor(color);
         }
-        return this;
     }
 }
