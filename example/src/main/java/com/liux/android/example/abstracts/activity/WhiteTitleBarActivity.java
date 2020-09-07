@@ -18,23 +18,22 @@ public class WhiteTitleBarActivity extends com.liux.android.abstracts.AbstractsA
     public TitleBar onInitTitleBar() {
         WhiteTitleBar whiteTitleBar =  new WhiteTitleBar(this);
 
-//        whiteTitleBar
-//                .setTitleBarColor()
-//                .setStatusBarColor()
-//                .setOnTitleBarListener()
-//                .setStatusBarMode(false)
-//                .setTitle()
-//                .setTitleColor()
-//                .hasBack()
-//                .getBack()
-//                .getBackIcon()
-//                .getBackText()
-//                .hasMore()
-//                .getMore()
-//                .getMoreIcon()
-//                .getMoreText();
+//        whiteTitleBar.setTitleBarColor();
+//        whiteTitleBar.setStatusBarColor();
+//        whiteTitleBar.setOnTitleBarListener();
+//        whiteTitleBar.setTitle();
+//        whiteTitleBar.setTitleColor();
+//        whiteTitleBar.hasBack();
+//        whiteTitleBar.getBack();
+//        whiteTitleBar.getBackIcon();
+//        whiteTitleBar.getBackText();
+//        whiteTitleBar.hasMore();
+//        whiteTitleBar.getMore();
+//        whiteTitleBar.getMoreIcon();
+//        whiteTitleBar.getMoreText();
 
-        whiteTitleBar.hasMore(true).getMoreText().setText("测试");
+        whiteTitleBar.hasMore(true);
+        whiteTitleBar.getMoreText().setText("测试");
 
         return whiteTitleBar;
     }

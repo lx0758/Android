@@ -31,7 +31,7 @@ public class FragmentActivity extends AbstractsActivity {
         mViewBinding = ActivityAbstractsFragmentBinding.inflate(getLayoutInflater());
         setContentView(mViewBinding.getRoot());
 
-        mViewBinding.vpContent.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
+        mViewBinding.vpContent.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             @Override
             public Fragment getItem(int position) {
                 switch (position) {

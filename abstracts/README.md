@@ -12,6 +12,10 @@ implementation 'com.liux.android:abstracts:x.y.z'
 ### x.y.z_202x-xx-xx
     1.
 
+### 0.2.4_2020-09-07
+    1.移除若干功能(大人,时代变了)
+    2.升级依赖版本
+
 ### 0.2.3_2020-03-17
     1.移除 Dialog 相关代码
 

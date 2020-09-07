@@ -18,26 +18,13 @@ import com.liux.android.abstracts.titlebar.TitleBar;
 import com.liux.android.abstracts.touch.TouchCallback;
 import com.liux.android.abstracts.touch.TouchHost;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 抽象Activity,提供以下能力 <br>
  * 1.自动隐藏输入法 {@link TouchHost} <br>
- * 2.实现任意数据的"意外"恢复和存储 {@link #onRestoreData(Map)} {@link #onSaveData(Map)} <br>
- * 3.实现各种特殊场景的 {@link TitleBar} 详见 {@link #onInitTitleBar()} <br>
- * 2017-8-21 <br>
- * 调整恢复数据的调用时机<br>
- * 2017-12-4 <br>
- * 实现 {@link TouchHost} 事件的过滤
- * 2018-2-12 <br>
- * 1.改代理模式实现
- * 2.移除自定义生命周期
- * 2020-3-17 <br>
- * 1.移除代理模式
- * Created by Liux on 2017/8/7
+ * 2.实现各种特殊场景的 {@link TitleBar} 详见 {@link #onInitTitleBar()} <br>
  */
 
 public abstract class AbstractsActivity extends AppCompatActivity {
@@ -47,24 +34,20 @@ public abstract class AbstractsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initTitleBar();
-        restoreData();
-    }
-
-    @Override
-    public Object onRetainCustomNonConfigurationInstance() {
-        Map<Object, Object> data = new HashMap<>();
-        onSaveData(data);
-        if (data.isEmpty()) {
-            return null;
+        mTitleBar = onInitTitleBar();
+        if (mTitleBar != null) {
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) mTitleBar.setup(actionBar);
         }
-        return data;
     }
 
     @Override
     protected void onTitleChanged(CharSequence title, int color) {
         super.onTitleChanged(title, color);
-        changeTitleBar(title, color);
+        if (mTitleBar != null) {
+            mTitleBar.setTitle(title);
+            if (color != 0) mTitleBar.setTitleColor(color);
+        }
     }
 
     @Override
@@ -83,50 +66,14 @@ public abstract class AbstractsActivity extends AppCompatActivity {
 
     // ===============================================================
 
-    public TitleBar onInitTitleBar() {
-        return new DefaultTitleBar(this);
-    }
-
     private TitleBar mTitleBar;
 
     public <T extends TitleBar> T getTitleBar() {
         return (T) mTitleBar;
     }
 
-    private void initTitleBar() {
-        mTitleBar = onInitTitleBar();
-        if (mTitleBar != null) {
-            ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) mTitleBar.setup(actionBar);
-        }
-    }
-
-    private void changeTitleBar(CharSequence title, int color) {
-        if (mTitleBar != null) {
-            mTitleBar.setTitle(title);
-            if (color != 0) mTitleBar.setTitleColor(color);
-        }
-    }
-
-    // ===============================================================
-
-    protected void onRestoreData(Map<Object, Object> data) {
-
-    }
-
-    public void onSaveData(Map<Object, Object> data) {
-
-    }
-
-    private void restoreData() {
-        try {
-            Map<Object, Object> data = (Map<Object, Object>) getLastCustomNonConfigurationInstance();
-            if (data != null && !data.isEmpty()) {
-                onRestoreData(data);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    protected TitleBar onInitTitleBar() {
+        return new DefaultTitleBar(this);
     }
 
     // ===============================================================
@@ -148,15 +95,15 @@ public abstract class AbstractsActivity extends AppCompatActivity {
         }
     };
 
-    public boolean isHandlerTouch() {
+    protected boolean isHandlerTouch() {
         return mHandlerTouch;
     }
 
-    public void setHandlerTouch(boolean handlerTouch) {
+    protected void setHandlerTouch(boolean handlerTouch) {
         mHandlerTouch = handlerTouch;
     }
 
-    public boolean hasIgnoreView(View view) {
+    protected boolean hasIgnoreView(View view) {
         List<View> views = getIgnoreViews();
         for (View v : views) {
             if (v == view) return true;
@@ -164,7 +111,7 @@ public abstract class AbstractsActivity extends AppCompatActivity {
         return false;
     }
 
-    public void addIgnoreView(View view) {
+    protected void addIgnoreView(View view) {
         view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
@@ -180,7 +127,7 @@ public abstract class AbstractsActivity extends AppCompatActivity {
         getIgnoreViews().add(view);
     }
 
-    public void removeIgnoreView(View view) {
+    protected void removeIgnoreView(View view) {
         getIgnoreViews().remove(view);
     }
 
@@ -260,11 +207,11 @@ public abstract class AbstractsActivity extends AppCompatActivity {
         return event.getRawX() > left && event.getRawX() < right && event.getRawY() > top && event.getRawY() < bottom;
     }
 
-    public void addTouchCallback(TouchCallback touchCallback) {
+    protected void addTouchCallback(TouchCallback touchCallback) {
         mTouchCallbacks.add(touchCallback);
     }
 
-    public void removeTouchCallback(TouchCallback touchCallback) {
+    protected void removeTouchCallback(TouchCallback touchCallback) {
         mTouchCallbacks.remove(touchCallback);
     }
 }
