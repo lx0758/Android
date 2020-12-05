@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Map;
@@ -431,13 +430,15 @@ public class HTTPActivity extends AppCompatActivity {
     private void onCertificateTest(View view) {
         HandshakeCertificates handshakeCertificates = new HandshakeCertificates.Builder()
                 .addPlatformTrustedCertificates()
-                .addTrustedCertificateForAssets(this, "cert/isrgrootx1.der")
+                .addTrustedCertificateForAssets(this, "certs/6xrootca.pem")
+                .addTrustedCertificateForAssets(this, "certs/isrgrootx1.pem")
                 .build();
         openUrl(handshakeCertificates, "https://www.baidu.com/");
         openUrl(handshakeCertificates, "https://6xyun.cn/");
         openUrl(handshakeCertificates, "https://valid-isrgrootx1.letsencrypt.org/");
         openUrl(handshakeCertificates, "https://revoked-isrgrootx1.letsencrypt.org/");
         openUrl(handshakeCertificates, "https://expired-isrgrootx1.letsencrypt.org/");
+        openUrl(handshakeCertificates, "https://docker.6xyun.lan/");
     }
 
     private void openUrl(HandshakeCertificates handshakeCertificates, String url) {
