@@ -102,6 +102,9 @@ implementation 'com.liux.android:http:x.y.z'
 ### x.y.z_202x-xx-xx
     1.
 
+### 0.2.16_2020-12-07
+    1. 新增证书加载工具
+
 ### 0.2.14_2020-09-07
     1. 移除 Cookie 处理器
 

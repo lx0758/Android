@@ -21,7 +21,9 @@ import com.liux.android.http.request.DownloadCallback;
 import com.liux.android.http.request.Request;
 import com.liux.android.http.request.RequestManager;
 import com.liux.android.http.request.UICallback;
+import com.liux.android.http.tool.HandshakeCertificates;
 import com.liux.android.tool.TT;
+import com.liux.android.util.StreamUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,11 +33,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import io.reactivex.SingleObserver;
 import io.reactivex.observers.DisposableSingleObserver;
@@ -109,6 +115,8 @@ public class HTTPActivity extends AppCompatActivity {
         mViewbinding.btnRequestDownload.setOnClickListener(this::onRequestClicked);
         mViewbinding.btnRequestTimeoutHeader.setOnClickListener(this::onRequestClicked);
         mViewbinding.btnRequestTimeoutGlobal.setOnClickListener(this::onRequestClicked);
+
+        mViewbinding.btnCertificateTest.setOnClickListener(this::onCertificateTest);
     }
 
     @Override
@@ -417,6 +425,49 @@ public class HTTPActivity extends AppCompatActivity {
                         });
                 break;
         }
+    }
+
+    private void onCertificateTest(View view) {
+        HandshakeCertificates handshakeCertificates = new HandshakeCertificates.Builder()
+                .addPlatformTrustedCertificates()
+                .addTrustedCertificateForAssets(this, "certs/6xrootca.pem")
+                .addTrustedCertificateForAssets(this, "certs/isrgrootx1.pem")
+                .build();
+        openUrl(handshakeCertificates, "https://www.baidu.com/");
+        openUrl(handshakeCertificates, "https://6xyun.cn/");
+        openUrl(handshakeCertificates, "https://valid-isrgrootx1.letsencrypt.org/");
+        openUrl(handshakeCertificates, "https://revoked-isrgrootx1.letsencrypt.org/");
+        openUrl(handshakeCertificates, "https://expired-isrgrootx1.letsencrypt.org/");
+        openUrl(handshakeCertificates, "https://docker.6xyun.lan/");
+    }
+
+    private void openUrl(HandshakeCertificates handshakeCertificates, String url) {
+        new Thread(() -> {
+            long beginTime = System.currentTimeMillis();
+            try {
+                HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(url).openConnection();
+                if (httpURLConnection instanceof HttpsURLConnection) {
+                    HttpsURLConnection httpsURLConnection = (HttpsURLConnection) httpURLConnection;
+                    httpsURLConnection.setSSLSocketFactory(handshakeCertificates.getSslSocketFactory());
+                }
+
+                if (httpURLConnection.getResponseCode() != 200) throw new IOException("Could not retrieve response code from HttpUrlConnection.");
+
+                byte[] bytes = StreamUtil.readStream(httpURLConnection.getInputStream());
+
+                System.out.println("[Http]: ┏━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                System.out.println("[Http]: ┃--> GET " + url);
+                System.out.println("[Http]: ┣━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                System.out.println("[Http]: ┃<-- 200 OK " + url + "  (" + (System.currentTimeMillis() - beginTime) + "ms, " + bytes.length + "-byte body)");
+                System.out.println("[Http]: ┗━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            } catch (Exception e) {
+                System.out.println("[Http]: ┏━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                System.out.println("[Http]: ┃--> GET " + url);
+                System.out.println("[Http]: ┣━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                System.out.println("[Http]: ┃<-- HTTP FAILED: " + e.getMessage() + " (" + (System.currentTimeMillis() - beginTime) + "ms)");
+                System.out.println("[Http]: ┗━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            }
+        }).start();
     }
 
     private File getTempFile() {
