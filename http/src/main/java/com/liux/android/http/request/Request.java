@@ -6,7 +6,6 @@ import com.liux.android.http.interceptor.TimeoutInterceptor;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.net.FailException;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
@@ -50,7 +49,7 @@ public abstract class Request<T extends Request> implements okhttp3.Callback {
 
     @Override
     public void onResponse(Call call, Response response) throws IOException {
-        if (!response.isSuccessful()) onFailure(call, new FailException(response));
+        if (!response.isSuccessful()) onFailure(call, new HttpException(response));
         response = handlerResponse(response);
         Callback callback = getCallback();
         if (callback != null) callback.onSucceed(this, response);
@@ -128,7 +127,7 @@ public abstract class Request<T extends Request> implements okhttp3.Callback {
         cancelCall();
         addManager();
         Response response = handlerCall().execute();
-        if (!response.isSuccessful()) throw new FailException(response);
+        if (!response.isSuccessful()) throw new HttpException(response);
         response = handlerResponse(response);
         return response;
     }
