@@ -5,6 +5,7 @@ import android.content.Context;
 import androidx.annotation.IntDef;
 
 import com.liux.android.http.converter.FastJsonConverterFactory;
+import com.liux.android.http.cookie.DefaultCookieJar;
 import com.liux.android.http.dns.TimeOutDns;
 import com.liux.android.http.interceptor.BaseUrlInterceptor;
 import com.liux.android.http.interceptor.HttpLoggingInterceptor;
@@ -58,7 +59,8 @@ public class Http {
                         .writeTimeout(10, TimeUnit.SECONDS)
                         .readTimeout(10, TimeUnit.SECONDS)
                         .pingInterval(30, TimeUnit.SECONDS)
-                        .retryOnConnectionFailure(true),
+                        .retryOnConnectionFailure(true)
+                        .cookieJar(new DefaultCookieJar()),
                 new Retrofit.Builder()
                         .baseUrl(baseUrl)
         );

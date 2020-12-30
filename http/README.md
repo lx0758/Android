@@ -100,7 +100,7 @@ implementation 'com.liux.android:http:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1.
+    1.新增 Cookie 内存存储支持
 
 ### 0.2.16_2020-12-07
     1. 新增证书加载工具

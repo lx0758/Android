@@ -1,4 +1,4 @@
-package java.net;
+package com.liux.android.http.request;
 
 import java.io.IOException;
 
@@ -9,18 +9,18 @@ import okhttp3.Response;
  * By Liux
  * lx0758@qq.com
  */
-public class FailException extends IOException {
+public class HttpException extends IOException {
 
     private Response mResponse;
 
-    public FailException() {
+    public HttpException() {
     }
 
-    public FailException(String msg) {
+    public HttpException(String msg) {
         super(msg);
     }
 
-    public FailException(Response response) {
+    public HttpException(Response response) {
         super(response.message());
         mResponse = response;
     }
