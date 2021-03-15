@@ -100,7 +100,9 @@ implementation 'com.liux.android:http:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1.
+    1. 新增 HttpDNS 容错支持
+    2. 替换 Json 处理框架 FastJson 为 Jackson
+    3. 移除支持 RxJava 和 RxJava2 适配器的代码
 
 ### 0.2.18_2020-12-30
     1.新增 Cookie 内存存储支持

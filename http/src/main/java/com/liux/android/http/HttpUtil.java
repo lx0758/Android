@@ -7,6 +7,9 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.liux.android.http.request.Request;
 
 import java.io.ByteArrayInputStream;
@@ -114,6 +117,7 @@ public class HttpUtil {
      * @param file
      * @return
      */
+    @NonNull
     public static MediaType getMimeType(File file) {
         if (file == null) return TYPE_UNKNOWN;
         return getMimeType(file.getName());
@@ -124,6 +128,7 @@ public class HttpUtil {
      * @param filename
      * @return
      */
+    @NonNull
     public static MediaType getMimeType(String filename) {
         if (filename == null) return TYPE_UNKNOWN;
 
@@ -134,7 +139,8 @@ public class HttpUtil {
         String type = MimeUtils.guessMimeTypeFromExtension(suffix);
 
         if (type == null) return TYPE_UNKNOWN;
-        return MediaType.parse(type);
+        MediaType result = MediaType.parse(type);
+        return result != null ? result : TYPE_UNKNOWN;
     }
 
     /**
@@ -142,7 +148,8 @@ public class HttpUtil {
      * @param type
      * @return
      */
-    public static String getMimeSuffix(MediaType type) {
+    @NonNull
+    public static String getMimeSuffix(@Nullable MediaType type) {
         if (type == null) return "";
 
         return getMimeSuffix(type.toString());
@@ -153,7 +160,8 @@ public class HttpUtil {
      * @param type
      * @return
      */
-    public static String getMimeSuffix(String type) {
+    @NonNull
+    public static String getMimeSuffix(@Nullable String type) {
         if (type == null) return "";
 
         String suffix = MimeUtils.guessExtensionFromMimeType(type);
@@ -181,6 +189,7 @@ public class HttpUtil {
      * @param content
      * @return
      */
+    @NonNull
     public static RequestBody parseXmlBody(String content) {
         return parseStringBody(TYPE_XML.toString(), content);
     }
@@ -190,6 +199,7 @@ public class HttpUtil {
      * @param content
      * @return
      */
+    @NonNull
     public static RequestBody parseJsonBody(String content) {
         return parseStringBody(TYPE_JSON.toString(), content);
     }
@@ -199,6 +209,7 @@ public class HttpUtil {
      * @param content
      * @return
      */
+    @NonNull
     public static RequestBody parseStringBody(String content) {
         return parseStringBody(TYPE_TEXT.toString(), content);
     }
@@ -208,6 +219,7 @@ public class HttpUtil {
      * @param content
      * @return
      */
+    @NonNull
     public static RequestBody parseStringBody(String type, String content) {
         MediaType mediaType = null;
         if (!TextUtils.isEmpty(type)) {
@@ -221,6 +233,7 @@ public class HttpUtil {
      * @param bytes
      * @return
      */
+    @NonNull
     public static RequestBody parseByteBody(String type, byte[] bytes) {
         MediaType mediaType = null;
         if (!TextUtils.isEmpty(type)) {
@@ -234,6 +247,7 @@ public class HttpUtil {
      * @param inputStream
      * @return
      */
+    @NonNull
     public static RequestBody parseInputStreamBody(String type, InputStream inputStream) {
         MediaType mediaType = null;
         if (!TextUtils.isEmpty(type)) {
@@ -272,6 +286,7 @@ public class HttpUtil {
      * @param uri
      * @return
      */
+    @NonNull
     public static RequestBody parseUriBody(final Context context, String type, final Uri uri) {
         MediaType mediaType = null;
         if (!TextUtils.isEmpty(type)) {
@@ -279,6 +294,7 @@ public class HttpUtil {
         }
 
         final MediaType finalMediaType = mediaType;
+        final ContentResolver contentResolver = context.getContentResolver();
         return new RequestBody() {
             @Override
             public MediaType contentType() {
@@ -306,7 +322,7 @@ public class HttpUtil {
             }
 
             private InputStream getInputStream() throws IOException {
-                return context.getContentResolver().openInputStream(uri);
+                return contentResolver.openInputStream(uri);
             }
         };
     }
@@ -318,6 +334,7 @@ public class HttpUtil {
      * @param string
      * @return
      */
+    @NonNull
     public static MultipartBody.Part parseStringPart(String name, String type, String string) {
         return MultipartBody.Part.createFormData(name, null, parseStringBody(type, string));
     }
@@ -329,6 +346,7 @@ public class HttpUtil {
      * @param bytes
      * @return
      */
+    @NonNull
     public static MultipartBody.Part parseBytePart(String name, String type, byte[] bytes) {
         return parseBytePart(name, null, type, bytes);
     }
@@ -340,6 +358,7 @@ public class HttpUtil {
      * @param bytes
      * @return
      */
+    @NonNull
     public static MultipartBody.Part parseBytePart(String name, String filename, String type, byte[] bytes) {
         return MultipartBody.Part.createFormData(name, filename, parseByteBody(type, bytes));
     }
@@ -351,6 +370,7 @@ public class HttpUtil {
      * @param inputStream
      * @return
      */
+    @NonNull
     public static MultipartBody.Part parseInputStreamPart(String name, String type, InputStream inputStream) {
         return parseInputStreamPart(name, null, type, inputStream);
     }
@@ -363,6 +383,7 @@ public class HttpUtil {
      * @param inputStream
      * @return
      */
+    @NonNull
     public static MultipartBody.Part parseInputStreamPart(String name, String filename, String type, InputStream inputStream) {
         return MultipartBody.Part.createFormData(name, filename, parseInputStreamBody(type, inputStream));
     }
@@ -373,6 +394,7 @@ public class HttpUtil {
      * @param file
      * @return
      */
+    @NonNull
     public static MultipartBody.Part parseFilePart(String name, File file) {
         return parseFilePart(name, file.getName(), file);
     }
@@ -384,6 +406,7 @@ public class HttpUtil {
      * @param filename
      * @return
      */
+    @NonNull
     public static MultipartBody.Part parseFilePart(String name, String filename, File file) {
         MediaType mediaType = getMimeType(file);
         return MultipartBody.Part.createFormData(name, filename, RequestBody.create(mediaType, file));
@@ -395,6 +418,7 @@ public class HttpUtil {
      * @param uri
      * @return
      */
+    @NonNull
     public static MultipartBody.Part parseUriPart(Context context, String name, Uri uri) {
         String filename = null;
         String type = null;
@@ -436,6 +460,7 @@ public class HttpUtil {
      * @param uri
      * @return
      */
+    @NonNull
     public static MultipartBody.Part parseUriPart(Context context, String name, String filename, String type, Uri uri) {
         if (type == null) type = getMimeType(filename).toString();
         return MultipartBody.Part.createFormData(name, filename, parseUriBody(context, type, uri));
@@ -446,6 +471,7 @@ public class HttpUtil {
      * @param text
      * @return
      */
+    @NonNull
     public static String checkHeaderChar(String text) {
         if (text == null) return "";
         String newValue = text.replace("\n", "");
@@ -463,33 +489,10 @@ public class HttpUtil {
     }
 
     /**
-     * 尝试获取 RxJava 的Retrofit适配器
-     * @return
-     */
-    public static CallAdapter.Factory getRxJavaCallAdapterFactory() {
-        try {
-            Class.forName("rx.Observable");
-            return retrofit2.adapter.rxjava.RxJavaCallAdapterFactory.create();
-        } catch (Exception ignore) {}
-        return null;
-    }
-
-    /**
-     * 尝试获取 RxJava2 的Retrofit适配器
-     * @return
-     */
-    public static CallAdapter.Factory getRxJava2CallAdapterFactory() {
-        try {
-            Class.forName("io.reactivex.Observable");
-            return retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory.create();
-        } catch (Exception ignore) {}
-        return null;
-    }
-
-    /**
      * 尝试获取 RxJava3 的Retrofit适配器
      * @return
      */
+    @Nullable
     public static CallAdapter.Factory getRxJava3CallAdapterFactory() {
         try {
             Class.forName("io.reactivex.rxjava3.core.Observable");

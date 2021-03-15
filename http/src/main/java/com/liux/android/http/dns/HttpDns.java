@@ -12,20 +12,24 @@ import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 
 public abstract class HttpDns extends TimeOutDns {
+    
+    private boolean failedBack;
 
     private OkHttpClient okHttpClient;
     private Map<String, DnsResult> dnsInfoMap = new ConcurrentHashMap<>();
 
     public HttpDns() {
-        this(500, TimeUnit.MILLISECONDS, 2);
+        this(500, TimeUnit.MILLISECONDS, 2, true);
     }
 
-    public HttpDns(int time, TimeUnit timeUnit, int maxRetryCount) {
-        super(time, timeUnit, 2);
+    public HttpDns(int timeOut, TimeUnit timeOutUnit, int maxRetryCount, boolean failedBack) {
+        super(timeOut, timeOutUnit, maxRetryCount);
+        this.failedBack = failedBack;
+        
         okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(time, timeUnit)
-                .writeTimeout(time, timeUnit)
-                .readTimeout(time, timeUnit)
+                .connectTimeout(timeOut, timeOutUnit)
+                .writeTimeout(timeOut, timeOutUnit)
+                .readTimeout(timeOut, timeOutUnit)
                 .build();
     }
 
@@ -40,7 +44,7 @@ public abstract class HttpDns extends TimeOutDns {
         dnsResult = null;
         UnknownHostException finalException = null;
 
-        for (int i = 0; i < maxRetryCount; i++) {
+        for (int i = 0; i <= maxRetryCount; i++) {
             finalException = null;
             try {
                 dnsResult = lookupHttpDns(hostname);
@@ -49,7 +53,10 @@ public abstract class HttpDns extends TimeOutDns {
                 finalException = e;
             }
         }
-        if (finalException != null) throw finalException;
+        if (finalException != null) {
+            if (failedBack) return super.lookup(hostname);
+            throw finalException;
+        }
 
         dnsInfoMap.put(hostname, dnsResult);
         assert dnsResult != null;

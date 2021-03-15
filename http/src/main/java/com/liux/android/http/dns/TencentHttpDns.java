@@ -17,11 +17,11 @@ import okhttp3.ResponseBody;
 public class TencentHttpDns extends HttpDns {
 
     public TencentHttpDns() {
-        this(500, TimeUnit.MILLISECONDS, 2);
+        this(500, TimeUnit.MILLISECONDS, 2, true);
     }
 
-    public TencentHttpDns(int time, TimeUnit timeUnit, int maxRetryCount) {
-        super(time, timeUnit, maxRetryCount);
+    public TencentHttpDns(int time, TimeUnit timeUnit, int maxRetryCount, boolean failedBack) {
+        super(time, timeUnit, maxRetryCount, failedBack);
     }
 
     @Override
