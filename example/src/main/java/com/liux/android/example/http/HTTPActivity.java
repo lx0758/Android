@@ -7,13 +7,12 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.liux.android.example.ApplocationInstance;
 import com.liux.android.example.R;
 import com.liux.android.example.databinding.ActivityHttpBinding;
 import com.liux.android.http.Http;
 import com.liux.android.http.HttpUtil;
+import com.liux.android.http.JsonUtil;
 import com.liux.android.http.progress.OnProgressListener;
 import com.liux.android.http.progress.OnResponseProgressListener;
 import com.liux.android.http.request.Callback;
@@ -37,14 +36,15 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import io.reactivex.SingleObserver;
-import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 
@@ -129,11 +129,11 @@ public class HTTPActivity extends AppCompatActivity {
     public void onRetorfitClicked(View view) {
         showData("");
         String data = mViewbinding.etData.getText().toString();
-        SingleObserver<JSON> observable = new DisposableSingleObserver<JSON>() {
+        SingleObserver<Object> observable = new DisposableSingleObserver<Object>() {
             @Override
-            public void onSuccess(JSON json) {
-                Log.d(TAG, "onSuccess" + json.toJSONString());
-                showData(json.toJSONString());
+            public void onSuccess(Object object) {
+                Log.d(TAG, "onSuccess" + JsonUtil.toJson(object));
+                showData(JsonUtil.toJson(object));
             }
 
             @Override
@@ -256,12 +256,12 @@ public class HTTPActivity extends AppCompatActivity {
                         });
                 break;
             case R.id.btn_request_post_body:
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("Request-Body-Id", "btn_request_post_body");
+                Map<String, String> params = new HashMap<>();
+                params.put("Request-Body-Id", "btn_request_post_body");
                 Http.get().post(url + "request-post-body")
                         .addHeader("Request-Header-Id", "btn_request_post_body")
                         .addQuery("Request-Query-Id", "btn_request_post_body")
-                        .body(HttpUtil.parseJsonBody(jsonObject.toJSONString()))
+                        .body(HttpUtil.parseJsonBody(JsonUtil.toJson(params)))
                         .manager(mRequestManager)
                         .async(new UICallback() {
                             @Override

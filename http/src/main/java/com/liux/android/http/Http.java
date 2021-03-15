@@ -4,7 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.IntDef;
 
-import com.liux.android.http.converter.FastJsonConverterFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liux.android.http.cookie.DefaultCookieJar;
 import com.liux.android.http.dns.TimeOutDns;
 import com.liux.android.http.interceptor.BaseUrlInterceptor;
@@ -25,13 +25,14 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import retrofit2.CallAdapter;
 import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 /**
  * 基于 OkHttp3 封装的Http客户端 <br>
  * 0.全局单例模式 <br>
  * 1.GET/HEAD/POST/DELETE/PUT/PATCH六种方法的同步/异步访问调用 <br>
- * 2.Retorfit2 + RxJava2 支持 <br>
- * 3.数据解析使用 FastJson <br>
+ * 2.Retorfit2 + RxJava3 支持 <br>
+ * 3.数据解析使用 Jackson <br>
  * 4.请求头/请求参数回调 <br>
  * 5.超时时间/BaseUrl/UserAgent灵活设置 <br>
  * 6.请求数据进度回调支持 <br>
@@ -62,14 +63,15 @@ public class Http {
                         .retryOnConnectionFailure(true)
                         .cookieJar(new DefaultCookieJar()),
                 new Retrofit.Builder()
-                        .baseUrl(baseUrl)
+                        .baseUrl(baseUrl),
+                JsonUtil.getDefaultObjectMapper()
         );
     }
-    public static void init(Context context, OkHttpClient.Builder okHttpBuilder, Retrofit.Builder retrofitBuilder) {
+    public static void init(Context context, OkHttpClient.Builder okHttpBuilder, Retrofit.Builder retrofitBuilder, ObjectMapper objectMapper) {
         if (mInstance != null) return;
         synchronized(Http.class) {
             if (mInstance != null) return;
-            mInstance = new Http(context, okHttpBuilder, retrofitBuilder);
+            mInstance = new Http(context, okHttpBuilder, retrofitBuilder, objectMapper);
         }
     }
     public static void release() {
@@ -94,7 +96,7 @@ public class Http {
     private RequestInterceptor mRequestInterceptor;
     private HttpLoggingInterceptor mHttpLoggingInterceptor;
 
-    private Http(Context context, OkHttpClient.Builder okHttpBuilder, Retrofit.Builder retrofitBuilder) {
+    private Http(Context context, OkHttpClient.Builder okHttpBuilder, Retrofit.Builder retrofitBuilder, ObjectMapper objectMapper) {
         if (context == null) throw new NullPointerException("Context required");
         if (okHttpBuilder == null) throw new NullPointerException("OkHttpClient.Builder required");
         if (retrofitBuilder == null) throw new NullPointerException("Retorfit.Builder required");
@@ -118,12 +120,8 @@ public class Http {
         retrofitBuilder
                 .client(mOkHttpClient)
                 .validateEagerly(true)
-                .addConverterFactory(FastJsonConverterFactory.create());
+                .addConverterFactory(JacksonConverterFactory.create(objectMapper));
         CallAdapter.Factory factory;
-        factory = HttpUtil.getRxJavaCallAdapterFactory();
-        if (factory != null) retrofitBuilder.addCallAdapterFactory(factory);
-        factory = HttpUtil.getRxJava2CallAdapterFactory();
-        if (factory != null) retrofitBuilder.addCallAdapterFactory(factory);
         factory = HttpUtil.getRxJava3CallAdapterFactory();
         if (factory != null) retrofitBuilder.addCallAdapterFactory(factory);
         mRetrofit = retrofitBuilder.build();
