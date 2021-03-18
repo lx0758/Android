@@ -9,7 +9,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.2'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${KOTLIN_VERSION}"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -29,14 +30,4 @@ allprojects{
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-
-static def getLibraryGroupId() {
-    return 'com.liux.android'
-}
-static def getLibraryVCSUrl() {
-    return 'https://github.com/lx0758/Android-Librarys'
-}
-static def getLibraryLicense() {
-    return 'MIT'
 }

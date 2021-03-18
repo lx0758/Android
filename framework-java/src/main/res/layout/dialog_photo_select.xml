@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:minWidth="1000dp"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/dialog_photo_select_bg">
+
+        <LinearLayout
+            android:id="@+id/ll_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_preview"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:textSize="16dp"
+                android:gravity="center"
+                android:text="预览"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#F2F2F2"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_camera"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:textSize="16dp"
+            android:gravity="center"
+            android:text="相机"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#F2F2F2"/>
+
+        <TextView
+            android:id="@+id/tv_album"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:textSize="16dp"
+            android:gravity="center"
+            android:text="相册"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/btn_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="10dp"
+        android:textSize="16dp"
+        android:gravity="center"
+        android:text="取消"
+        android:background="@drawable/dialog_photo_select_bg"/>
+
+</LinearLayout>

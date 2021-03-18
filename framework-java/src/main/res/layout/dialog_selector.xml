@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_selector_bg">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:gravity="center"
+        android:textColor="#050505"
+        android:textSize="18dp"
+        android:text="请选择" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tl_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/vp_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>
