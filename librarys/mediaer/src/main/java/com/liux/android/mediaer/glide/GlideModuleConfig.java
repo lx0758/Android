@@ -23,11 +23,11 @@ import com.liux.android.mediaer.glide.video.VideoModelLoader;
 import java.io.InputStream;
 
 import okhttp3.Call;
+import okhttp3.OkHttpClient;
 
 /**
  * Glide全局配置 <br>
  * 定义缓存参数 <br>
- * 使用全局OkHttpClient <br>
  * Created by Liux on 2017/7/18.
  */
 
@@ -73,10 +73,8 @@ public class GlideModuleConfig extends AppGlideModule {
      */
     @Override
     public void registerComponents(@NonNull Context context, @NonNull Glide glide, @NonNull Registry registry) {
-        // 注册全局OkHttp客户端(Http先于Glide初始化完成的情况下会使用)
-        Object httpClient = getHttpClient();
-        if (httpClient != null) {
-            Call.Factory callFactory = (Call.Factory) httpClient;
+        Call.Factory callFactory = getHttpClient();
+        if (callFactory != null) {
             OkHttpUrlLoader.Factory loaderFactory = new OkHttpUrlLoader.Factory(callFactory);
             registry.replace(GlideUrl.class, InputStream.class, loaderFactory);
         }
@@ -97,14 +95,13 @@ public class GlideModuleConfig extends AppGlideModule {
     }
 
     /**
-     * 通过反射获取Http实例
      * @return
      */
-    private Object getHttpClient() {
+    private Call.Factory getHttpClient() {
         try {
             return com.liux.android.http.Http.get().getOkHttpClient();
         } catch (Exception e) {
-            return null;
+            return new OkHttpClient();
         }
     }
 }

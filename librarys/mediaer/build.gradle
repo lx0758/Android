@@ -10,6 +10,9 @@ android {
         versionName getLibraryVersionName()
     }
     buildTypes {
+        debug {
+
+        }
         release {
             minifyEnabled false
             consumerProguardFiles 'proguard-rules-aar.txt'
@@ -28,7 +31,7 @@ dependencies {
         exclude group: 'com.squareup.okhttp3'
     })
     annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
-    compileOnly 'com.liux.android:http:0.2.+'
+    compileOnly project(':librarys:http')
 }
 
 apply from: '../release.gradle'
