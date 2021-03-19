@@ -11,6 +11,7 @@ implementation 'com.liux.android:util:x.y.z'
 ---
 ### x.y.z_202x-xx-xx
     1.移除自带权限声明
+    2.新增 CRC 计算方法
 
 ### 0.2.6_2020-05-09
     1.兼容 Q, 强化 Uri 工具类

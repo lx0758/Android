@@ -6,13 +6,16 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class TextUtilTest {
+
     @Test
     public void MD5() {
+        assertEquals("d41d8cd98f00b204e9800998ecf8427e", TextUtil.MD5(""));
         assertEquals("033bd94b1168d7e4f0d644c3c95e35bf", TextUtil.MD5("TEST"));
     }
 
     @Test
     public void SHA1() {
+        assertEquals("da39a3ee5e6b4b0d3255bfef95601890afd80709", TextUtil.SHA1(""));
         assertEquals("984816fd329622876e14907634264e6f332e9fb3", TextUtil.SHA1("TEST"));
     }
 
@@ -23,6 +26,7 @@ public class TextUtilTest {
 
     @Test
     public void SHA256() {
+        assertEquals("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", TextUtil.SHA256(""));
         assertEquals("94ee059335e587e501cc4bf90613e0814f00a7b08bc7c648fd865a2af6a22cc2", TextUtil.SHA256("TEST"));
     }
 
@@ -38,6 +42,21 @@ public class TextUtilTest {
 
     @Test
     public void digest() {
+
+    }
+
+    @Test
+    public void crc32() {
+        assertEquals("00000000", TextUtil.crc32(""));
+        assertEquals("83dcefb7", TextUtil.crc32("1"));
+        assertEquals("9ae0daaf", TextUtil.crc32("12345678"));
+    }
+
+    @Test
+    public void crc64() {
+        assertEquals("0000000000000000", TextUtil.crc64(""));
+        assertEquals("2a2f0e859495caed", TextUtil.crc64("1"));
+        assertEquals("5c8b80482bac7809", TextUtil.crc64("12345678"));
     }
 
     @Test

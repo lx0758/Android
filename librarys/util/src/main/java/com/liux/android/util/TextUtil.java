@@ -9,6 +9,7 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
+import java.util.zip.CRC32;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
@@ -52,7 +53,7 @@ public class TextUtil {
      * @return
      */
     public static byte[] digest(byte[] data, String algorithm) {
-        if (data == null || data.length == 0) throw new NullPointerException();
+        if (data == null) throw new NullPointerException();
         try {
             MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
             messageDigest.update(data);
@@ -61,6 +62,37 @@ public class TextUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String crc32(String data) {
+        return crc32(data.getBytes());
+    }
+
+    public static String crc32(byte[] data) {
+        if (data == null) throw new NullPointerException();
+        CRC32 crc32 = new CRC32();
+        crc32.update(data);
+        long result = crc32.getValue();
+        byte[] bytes = ByteUtil.long2BytesBigEndian(result);
+        return bytes2Hex(
+                bytes[4],
+                bytes[5],
+                bytes[6],
+                bytes[7]
+        );
+    }
+
+    public static String crc64(String data) {
+        return crc64(data.getBytes());
+    }
+
+    public static String crc64(byte[] data) {
+        if (data == null) throw new NullPointerException();
+        CRC64 crc64 = new CRC64();
+        crc64.update(data);
+        long result = crc64.getValue();
+        byte[] bytes = ByteUtil.long2BytesBigEndian(result);
+        return bytes2Hex(bytes);
     }
 
     public static String HmacMD5(String content, String key) {
@@ -443,5 +475,49 @@ public class TextUtil {
      */
     public static byte[] decodeBase64(String content) {
         return Base64.decode(content, Base64.NO_WRAP);
+    }
+
+    public static class CRC64 {
+
+        private static final long poly = 0xC96C5795D7870F42L;
+        private static final long crcTable[] = new long[256];
+
+        private long crc = -1;
+
+        static {
+            for (int b = 0; b < crcTable.length; ++b) {
+                long r = b;
+                for (int i = 0; i < 8; ++i) {
+                    if ((r & 1) == 1)
+                        r = (r >>> 1) ^ poly;
+                    else
+                        r >>>= 1;
+                }
+
+                crcTable[b] = r;
+            }
+        }
+
+        public CRC64() {
+        }
+
+        public void update(byte b) {
+            crc = crcTable[(b ^ (int)crc) & 0xFF] ^ (crc >>> 8);
+        }
+
+        public void update(byte[] buf) {
+            update(buf, 0, buf.length);
+        }
+
+        public void update(byte[] buf, int off, int len) {
+            int end = off + len;
+
+            while (off < end)
+                crc = crcTable[(buf[off++] ^ (int)crc) & 0xFF] ^ (crc >>> 8);
+        }
+
+        public long getValue() {
+            return ~crc;
+        }
     }
 }
