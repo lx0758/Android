@@ -49,10 +49,7 @@ dependencies {
     api "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
 
     // Library's
-    api project(':librarys:list')
     api project(':librarys:http')
-    api project(':librarys:tool')
-    api project(':librarys:abstracts')
 
     // Material
     api 'com.google.android.material:material:1.2.1'

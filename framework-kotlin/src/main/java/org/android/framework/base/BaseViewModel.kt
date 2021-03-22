@@ -3,7 +3,7 @@ package org.android.framework.base
 import android.text.TextUtils
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.alibaba.fastjson.JSONException
+import com.fasterxml.jackson.core.JsonProcessingException
 import org.android.framework.dao.IResp
 import org.android.framework.dao.RespException
 import org.android.framework.status.StatusEvent
@@ -47,7 +47,7 @@ abstract class BaseViewModel : ViewModel() {
                         if (throwable.iResp.isSuccessful() && throwable.iResp.isEmpty()) event = StatusEvent.ON_FAILED_NODATA
                         message = if (!TextUtils.isEmpty(throwable.iResp.message())) throwable.iResp.message()!! else "服务调用失败"
                     }
-                    throwable is JSONException -> {
+                    throwable is JsonProcessingException -> {
                         message = "解析数据异常"
                     }
                 }

@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
+import org.android.framework.DefaultStatusView
 import org.android.framework.status.StatusProxy
 import org.android.framework.status.StatusView
 import org.android.framework.util.JetPackUtil

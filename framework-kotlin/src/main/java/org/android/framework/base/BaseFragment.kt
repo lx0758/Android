@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import org.android.framework.DefaultStatusView
 import org.android.framework.status.StatusProxy
 import org.android.framework.status.StatusView
 import org.android.framework.util.JetPackUtil

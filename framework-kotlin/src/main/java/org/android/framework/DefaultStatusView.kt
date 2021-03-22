@@ -1,4 +1,4 @@
-package org.android.framework.base
+package org.android.framework
 
 import android.app.ProgressDialog
 import android.text.TextUtils
