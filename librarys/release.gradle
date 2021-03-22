@@ -1,4 +1,4 @@
-if (!project.projectDir.path.startsWith(rootProject.projectDir.path)) return
+if (project.projectDir.parentFile.parentFile != rootProject.projectDir) return
 
 def releaseGroupId = 'com.liux.android'
 def releaseArtifactId = project.getLibraryArtifactId()
