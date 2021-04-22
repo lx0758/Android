@@ -1,0 +1,39 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion COMPILE_SDK_VERSION as int
+    buildToolsVersion BUILD_TOOLS_VERSION as String
+    defaultConfig {
+        minSdkVersion MIN_SDK_VERSION as int
+        targetSdkVersion TARGET_SDK_VERSION as int
+        versionCode getLibraryVersionCode()
+        versionName getLibraryVersionName()
+    }
+    buildTypes {
+        debug {
+
+        }
+        release {
+            minifyEnabled false
+            consumerProguardFiles 'proguard-rules-aar.txt'
+        }
+    }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    compileOnly 'com.squareup.okhttp3:okhttp:3.12.8'
+}
+
+apply from: '../release.gradle'
+static def getLibraryArtifactId() {
+    return 'downloader'
+}
+static def getLibraryVersionName() {
+    return '0.2.1'
+}
+static def getLibraryVersionCode() {
+    def version = getLibraryVersionName().replace("-SNAPSHOT", "")
+    def versions = version.split("\\.")
+    return Integer.parseInt(versions[0]) * 10000 + Integer.parseInt(versions[1]) * 100 + Integer.parseInt(versions[2]) * 1
+}

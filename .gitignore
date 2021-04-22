@@ -28,6 +28,5 @@ build/
 .DS_Store
 
 ### Gradle ###
-/gradle/
 /gradlew*
 /.gradle/

@@ -1,0 +1,61 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+}
+
+android {
+    compileSdkVersion COMPILE_SDK_VERSION as int
+    buildToolsVersion BUILD_TOOLS_VERSION as String
+    defaultConfig {
+        minSdkVersion MIN_SDK_VERSION as int
+        targetSdkVersion TARGET_SDK_VERSION as int
+        versionCode 1_00_00
+        versionName "1.0.0.0000"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        debug {
+
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        viewBinding = true
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Kotlin support
+    api "org.jetbrains.kotlin:kotlin-stdlib:${KOTLIN_VERSION}"
+    api "org.jetbrains.kotlin:kotlin-reflect:${KOTLIN_VERSION}"
+    api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2'
+    api "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
+    api "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+
+    // Library's
+    api project(':librarys:http')
+
+    // Material
+    api 'com.google.android.material:material:1.2.1'
+
+    // Sentry
+    api 'io.sentry:sentry-android:4.3.0'
+    // RefreshLayout
+    api 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.3'
+}
