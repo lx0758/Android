@@ -6,7 +6,7 @@
 使用说明
 ---
 ```
-implementation 'com.liux.android:io:x.y.z'
+implementation 'cn.6xyun.android:io:x.y.z'
 ```
 
 更新说明

@@ -4,7 +4,7 @@ View
 使用说明
 ---
 ```
-implementation 'com.liux.android:view:x.y.z'
+implementation 'cn.6xyun.android:view:x.y.z'
 ```
 
 更新说明

@@ -4,7 +4,7 @@ Banner
 使用说明
 ---
 ```
-implementation 'com.liux.android:banner:x.y.z'
+implementation 'cn.6xyun.android:banner:x.y.z'
 ```
 
 更新说明

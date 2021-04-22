@@ -1,76 +1,83 @@
 if (project.projectDir.parentFile.parentFile != rootProject.projectDir) return
 
-def releaseGroupId = 'com.liux.android'
-def releaseArtifactId = project.getLibraryArtifactId()
-def releaseVersion = project.getLibraryVersionName()
-def releaseUrl = 'https://github.com/lx0758/Android'
-def releaseLicense = 'MIT'
-
-Properties properties = new Properties()
-InputStream inputStream = rootProject.file('local.properties').newDataInputStream()
-properties.load(inputStream)
-def mavenUser = properties.getProperty('mavenUser')
-def mavenPassword = properties.getProperty('mavenPassword')
-def bintrayUser = properties.getProperty('bintrayUser')
-def bintraykey = properties.getProperty('bintraykey')
-inputStream.close()
-
+// https://developer.android.com/studio/build/maven-publish-plugin?hl=zh-cn
 apply plugin: 'maven-publish'
-task androidSourcesJar(type: Jar) {
-    archiveClassifier = 'sources'
-    from android.sourceSets.main.java.sourceFiles
+apply plugin: 'signing'
+
+ext {
+    Properties properties = new Properties()
+    InputStream inputStream = rootProject.file('local.properties').newDataInputStream()
+    properties.load(inputStream)
+
+    _projectGroupId = 'cn.6xyun.android'
+    _projectArtifactId = getLibraryArtifactId()
+    _projectVersion = getLibraryVersionName()
+    // GPG公钥ID后8位
+    _signingKeyId = properties.getProperty('signing.keyId')
+    _signingPassword = properties.getProperty('signing.password')
+    _signingSecretKeyRingFile = properties.getProperty('signing.secretKeyRingFile')
+    _sonatypeUsername = properties.getProperty('ossrhUsername')
+    _sonatypePassword = properties.getProperty('ossrhPassword')
+
+    inputStream.close()
 }
+ext."signing.keyId" = _signingKeyId
+ext."signing.password" = _signingPassword
+ext."signing.secretKeyRingFile" = _signingSecretKeyRingFile
+
+task androidSourcesJar(type: Jar) {
+    from android.sourceSets.main.java.source
+    classifier = 'sources'
+}
+
 afterEvaluate {
     publishing {
         publications {
-            JCenter(MavenPublication) {
-                artifact androidSourcesJar
-                // Applies the component for the release build variant.
+            sonatype(MavenPublication) {
                 from components.release
-                // You can then customize attributes of the publication as shown below.
-                groupId releaseGroupId
-                artifactId releaseArtifactId
-                version releaseVersion
+                groupId _projectGroupId
+                artifactId _projectArtifactId
+                version _projectVersion
+                artifact androidSourcesJar
+                pom {
+                    name = _projectArtifactId
+                    description = 'A set of Android libraries'
+                    url = 'https://github.com/lx0758/Android'
+                    licenses {
+                        license {
+                            name = 'The MIT License'
+                            url = 'ttps://github.com/lx0758/Android/blob/master/LICENSE.txt'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'lx0758'
+                            name = 'Liux'
+                            email = 'lx0758@qq.com'
+                        }
+                    }
+                    scm {
+                        url = 'https://github.com/lx0758/Android'
+                        connection = 'scm:git@github.com:lx0758/Android.git'
+                        developerConnection = 'scm:git@github.com:lx0758/Android.git'
+                    }
+                }
             }
         }
         repositories {
             maven {
-                url = "http://domain/repository/maven-releases/"
+                name 'sonatype'
+                def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+                def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
                 credentials {
-                    username = mavenUser
-                    password = mavenPassword
+                    username _sonatypeUsername
+                    password _sonatypePassword
                 }
             }
         }
     }
-}
-
-apply plugin: 'com.jfrog.bintray'
-static def getSafePackageName(String artifactId) {
-    switch (artifactId) {
-        case "view": return "lib-view"
+    signing {
+        sign publishing.publications
     }
-    return artifactId
-}
-bintray {
-    user = bintrayUser
-    key = bintraykey
-    publications = ['JCenter']
-    pkg {
-        userOrg = ''
-        repo = 'android'
-        name = getSafePackageName(releaseArtifactId)
-        version {
-            name = releaseVersion
-        }
-
-        websiteUrl = releaseUrl
-        vcsUrl = releaseUrl
-        licenses = [
-                releaseLicense
-        ]
-    }
-    dryRun = false
-    override = false
-    publish = true
 }

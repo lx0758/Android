@@ -4,7 +4,7 @@ Abstracts
 使用说明
 ---
 ```
-implementation 'com.liux.android:abstracts:x.y.z'
+implementation 'cn.6xyun.android:abstracts:x.y.z'
 ```
 
 更新说明

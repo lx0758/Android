@@ -24,7 +24,7 @@ dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly 'androidx.fragment:fragment:1.0.0'
     testImplementation 'junit:junit:4.12'
-    testImplementation 'com.liux.android:util:latest.release'
+    testImplementation 'cn.6xyun.android:util:latest.release'
 }
 
 apply from: '../release.gradle'

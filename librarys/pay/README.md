@@ -4,7 +4,7 @@ Pay
 使用说明
 ---
 ```
-implementation 'com.liux.android:pay:x.y.z'
+implementation 'cn.6xyun.android:pay:x.y.z'
 ```
 新版本避免应用程序需要太多冗余的权限, 所以移除了权限清单, 需要开发者根据实际情况自行添加
 ```xml

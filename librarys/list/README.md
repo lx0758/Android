@@ -4,7 +4,7 @@ List
 使用说明
 ---
 ```
-implementation 'com.liux.android:list:x.y.z'
+implementation 'cn.6xyun.android:list:x.y.z'
 ```
 
 更新说明

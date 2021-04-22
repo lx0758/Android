@@ -13,7 +13,7 @@ Http
 使用说明
 ---
 ```
-implementation 'com.liux.android:http:x.y.z'
+implementation 'cn.6xyun.android:http:x.y.z'
 ```
 
 注意事项

@@ -4,7 +4,7 @@
 使用说明
 ---
 ```
-implementation 'com.liux.android:downloader:x.y.z'
+implementation 'cn.6xyun.android:downloader:x.y.z'
 ```
 
 更新说明

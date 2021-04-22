@@ -4,7 +4,7 @@ Util
 使用说明
 ---
 ```
-implementation 'com.liux.android:util:x.y.z'
+implementation 'cn.6xyun.android:util:x.y.z'
 ```
 
 更新说明
