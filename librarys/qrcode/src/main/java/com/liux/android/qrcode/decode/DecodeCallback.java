@@ -1,13 +1,12 @@
 package com.liux.android.qrcode.decode;
 
-import com.google.zxing.MultiFormatReader;
-import com.google.zxing.Result;
+import com.liux.android.qrcode.QRCode;
+
+import java.util.List;
 
 public interface DecodeCallback {
 
-    MultiFormatReader onCreateReader();
+    void onDecodeResult(List<QRCode> qrCodes);
 
-    void onDecodeResult(Result result);
-
-    void onLightness(float[] lightness);
+    void onLightness(float lightness);
 }

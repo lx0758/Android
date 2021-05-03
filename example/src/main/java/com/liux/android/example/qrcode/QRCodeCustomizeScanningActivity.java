@@ -8,10 +8,8 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.zxing.MultiFormatReader;
-import com.google.zxing.Result;
 import com.liux.android.example.R;
-import com.liux.android.qrcode.QRCodeDecoder;
+import com.liux.android.qrcode.QRCode;
 import com.liux.android.qrcode.QRCodeScanningCallback;
 import com.liux.android.qrcode.QRCodeScanningFragment;
 import com.liux.android.tool.TT;
@@ -19,11 +17,7 @@ import com.liux.android.tool.TT;
 public class QRCodeCustomizeScanningActivity extends AppCompatActivity {
 
     private QRCodeScanningFragment mQRCodeScanningFragment;
-    private QRCodeScanningCallback mQRCodeScanningCallback = new QRCodeScanningCallback() {
-        @Override
-        public MultiFormatReader onCreateReader() {
-            return QRCodeDecoder.getMultiFormatReader();
-        }
+    private final QRCodeScanningCallback mQRCodeScanningCallback = new QRCodeScanningCallback() {
 
         @Override
         public void onError(int error) {
@@ -38,24 +32,14 @@ public class QRCodeCustomizeScanningActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onStartScan() {
-
+        public boolean onChecking(QRCode qrCode) {
+            return true;
         }
 
         @Override
-        public void onStopScan() {
-
-        }
-
-        @Override
-        public void onResult(Result result) {
-            TT.show("扫描到二维码:\n" + result.getText());
-            mQRCodeScanningFragment.reset();
-        }
-
-        @Override
-        public void onDarkness() {
-            mQRCodeScanningFragment.getLightManager().openLight();
+        public void onResult(QRCode qrCode) {
+            TT.show("扫描到二维码:\n" + qrCode.getValue());
+            mQRCodeScanningFragment.startScanning();
         }
     };
 

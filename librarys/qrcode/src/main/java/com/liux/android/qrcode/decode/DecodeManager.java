@@ -6,8 +6,6 @@ public interface DecodeManager {
 
     void bind(CameraManager cameraManager, DecodeCallback decodeCallback);
 
-    void reset();
-
     void startDecode();
 
     void stopDecode();

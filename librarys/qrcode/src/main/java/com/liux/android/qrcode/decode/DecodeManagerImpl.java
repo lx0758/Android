@@ -17,21 +17,19 @@ public class DecodeManagerImpl implements DecodeManager, PreviewCallback {
     }
 
     @Override
-    public void reset() {
-        mDecodeHandler.reset();
-    }
-
-    @Override
     public void startDecode() {
         if (mCameraManager != null) {
             mCameraManager.setPreviewCallback(this);
             mCameraManager.startPreview();
         }
+        mDecodeHandler.prepare();
     }
 
     @Override
     public void stopDecode() {
-        if (mCameraManager != null) mCameraManager.stopPreview();
+        if (mCameraManager != null) {
+            mCameraManager.stopPreview();
+        }
     }
 
     @Override

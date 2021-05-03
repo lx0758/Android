@@ -1,53 +1,49 @@
 package com.liux.android.qrcode.decode;
 
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.MultiFormatReader;
-import com.google.zxing.PlanarYUVLuminanceSource;
-import com.google.zxing.Result;
-import com.google.zxing.common.HybridBinarizer;
-import com.liux.android.qrcode.QRCodeScanningFragment;
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.mlkit.vision.barcode.Barcode;
+import com.google.mlkit.vision.barcode.BarcodeScanner;
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
+import com.google.mlkit.vision.barcode.BarcodeScanning;
+import com.google.mlkit.vision.common.InputImage;
+import com.liux.android.qrcode.QRCode;
 import com.liux.android.qrcode.camrea.PreviewFrame;
 
-import java.util.Arrays;
-import java.util.concurrent.CountDownLatch;
+import java.util.List;
 
 public class DecodeHandler extends Handler {
+    public static boolean DEBUG = true;
 
     public static DecodeHandler create(final DecodeCallback decodeCallback) {
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final DecodeHandler[] decodeHandler = new DecodeHandler[1];
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Looper.prepare();
-                decodeHandler[0] = new DecodeHandler(decodeCallback);
-                countDownLatch.countDown();
-                Looper.loop();
-            }
-        },"Therad-Decoder").start();
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException ignore) {}
-        return decodeHandler[0];
+        HandlerThread handlerThread = new HandlerThread(DecodeHandler.class.getSimpleName());
+        handlerThread.start();
+        return new DecodeHandler(handlerThread.getLooper(), decodeCallback);
     }
 
     private boolean mCanRun = true;
     private boolean mProcessing = false;
 
     private int mLightnessIndex = 0;
-    private float[] mLightnessList = new float[]{1F, 1F, 1F};
+    private final float[] mLightnessList = new float[]{1F, 1F, 1F, 1F, 1F, 1F, 1F, 1F, 1F, 1F};
 
-    private DecodeCallback mDecodeCallback;
-    private MultiFormatReader mMultiFormatReader;
+    private final DecodeCallback mDecodeCallback;
 
-    private DecodeHandler(DecodeCallback decodeCallback) {
+    private final BarcodeScanner mBarcodeScanner;
+
+    public DecodeHandler(@NonNull Looper looper, DecodeCallback decodeCallback) {
+        super(looper);
         mDecodeCallback = decodeCallback;
-        reset();
+        BarcodeScannerOptions options = new BarcodeScannerOptions.Builder()
+                .setBarcodeFormats(Barcode.FORMAT_ALL_FORMATS)
+                .build();
+        mBarcodeScanner = BarcodeScanning.getClient(options);
     }
 
     @Override
@@ -55,32 +51,40 @@ public class DecodeHandler extends Handler {
         if (!mCanRun) return;
         mProcessing = true;
 
-        long time = System.currentTimeMillis();
+        final PreviewFrame previewFrame = (PreviewFrame) msg.obj;
 
-        PreviewFrame previewFrame = (PreviewFrame) msg.obj;
-        Result result = decode(previewFrame);
-        if (mCanRun && result != null) {
-            mCanRun = false;
-            mDecodeCallback.onDecodeResult(result);
-        }
-
-        float lightness = lightness(previewFrame);
-        mLightnessIndex = mLightnessIndex % mLightnessList.length;
-        mLightnessList[mLightnessIndex] = lightness;
-        mLightnessIndex ++;
         if (mCanRun) {
-            mDecodeCallback.onLightness(mLightnessList);
-        }
-
-        if (QRCodeScanningFragment.DEBUG) {
-            Log.d("DecodeHandler", String.format(
-                    "parsing frame: %dx%d, time: %dms, lightness: %s, text: %s",
+            InputImage inputImage = InputImage.fromByteArray(
+                    previewFrame.getYuv(),
                     previewFrame.getWidth(),
                     previewFrame.getHeight(),
-                    System.currentTimeMillis() - time,
-                    Arrays.toString(mLightnessList),
-                    result == null ? null : result.getText()
-            ));
+                    previewFrame.getAngle(),
+                    InputImage.IMAGE_FORMAT_YV12
+            );
+            mBarcodeScanner.process(inputImage).addOnSuccessListener(new OnSuccessListener<List<Barcode>>() {
+                @Override
+                public void onSuccess(List<Barcode> barcodes) {
+                    if (barcodes == null || barcodes.isEmpty()) return;
+                    if (mCanRun) {
+                        mCanRun = false;
+                        mDecodeCallback.onDecodeResult(QRCode.from(previewFrame, barcodes));
+                    }
+                }
+            });
+        }
+
+        float previewLightness = calculateLightness(previewFrame);
+        mLightnessIndex = mLightnessIndex % mLightnessList.length;
+        mLightnessList[mLightnessIndex] = previewLightness;
+        mLightnessIndex ++;
+        if (mCanRun) {
+            // 取采样亮度平均值
+            float lightnessCount = 0;
+            for (float light : mLightnessList) {
+                lightnessCount += light;
+            }
+            float lightness = lightnessCount / mLightnessList.length;
+            mDecodeCallback.onLightness(lightness);
         }
 
         mProcessing = false;
@@ -89,9 +93,9 @@ public class DecodeHandler extends Handler {
     /**
      * 重置
      */
-    public void reset() {
+    public void prepare() {
         mCanRun = true;
-        mMultiFormatReader = null;
+        mProcessing = false;
     }
 
     /**
@@ -110,39 +114,9 @@ public class DecodeHandler extends Handler {
      */
     public void destroy() {
         mCanRun = false;
+        mProcessing = false;
         getLooper().quit();
-    }
-
-    /**
-     * 解码 YUV 帧
-     * @param previewFrame
-     * @return
-     */
-    private Result decode(PreviewFrame previewFrame) {
-        Result result = null;
-
-        if (mMultiFormatReader == null) {
-            mMultiFormatReader = mDecodeCallback.onCreateReader();
-        }
-
-        try {
-            PlanarYUVLuminanceSource planarYUVLuminanceSource = new PlanarYUVLuminanceSource(
-                    previewFrame.getYuv(),
-                    previewFrame.getWidth(),
-                    previewFrame.getHeight(),
-                    0,
-                    0,
-                    previewFrame.getWidth(),
-                    previewFrame.getHeight(),
-                    false
-            );
-            BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(planarYUVLuminanceSource));
-            result = mMultiFormatReader.decodeWithState(binaryBitmap);
-        } catch (Exception ignore) {} finally {
-            if (mMultiFormatReader != null) mMultiFormatReader.reset();
-        }
-
-        return  result;
+        mBarcodeScanner.close();
     }
 
     /**
@@ -151,7 +125,7 @@ public class DecodeHandler extends Handler {
      * @param previewFrame
      * @return 取值 [0,1] 0_暗 1_亮
      */
-    private float lightness(PreviewFrame previewFrame) {
+    private float calculateLightness(PreviewFrame previewFrame) {
         // yuv.length - pixeCount * 1.5f 的目是判断图像格式是不是YUV420格式，只有是这种格式才相等
         // 因为 int 整形与float浮点直接比较会出问题，所以用 0.00001F 比
         byte[] yuv = previewFrame.getYuv();

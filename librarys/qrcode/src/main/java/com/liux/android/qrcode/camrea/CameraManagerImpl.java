@@ -17,11 +17,13 @@ public class CameraManagerImpl implements CameraManager, LightManager {
     private Camera.PreviewCallback mCameraPreviewCallback = new Camera.PreviewCallback() {
         @Override
         public void onPreviewFrame(byte[] data, Camera camera) {
+            if (data == null) return;
             if (mPreviewCallback != null) {
                 int width = mOpenCameraConfig.getCameraSize().x;
                 int height = mOpenCameraConfig.getCameraSize().y;
+                int angle = mOpenCameraConfig.getCameraToDisplayAngle();
                 mPreviewCallback.onPreviewFrame(
-                        new PreviewFrame(data, width, height)
+                        new PreviewFrame(data, width, height, angle)
                 );
             }
         }

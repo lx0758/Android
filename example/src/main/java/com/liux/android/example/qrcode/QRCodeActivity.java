@@ -18,6 +18,7 @@ import com.liux.android.qrcode.QRCodeDecoder;
 import com.liux.android.qrcode.QRCodeScanningActivity;
 import com.liux.android.tool.ActivityStarter;
 import com.liux.android.tool.TT;
+import com.liux.android.util.UriUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -189,33 +190,21 @@ public class QRCodeActivity extends AppCompatActivity {
 
                             @Override
                             public void onSingleSelect(Uri uri) {
-                                File file = new File(uri.getPath());
+                                try (InputStream inputStream = UriUtil.getInputStream(getApplicationContext(), uri)) {
 
-                                InputStream inputStream = null;
-                                FileInputStream fileInputStream = null;
-                                ByteArrayOutputStream byteArrayOutputStream = null;
-                                try {
-                                    fileInputStream = new FileInputStream(file);
-                                    byteArrayOutputStream = new ByteArrayOutputStream();
-
+                                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                                     byte[] buffer = new byte[1024];
                                     int len;
-                                    while ((len = fileInputStream.read(buffer)) > -1 ) {
+                                    while ((len = inputStream.read(buffer)) > -1 ) {
                                         byteArrayOutputStream.write(buffer, 0, len);
                                     }
 
-                                    inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+                                    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
 
-                                    String result = QRCodeDecoder.decode(inputStream);
+                                    String result = QRCodeDecoder.decode(byteArrayInputStream);
                                     TT.show(result != null ? ("解码成功:\n" + result) : "解码失败");
                                 } catch (Exception e) {
                                     e.printStackTrace();
-                                } finally {
-                                    try {
-                                        if (inputStream != null) inputStream.close();
-                                        if (fileInputStream != null) fileInputStream.close();
-                                        if (byteArrayOutputStream != null) byteArrayOutputStream.close();
-                                    } catch (Exception ignore) {}
                                 }
                             }
                         })

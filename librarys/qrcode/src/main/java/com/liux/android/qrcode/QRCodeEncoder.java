@@ -27,7 +27,6 @@ public class QRCodeEncoder {
      * @param outHeight
      * @param logo
      * @return
-     * @throws WriterException
      */
     public static Bitmap encode(String content, int outWidth, int outHeight, Bitmap logo) {
         // 获取适合的尺寸
