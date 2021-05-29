@@ -7,7 +7,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-public class ToolTest {
+public class BytesBuilderTest {
 
     @Test
     public void bytesBuilder() {

@@ -23,7 +23,7 @@ android {
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     api 'androidx.viewpager:viewpager:1.0.0'
-    api 'androidx.annotation:annotation:1.0.0'
+    api 'androidx.annotation:annotation:1.1.0'
 }
 
 apply from: '../release.gradle'

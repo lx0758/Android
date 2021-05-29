@@ -38,6 +38,10 @@ android {
     }
 }
 
+repositories {
+    jcenter()
+}
+
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
 

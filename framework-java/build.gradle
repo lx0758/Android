@@ -30,6 +30,10 @@ android {
     }
 }
 
+repositories {
+    jcenter()
+}
+
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -51,5 +55,5 @@ dependencies {
     api 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.3'
 
     // ViewBinding
-    compileOnly 'androidx.databinding:viewbinding:4.1.3'
+    compileOnly 'androidx.databinding:viewbinding:4.2.1'
 }
