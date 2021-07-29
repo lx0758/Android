@@ -5,13 +5,10 @@ plugins {
 }
 
 android {
-    compileSdkVersion COMPILE_SDK_VERSION as int
-    buildToolsVersion BUILD_TOOLS_VERSION as String
+    compileSdk COMPILE_SDK as int
     defaultConfig {
-        minSdkVersion MIN_SDK_VERSION as int
-        targetSdkVersion TARGET_SDK_VERSION as int
-        versionCode 1_00_00
-        versionName "1.0.0.0000"
+        minSdk MIN_SDK as int
+        targetSdk TARGET_SDK as int
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -30,33 +27,29 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
         sourceCompatibility JavaVersion.VERSION_1_8
     }
-    buildFeatures {
-        viewBinding = true
-    }
     kotlinOptions {
         jvmTarget = '1.8'
     }
-}
-
-repositories {
-    jcenter()
+    viewBinding {
+        enabled = true
+    }
 }
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
 
     // Kotlin support
-    api "org.jetbrains.kotlin:kotlin-stdlib:${KOTLIN_VERSION}"
-    api "org.jetbrains.kotlin:kotlin-reflect:${KOTLIN_VERSION}"
+    api 'org.jetbrains.kotlin:kotlin-stdlib:1.5.21'
+    api 'org.jetbrains.kotlin:kotlin-reflect:1.5.21'
     api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2'
-    api "androidx.lifecycle:lifecycle-runtime-ktx:2.2.0"
-    api "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    api "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
+    api "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
 
     // Library's
     api project(':librarys:http')
 
     // Material
-    api 'com.google.android.material:material:1.2.1'
+    api 'com.google.android.material:material:1.3.0'
 
     // Sentry
     api 'io.sentry:sentry-android:4.3.0'

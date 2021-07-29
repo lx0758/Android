@@ -27,7 +27,7 @@ ext."signing.secretKeyRingFile" = _signingSecretKeyRingFile
 
 task androidSourcesJar(type: Jar) {
     from android.sourceSets.main.java.source
-    classifier = 'sources'
+    getArchiveClassifier().set('sources')
 }
 
 afterEvaluate {

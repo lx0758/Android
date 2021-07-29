@@ -1,13 +1,12 @@
-apply plugin: 'com.android.library'
+plugins {
+    id 'com.android.library'
+}
 
 android {
-    compileSdkVersion COMPILE_SDK_VERSION as int
-    buildToolsVersion BUILD_TOOLS_VERSION as String
+    compileSdk COMPILE_SDK as int
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion TARGET_SDK_VERSION as int
-        versionCode getLibraryVersionCode()
-        versionName getLibraryVersionName()
+        minSdk 14
+        targetSdk TARGET_SDK as int
     }
     buildTypes {
         debug {
