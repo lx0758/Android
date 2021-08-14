@@ -1,13 +1,12 @@
-apply plugin: 'com.android.library'
+plugins {
+    id 'com.android.library'
+}
 
 android {
-    compileSdkVersion COMPILE_SDK_VERSION as int
-    buildToolsVersion BUILD_TOOLS_VERSION as String
+    compileSdk COMPILE_SDK as int
     defaultConfig {
-        minSdkVersion MIN_SDK_VERSION as int
-        targetSdkVersion TARGET_SDK_VERSION as int
-        versionCode getLibraryVersionCode()
-        versionName getLibraryVersionName()
+        minSdk MIN_SDK as int
+        targetSdk TARGET_SDK as int
     }
     buildTypes {
         debug {
@@ -18,13 +17,19 @@ android {
             consumerProguardFiles 'proguard-rules-aar.txt'
         }
     }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-    compileOnly 'androidx.fragment:fragment:1.2.4'
+    compileOnly 'androidx.fragment:fragment:1.2.5'
     compileOnly 'androidx.legacy:legacy-support-core-utils:1.0.0'
-    testImplementation 'junit:junit:4.12'
+
+    testImplementation 'cn.6xyun.android:test:+'
 }
 
 apply from: '../release.gradle'

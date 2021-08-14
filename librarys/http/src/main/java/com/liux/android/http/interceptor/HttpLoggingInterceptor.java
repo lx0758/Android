@@ -141,7 +141,7 @@ public class HttpLoggingInterceptor implements Interceptor {
         /** A {@link HttpLoggingInterceptor.Logger} defaults output appropriate for the current platform. */
         HttpLoggingInterceptor.Logger DEFAULT = new HttpLoggingInterceptor.Logger() {
             @Override
-            public void log(String message) {
+            public synchronized void log(String message) {
                 //Platform.get().log(INFO, message, null);
                 for (int i = 0, length = message.length(); i < length; i++) {
                     int newline = message.indexOf(SEPARATOR, i);

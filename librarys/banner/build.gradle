@@ -1,13 +1,12 @@
-apply plugin: 'com.android.library'
+plugins {
+    id 'com.android.library'
+}
 
 android {
-    compileSdkVersion COMPILE_SDK_VERSION as int
-    buildToolsVersion BUILD_TOOLS_VERSION as String
+    compileSdk COMPILE_SDK as int
     defaultConfig {
-        minSdkVersion MIN_SDK_VERSION as int
-        targetSdkVersion TARGET_SDK_VERSION as int
-        versionCode getLibraryVersionCode()
-        versionName getLibraryVersionName()
+        minSdk MIN_SDK as int
+        targetSdk TARGET_SDK as int
     }
     buildTypes {
         debug {
@@ -23,7 +22,7 @@ android {
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
     api 'androidx.viewpager:viewpager:1.0.0'
-    api 'androidx.annotation:annotation:1.0.0'
+    api 'androidx.annotation:annotation:1.2.0'
 }
 
 apply from: '../release.gradle'

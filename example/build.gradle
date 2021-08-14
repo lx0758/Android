@@ -1,0 +1,85 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    compileSdk COMPILE_SDK as int
+    signingConfigs {
+        config {
+            Properties properties = new Properties()
+            InputStream inputStream = rootProject.file('local.properties').newDataInputStream()
+            properties.load(inputStream)
+            def signStorePath = properties.getProperty('sign.StorePath')
+            def signStorePassword = properties.getProperty('sign.StorePassword')
+            def signKeyAlias = properties.getProperty('sign.KeyAlias')
+            def signKeyPassword = properties.getProperty('sign.KeyPassword')
+            inputStream.close()
+
+            storeFile file(signStorePath)
+            storePassword signStorePassword
+            keyAlias signKeyAlias
+            keyPassword signKeyPassword
+        }
+    }
+    defaultConfig {
+        applicationId "com.liux.android.example"
+        minSdk MIN_SDK as int
+        targetSdk TARGET_SDK as int
+        versionCode 1_00_00
+        versionName "1.0.0.0000"
+        multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            abiFilters 'armeabi-v7a', 'x86'
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.config
+        }
+        release {
+            debuggable false
+            jniDebuggable false
+            minifyEnabled true
+            shrinkResources true
+            zipAlignEnabled true
+            renderscriptDebuggable false
+            signingConfig signingConfigs.config
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+    viewBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation project(':librarys:abstracts')
+    implementation project(':librarys:banner')
+    implementation project(':librarys:downloader')
+    implementation project(':librarys:http')
+    implementation project(':librarys:list')
+    implementation project(':librarys:tool')
+    implementation project(':librarys:pay')
+    implementation project(':librarys:permission')
+    implementation project(':librarys:mediaer')
+    implementation project(':librarys:qrcode')
+    implementation project(':librarys:io')
+    implementation project(':librarys:util')
+    implementation project(':librarys:view')
+
+    // RxJava
+    implementation "io.reactivex.rxjava3:rxjava:3.0.10"
+    implementation "io.reactivex.rxjava3:rxandroid:3.0.0"
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+}

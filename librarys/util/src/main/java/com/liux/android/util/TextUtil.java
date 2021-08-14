@@ -121,9 +121,8 @@ public class TextUtil {
 
     public static byte[] Hmac(byte[] data, String algorithm, byte[] key) {
         SecretKey secretKey = new SecretKeySpec(key, algorithm);
-        Mac mac = null;
         try {
-            mac = Mac.getInstance(algorithm);
+            Mac mac = Mac.getInstance(algorithm);
             mac.init(secretKey);
             return mac.doFinal(data);
         } catch (NoSuchAlgorithmException|InvalidKeyException e) {

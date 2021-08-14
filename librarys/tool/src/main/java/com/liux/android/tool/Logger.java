@@ -131,15 +131,15 @@ public class Logger {
 
         msg = formatJson(msg);
         msg = formatXml(msg);
-        msg = msg + '\n' + Log.getStackTraceString(tr);
+        msg = msg + SEPARATOR + Log.getStackTraceString(tr);
 
         Log.println(priority, TAG, DIVIDE_1);
-        String[] stackTraces = stackTrace.split("\n");
+        String[] stackTraces = stackTrace.split(SEPARATOR);
         for (String trace : stackTraces) {
             Log.println(priority, TAG, DIVIDE_0 + trace);
         }
         Log.println(priority, TAG, DIVIDE_2);
-        String[] msgs = msg.split("\n");
+        String[] msgs = msg.split(SEPARATOR);
         for (String m : msgs) {
             Log.println(priority, TAG, DIVIDE_0 + m);
         }

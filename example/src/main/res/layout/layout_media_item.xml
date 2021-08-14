@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.liux.android.view.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:srl_align_width="true">
+
+    <ImageView
+        android:id="@+id/iv_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/tv_del"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:textColor="#F12929"
+        android:padding="10dp"
+        android:text="删"/>
+
+</com.liux.android.view.SquareRelativeLayout>

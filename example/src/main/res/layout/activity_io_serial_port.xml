@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请选择设备"/>
+
+    <Spinner
+        android:id="@+id/sp_device"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请选择波特率"/>
+
+    <Spinner
+        android:id="@+id/sp_baud_rate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/io_serial_port_baud_rate" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请选择数据位"/>
+
+    <Spinner
+        android:id="@+id/sp_data_bit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/io_serial_port_data_bit"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请选择停止位"/>
+
+    <Spinner
+        android:id="@+id/sp_stop_bit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/io_serial_port_stop_bit"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请选择检验位"/>
+
+    <Spinner
+        android:id="@+id/sp_parity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/io_serial_port_parity"/>
+
+    <Button
+        android:id="@+id/btn_connection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="连接"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="接收区"/>
+
+    <EditText
+        android:id="@+id/et_receive"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#ddd"
+        android:maxLines = "100"
+        android:gravity="left|top"
+        android:inputType="none"
+        android:scrollbars = "vertical|horizontal"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="发送区"/>
+
+    <EditText
+        android:id="@+id/et_send"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#ddd"
+        android:gravity="left|top"
+        android:inputType="textMultiLine"
+        android:maxLines = "100"
+        android:scrollbars = "vertical|horizontal"/>
+
+    <Button
+        android:id="@+id/btn_send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="发送"/>
+
+</LinearLayout>
