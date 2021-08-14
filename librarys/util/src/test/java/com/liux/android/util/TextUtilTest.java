@@ -1,40 +1,13 @@
 package com.liux.android.util;
 
-import android.util.Base64;
-
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Base64.class})
-public class TextUtilTest {
+import com.liux.android.test.RobolectricTest;
 
-    @Before
-    public void setUp() {
-        PowerMockito.mockStatic(Base64.class);
-        PowerMockito.when(Base64.encodeToString((byte[]) any(), anyInt())).thenAnswer(new Answer<String>() {
-            @Override
-            public String answer(InvocationOnMock invocation) throws Throwable {
-                return java.util.Base64.getEncoder().encodeToString((byte[]) invocation.getArgument(0));
-            }
-        });
-        PowerMockito.when(Base64.decode(anyString(), anyInt())).thenAnswer(new Answer<byte[]>() {
-            @Override
-            public byte[] answer(InvocationOnMock invocation) throws Throwable {
-                return java.util.Base64.getDecoder().decode(invocation.getArgument(0, String.class));
-            }
-        });
-    }
+public class TextUtilTest extends RobolectricTest {
 
     @Test
     public void MD5() {

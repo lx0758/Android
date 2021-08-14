@@ -1,23 +1,18 @@
 package com.liux.android.tool;
 
-import android.content.Context;
+import static org.junit.Assert.*;
+
+import com.liux.android.test.RobolectricTest;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowToast;
 
-import static org.junit.Assert.assertEquals;
-
-@RunWith(RobolectricTestRunner.class)
-public class TTTest {
+public class TTTest extends RobolectricTest {
 
     @Before
     public void setUp() {
-        Context context = RuntimeEnvironment.systemContext;
-        TT.setContext(context);
+        TT.setContext(getContext());
     }
 
     @Test

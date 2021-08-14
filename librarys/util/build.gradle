@@ -17,6 +17,11 @@ android {
             consumerProguardFiles 'proguard-rules-aar.txt'
         }
     }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -24,10 +29,7 @@ dependencies {
     compileOnly 'androidx.fragment:fragment:1.2.5'
     compileOnly 'androidx.legacy:legacy-support-core-utils:1.0.0'
 
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation "org.robolectric:robolectric:4.5.1"
-    testImplementation 'org.powermock:powermock-api-mockito2:2.0.9'
-    testImplementation 'org.powermock:powermock-module-junit4:2.0.9'
+    testImplementation 'cn.6xyun.android:test:+'
 }
 
 apply from: '../release.gradle'

@@ -40,3 +40,6 @@ AbstractsDialog扩展沉浸式的Dialog
 
 # [tool](./tool/README.md)/[util](/util/README.md)/[view](/view/README.md)
 其他一些库类/组件/控件的集合
+
+# [test](./test/README.md)
+搭建基于 JUnit4 Mockito PowerMockito Robolectric 的一个单元测试环境
