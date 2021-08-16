@@ -27,7 +27,7 @@ public abstract class RobolectricTest {
     public PowerMockRule rule = new PowerMockRule();
 
     @Before
-    public void setUp() {
+    public void setUpRobolectricTest() {
         ShadowLog.stream = System.out;
     }
 
