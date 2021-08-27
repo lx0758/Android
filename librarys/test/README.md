@@ -13,6 +13,9 @@ implementation 'cn.6xyun.android:test:x.y.z'
 ### x.y.z_202x-xx-xx
     1.
 
+### 0.1.2_2021-08-27
+    1. 增加参数化支持
+
 ### 0.1.1_2021-08-16
     1. 修改 @Before 方法名避免重载
 

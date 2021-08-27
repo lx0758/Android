@@ -4,10 +4,10 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class TestUtilTest extends RobolectricTest {
+public class TestRobolectric extends MavenRobolectricTest {
 
     @Test
-    public void base() {
+    public void test() {
         assertNotNull(getApplication());
         assertNotNull(getContext());
 
