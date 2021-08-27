@@ -3,7 +3,7 @@ package com.liux.android.test;
 import org.junit.runners.model.InitializationError;
 import org.robolectric.RobolectricTestRunner;
 
-public class MavenDependencyRobolectricTestRunner extends RobolectricTestRunner {
+public class MavenRobolectricTestRunner extends RobolectricTestRunner {
 
     static {
         System.setProperty("robolectric.dependency.repo.id", "aliyun");
@@ -12,7 +12,7 @@ public class MavenDependencyRobolectricTestRunner extends RobolectricTestRunner 
         System.setProperty("robolectric.dependency.repo.password", "");
     }
 
-    public MavenDependencyRobolectricTestRunner(Class<?> testClass) throws InitializationError {
+    public MavenRobolectricTestRunner(Class<?> testClass) throws InitializationError {
         super(testClass);
     }
 }
