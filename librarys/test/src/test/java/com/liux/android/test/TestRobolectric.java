@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class TestRobolectric extends MavenRobolectricTest {
+public class TestRobolectric extends RobolectricTest {
 
     @Test
     public void test() {
