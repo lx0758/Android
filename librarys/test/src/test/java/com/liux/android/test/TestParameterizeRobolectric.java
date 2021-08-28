@@ -8,7 +8,7 @@ import org.robolectric.ParameterizedRobolectricTestRunner;
 import java.util.Arrays;
 import java.util.Collection;
 
-public class TestParameterizeRobolectric extends MavenParameterizedRobolectricTest {
+public class TestParameterizeRobolectric extends ParameterizedRobolectricTest {
 
     @ParameterizedRobolectricTestRunner.Parameters(name = "index:{index} value:[{0},{1}]")
     public static Collection<Object[]> data() {
