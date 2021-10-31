@@ -27,12 +27,6 @@ add_library(
         src/main/cpp/serialport/SerialPortJNI.c
 )
 
-add_library(
-        io-i2c
-        SHARED
-        src/main/cpp/i2c/I2CJNI.c
-)
-
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
 # default, you only need to specify the name of the public NDK library
@@ -61,10 +55,5 @@ target_link_libraries( # Specifies the target library.
 
 target_link_libraries(
         io-serialport
-        ${log-lib}
-)
-
-target_link_libraries(
-        io-i2c
         ${log-lib}
 )

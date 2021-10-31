@@ -25,8 +25,5 @@ public class IOActivity extends AppCompatActivity {
         mViewBinding.btnGpio.setOnClickListener(view -> {
             startActivity(new Intent(this, GpioActivity.class));
         });
-        mViewBinding.btnI2c.setOnClickListener(view -> {
-            startActivity(new Intent(this, I2CActivity.class));
-        });
     }
 }

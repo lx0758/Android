@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.liux.android.example.databinding.ActivityIoGpioBinding;
+import com.liux.android.io.Shell;
 import com.liux.android.io.gpio.Gpio;
 import com.liux.android.tool.TT;
 
@@ -92,7 +93,7 @@ public class GpioActivity extends AppCompatActivity {
         String direction = (String) mViewBinding.spDirection.getSelectedItem();
         String edge = (String) mViewBinding.spEdge.getSelectedItem();
         try {
-            Gpio gpio = new Gpio(number, direction, edge);
+            Gpio gpio = new Gpio(Shell.DEFAULT, number, direction, edge);
             gpio.setCallback(new Gpio.Callback() {
                 @Override
                 public void onEvent(int type, int value) {

@@ -21,6 +21,8 @@ import android.util.Log;
 import androidx.annotation.IntDef;
 import androidx.annotation.StringDef;
 
+import com.liux.android.io.Shell;
+
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -78,6 +80,7 @@ public class SerialPort {
 
     private static final String TAG = "SerialPort";
 
+    private Shell shell;
     /*
      * Do not remove or rename the field mFd: it is used by native method close();
      */
@@ -98,20 +101,17 @@ public class SerialPort {
      * @throws SecurityException
      * @throws IOException
      */
-    public SerialPort(File device, @BaudRate int baudRate, @DataBit int dataBit, @StopBit int stopBit, @Parity String parity) throws SecurityException, IOException {
+    public SerialPort(Shell shell, File device, @BaudRate int baudRate, @DataBit int dataBit, @StopBit int stopBit, @Parity String parity) throws SecurityException, IOException {
+        this.shell = shell;
 
         /* Check access permission */
         if (!device.canRead() || !device.canWrite()) {
             try {
                 /* Missing read/write permission, trying to chmod the file */
-                Process su;
-                su = Runtime.getRuntime().exec("su");
-                String cmd = String.format("chmod 777 %s && exit\n", device.getAbsolutePath());
-                su.getOutputStream().write(cmd.getBytes());
-                if ((su.waitFor() != 0) || !device.canRead() || !device.canWrite()) throw new SecurityException();
+                String cmd = String.format("chmod 777 %s", device.getAbsolutePath());
+                if (shell.execResultCodeBySu(cmd) != 0 || !device.canRead() || !device.canWrite()) throw new IOException("change permission fail");
             } catch (Exception e) {
-                e.printStackTrace();
-                throw new SecurityException();
+                throw new SecurityException(e);
             }
         }
 
