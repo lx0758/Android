@@ -10,7 +10,7 @@ implementation 'cn.6xyun.android:permission:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1.
+    1.升级依赖版本
 
 ### 0.2.0_2019-08-26
     1.支持库迁移至AndroidX

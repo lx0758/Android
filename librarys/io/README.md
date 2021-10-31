@@ -12,7 +12,7 @@ implementation 'cn.6xyun.android:io:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1.
+    1.升级依赖版本
 
 ### 0.2.5_2020-08-21
     1.改串口为非阻塞式
