@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.liux.android.example.databinding.ActivityIoSerialPortBinding;
+import com.liux.android.io.Shell;
 import com.liux.android.io.serialport.SerialPort;
 import com.liux.android.io.serialport.SerialPortFinder;
 import com.liux.android.tool.TT;
@@ -49,7 +50,7 @@ public class SerialPortActivity extends AppCompatActivity {
                 close();
             }
         });
-        mViewBinding.btnConnection.setOnClickListener(view -> {
+        mViewBinding.btnSend.setOnClickListener(view -> {
             String content = mViewBinding.etSend.getText().toString();
             byte[] bytes = TextUtil.hex2Bytes(content);
             try {
@@ -85,7 +86,7 @@ public class SerialPortActivity extends AppCompatActivity {
         int stopBit = Integer.parseInt((String) mViewBinding.spStopBit.getSelectedItem());
         String parity = (String) mViewBinding.spParity.getSelectedItem();
         try {
-            serialPort = new SerialPort(new File(device), baudRate, dataBit, stopBit, parity);
+            serialPort = new SerialPort(Shell.DEFAULT, new File(device), baudRate, dataBit, stopBit, parity);
             readThread = new Thread(new Runnable() {
                 @Override
                 public void run() {

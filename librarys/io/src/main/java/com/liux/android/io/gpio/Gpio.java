@@ -5,13 +5,12 @@ import android.annotation.SuppressLint;
 import androidx.annotation.IntDef;
 import androidx.annotation.StringDef;
 
+import com.liux.android.io.Shell;
+
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.Arrays;
 import java.util.Locale;
 
 public class Gpio {
@@ -34,23 +33,25 @@ public class Gpio {
     public static final int VALUE_HIGH = 1;
     public static final int VALUE_LOW = 0;
 
-    private static final int RESULT_OK = 0;
-
+    // JNI 使用
     private long pollHandler;
 
+    private Shell shell;
     private int number;
     private String direction;
     private String edge;
 
     private Callback callback;
     private boolean alreadyOpen = false;
+    private boolean needUnExport = false;
 
     @SuppressLint("WrongConstant")
-    public Gpio(int number) {
-        this(number, DIRECTION_OUT, EDGE_NONE);
+    public Gpio(Shell shell, int number) {
+        this(shell, number, DIRECTION_OUT, EDGE_NONE);
     }
 
-    public Gpio(int number, @DIRECTION String direction, @EDGE String edge) {
+    public Gpio(Shell shell, int number, @DIRECTION String direction, @EDGE String edge) {
+        this.shell = shell;
         this.number = number;
         this.direction = direction;
         this.edge = edge;
@@ -62,41 +63,42 @@ public class Gpio {
 
     public void open() throws SecurityException, IOException {
         close();
-        File operate, valueFile = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/value", number));
+        File operate;
         // 导出引脚
-        if (!valueFile.exists()) {
-            operate = new File("/sys/class/gpio/export");
-            checkAndChangePermission(operate, true, true, false);
-            if (execToCode(String.format(Locale.CHINA, "echo %d > %s", number, operate.getAbsolutePath())) != RESULT_OK) {
+        operate = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/value", number));
+        if (!operate.exists()) {
+            if (shell.execResultCodeBySu(String.format(Locale.CHINA, "echo %d > /sys/class/gpio/export", number)) != 0) {
                 throw new IOException("Export gpio port " + number + " failure");
             }
+            needUnExport = true;
         }
-        if (!valueFile.exists()) {
+        if (!operate.exists()) {
             throw new IOException("Export gpio port " + number + " failure");
         }
+        checkAndChangePermission(operate, true, true, false);
         // 设置方向
         operate = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/direction", number));
         checkAndChangePermission(operate, true, true, false);
-        if (execToCode(String.format("echo %s > %s", direction, operate.getAbsolutePath())) != RESULT_OK) {
+        if (shell.execResultCodeBySu(String.format("echo %s > %s", direction, operate.getAbsolutePath())) != 0) {
             throw new IOException("Set gpio port " + number + " direction failure");
         }
         // 设置中断
         operate = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/edge", number));
         checkAndChangePermission(operate, true, true, false);
         if (DIRECTION_IN.equals(direction)) {
-            if (execToCode(String.format("echo %s > %s", edge, operate.getAbsolutePath())) != RESULT_OK) {
+            if (shell.execResultCodeBySu(String.format("echo %s > %s", edge, operate.getAbsolutePath())) != 0) {
                 throw new IOException("Set gpio port " + number + " edge failure");
             }
         } else {
-            if (execToCode(String.format("echo %s > %s", EDGE_NONE, operate.getAbsolutePath())) != RESULT_OK) {
+            if (shell.execResultCodeBySu(String.format("echo %s > %s", EDGE_NONE, operate.getAbsolutePath())) != 0) {
                 throw new IOException("Set gpio port " + number + " edge failure");
             }
         }
         // 设置监听
         if (DIRECTION_IN.equals(direction)) {
-            checkAndChangePermission(valueFile, true, false, false);
             jniPollStart();
         }
+        // 记录状态
         alreadyOpen = true;
     }
 
@@ -113,10 +115,15 @@ public class Gpio {
     }
 
     public void close() {
-        jniPollStop();
-        if (new File("/sys/class/gpio/unexport").canWrite()) {
-            execToCode(String.format(Locale.CHINA, "echo %d > /sys/class/gpio/unexport", number));
+        // 停止监听
+        if (DIRECTION_IN.equals(direction)) {
+            jniPollStop();
         }
+        // 清理导出
+        if (needUnExport) {
+            shell.execResultCodeBySu(String.format(Locale.CHINA, "echo %d > /sys/class/gpio/unexport", number));
+        }
+        // 清理状态
         alreadyOpen = false;
     }
 
@@ -125,14 +132,14 @@ public class Gpio {
         if (!DIRECTION_OUT.equals(direction)) return false;
         File valueFile = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/value", number));
         if (!valueFile.canWrite()) throw new SecurityException();
-        return execToCode(String.format(Locale.CHINA, "echo %d > %s", value, valueFile.getAbsolutePath())) == RESULT_OK;
+        return shell.execResultCodeBySu(String.format(Locale.CHINA, "echo %d > %s", value, valueFile.getAbsolutePath())) == 0;
     }
 
     public @VALUE int get() throws SecurityException {
         if (!isOpen()) return VALUE_LOW;
         File valueFile = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/value", number));
         if (!valueFile.canRead()) throw new SecurityException();
-        String result = execToString(String.format("cat %s", valueFile.getAbsolutePath()));
+        String result = shell.execResultStringBySu(String.format("cat %s", valueFile.getAbsolutePath()));
         if (result == null) return VALUE_LOW;
         return Integer.parseInt(result);
     }
@@ -144,71 +151,11 @@ public class Gpio {
         if (canExec && !file.canExecute()) mask = mask | 0b001;
         try {
             /* Missing read/write permission, trying to chmod the file */
-            Process su;
-            su = Runtime.getRuntime().exec("su");
-            String cmd = String.format(Locale.CHINA, "chmod %d%d%d %s && exit\n", mask, mask, mask, file.getAbsolutePath());
-            su.getOutputStream().write(cmd.getBytes());
-            if ((su.waitFor() != 0)) throw new SecurityException();
+            String cmd = String.format(Locale.CHINA, "chmod %d%d%d %s", mask, mask, mask, file.getAbsolutePath());
+            if (shell.execResultCodeBySu(cmd) != 0) throw new IOException("change permission fail");
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new SecurityException();
+            throw new SecurityException(e);
         }
-    }
-
-    private int execToCode(String cmd) {
-        Process process = null;
-        try {
-            process = Runtime.getRuntime().exec("sh");
-            exec(process, cmd);
-            return process.exitValue();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return process != null ? process.exitValue() : -1;
-        }
-    }
-
-    private String execToString(String cmd) {
-        Process process = null;
-        try {
-            process = Runtime.getRuntime().exec("sh");
-            return exec(process, cmd);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private String exec(Process process, String... cmds) throws IOException {
-        OutputStream outputStream = process.getOutputStream();
-        InputStream inputStream = process.getInputStream();
-
-        for (String cmd : cmds) {
-            outputStream.write(cmd.getBytes());
-            outputStream.write("\n".getBytes());
-        }
-        outputStream.write("exit".getBytes());
-        outputStream.write("\n".getBytes());
-        outputStream.flush();
-
-        try {
-            if (process.waitFor() != 0) throw new IOException();
-        } catch (InterruptedException e) {
-            return null;
-        }
-
-        String result = null;
-        int length = inputStream.available();
-        if (length > 0) {
-            byte[] bytes = new byte[inputStream.available()];
-            inputStream.read(bytes);
-            if (bytes[length - 1] == '\n') bytes = Arrays.copyOf(bytes, length - 1);
-            result = new String(bytes);
-        }
-
-        outputStream.close();
-        inputStream.close();
-
-        return result;
     }
 
     private native void jniPollStart();

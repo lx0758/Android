@@ -10,7 +10,7 @@ implementation 'cn.6xyun.android:abstracts:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1.
+    1.升级依赖版本
 
 ### 0.2.4_2020-09-07
     1.移除若干功能(大人,时代变了)

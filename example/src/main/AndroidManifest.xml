@@ -75,9 +75,6 @@
             android:name=".qrcode.QRCodeGenerateActivity"
             android:label="QRCodeGenerate"/>
 
-        <activity android:name=".rx.RXActivity"
-            android:label="RX"/>
-
         <activity android:name=".io.IOActivity"
             android:label="IO"/>
         <activity android:name=".io.SerialPortActivity"
@@ -85,8 +82,6 @@
             android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".io.GpioActivity"
             android:label="Gpio"/>
-        <activity android:name=".io.I2CActivity"
-            android:label="I2C"/>
 
         <activity android:name=".other.ToolActivity"
             android:label="Other"/>

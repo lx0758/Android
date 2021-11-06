@@ -22,11 +22,12 @@ android {
             path 'CMakeLists.txt'
         }
     }
+    ndkVersion '23.1.7779620'
 }
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    compileOnly 'androidx.annotation:annotation:1.1.0'
+    compileOnly 'androidx.annotation:annotation:1.2.0'
 }
 
 apply from: '../release.gradle'
@@ -34,7 +35,7 @@ static def getLibraryArtifactId() {
     return 'io'
 }
 static def getLibraryVersionName() {
-    return '0.2.5'
+    return '0.2.6'
 }
 static def getLibraryVersionCode() {
     def version = getLibraryVersionName().replace("-SNAPSHOT", "")

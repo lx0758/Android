@@ -24,13 +24,6 @@
             android:textAllCaps="false"
             android:text="GPIO"/>
 
-        <Button
-            android:id="@+id/btn_i2c"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:text="I2C"/>
-
     </LinearLayout>
 
 </RelativeLayout>
