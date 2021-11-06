@@ -12,6 +12,9 @@ implementation 'cn.6xyun.android:io:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
+    1.
+
+### 0.2.6_2021-11-06
     1.升级依赖版本
     2.移除 i2c 相关代码
     3.优化 gpio 实现
