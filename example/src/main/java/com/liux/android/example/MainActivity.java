@@ -22,6 +22,7 @@ import com.liux.android.example.pay.PayActivity;
 import com.liux.android.example.permission.PermissionActivity;
 import com.liux.android.example.picturer.MediaerActivity;
 import com.liux.android.example.qrcode.QRCodeActivity;
+import com.liux.android.example.service.ServiceActivity;
 import com.liux.android.example.util.UtilActivity;
 import com.liux.android.example.view.ViewActivity;
 
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         add("Permission", "运行时/悬浮窗/安装 权限申请过程封装", PermissionActivity.class);
         add("QRCode", "基于 ZXing 的一个 QRCode 扫描/生成库", QRCodeActivity.class);
         add("Tool", "一些工具类集合", ToolActivity.class);
+        add("Service", "服务治理框架", ServiceActivity.class);
         add("Util", "一些工具方法集合", UtilActivity.class);
         add("View", "一些自定义 View 集合", ViewActivity.class);
 

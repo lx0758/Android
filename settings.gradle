@@ -17,6 +17,7 @@ include ':framework-kotlin'
 include ':framework-java'
 
 include ':librarys:abstracts'
+include ':librarys:service'
 include ':librarys:banner'
 include ':librarys:downloader'
 include ':librarys:http'

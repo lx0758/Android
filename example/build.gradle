@@ -31,7 +31,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         ndk {
-            abiFilters 'armeabi-v7a', 'x86'
+            abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
         }
     }
     buildTypes {
@@ -72,6 +72,7 @@ dependencies {
     implementation project(':librarys:mediaer')
     implementation project(':librarys:qrcode')
     implementation project(':librarys:io')
+    implementation project(':librarys:service')
     implementation project(':librarys:util')
     implementation project(':librarys:view')
 

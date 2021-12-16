@@ -8,6 +8,9 @@ AbstractsActivity重定义了生命周期细节,增加输入法与触控事件�
 AbstractsFragment实现了Fragment懒加载模型,处理某些情况下Fragment状态异常的问题
 AbstractsDialog扩展沉浸式的Dialog
 
+# [service](./service/README.md)
+提供一个便捷的服务治理框架
+
 # [banner](./banner/README.md)
 实现一个适配器模式的伪无限滚动的Banner
 

@@ -13,6 +13,7 @@ include ':framework-kotlin'
 include ':framework-java'
 
 include ':librarys:abstracts'
+include ':librarys:service'
 include ':librarys:banner'
 include ':librarys:downloader'
 include ':librarys:http'
@@ -25,6 +26,7 @@ include ':librarys:io'
 include ':librarys:tool'
 include ':librarys:util'
 include ':librarys:view'
+include ':librarys:test'
 
 def androidDir = rootProject.projectDir.path + File.separator + 'android'
 rootProject.children.each { project ->
@@ -58,6 +60,7 @@ include ':framework-kotlin'
 include ':framework-java'
 
 include ':librarys:abstracts'
+include ':librarys:service'
 include ':librarys:banner'
 include ':librarys:downloader'
 include ':librarys:http'
@@ -70,6 +73,7 @@ include ':librarys:io'
 include ':librarys:tool'
 include ':librarys:util'
 include ':librarys:view'
+include ':librarys:test'
 
 Properties properties = new Properties()
 InputStream inputStream = file('local.properties').newDataInputStream()
