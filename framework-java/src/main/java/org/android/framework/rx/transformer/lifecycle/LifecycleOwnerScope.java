@@ -1,5 +1,8 @@
 package org.android.framework.rx.transformer.lifecycle;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
@@ -9,6 +12,7 @@ public class LifecycleOwnerScope extends Scope implements LifecycleEventObserver
 
     private LifecycleOwner lifecycleOwner;
     private Lifecycle.Event event;
+    private Handler handler = new Handler(Looper.getMainLooper());
 
     public LifecycleOwnerScope(LifecycleOwner lifecycleOwner) {
         this.lifecycleOwner = lifecycleOwner;
@@ -22,13 +26,19 @@ public class LifecycleOwnerScope extends Scope implements LifecycleEventObserver
 
     @Override
     protected void onSubscribe() {
-        lifecycleOwner.getLifecycle().addObserver(this);
+        handler.post(() -> {
+            lifecycleOwner.getLifecycle().addObserver(this);
+        });
     }
 
     @Override
     protected void onFinally() {
-        lifecycleOwner.getLifecycle().removeObserver(this);
-        lifecycleOwner = null;
+        handler.post(() -> {
+            if (lifecycleOwner != null) {
+                lifecycleOwner.getLifecycle().removeObserver(this);
+                lifecycleOwner = null;
+            }
+        });
     }
 
     @Override
