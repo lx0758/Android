@@ -3,12 +3,15 @@ package org.android.framework.ui.selector;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -43,11 +46,12 @@ public class SelectorDialog extends AppCompatDialogFragment implements SelectorF
 
     private String title = "请选择";
     private int maxLevel = Integer.MAX_VALUE;
+    private boolean showSearch = false;
 
     // 已选择的数据
-    private List<SelectorBean> selectedBeans = new ArrayList<>();
+    private final List<SelectorBean> selectedBeans = new ArrayList<>();
     // 缓存的数据源
-    private List<List<? extends SelectorBean>> selectorBeanLists = new ArrayList<>();
+    private final List<List<? extends SelectorBean>> selectorBeanLists = new ArrayList<>();
 
     public SelectorDialog(Selector selector, SelectorRequest.Handler handler, SelectorCallback selectorCallback) {
         this.selector = selector;
@@ -63,19 +67,25 @@ public class SelectorDialog extends AppCompatDialogFragment implements SelectorF
     }
 
     public void setMaxLevel(int maxLevel) {
-        if (maxLevel < 1) maxLevel = 1;
         this.maxLevel = maxLevel;
+    }
+
+    public void setShowSearch(boolean showSearch) {
+        this.showSearch = showSearch;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_selector, container, false);
+
         textView = view.findViewById(R.id.tv_title);
-        textView.setText(title);
         tabLayout = view.findViewById(R.id.tl_tab);
         viewPager = view.findViewById(R.id.vp_content);
-        if (maxLevel == 1) tabLayout.setVisibility(View.GONE);
+
+        textView.setText(title);
+        tabLayout.setVisibility(maxLevel > 1 ? View.VISIBLE : View.GONE);
+
         return view;
     }
 
@@ -132,6 +142,10 @@ public class SelectorDialog extends AppCompatDialogFragment implements SelectorF
         selectedBeans.add(selectorBean);
 
         requestLevel(level + 1, selectorBean);
+    }
+
+    boolean getShowSearch() {
+        return showSearch;
     }
 
     List<? extends SelectorBean> getSelectedBeans() {

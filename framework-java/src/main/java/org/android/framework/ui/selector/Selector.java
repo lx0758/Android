@@ -28,6 +28,11 @@ public class Selector {
         return this;
     }
 
+    public Selector setShowSearch(boolean showSearch) {
+        selectorDialog.setShowSearch(showSearch);
+        return this;
+    }
+
     public void show(FragmentManager fragmentManager, String tag) {
         handler.request(new SelectorRequest(selectorDialog), 1, null, new SelectorRequest.Callback() {
             @Override

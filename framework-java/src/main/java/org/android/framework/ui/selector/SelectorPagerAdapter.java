@@ -16,7 +16,7 @@ import androidx.viewpager.widget.PagerAdapter;
  */
 public class SelectorPagerAdapter extends FragmentPagerAdapter {
 
-    private SelectorDialog selectorDialog;
+    private final SelectorDialog selectorDialog;
 
     public SelectorPagerAdapter(SelectorDialog selectorDialog) {
         super(selectorDialog.getChildFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
@@ -26,7 +26,7 @@ public class SelectorPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         SelectorFragment selectorFragment = new SelectorFragment();
-        selectorFragment.refresh(position + 1, selectorDialog.getSelectorBeans().get(position), selectorDialog);
+        selectorFragment.refresh(position + 1, selectorDialog.getShowSearch(), selectorDialog.getSelectorBeans().get(position), selectorDialog);
         return selectorFragment;
     }
 
@@ -34,7 +34,7 @@ public class SelectorPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         SelectorFragment selectorFragment = (SelectorFragment) super.instantiateItem(container, position);
-        selectorFragment.refresh(position + 1, selectorDialog.getSelectorBeans().get(position), selectorDialog);
+        selectorFragment.refresh(position + 1, selectorDialog.getShowSearch(), selectorDialog.getSelectorBeans().get(position), selectorDialog);
         return selectorFragment;
     }
 
