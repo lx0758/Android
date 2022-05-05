@@ -39,8 +39,8 @@ dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
 
     // Kotlin support
-    api 'org.jetbrains.kotlin:kotlin-stdlib:1.5.31'
-    api 'org.jetbrains.kotlin:kotlin-reflect:1.5.31'
+    api 'org.jetbrains.kotlin:kotlin-stdlib:1.6.21'
+    api 'org.jetbrains.kotlin:kotlin-reflect:1.6.21'
     api 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1'
     api "androidx.lifecycle:lifecycle-runtime-ktx:2.3.1"
     api "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
@@ -49,7 +49,7 @@ dependencies {
     api project(':librarys:http')
 
     // Material
-    api 'com.google.android.material:material:1.3.0'
+    api 'com.google.android.material:material:1.4.0'
 
     // Sentry
     api 'io.sentry:sentry-android:4.3.0'
