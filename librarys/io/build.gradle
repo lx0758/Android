@@ -4,8 +4,10 @@ plugins {
 
 android {
     compileSdk COMPILE_SDK as int
+    ndkVersion = NDK_TOOLS
+    buildToolsVersion BUILD_TOOLS
     defaultConfig {
-        minSdk 14
+        minSdk MIN_SDK as int
         targetSdk TARGET_SDK as int
     }
     buildTypes {
@@ -19,7 +21,13 @@ android {
     }
     externalNativeBuild {
         cmake {
-            path 'CMakeLists.txt'
+            path 'src/main/cpp/CMakeLists.txt'
+            version ("3.18.1")
+        }
+    }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
         }
     }
 }

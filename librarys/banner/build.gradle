@@ -4,6 +4,7 @@ plugins {
 
 android {
     compileSdk COMPILE_SDK as int
+    buildToolsVersion BUILD_TOOLS
     defaultConfig {
         minSdk MIN_SDK as int
         targetSdk TARGET_SDK as int
@@ -15,6 +16,11 @@ android {
         release {
             minifyEnabled false
             consumerProguardFiles 'proguard-rules-aar.txt'
+        }
+    }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
         }
     }
 }
