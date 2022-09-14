@@ -23,9 +23,9 @@ import java.util.HashMap;
 
 public class VideoDataFetcher implements DataFetcher<InputStream> {
 
-    private Context context;
-    private Video video;
-    private int width, height;
+    private final Context context;
+    private final Video video;
+    private final int width, height;
 
     VideoDataFetcher(Context context, Video video, int width, int height, Options options) {
         this.context = context;
@@ -36,8 +36,7 @@ public class VideoDataFetcher implements DataFetcher<InputStream> {
 
     @Override
     public void loadData(@NonNull Priority priority, @NonNull final DataCallback<? super InputStream> dataCallback) {
-        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
-        try {
+        try(MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever()) {
             Uri uri = video.getUri();
             String scheme = uri.getScheme();
             if(scheme == null || scheme.length() == 0 || scheme.equals("file")) {
@@ -61,8 +60,6 @@ public class VideoDataFetcher implements DataFetcher<InputStream> {
             dataCallback.onDataReady(inputStream);
         } catch (Exception e) {
             dataCallback.onLoadFailed(e);
-        } finally {
-            mediaMetadataRetriever.release();
         }
     }
 
