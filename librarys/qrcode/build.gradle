@@ -23,6 +23,7 @@ android {
             withSourcesJar()
         }
     }
+    namespace 'com.liux.android.qrcode'
 }
 
 dependencies {

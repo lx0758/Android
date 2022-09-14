@@ -30,6 +30,7 @@ android {
             withSourcesJar()
         }
     }
+    namespace 'com.liux.android.io'
 }
 
 dependencies {

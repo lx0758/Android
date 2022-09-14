@@ -56,6 +56,7 @@ android {
     buildFeatures {
         viewBinding true
     }
+    namespace 'com.liux.android.example'
 }
 
 dependencies {

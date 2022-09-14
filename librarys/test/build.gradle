@@ -36,6 +36,7 @@ android {
             withSourcesJar()
         }
     }
+    namespace 'com.liux.android.test'
 }
 
 dependencies {

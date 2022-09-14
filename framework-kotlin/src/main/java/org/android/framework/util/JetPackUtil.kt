@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.viewbinding.ViewBinding
 import java.lang.reflect.ParameterizedType
 
+@Suppress("UNCHECKED_CAST")
 object JetPackUtil {
 
     private val FACTORY: ViewModelProvider.Factory = ViewModelProvider.NewInstanceFactory()

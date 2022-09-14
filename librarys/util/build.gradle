@@ -28,6 +28,7 @@ android {
             includeAndroidResources = true
         }
     }
+    namespace 'com.liux.android.util'
 }
 
 dependencies {

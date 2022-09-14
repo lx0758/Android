@@ -28,6 +28,7 @@ android {
     buildFeatures {
         viewBinding true
     }
+    namespace 'org.android.framework'
 }
 
 dependencies {
