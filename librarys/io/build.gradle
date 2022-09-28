@@ -3,8 +3,8 @@ plugins {
 }
 
 android {
+    ndkVersion NDK_TOOLS
     compileSdk COMPILE_SDK as int
-    ndkVersion = NDK_TOOLS
     buildToolsVersion BUILD_TOOLS
     defaultConfig {
         minSdk MIN_SDK as int
