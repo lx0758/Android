@@ -23,6 +23,9 @@ android {
             withSourcesJar()
         }
     }
+    buildFeatures {
+        aidl true
+    }
     namespace 'com.liux.android.service'
 }
 
