@@ -1,4 +1,4 @@
-package com.liux.android.http.tool;
+package com.liux.android.tool;
 
 import android.content.Context;
 import java.io.ByteArrayInputStream;
@@ -16,12 +16,12 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
-public class HandshakeCertificates {
+public class SSLCreater {
 
     private final X509TrustManager x509TrustManager;
     private final SSLSocketFactory sslSocketFactory;
 
-    private HandshakeCertificates(X509TrustManager x509TrustManager, SSLSocketFactory sslSocketFactory) {
+    private SSLCreater(X509TrustManager x509TrustManager, SSLSocketFactory sslSocketFactory) {
         this.x509TrustManager = x509TrustManager;
         this.sslSocketFactory = sslSocketFactory;
     }
@@ -30,7 +30,7 @@ public class HandshakeCertificates {
         return x509TrustManager;
     }
 
-    public SSLSocketFactory getSslSocketFactory() {
+    public SSLSocketFactory getSSLSocketFactory() {
         return sslSocketFactory;
     }
 
@@ -50,7 +50,7 @@ public class HandshakeCertificates {
             }
         }
 
-        public Builder addPlatformTrustedCertificates() {
+        public Builder addPlatformCertificates() {
             try {
                 TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
                 trustManagerFactory.init((KeyStore) null);
@@ -66,30 +66,31 @@ public class HandshakeCertificates {
             return this;
         }
 
-        public Builder addTrustedCertificateForAssets(Context context, String fileName) {
+        public Builder addX509CertificateForAssets(Context context, String fileName) {
             try {
                 InputStream inputStream = context.getAssets().open(fileName);
-                addTrustedCertificate(inputStream);
+                addX509Certificate(inputStream);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             return this;
         }
 
-        public Builder addTrustedCertificateForRaw(Context context, int id) {
-            InputStream inputStream = context.getResources().openRawResource(id);
-            return addTrustedCertificate(inputStream);
+        public Builder addX509CertificateForRaw(Context context, int id) {
+            return addX509Certificate(
+                    context.getResources().openRawResource(id)
+            );
         }
 
-        public Builder addTrustedCertificate(String string) {
-            return addTrustedCertificate(string.getBytes());
+        public Builder addX509Certificate(String string) {
+            return addX509Certificate(string.getBytes());
         }
 
-        public Builder addTrustedCertificate(byte[] bytes) {
-            return addTrustedCertificate(new ByteArrayInputStream(bytes));
+        public Builder addX509Certificate(byte[] bytes) {
+            return addX509Certificate(new ByteArrayInputStream(bytes));
         }
 
-        public Builder addTrustedCertificate(InputStream inputStream) {
+        public Builder addX509Certificate(InputStream inputStream) {
             try {
                 Collection<? extends Certificate> certificates = certificateFactory.generateCertificates(inputStream);
                 for (Certificate certificate : certificates) {
@@ -104,7 +105,7 @@ public class HandshakeCertificates {
             return this;
         }
 
-        public HandshakeCertificates build() {
+        public SSLCreater build() {
             try {
                 TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
                 trustManagerFactory.init(keyStore);
@@ -115,7 +116,7 @@ public class HandshakeCertificates {
                 sslContext.init(null, new TrustManager[]{x509TrustManager}, null);
                 SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
 
-                return new HandshakeCertificates(x509TrustManager, sslSocketFactory);
+                return new SSLCreater(x509TrustManager, sslSocketFactory);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
