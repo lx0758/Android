@@ -13,6 +13,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Locale;
 
+/** @noinspection AliControlFlowStatementWithoutBraces */
 public class Gpio {
 
     public static final String DIRECTION_IN = "in";
@@ -61,37 +62,37 @@ public class Gpio {
         this.callback = callback;
     }
 
-    public void open() throws SecurityException, IOException {
+    public void open() throws SecurityException {
         close();
         File operate;
         // 导出引脚
         operate = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/value", number));
         if (!operate.exists()) {
-            if (shell.execResultCodeBySu(String.format(Locale.CHINA, "echo %d > /sys/class/gpio/export", number)) != 0) {
-                throw new IOException("Export gpio port " + number + " failure");
+            if (shell.execResultCode(String.format(Locale.CHINA, "echo %d > /sys/class/gpio/export", number)) != 0) {
+                throw new SecurityException("Export gpio port " + number + " failure");
             }
             needUnExport = true;
         }
         if (!operate.exists()) {
-            throw new IOException("Export gpio port " + number + " failure");
+            throw new SecurityException("Export gpio port " + number + " failure");
         }
         checkAndChangePermission(operate, true, true, false);
         // 设置方向
         operate = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/direction", number));
         checkAndChangePermission(operate, true, true, false);
-        if (shell.execResultCodeBySu(String.format("echo %s > %s", direction, operate.getAbsolutePath())) != 0) {
-            throw new IOException("Set gpio port " + number + " direction failure");
+        if (shell.execResultCode(String.format("echo %s > %s", direction, operate.getAbsolutePath())) != 0) {
+            throw new SecurityException("Set gpio port " + number + " direction failure");
         }
         // 设置中断
         operate = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/edge", number));
         checkAndChangePermission(operate, true, true, false);
         if (DIRECTION_IN.equals(direction)) {
-            if (shell.execResultCodeBySu(String.format("echo %s > %s", edge, operate.getAbsolutePath())) != 0) {
-                throw new IOException("Set gpio port " + number + " edge failure");
+            if (shell.execResultCode(String.format("echo %s > %s", edge, operate.getAbsolutePath())) != 0) {
+                throw new SecurityException("Set gpio port " + number + " edge failure");
             }
         } else {
-            if (shell.execResultCodeBySu(String.format("echo %s > %s", EDGE_NONE, operate.getAbsolutePath())) != 0) {
-                throw new IOException("Set gpio port " + number + " edge failure");
+            if (shell.execResultCode(String.format("echo %s > %s", EDGE_NONE, operate.getAbsolutePath())) != 0) {
+                throw new SecurityException("Set gpio port " + number + " edge failure");
             }
         }
         // 设置监听
@@ -121,7 +122,7 @@ public class Gpio {
         }
         // 清理导出
         if (needUnExport) {
-            shell.execResultCodeBySu(String.format(Locale.CHINA, "echo %d > /sys/class/gpio/unexport", number));
+            shell.execResultCode(String.format(Locale.CHINA, "echo %d > /sys/class/gpio/unexport", number));
         }
         // 清理状态
         alreadyOpen = false;
@@ -132,14 +133,14 @@ public class Gpio {
         if (!DIRECTION_OUT.equals(direction)) return false;
         File valueFile = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/value", number));
         if (!valueFile.canWrite()) throw new SecurityException();
-        return shell.execResultCodeBySu(String.format(Locale.CHINA, "echo %d > %s", value, valueFile.getAbsolutePath())) == 0;
+        return shell.execResultCode(String.format(Locale.CHINA, "echo %d > %s", value, valueFile.getAbsolutePath())) == 0;
     }
 
     public @VALUE int get() throws SecurityException {
         if (!isOpen()) return VALUE_LOW;
         File valueFile = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/value", number));
         if (!valueFile.canRead()) throw new SecurityException();
-        String result = shell.execResultStringBySu(String.format("cat %s", valueFile.getAbsolutePath()));
+        String result = shell.execResultString(String.format("cat %s", valueFile.getAbsolutePath()));
         if (result == null) return VALUE_LOW;
         return Integer.parseInt(result);
     }
@@ -152,7 +153,7 @@ public class Gpio {
         try {
             /* Missing read/write permission, trying to chmod the file */
             String cmd = String.format(Locale.CHINA, "chmod %d%d%d %s", mask, mask, mask, file.getAbsolutePath());
-            if (shell.execResultCodeBySu(cmd) != 0) throw new IOException("change permission fail");
+            if (shell.execResultCode(cmd) != 0) throw new SecurityException("change permission fail");
         } catch (Exception e) {
             throw new SecurityException(e);
         }

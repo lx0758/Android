@@ -7,17 +7,13 @@ import java.util.Arrays;
 
 public abstract class Shell {
 
-    public abstract int execResultCodeBy(String cmd);
+    public abstract int execResultCode(String cmd);
 
     public abstract String execResultString(String cmd);
 
-    public abstract int execResultCodeBySu(String cmd);
-
-    public abstract String execResultStringBySu(String cmd);
-
-    public static Shell SU_ROOT = new Shell() {
+    public static Shell DEFAULT = new Shell() {
         @Override
-        public int execResultCodeBy(String cmd) {
+        public int execResultCode(String cmd) {
             try {
                 return createProcess(cmd).waitFor();
             } catch (Exception e) {
@@ -38,10 +34,16 @@ public abstract class Shell {
             }
         }
 
+        private Process createProcess(String cmd) throws IOException {
+            return Runtime.getRuntime().exec(cmd);
+        }
+    };
+
+    public static Shell SU_ROOT = new Shell() {
         @Override
-        public int execResultCodeBySu(String cmd) {
+        public int execResultCode(String cmd) {
             try {
-                return createProcess("su", "root", cmd).waitFor();
+                return createProcess(cmd).waitFor();
             } catch (Exception e) {
                 e.printStackTrace();
                 return -1;
@@ -49,10 +51,10 @@ public abstract class Shell {
         }
 
         @Override
-        public String execResultStringBySu(String cmd) {
+        public String execResultString(String cmd) {
             try {
                 return readProcess(
-                        createProcess("su", "root", cmd)
+                        createProcess(cmd)
                 );
             } catch (Exception e) {
                 e.printStackTrace();
@@ -60,14 +62,14 @@ public abstract class Shell {
             }
         }
 
-        private Process createProcess(String... cmds) throws IOException {
-            return Runtime.getRuntime().exec(cmds);
+        private Process createProcess(String cmd) throws IOException {
+            return Runtime.getRuntime().exec(new String[]{"su", "root", cmd});
         }
     };
 
     public static Shell SU_C = new Shell() {
         @Override
-        public int execResultCodeBy(String cmd) {
+        public int execResultCode(String cmd) {
             try {
                 return createProcess(cmd).waitFor();
             } catch (Exception e) {
@@ -88,38 +90,16 @@ public abstract class Shell {
             }
         }
 
-        @Override
-        public int execResultCodeBySu(String cmd) {
-            try {
-                return createProcess("su", "-c", cmd).waitFor();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return -1;
-            }
-        }
-
-        @Override
-        public String execResultStringBySu(String cmd) {
-            try {
-                return readProcess(
-                        createProcess("su", "-c", cmd)
-                );
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        private Process createProcess(String... cmds) throws IOException {
-            return Runtime.getRuntime().exec(cmds);
+        private Process createProcess(String cmd) throws IOException {
+            return Runtime.getRuntime().exec(new String[]{"su", "-c", cmd});
         }
     };
 
     public static Shell SU_EXEC = new Shell() {
         @Override
-        public int execResultCodeBy(String cmd) {
+        public int execResultCode(String cmd) {
             try {
-                return exec(cmd).waitFor();
+                return createProcess(cmd).waitFor();
             } catch (Exception e) {
                 e.printStackTrace();
                 return -1;
@@ -130,7 +110,7 @@ public abstract class Shell {
         public String execResultString(String cmd) {
             try {
                 return readProcess(
-                        exec(cmd)
+                        createProcess(cmd)
                 );
             } catch (Exception e) {
                 e.printStackTrace();
@@ -138,33 +118,7 @@ public abstract class Shell {
             }
         }
 
-        @Override
-        public int execResultCodeBySu(String cmd) {
-            try {
-                return execBuSu(cmd).waitFor();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return -1;
-            }
-        }
-
-        @Override
-        public String execResultStringBySu(String cmd) {
-            try {
-                return readProcess(
-                        execBuSu(cmd)
-                );
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        private Process exec(String cmd) throws IOException {
-            return Runtime.getRuntime().exec(cmd);
-        }
-
-        private Process execBuSu(String cmd) throws IOException {
+        private Process createProcess(String cmd) throws IOException {
             Process process = Runtime.getRuntime().exec("su");
 
             OutputStream outputStream = process.getOutputStream();
@@ -177,8 +131,6 @@ public abstract class Shell {
             return process;
         }
     };
-
-    public static Shell DEFAULT = SU_ROOT;
 
     public static String readProcess(Process process) throws IOException, InterruptedException {
         String result = null;

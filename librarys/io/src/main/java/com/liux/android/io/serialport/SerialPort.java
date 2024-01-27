@@ -109,7 +109,7 @@ public class SerialPort {
             try {
                 /* Missing read/write permission, trying to chmod the file */
                 String cmd = String.format("chmod 777 %s", device.getAbsolutePath());
-                if (shell.execResultCodeBySu(cmd) != 0 || !device.canRead() || !device.canWrite()) throw new IOException("change permission fail");
+                if (shell.execResultCode(cmd) != 0 || !device.canRead() || !device.canWrite()) throw new IOException("change permission fail");
             } catch (Exception e) {
                 throw new SecurityException(e);
             }
