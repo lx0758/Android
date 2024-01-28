@@ -68,7 +68,7 @@ public class HttpLoggingInterceptor implements Interceptor {
     private static final String DIVIDE_3;
     static {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 20; i++) {
             builder.append('━');
         }
         DIVIDE_1 = "┏" + builder.toString();
