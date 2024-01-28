@@ -101,7 +101,7 @@ public class SerialPort {
      * @throws SecurityException
      * @throws IOException
      */
-    public SerialPort(Shell shell, File device, @BaudRate int baudRate, @DataBit int dataBit, @StopBit int stopBit, @Parity String parity) throws SecurityException, IOException {
+    public SerialPort(Shell shell, File device, @BaudRate int baudRate, @DataBit int dataBit, @StopBit int stopBit, @Parity String parity, int vMin, int vTime) throws SecurityException, IOException {
         this.shell = shell;
 
         /* Check access permission */
@@ -115,7 +115,7 @@ public class SerialPort {
             }
         }
 
-        mFileDescriptor = jniOpen(device.getAbsolutePath(), baudRate, dataBit, stopBit, parity.charAt(0));
+        mFileDescriptor = jniOpen(device.getAbsolutePath(), baudRate, dataBit, stopBit, parity.charAt(0), (byte) vMin, (byte) vTime);
         if (mFileDescriptor == null) {
             Log.e(TAG, "native open returns null");
             throw new IOException();
@@ -202,7 +202,7 @@ public class SerialPort {
     }
 
     // JNI
-    private static native FileDescriptor jniOpen(String path, int baudRate, int dataBit, int stopBit, char parity);
+    private static native FileDescriptor jniOpen(String path, int baudRate, int dataBit, int stopBit, char parity, byte vMin, byte vTime);
     private static native void jniClose(FileDescriptor fd);
     static {
         System.loadLibrary("io-serialport");

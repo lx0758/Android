@@ -72,7 +72,7 @@ static speed_t getBaudRate(jint baudRate) {
 }
 
 JNIEXPORT jobject JNICALL Java_com_liux_android_io_serialport_SerialPort_jniOpen
-        (JNIEnv *env, jclass jclazz, jstring path, jint baudRate, jint dataBit, jint stopBit, jchar parity) {
+        (JNIEnv *env, jclass jclazz, jstring path, jint baudRate, jint dataBit, jint stopBit, jchar parity, jbyte vMin, jbyte vTime) {
     int fd;
     speed_t speed;
     jobject fileDescriptor;
@@ -99,11 +99,10 @@ JNIEXPORT jobject JNICALL Java_com_liux_android_io_serialport_SerialPort_jniOpen
         jboolean isCopy;
         const char *localPath = (*env)->GetStringUTFChars(env, path, &isCopy);
         int flags = O_RDWR | O_NOCTTY;
-        LOGD("Opening serial port %s with flags 0x%x", localPath, flags);
         fd = open(localPath, flags);
-        LOGD("open() fd = %d", fd);
+        LOGD("open() flags 0x%x fd = %d", flags, fd);
         (*env)->ReleaseStringUTFChars(env, path, localPath);
-        if (fd == -1) {
+        if (fd < 0) {
             LOGE("Cannot open port");
             return NULL;
         }
@@ -112,24 +111,19 @@ JNIEXPORT jobject JNICALL Java_com_liux_android_io_serialport_SerialPort_jniOpen
     /* Configure device */
     {
         struct termios option;
+        memset(&option, 0, sizeof(option));
 
-        LOGD("Configuring serial port");
-        if (tcgetattr(fd, &option)) {
-            LOGE("tcgetattr() failed");
-            close(fd);
-            return NULL;
-        }
+        tcgetattr(fd, &option);
 
-        // cfmakeraw(&option);
-        option.c_iflag &= ~(IGNBRK|BRKINT|PARMRK|ISTRIP|INLCR|IGNCR|ICRNL|IXON);
-        option.c_oflag &= ~OPOST;
-        option.c_lflag &= ~(ECHO|ECHONL|ICANON|ISIG|IEXTEN);
-        option.c_cflag &= ~(CSIZE|PARENB);
-
+        cfmakeraw(&option);
         cfsetispeed(&option, speed);
         cfsetospeed(&option, speed);
 
+        option.c_cc[VMIN]     = vMin;
+        option.c_cc[VTIME]    = vTime;
+
         // 设置数据位数
+        option.c_cflag &= ~CSIZE;
         switch (dataBit) {
             case 5:
                 option.c_cflag |= CS5;
@@ -191,9 +185,6 @@ JNIEXPORT jobject JNICALL Java_com_liux_android_io_serialport_SerialPort_jniOpen
                 LOGD("set parity is N [default]");
                 break;
         }
-        // 超时设置
-        option.c_cc[VTIME] = 0;
-        option.c_cc[VMIN] = 0;
 
         if (tcsetattr(fd, TCSANOW, &option)) {
             LOGE("tcsetattr() failed");
