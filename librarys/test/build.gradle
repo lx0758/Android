@@ -22,13 +22,14 @@ android {
         unitTests {
             includeAndroidResources = true
         }
-        // MavenRoboSettings.java
-        // http://robolectric.org/configuring/#system-properties
         unitTests.all {
-            systemProperty 'robolectric.dependency.repo.id', 'aliyun'
-            systemProperty 'robolectric.dependency.repo.url', 'https://maven.aliyun.com/repository/public/'
+            // http://robolectric.org/configuring/#system-properties
+            systemProperty 'robolectric.dependency.repo.id', 'central'
+            systemProperty 'robolectric.dependency.repo.url', 'https://repo1.maven.org/maven2/'
             systemProperty 'robolectric.dependency.repo.username', ''
             systemProperty 'robolectric.dependency.repo.password', ''
+            systemProperty 'robolectric.dependency.proxy.host', project.findProperty("systemProp.https.proxyHost") ?: System.getenv("ROBOLECTRIC_PROXY_HOST")
+            systemProperty 'robolectric.dependency.proxy.port', project.findProperty("systemProp.https.proxyPort") ?: System.getenv("ROBOLECTRIC_PROXY_PORT")
         }
     }
     publishing {
@@ -43,11 +44,9 @@ dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
 
     api 'junit:junit:4.13.2'
-    api 'androidx.test:core:1.4.0'
-    api "org.robolectric:robolectric:4.6.1"
-    api 'org.powermock:powermock-api-mockito2:2.0.9'
-    api 'org.powermock:powermock-module-junit4-rule:2.0.9'
-    api 'org.powermock:powermock-classloading-xstream:2.0.9'
+    api 'androidx.test:core:1.5.0'
+    api "org.robolectric:robolectric:4.12"
+    api 'org.mockito:mockito-core:5.11.0'
 }
 
 apply from: '../release.gradle'

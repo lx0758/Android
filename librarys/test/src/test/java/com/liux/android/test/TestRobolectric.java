@@ -2,12 +2,17 @@ package com.liux.android.test;
 
 import static org.junit.Assert.*;
 
+import android.os.Build;
+
 import org.junit.Test;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.robolectric.annotation.Config;
 
-@Config(shadows = ShadowBusiness.class)
-@PowerMockIgnore({"com.liux.android.test.*"})
+/**
+ * @see org.robolectric.plugins.DefaultSdkProvider
+ */
+@Config(sdk = Build.VERSION_CODES.S, shadows = ShadowBusiness.class)
 public class TestRobolectric extends RobolectricTest {
 
     @Test
@@ -21,6 +26,17 @@ public class TestRobolectric extends RobolectricTest {
 
     @Test
     public void testShadow() {
+        Business.staticMethod();
+        new Business().method();
+    }
+
+    @Test
+    public void testMock() {
+        MockedStatic<Business> mockStaticBusiness = Mockito.mockStatic(Business.class);
+        mockStaticBusiness.when(Business::staticMethod).then(invocation -> {
+            System.out.println("MockStaticBusiness, staticMethod");
+            return null;
+        });
         Business.staticMethod();
         new Business().method();
     }

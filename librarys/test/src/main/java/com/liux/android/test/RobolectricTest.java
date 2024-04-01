@@ -2,29 +2,16 @@ package com.liux.android.test;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.Build;
 
 import androidx.test.core.app.ApplicationProvider;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 
 @RunWith(RobolectricTestRunner.class)
-/**
- * @see org.robolectric.plugins.DefaultSdkProvider
- */
-@Config(sdk = Build.VERSION_CODES.R)
-@PowerMockIgnore({"org.robolectric.*", "org.powermock.*", "org.mockito.*", "android.*", "androidx.*", "org.json.*", "sun.security.*", "javax.net.*"})
 public abstract class RobolectricTest {
-
-    @Rule
-    public PowerMockRule rule = new PowerMockRule();
 
     @Before
     public void setUpRobolectricTest() {

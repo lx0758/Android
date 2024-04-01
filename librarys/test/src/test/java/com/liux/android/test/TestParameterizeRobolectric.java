@@ -2,12 +2,19 @@ package com.liux.android.test;
 
 import static org.junit.Assert.*;
 
+import android.os.Build;
+
 import org.junit.Test;
 import org.robolectric.ParameterizedRobolectricTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
 import java.util.Collection;
 
+/**
+ * @see org.robolectric.plugins.DefaultSdkProvider
+ */
+@Config(sdk = Build.VERSION_CODES.S)
 public class TestParameterizeRobolectric extends ParameterizedRobolectricTest {
 
     @ParameterizedRobolectricTestRunner.Parameters(name = "index:{index} value:[{0},{1}]")
