@@ -20,7 +20,7 @@ import com.liux.android.http.request.DownloadCallback;
 import com.liux.android.http.request.Request;
 import com.liux.android.http.request.RequestManager;
 import com.liux.android.http.request.UICallback;
-import com.liux.android.http.tool.HandshakeCertificates;
+import com.liux.android.tool.SSLCreator;
 import com.liux.android.tool.TT;
 import com.liux.android.util.StreamUtil;
 
@@ -428,27 +428,27 @@ public class HTTPActivity extends AppCompatActivity {
     }
 
     private void onCertificateTest(View view) {
-        HandshakeCertificates handshakeCertificates = new HandshakeCertificates.Builder()
-                .addPlatformTrustedCertificates()
-                .addTrustedCertificateForAssets(this, "certs/6xrootca.pem")
-                .addTrustedCertificateForAssets(this, "certs/isrgrootx1.pem")
+        SSLCreator SSLCreator = new SSLCreator.Builder()
+                .addCertificateForPlatform()
+                .addCertificateForAssets(this, "certs/6xrootca.pem")
+                .addCertificateForAssets(this, "certs/isrgrootx1.pem")
                 .build();
-        openUrl(handshakeCertificates, "https://www.baidu.com/");
-        openUrl(handshakeCertificates, "https://6xyun.cn/");
-        openUrl(handshakeCertificates, "https://valid-isrgrootx1.letsencrypt.org/");
-        openUrl(handshakeCertificates, "https://revoked-isrgrootx1.letsencrypt.org/");
-        openUrl(handshakeCertificates, "https://expired-isrgrootx1.letsencrypt.org/");
-        openUrl(handshakeCertificates, "https://docker.6xyun.lan/");
+        openUrl(SSLCreator, "https://www.baidu.com/");
+        openUrl(SSLCreator, "https://6xyun.cn/");
+        openUrl(SSLCreator, "https://valid-isrgrootx1.letsencrypt.org/");
+        openUrl(SSLCreator, "https://revoked-isrgrootx1.letsencrypt.org/");
+        openUrl(SSLCreator, "https://expired-isrgrootx1.letsencrypt.org/");
+        openUrl(SSLCreator, "https://docker.6xyun.lan/");
     }
 
-    private void openUrl(HandshakeCertificates handshakeCertificates, String url) {
+    private void openUrl(SSLCreator SSLCreator, String url) {
         new Thread(() -> {
             long beginTime = System.currentTimeMillis();
             try {
                 HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(url).openConnection();
                 if (httpURLConnection instanceof HttpsURLConnection) {
                     HttpsURLConnection httpsURLConnection = (HttpsURLConnection) httpURLConnection;
-                    httpsURLConnection.setSSLSocketFactory(handshakeCertificates.getSslSocketFactory());
+                    httpsURLConnection.setSSLSocketFactory(SSLCreator.getSSLSocketFactory());
                 }
 
                 if (httpURLConnection.getResponseCode() != 200) throw new IOException("Could not retrieve response code from HttpUrlConnection.");

@@ -94,12 +94,7 @@ public class GpioActivity extends AppCompatActivity {
         String edge = (String) mViewBinding.spEdge.getSelectedItem();
         try {
             Gpio gpio = new Gpio(Shell.DEFAULT, number, direction, edge);
-            gpio.setCallback(new Gpio.Callback() {
-                @Override
-                public void onEvent(int type, int value) {
-                    printLn(true, value);
-                }
-            });
+            gpio.setCallback((type, value) -> printLn(true, value));
             gpio.open();
             this.gpio = gpio;
 
@@ -112,7 +107,7 @@ public class GpioActivity extends AppCompatActivity {
             mViewBinding.btnGet.setEnabled(true);
 
             mViewBinding.btnOpen.setText("关闭");
-        } catch (IOException |SecurityException e) {
+        } catch (SecurityException e) {
             e.printStackTrace();
             TT.show("打开端口失败");
         }

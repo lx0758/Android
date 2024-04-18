@@ -86,7 +86,7 @@ public class SerialPortActivity extends AppCompatActivity {
         int stopBit = Integer.parseInt((String) mViewBinding.spStopBit.getSelectedItem());
         String parity = (String) mViewBinding.spParity.getSelectedItem();
         try {
-            serialPort = new SerialPort(Shell.DEFAULT, new File(device), baudRate, dataBit, stopBit, parity);
+            serialPort = new SerialPort(Shell.DEFAULT, new File(device), baudRate, dataBit, stopBit, parity, 1, 0);
             readThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
