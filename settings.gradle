@@ -20,8 +20,7 @@ rootProject.name='Android'
 
 include ':example'
 
-include ':framework-kotlin'
-include ':framework-java'
+include ':framework'
 
 include ':librarys:abstracts'
 include ':librarys:service'

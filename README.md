@@ -9,8 +9,7 @@ git submodule add -b master --name android git@github.com:lx0758/Android.git and
 ```
 然后在 `setting.gradle` 中按需添加模块:
 ```gradle
-include ':framework-kotlin'
-include ':framework-java'
+include ':framework'
 
 include ':librarys:abstracts'
 include ':librarys:service'
@@ -42,7 +41,7 @@ rootProject.children.each { project ->
 ```
 然后依赖使用:
 ```gradle
-implementation project(':framework-kotlin')
+implementation project(':framework')
 
 implementation project(':librarys:list')
 implementation project(':librarys:http')
@@ -56,8 +55,7 @@ android.dir={path}
 ```
 然后在 `setting.gradle` 中按需添加模块:
 ```gradle
-include ':framework-kotlin'
-include ':framework-java'
+include ':framework'
 
 include ':librarys:abstracts'
 include ':librarys:service'
@@ -94,7 +92,7 @@ rootProject.children.each { project ->
 ```
 然后依赖使用:
 ```gradle
-implementation project(':framework-kotlin')
+implementation project(':framework')
 
 implementation project(':librarys:list')
 implementation project(':librarys:http')
@@ -106,4 +104,4 @@ implementation project(':librarys:abstracts')
 详见文档: [README.md](./librarys/README.md)
 
 # License
-[The MIT License Copyright (c) 2017-2020 6x](/LICENSE.txt)
+[The MIT License Copyright (c) 2017-2024 6x](/LICENSE.txt)
