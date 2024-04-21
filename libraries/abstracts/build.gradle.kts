@@ -33,15 +33,7 @@ dependencies {
     api(libs.androidx.appcompat)
 }
 
-//apply("../release.gradle.kts")
-//fun getLibraryArtifactId(): String {
-//    return "abstracts"
-//}
-//fun getLibraryVersionName(): String {
-//    return "0.2.4"
-//}
-//fun getLibraryVersionCode(): Int {
-//    val version = getLibraryVersionName().replace("-SNAPSHOT", "")
-//    val versions = version.split("\\.")
-//    return versions[0].toInt() * 10000 + versions[1].toInt() * 100 + versions[2].toInt() * 1
-//}
+ext.apply {
+    set("artifactId", "abstracts")
+    set("version", "0.2.4")
+}

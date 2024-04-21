@@ -34,15 +34,7 @@ dependencies {
     compileOnly(libs.material)
 }
 
-//apply from: '../release.gradle'
-//static def getLibraryArtifactId() {
-//    return 'view'
-//}
-//static def getLibraryVersionName() {
-//    return '0.2.1'
-//}
-//static def getLibraryVersionCode() {
-//    def version = getLibraryVersionName().replace("-SNAPSHOT", "")
-//    def versions = version.split("\\.")
-//    return Integer.parseInt(versions[0]) * 10000 + Integer.parseInt(versions[1]) * 100 + Integer.parseInt(versions[2]) * 1
-//}
+ext.apply {
+    set("artifactId", "view")
+    set("version", "0.2.1")
+}

@@ -1,0 +1,75 @@
+// https://developer.android.com/studio/build/maven-publish-plugin?hl=zh-cn
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+Properties properties = new Properties()
+InputStream inputStream = rootProject.file('local.properties').newDataInputStream()
+properties.load(inputStream)
+inputStream.close()
+
+// 组件信息
+def projectGroupId = 'cn.6xyun.android'
+def projectArtifactId = ext.get("artifactId")
+def projectVersion = ext.get("version")
+// 仓库信息
+def sonatypeUsername = properties.getProperty('ossrhUsername')
+def sonatypePassword = properties.getProperty('ossrhPassword')
+// GPG公钥(ID是公钥后8位)
+def signingKeyId = properties.getProperty('signing.keyId')
+def signingPassword = properties.getProperty('signing.password')
+def signingSecretKeyRingFile = properties.getProperty('signing.secretKeyRingFile')
+
+ext.'signing.keyId' = signingKeyId
+ext.'signing.password' = signingPassword
+ext.'signing.secretKeyRingFile' = signingSecretKeyRingFile
+
+afterEvaluate {
+    publishing {
+        repositories {
+            maven {
+                name 'sonatype'
+                def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+                def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+                url = projectVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                credentials {
+                    username sonatypeUsername
+                    password sonatypePassword
+                }
+            }
+        }
+        publications {
+            sonatype(MavenPublication) {
+                from components.release
+                groupId projectGroupId
+                artifactId projectArtifactId
+                version projectVersion
+                pom {
+                    name = projectArtifactId
+                    description = 'A set of Android libraries'
+                    url = 'https://github.com/lx0758/Android'
+                    licenses {
+                        license {
+                            name = 'The MIT License'
+                            url = 'ttps://github.com/lx0758/Android/blob/master/LICENSE.txt'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'lx0758'
+                            name = 'Liux'
+                            email = 'lx0758@qq.com'
+                        }
+                    }
+                    scm {
+                        url = 'https://github.com/lx0758/Android'
+                        connection = 'scm:git@github.com:lx0758/Android.git'
+                        developerConnection = 'scm:git@github.com:lx0758/Android.git'
+                    }
+                }
+            }
+        }
+    }
+    signing {
+        sign publishing.publications
+    }
+}

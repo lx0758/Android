@@ -35,15 +35,7 @@ dependencies {
     compileOnly(libs.androidx.annotation)
 }
 
-//apply from: '../release.gradle'
-//static def getLibraryArtifactId() {
-//    return 'service'
-//}
-//static def getLibraryVersionName() {
-//    return '0.1.0'
-//}
-//static def getLibraryVersionCode() {
-//    def version = getLibraryVersionName().replace("-SNAPSHOT", "")
-//    def versions = version.split("\\.")
-//    return Integer.parseInt(versions[0]) * 10000 + Integer.parseInt(versions[1]) * 100 + Integer.parseInt(versions[2]) * 1
-//}
+ext.apply {
+    set("artifactId", "service")
+    set("version", "0.1.0")
+}
