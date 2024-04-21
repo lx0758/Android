@@ -11,28 +11,28 @@ git submodule add -b master --name android git@github.com:lx0758/Android.git and
 ```gradle
 include ':framework'
 
-include ':librarys:abstracts'
-include ':librarys:service'
-include ':librarys:banner'
-include ':librarys:downloader'
-include ':librarys:http'
-include ':librarys:list'
-include ':librarys:pay'
-include ':librarys:permission'
-include ':librarys:mediaer'
-include ':librarys:qrcode'
-include ':librarys:io'
-include ':librarys:tool'
-include ':librarys:util'
-include ':librarys:view'
-include ':librarys:test'
+include ':libraries:abstracts'
+include ':libraries:service'
+include ':libraries:banner'
+include ':libraries:downloader'
+include ':libraries:http'
+include ':libraries:list'
+include ':libraries:pay'
+include ':libraries:permission'
+include ':libraries:mediaer'
+include ':libraries:qrcode'
+include ':libraries:io'
+include ':libraries:tool'
+include ':libraries:util'
+include ':libraries:view'
+include ':libraries:test'
 
 def androidDir = rootProject.projectDir.path + File.separator + 'android'
 rootProject.children.each { project ->
     if (project.path.startsWith(':framework')) {
         project.projectDir = file(androidDir + File.separator + project.name)
     }
-    if (project.path.startsWith(':librarys')) {
+    if (project.path.startsWith(':libraries')) {
         project.children.each { childProject ->
             childProject.projectDir = file(androidDir + File.separator + 'librarys' + File.separator + childProject.name)
         }
@@ -43,9 +43,9 @@ rootProject.children.each { project ->
 ```gradle
 implementation project(':framework')
 
-implementation project(':librarys:list')
-implementation project(':librarys:http')
-implementation project(':librarys:tool')
+implementation project(':libraries:list')
+implementation project(':libraries:http')
+implementation project(':libraries:tool')
 ```
 
 ## 本地引用
@@ -57,21 +57,21 @@ android.dir={path}
 ```gradle
 include ':framework'
 
-include ':librarys:abstracts'
-include ':librarys:service'
-include ':librarys:banner'
-include ':librarys:downloader'
-include ':librarys:http'
-include ':librarys:list'
-include ':librarys:pay'
-include ':librarys:permission'
-include ':librarys:mediaer'
-include ':librarys:qrcode'
-include ':librarys:io'
-include ':librarys:tool'
-include ':librarys:util'
-include ':librarys:view'
-include ':librarys:test'
+include ':libraries:abstracts'
+include ':libraries:service'
+include ':libraries:banner'
+include ':libraries:downloader'
+include ':libraries:http'
+include ':libraries:list'
+include ':libraries:pay'
+include ':libraries:permission'
+include ':libraries:mediaer'
+include ':libraries:qrcode'
+include ':libraries:io'
+include ':libraries:tool'
+include ':libraries:util'
+include ':libraries:view'
+include ':libraries:test'
 
 Properties properties = new Properties()
 InputStream inputStream = file('local.properties').newDataInputStream()
@@ -82,7 +82,7 @@ rootProject.children.each { project ->
     if (project.path.startsWith(':framework')) {
         project.projectDir = file(androidDir + File.separator + project.name)
     }
-    if (project.path.startsWith(':librarys')) {
+    if (project.path.startsWith(':libraries')) {
         project.children.each { childProject ->
             childProject.parent = rootProject
             childProject.projectDir = file(androidDir + File.separator + 'librarys' + File.separator + childProject.name)
@@ -94,10 +94,10 @@ rootProject.children.each { project ->
 ```gradle
 implementation project(':framework')
 
-implementation project(':librarys:list')
-implementation project(':librarys:http')
-implementation project(':librarys:tool')
-implementation project(':librarys:abstracts')
+implementation project(':libraries:list')
+implementation project(':libraries:http')
+implementation project(':libraries:tool')
+implementation project(':libraries:abstracts')
 ```
 
 ## 远程依赖

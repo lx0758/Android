@@ -42,7 +42,7 @@ dependencies {
         "include" to "*.jar",
     ))
 
-    api(project(":librarys:http"))
+    api(project(":libraries:http"))
 
     api(libs.androidx.viewmodel.ktx)
     api(libs.material)

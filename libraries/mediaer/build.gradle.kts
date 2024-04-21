@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.liux.android.tool"
+    namespace = "com.liux.android.mediaer"
     compileSdk = libs.versions.compileSdk.get().toInt()
     buildToolsVersion = libs.versions.buildTools.get()
     defaultConfig {
@@ -17,8 +17,8 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
             )
         }
     }
@@ -30,18 +30,26 @@ android {
 }
 
 dependencies {
-    compileOnly(libs.androidx.fragment)
+    compileOnly(project(":libraries:http"))
 
-    testImplementation(project(":librarys:test"))
-    testImplementation(project(":librarys:util"))
+    api(libs.chrisbanes.photoview)
+    api(libs.yalantis.ucrop) {
+        exclude(group = "com.squareup.okhttp3")
+    }
+    api(libs.glide)
+    api(libs.glide.okhttp3.integration) {
+        exclude(group = "com.squareup.okhttp3")
+    }
+
+    annotationProcessor(libs.glide.compiler)
 }
 
-//apply from: '../release.gradle'
+//apply from: "../release.gradle"
 //static def getLibraryArtifactId() {
-//    return 'tool'
+//    return "mediaer"
 //}
 //static def getLibraryVersionName() {
-//    return '0.2.4'
+//    return "0.2.2"
 //}
 //static def getLibraryVersionCode() {
 //    def version = getLibraryVersionName().replace("-SNAPSHOT", "")
