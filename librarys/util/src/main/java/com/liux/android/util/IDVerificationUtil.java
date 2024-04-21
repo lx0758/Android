@@ -178,7 +178,7 @@ public class IDVerificationUtil {
      * @return
      */
     private static SimpleDateFormat getDateFromat() {
-        return new SimpleDateFormat("yyyyMMdd", Locale.CHINA);
+        return new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
     }
 
     /**

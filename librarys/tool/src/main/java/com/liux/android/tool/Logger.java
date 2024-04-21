@@ -109,7 +109,7 @@ public class Logger {
         }
 
         return String.format(
-                Locale.CHINA,
+                Locale.getDefault(),
                 "%s" + SEPARATOR + "%s.%s(%s.java:%d)",
                 Thread.currentThread(),
                 stackTraceElement.getClassName(),

@@ -61,7 +61,7 @@ public abstract class ApiObserver<T> implements Observer<T>, SingleObserver<T>, 
             message = "网络连接失败,请检查网络连接";
         } else if (e instanceof HttpException) {
             HttpException httpException = (HttpException) e;
-            message = String.format(Locale.CHINA, "网络连接失败,请检查网络连接\ncode:%d\nmessage:%s", httpException.code(), httpException.message());
+            message = String.format(Locale.getDefault(), "网络连接失败,请检查网络连接\ncode:%d\nmessage:%s", httpException.code(), httpException.message());
         } else if (e instanceof JsonProcessingException) {
             message = "服务器数据解析异常";
         } else if (e instanceof RespException){

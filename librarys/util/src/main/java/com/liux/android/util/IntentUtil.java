@@ -29,7 +29,7 @@ public class IntentUtil {
      */
     public static Intent startGeneralMapNavigator(Context context, double lat, double lng) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(String.format(Locale.CHINA, "geo:%f,%f", lat, lng)));
+        intent.setData(Uri.parse(String.format(Locale.getDefault(), "geo:%f,%f", lat, lng)));
         return intent;
     }
 
@@ -43,7 +43,7 @@ public class IntentUtil {
     public static Intent startBaiduMapNavigator(Context context, double lat, double lng, String name) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setPackage("com.baidu.BaiduMap");
-        intent.setData(Uri.parse(String.format(Locale.CHINA, "baidumap://map/direction?destination=latlng:%f,%f|name:%s&mode=driving", lat, lng, name)));
+        intent.setData(Uri.parse(String.format(Locale.getDefault(), "baidumap://map/direction?destination=latlng:%f,%f|name:%s&mode=driving", lat, lng, name)));
         return intent;
     }
 
@@ -57,7 +57,7 @@ public class IntentUtil {
     public static Intent startAMapNavigator(Context context, double lat, double lng, String name) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         // intent.setPackage("com.autonavi.minimap");
-        intent.setData(Uri.parse(String.format(Locale.CHINA, "androidamap://route?sourceApplication=Back&dlat=%f&dlon=%f&dname=%s&dev=0&m=0&t=2", lat, lng, name)));
+        intent.setData(Uri.parse(String.format(Locale.getDefault(), "androidamap://route?sourceApplication=Back&dlat=%f&dlon=%f&dname=%s&dev=0&m=0&t=2", lat, lng, name)));
         return intent;
     }
 
@@ -71,7 +71,7 @@ public class IntentUtil {
     public static Intent startQQMapNavigator(Context context, double lat, double lng, String name) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setPackage("com.tencent.map");
-        intent.setData(Uri.parse(String.format(Locale.CHINA, "http://apis.map.qq.com/uri/v1/routeplan?type=drive&to=%s&tocoord=%f,%f&coord_type=1&referer=Back", name, lat, lng)));
+        intent.setData(Uri.parse(String.format(Locale.getDefault(), "http://apis.map.qq.com/uri/v1/routeplan?type=drive&to=%s&tocoord=%f,%f&coord_type=1&referer=Back", name, lat, lng)));
         return intent;
     }
 
@@ -85,7 +85,7 @@ public class IntentUtil {
     public static Intent startGoogleMapNavigator(Context context, double lat, double lng) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setPackage("com.google.android.apps.maps");
-        intent.setData(Uri.parse(String.format(Locale.CHINA, "http://ditu.google.cn/maps?f=d&source=s_d&daddr=%f,%f&hl=zh", lat, lng)));
+        intent.setData(Uri.parse(String.format(Locale.getDefault(), "http://ditu.google.cn/maps?f=d&source=s_d&daddr=%f,%f&hl=zh", lat, lng)));
         return intent;
     }
 

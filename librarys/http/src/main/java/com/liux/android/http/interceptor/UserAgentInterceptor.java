@@ -66,7 +66,7 @@ public class UserAgentInterceptor implements Interceptor {
         }
 
         return String.format(
-                Locale.CHINA,
+                Locale.getDefault(),
                 "%s App_%s_%s/%d",
                 System.getProperty("http.agent"),
                 context.getPackageName(),

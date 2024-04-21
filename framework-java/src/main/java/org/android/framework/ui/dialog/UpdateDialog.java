@@ -99,7 +99,7 @@ public class UpdateDialog extends AppCompatDialog {
             stringBuilder.append("更新时间:").append("\n").append(builder.date).append("\n");
         }
         if (builder.size != 0) {
-            stringBuilder.append("安装包:").append("\n").append(String.format(Locale.CHINA, "%.2fMB", (builder.size / 1024.0F / 1024.0F))).append("\n");
+            stringBuilder.append("安装包:").append("\n").append(String.format(Locale.getDefault(), "%.2fMB", (builder.size / 1024.0F / 1024.0F))).append("\n");
         }
         if (!TextUtils.isEmpty(builder.version)) {
             stringBuilder.append("版本号:").append("\n").append(builder.version).append("\n");

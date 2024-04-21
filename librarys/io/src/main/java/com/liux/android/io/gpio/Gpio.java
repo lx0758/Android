@@ -70,7 +70,7 @@ public class Gpio {
         File operate;
 
         // 导出引脚
-        operate = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/value", number));
+        operate = new File(String.format(Locale.getDefault(), "/sys/class/gpio/gpio%d/value", number));
         if (!operate.exists()) {
             if (action == null) {
                 throw new IOException("Gpio port " + number + " does not exist");
@@ -84,14 +84,14 @@ public class Gpio {
         grantPermissionIfNeed(operate, true, true, false);
 
         // 设置方向
-        operate = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/direction", number));
+        operate = new File(String.format(Locale.getDefault(), "/sys/class/gpio/gpio%d/direction", number));
         grantPermissionIfNeed(operate, true, true, false);
         if (!Util.writeFile(operate, direction)) {
             throw new IOException("Set gpio port " + number + " direction failure");
         }
 
         // 设置中断
-        operate = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/edge", number));
+        operate = new File(String.format(Locale.getDefault(), "/sys/class/gpio/gpio%d/edge", number));
         grantPermissionIfNeed(operate, true, true, false);
         String finalEdge = DIRECTION_IN.equals(direction) ? edge : EDGE_NONE;
         if (!Util.writeFile(operate, finalEdge)) {
@@ -141,13 +141,13 @@ public class Gpio {
     public boolean set(@VALUE int value) throws SecurityException {
         if (!isOpen()) return false;
         if (!DIRECTION_OUT.equals(direction)) return false;
-        File valueFile = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/value", number));
+        File valueFile = new File(String.format(Locale.getDefault(), "/sys/class/gpio/gpio%d/value", number));
         return Util.writeFile(valueFile, String.valueOf(value));
     }
 
     public @VALUE int get() throws SecurityException {
         if (!isOpen()) return VALUE_LOW;
-        File valueFile = new File(String.format(Locale.CHINA, "/sys/class/gpio/gpio%d/value", number));
+        File valueFile = new File(String.format(Locale.getDefault(), "/sys/class/gpio/gpio%d/value", number));
         String result = Util.readFile(valueFile);
         if (result == null) return VALUE_LOW;
         return Integer.parseInt(result);

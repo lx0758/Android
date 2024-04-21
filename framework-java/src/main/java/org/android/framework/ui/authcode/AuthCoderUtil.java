@@ -68,7 +68,7 @@ public class AuthCoderUtil {
 
         @Override
         protected void onCountdown(int time) {
-            codeTextView.setText(String.format(Locale.CHINA, "%ds", time));
+            codeTextView.setText(String.format(Locale.getDefault(), "%ds", time));
         }
 
         @Override

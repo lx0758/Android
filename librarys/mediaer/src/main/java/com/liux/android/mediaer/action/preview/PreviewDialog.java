@@ -85,6 +85,6 @@ public class PreviewDialog extends AppCompatDialog {
     }
 
     private void onRefreshIndicator(int position) {
-        tvIndicator.setText(String.format(Locale.CHINA, "%d/%d", position + 1, medias.size()));
+        tvIndicator.setText(String.format(Locale.getDefault(), "%d/%d", position + 1, medias.size()));
     }
 }

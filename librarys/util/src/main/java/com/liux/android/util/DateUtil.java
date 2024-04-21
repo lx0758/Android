@@ -46,7 +46,7 @@ public class DateUtil {
     public static Date string2date(String string, String format) {
         Date date = null;
         try {
-            date = new SimpleDateFormat((format == null || format.isEmpty()) ? "yyyy-MM-dd HH:mm:ss" : format, Locale.CHINA).parse(string);
+            date = new SimpleDateFormat((format == null || format.isEmpty()) ? "yyyy-MM-dd HH:mm:ss" : format, Locale.getDefault()).parse(string);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -72,7 +72,7 @@ public class DateUtil {
     public static String date2string(Date date, String format) {
         String s = null;
         try {
-            s = new SimpleDateFormat((format == null || format.isEmpty()) ? "yyyy-MM-dd HH:mm:ss" : format, Locale.CHINA).format(date);
+            s = new SimpleDateFormat((format == null || format.isEmpty()) ? "yyyy-MM-dd HH:mm:ss" : format, Locale.getDefault()).format(date);
         } catch (Exception ignore) {}
         return s;
     }
@@ -119,17 +119,17 @@ public class DateUtil {
         int i = getDifferDay(calendar.getTime(), null);
         switch (i){
             case -2:
-                return String.format(Locale.CHINA, "前天 %02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+                return String.format(Locale.getDefault(), "前天 %02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
             case -1:
-                return String.format(Locale.CHINA, "昨天 %02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+                return String.format(Locale.getDefault(), "昨天 %02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
             case 0:
-                return String.format(Locale.CHINA, "今天 %02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+                return String.format(Locale.getDefault(), "今天 %02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
             case 1:
-                return String.format(Locale.CHINA, "明天 %02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+                return String.format(Locale.getDefault(), "明天 %02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
             case 2:
-                return String.format(Locale.CHINA, "后天 %02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+                return String.format(Locale.getDefault(), "后天 %02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
             default:
-                return String.format(Locale.CHINA, "%02d月%02d日 %02d:%02d", calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+                return String.format(Locale.getDefault(), "%02d月%02d日 %02d:%02d", calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
         }
     }
 
@@ -145,17 +145,17 @@ public class DateUtil {
         int i = getDifferDay(calendar.getTime(), null);
         switch (i){
             case -2:
-                return String.format(Locale.CHINA, "%02d月%02d日(前天) %02d:%02d", calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+                return String.format(Locale.getDefault(), "%02d月%02d日(前天) %02d:%02d", calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
             case -1:
-                return String.format(Locale.CHINA, "%02d月%02d日(昨天) %02d:%02d", calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+                return String.format(Locale.getDefault(), "%02d月%02d日(昨天) %02d:%02d", calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
             case 0:
-                return String.format(Locale.CHINA, "%02d月%02d日(今天) %02d:%02d", calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+                return String.format(Locale.getDefault(), "%02d月%02d日(今天) %02d:%02d", calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
             case 1:
-                return String.format(Locale.CHINA, "%02d月%02d日(明天) %02d:%02d", calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+                return String.format(Locale.getDefault(), "%02d月%02d日(明天) %02d:%02d", calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
             case 2:
-                return String.format(Locale.CHINA, "%02d月%02d日(后天) %02d:%02d", calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+                return String.format(Locale.getDefault(), "%02d月%02d日(后天) %02d:%02d", calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
             default:
-                return String.format(Locale.CHINA, "%02d月%02d日 %02d:%02d", calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+                return String.format(Locale.getDefault(), "%02d月%02d日 %02d:%02d", calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
         }
     }
 
@@ -199,15 +199,15 @@ public class DateUtil {
 
         long s = cc.getTimeInMillis() - dc.getTimeInMillis();
         if (dc.get(Calendar.YEAR) < cc.get(Calendar.YEAR)) {
-            return new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA).format(date);
+            return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date);
         } else if (dc.get(Calendar.DAY_OF_YEAR) < cc.get(Calendar.DAY_OF_YEAR) - 2) {
-            return new SimpleDateFormat("MM-dd", Locale.CHINA).format(date);
+            return new SimpleDateFormat("MM-dd", Locale.getDefault()).format(date);
         } else if (dc.get(Calendar.DAY_OF_YEAR) < cc.get(Calendar.DAY_OF_YEAR) - 1) {
-            return new SimpleDateFormat("前天 HH:mm", Locale.CHINA).format(date);
+            return new SimpleDateFormat("前天 HH:mm", Locale.getDefault()).format(date);
         } else if (dc.get(Calendar.DAY_OF_YEAR) < cc.get(Calendar.DAY_OF_YEAR)) {
-            return new SimpleDateFormat("昨天 HH:mm", Locale.CHINA).format(date);
+            return new SimpleDateFormat("昨天 HH:mm", Locale.getDefault()).format(date);
         } else if (s > 1000L * 60 * 15) {
-            return new SimpleDateFormat("今天 HH:mm", Locale.CHINA).format(date);
+            return new SimpleDateFormat("今天 HH:mm", Locale.getDefault()).format(date);
         } else if (s > 1000L * 60) {
             return s / (1000L * 60) + "分钟前";
         } else {
@@ -234,6 +234,6 @@ public class DateUtil {
             cl = System.currentTimeMillis();
         }
 
-        return String.format(Locale.CHINA, "%.1f小时", Math.abs(dl - cl) / (1000.0 * 3600.0));
+        return String.format(Locale.getDefault(), "%.1f小时", Math.abs(dl - cl) / (1000.0 * 3600.0));
     }
 }

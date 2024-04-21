@@ -132,7 +132,7 @@ public class GpioActivity extends AppCompatActivity {
         mViewBinding.etLogs.post(new Runnable() {
             @Override
             public void run() {
-                mViewBinding.etLogs.append(String.format(Locale.CHINA, "信号方向：%s，电平值：%s\n", direction ? "输入" : "输出", value == 0 ? "低" : "高"));
+                mViewBinding.etLogs.append(String.format(Locale.getDefault(), "信号方向：%s，电平值：%s\n", direction ? "输入" : "输出", value == 0 ? "低" : "高"));
             }
         });
     }
