@@ -1,4 +1,4 @@
-package com.liux.android.io;
+package com.liux.android.tool;
 
 import java.io.IOException;
 import java.io.InputStream;

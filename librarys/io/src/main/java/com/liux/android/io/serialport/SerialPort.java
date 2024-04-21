@@ -21,8 +21,6 @@ import android.util.Log;
 import androidx.annotation.IntDef;
 import androidx.annotation.StringDef;
 
-import com.liux.android.io.Shell;
-
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -33,6 +31,7 @@ import java.io.OutputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+/** @noinspection unused */
 public class SerialPort {
 
     public static final int BAUDRATE_50 = 50;
@@ -80,12 +79,15 @@ public class SerialPort {
 
     private static final String TAG = "SerialPort";
 
-    private Shell shell;
+    static {
+        System.loadLibrary("io-serialport");
+    }
+
+	private final int mBaudRate, mDataBit, mStopBit;
+	private final String mParity;
     /*
-     * Do not remove or rename the field mFd: it is used by native method close();
+     * Do not remove or rename the field mFileDescriptor: it is used by native method close();
      */
-	private int baudRate, dataBit, stopBit;
-	private String parity;
     private FileDescriptor mFileDescriptor;
     private FileInputStream mFileInputStream;
     private FileOutputStream mFileOutputStream;
@@ -93,26 +95,23 @@ public class SerialPort {
     /**
      * 打开一个串口设备
      *
-     * @param device
+     * @param device    串口设备
      * @param baudRate  波特率
      * @param dataBit   数据位 (5/6/7/8)
      * @param stopBit   停止位 (1/2)
      * @param parity    校验规则 (O_奇/E_偶/N_无)
-     * @throws SecurityException
-     * @throws IOException
+     * @param vMin      读取等待的最小时间(等于0为不阻塞)
+     * @param vTime     读取等待的最小字节数(等于0为不阻塞)
+     * @throws SecurityException    设备权限异常
+     * @throws IOException          打开设备异常
      */
-    public SerialPort(Shell shell, File device, @BaudRate int baudRate, @DataBit int dataBit, @StopBit int stopBit, @Parity String parity, int vMin, int vTime) throws SecurityException, IOException {
-        this.shell = shell;
+    public SerialPort(File device, @BaudRate int baudRate, @DataBit int dataBit, @StopBit int stopBit, @Parity String parity, int vMin, int vTime) throws IOException {
+        if (device == null || !device.isFile()) {
+            throw new IOException("The device invalid");
+        }
 
-        /* Check access permission */
         if (!device.canRead() || !device.canWrite()) {
-            try {
-                /* Missing read/write permission, trying to chmod the file */
-                String cmd = String.format("chmod 777 %s", device.getAbsolutePath());
-                if (shell.execResultCode(cmd) != 0 || !device.canRead() || !device.canWrite()) throw new IOException("change permission fail");
-            } catch (Exception e) {
-                throw new SecurityException(e);
-            }
+            throw new IOException("The device has no read/write permission");
         }
 
         mFileDescriptor = jniOpen(device.getAbsolutePath(), baudRate, dataBit, stopBit, parity.charAt(0), (byte) vMin, (byte) vTime);
@@ -121,10 +120,10 @@ public class SerialPort {
             throw new IOException();
         }
 
-        this.baudRate = baudRate;
-        this.dataBit = dataBit;
-        this.stopBit = stopBit;
-        this.parity = parity;
+        this.mBaudRate = baudRate;
+        this.mDataBit = dataBit;
+        this.mStopBit = stopBit;
+        this.mParity = parity;
 
         mFileInputStream = new FileInputStream(mFileDescriptor);
         mFileOutputStream = new FileOutputStream(mFileDescriptor);
@@ -141,19 +140,19 @@ public class SerialPort {
     }
 
     public int getBaudRate() {
-        return baudRate;
+        return mBaudRate;
     }
 
     public int getDataBit() {
-        return dataBit;
+        return mDataBit;
     }
 
     public int getStopBit() {
-        return stopBit;
+        return mStopBit;
     }
 
     public String getParity() {
-        return parity;
+        return mParity;
     }
 
     public FileDescriptor getFileDescriptor() {
@@ -204,9 +203,6 @@ public class SerialPort {
     // JNI
     private static native FileDescriptor jniOpen(String path, int baudRate, int dataBit, int stopBit, char parity, byte vMin, byte vTime);
     private static native void jniClose(FileDescriptor fd);
-    static {
-        System.loadLibrary("io-serialport");
-    }
 
     @IntDef({
             BAUDRATE_50,
