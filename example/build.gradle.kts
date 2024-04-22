@@ -78,6 +78,7 @@ dependencies {
     implementation(project(":libraries:qrcode"))
     implementation(project(":libraries:io"))
     implementation(project(":libraries:service"))
+    implementation(project(":libraries:test"))
     implementation(project(":libraries:util"))
     implementation(project(":libraries:view"))
 
