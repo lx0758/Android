@@ -1,0 +1,78 @@
+[versions]
+agp = "8.3.2"
+kotlin = "1.9.22"
+
+minSdk = "21"
+targetSdk = "31"
+compileSdk = "34"
+ndk = "21.4.7075529"
+buildTools = "34.0.0"
+
+junit = "4.13.2"
+junitVersion = "1.1.5"
+espressoCore = "3.5.1"
+
+androidx-core = "1.13.0"
+androidx-appcompat = "1.6.1"
+androidx-fragment = "1.6.2"
+androidx-viewpager = "1.0.0"
+androidx-recyclerview = "1.3.2"
+androidx-swiperefreshlayout = "1.1.0"
+androidx-test = "1.5.0"
+androidx-viewmodel-ktx = "2.7.0"
+androidx-annotation = "1.2.0"
+#noinspection GradleDependency
+okhttp = "3.12.13"
+retrofit = "2.9.0"
+jackson-core = "2.15.4"
+chrisbanes-photoview = "2.3.0"
+yalantis-ucrop = "2.2.5"
+glide = "4.10.0"
+wechat-sdk = "6.6.4"
+zxing = "3.4.1"
+robolectric = "4.12"
+mockito = "5.11.0"
+material = "1.11.0"
+#noinspection OutdatedLibrary
+sentry = "4.3.0"
+smartrefreshlayout = "1.1.3"
+rxandroid = "3.0.0"
+
+[plugins]
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
+[libraries]
+androidx-core = { group = "androidx.core", name = "core", version.ref = "androidx-core" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
+androidx-fragment = { group = "androidx.fragment", name = "fragment", version.ref = "androidx-fragment" }
+androidx-viewpager = { group = "androidx.viewpager", name = "viewpager", version.ref = "androidx-viewpager" }
+androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "androidx-recyclerview" }
+androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
+androidx-test = { group = "androidx.test", name = "core", version.ref = "androidx-test" }
+androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "androidx-annotation" }
+androidx-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidx-viewmodel-ktx" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-adapter-rxjava3 = { group = "com.squareup.retrofit2", name = "adapter-rxjava3", version.ref = "retrofit" }
+retrofit-converter-jackson = { group = "com.squareup.retrofit2", name = "converter-jackson", version.ref = "retrofit" }
+jackson-core = { group = "com.fasterxml.jackson.core", name = "jackson-core", version.ref = "jackson-core" }
+chrisbanes-photoview = { group = "com.github.chrisbanes", name= "PhotoView", version.ref = "chrisbanes-photoview"}
+yalantis-ucrop = { group = "com.github.yalantis", name= "ucrop", version.ref = "yalantis-ucrop"}
+glide = { group = "com.github.bumptech.glide", name= "glide", version.ref = "glide"}
+glide-compiler = { group = "com.github.bumptech.glide", name= "compiler", version.ref = "glide"}
+glide-okhttp3-integration = { group = "com.github.bumptech.glide", name= "okhttp3-integration", version.ref = "glide"}
+# with包含统计能力 without不包含统计能力
+wechat-sdk = { group = "com.tencent.mm.opensdk", name= "wechat-sdk-android-without-mta", version.ref = "wechat-sdk"}
+zxing = { group = "com.google.zxing", name= "core", version.ref = "zxing"}
+robolectric = { group = "org.robolectric", name= "robolectric", version.ref = "robolectric"}
+mockito = { group = "org.mockito", name= "mockito-core", version.ref = "mockito"}
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+sentry = { group = "io.sentry", name = "sentry-android", version.ref = "sentry" }
+smartrefreshlayout = { group = "com.scwang.smartrefresh", name = "SmartRefreshLayout", version.ref = "smartrefreshlayout" }
+rxandroid = { group = "io.reactivex.rxjava3", name = "rxandroid", version.ref = "rxandroid" }
+
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }

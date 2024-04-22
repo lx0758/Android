@@ -1,0 +1,43 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <queries>
+        <intent>
+            <action android:name="com.liux.android.service.action.SERVICE_MANAGER_MODULE" />
+        </intent>
+    </queries>
+
+    <permission
+        android:name="com.liux.android.service.permission.ACCESS_SERVICE_MANAGER"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="com.liux.android.service.permission.ACCESS_SERVICE_MANAGER" />
+
+    <application>
+
+        <receiver
+            android:name=".BootBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name=".BootContentProvider"
+            android:authorities="com.liux.android.service"
+            android:exported="false"/>
+
+        <service
+            android:name=".ServiceManagerService"
+            android:exported="true"
+            android:permission="com.liux.android.service.permission.ACCESS_SERVICE_MANAGER"
+            android:process=":sm">
+            <intent-filter>
+                <action android:name="com.liux.android.service.action.SERVICE_MANAGER" />
+            </intent-filter>
+        </service>
+
+    </application>
+
+</manifest>
