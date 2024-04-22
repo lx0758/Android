@@ -28,8 +28,6 @@ rootProject.name = "Android"
 
 include(":example")
 
-include(":framework")
-
 include(":libraries:abstracts")
 include(":libraries:service")
 include(":libraries:banner")
