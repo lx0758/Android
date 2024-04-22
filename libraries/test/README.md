@@ -11,7 +11,10 @@ implementation 'cn.6xyun.android:test:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1.
+    1. 
+
+### 0.1.4_2024-04-22
+    1. 删除 PowerMock 支持
 
 ### 0.1.3_2021-08-28
     1. 移除侵入式仓库设置代码

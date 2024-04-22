@@ -36,5 +36,5 @@ dependencies {
 
 ext.apply {
     set("artifactId", "qrcode")
-    set("version", "0.2.0")
+    set("version", "0.2.1")
 }
