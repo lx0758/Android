@@ -106,7 +106,7 @@ public class SerialPort {
      * @throws IOException          打开设备异常
      */
     public SerialPort(File device, @BaudRate int baudRate, @DataBit int dataBit, @StopBit int stopBit, @Parity String parity, int vMin, int vTime) throws IOException {
-        if (device == null || !device.isFile()) {
+        if (device == null || !device.exists()) {
             throw new IOException("The device invalid");
         }
 
