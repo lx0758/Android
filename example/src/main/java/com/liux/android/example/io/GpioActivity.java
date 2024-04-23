@@ -44,15 +44,15 @@ public class GpioActivity extends AppCompatActivity {
         });
         mViewBinding.btnHigh.setOnClickListener(view -> {
             if (gpio != null) gpio.set(Gpio.VALUE_HIGH);
-            printLn(false, Gpio.VALUE_HIGH);
+            println("设置", Gpio.VALUE_HIGH);
         });
         mViewBinding.btnLow.setOnClickListener(view -> {
             if (gpio != null) gpio.set(Gpio.VALUE_LOW);
-            printLn(false, Gpio.VALUE_LOW);
+            println("设置", Gpio.VALUE_LOW);
         });
         mViewBinding.btnGet.setOnClickListener(view -> {
             if (gpio == null) return;
-            printLn(true, gpio.get());
+            println("查询", gpio.get());
         });
         mViewBinding.spDirection.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -98,12 +98,15 @@ public class GpioActivity extends AppCompatActivity {
             gpio.setCallback(new Gpio.Callback() {
                 @Override
                 public void onChange(int value) {
-                    printLn(true, value);
+                    println("回调", value);
                 }
 
                 @Override
                 public void onError() {
-                    TT.show("GPIO Error!");
+                    runOnUiThread(() -> {
+                        TT.show("GPIO Error!");
+                        close();
+                    });
                 }
             });
             gpio.open();
@@ -139,11 +142,11 @@ public class GpioActivity extends AppCompatActivity {
         mViewBinding.btnOpen.setText("打开");
     }
 
-    private void printLn(boolean direction, int value) {
+    private void println(String action, int value) {
         mViewBinding.etLogs.post(new Runnable() {
             @Override
             public void run() {
-                mViewBinding.etLogs.append(String.format(Locale.getDefault(), "信号方向：%s，电平值：%s\n", direction ? "输入" : "输出", value == 0 ? "低" : "高"));
+                mViewBinding.etLogs.append(String.format(Locale.getDefault(), "动作：%s，电平：%s\n", action, value == 0 ? "低" : "高"));
             }
         });
     }

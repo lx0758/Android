@@ -138,19 +138,28 @@ public class Gpio {
         } catch (IOException ignored) {}
     }
 
-    public boolean set(@VALUE int value) throws SecurityException {
+    public boolean set(@VALUE int value) {
         if (!isOpen()) return false;
         if (!DIRECTION_OUT.equals(direction)) return false;
         File valueFile = new File(String.format(Locale.getDefault(), "/sys/class/gpio/gpio%d/value", number));
-        return Util.writeFile(valueFile, String.valueOf(value));
+        try {
+            return Util.writeFile(valueFile, String.valueOf(value));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
-    public @VALUE int get() throws SecurityException {
+    public @VALUE int get() {
         if (!isOpen()) return VALUE_LOW;
         File valueFile = new File(String.format(Locale.getDefault(), "/sys/class/gpio/gpio%d/value", number));
-        String result = Util.readFile(valueFile);
-        if (result == null) return VALUE_LOW;
-        return Integer.parseInt(result);
+        try {
+            String result = Util.readFile(valueFile);
+            return Integer.parseInt(result.trim());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return VALUE_LOW;
+        }
     }
 
     /** @noinspection SameParameterValue*/
@@ -159,7 +168,7 @@ public class Gpio {
         try {
             action.grantPermission(file, canRead, canWrite, canExec);
             if (file.canRead() != canRead && file.canWrite() != canWrite && file.canExecute() != canExec) {
-                throw new SecurityException("change permission fail");
+                throw new IOException("change permission fail");
             }
         } catch (Exception e) {
             throw new IOException(e);

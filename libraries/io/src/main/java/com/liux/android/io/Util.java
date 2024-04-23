@@ -8,8 +8,8 @@ import java.io.IOException;
 
 public class Util {
 
-    public static String readFile(File file) throws SecurityException {
-        if (!file.canRead()) throw new SecurityException();
+    public static String readFile(File file) throws IOException {
+        if (!file.canRead()) throw new IOException("file can't read");
         String result = null;
         try(
                 FileInputStream inputStream = new FileInputStream(file);
@@ -21,17 +21,17 @@ public class Util {
                 outputStream.write(buffer, 0, length);
             }
             result = outputStream.toString();
-        } catch (IOException ignored) {}
+        }
         return result;
     }
 
-    public static boolean writeFile(File file, String value) throws SecurityException {
-        if (!file.canWrite()) throw new SecurityException();
+    public static boolean writeFile(File file, String value) throws IOException {
+        if (!file.canWrite()) throw new IOException("file can't write");
         boolean result = false;
         try (FileOutputStream outputStream = new FileOutputStream(file)) {
             outputStream.write(value.getBytes());
             result = true;
-        } catch (IOException ignored) {}
+        }
         return result;
     }
 }
