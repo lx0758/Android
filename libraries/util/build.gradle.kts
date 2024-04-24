@@ -31,11 +31,12 @@ android {
 
 dependencies {
     compileOnly(libs.androidx.fragment)
+    compileOnly(libs.jackson.databind)
 
     testImplementation(project(":libraries:test"))
 }
 
 ext.apply {
     set("artifactId", "util")
-    set("version", "0.2.7")
+    set("version", "0.2.8")
 }

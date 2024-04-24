@@ -40,154 +40,56 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                <Button
+                    android:id="@+id/btn_request_get"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12dp"
+                    android:text="GET"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="Retorfit"/>
+                <Button
+                    android:id="@+id/btn_request_post_body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12dp"
+                    android:text="POST(BODY)"/>
 
-                    <Button
-                        android:id="@+id/btn_retorfit_get"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12dp"
-                        android:text="GET"/>
+                <Button
+                    android:id="@+id/btn_request_post_form"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12dp"
+                    android:text="POST(FORM)"/>
 
-                    <Button
-                        android:id="@+id/btn_retorfit_post_body"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12dp"
-                        android:text="POST(BODY)"/>
+                <Button
+                    android:id="@+id/btn_request_post_multipart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12dp"
+                    android:text="POST(MULTIPART)"/>
 
-                    <Button
-                        android:id="@+id/btn_retorfit_post_form"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12dp"
-                        android:text="POST(FORM)"/>
+                <Button
+                    android:id="@+id/btn_request_download"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12dp"
+                    android:text="DOWNLOAD"/>
 
-                    <Button
-                        android:id="@+id/btn_retorfit_post_multipart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12dp"
-                        android:text="POST(MULTIPART)"/>
+                <Button
+                    android:id="@+id/btn_request_timeout_header"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12dp"
+                    android:text="TIMEOUT-HEADER"/>
 
-                    <Button
-                        android:id="@+id/btn_retorfit_base_header"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12dp"
-                        android:text="BASE-HEADER"/>
-
-                    <Button
-                        android:id="@+id/btn_retorfit_base_header_rule"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12dp"
-                        android:text="BASE-HEADER-RULE" />
-
-                    <Button
-                        android:id="@+id/btn_retorfit_base_global"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12dp"
-                        android:text="BASE-GLOBAL" />
-
-                    <Button
-                        android:id="@+id/btn_retorfit_base_global_root"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12dp"
-                        android:text="BASE-GLOBAL(ROOT)"/>
-
-                    <Button
-                        android:id="@+id/btn_retorfit_timeout_header"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12dp"
-                        android:text="TIMEOUT-HEADER"/>
-
-                    <Button
-                        android:id="@+id/btn_retorfit_timeout_global"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12dp"
-                        android:text="TIMEOUT-GLOBAL"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="Request"/>
-
-                    <Button
-                        android:id="@+id/btn_request_get"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12dp"
-                        android:text="GET"/>
-
-                    <Button
-                        android:id="@+id/btn_request_post_body"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12dp"
-                        android:text="POST(BODY)"/>
-
-                    <Button
-                        android:id="@+id/btn_request_post_form"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12dp"
-                        android:text="POST(FORM)"/>
-
-                    <Button
-                        android:id="@+id/btn_request_post_multipart"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12dp"
-                        android:text="POST(MULTIPART)"/>
-
-                    <Button
-                        android:id="@+id/btn_request_download"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12dp"
-                        android:text="DOWNLOAD"/>
-
-                    <Button
-                        android:id="@+id/btn_request_timeout_header"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12dp"
-                        android:text="TIMEOUT-HEADER"/>
-
-                    <Button
-                        android:id="@+id/btn_request_timeout_global"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="12dp"
-                        android:text="TIMEOUT-GLOBAL"/>
-
-                </LinearLayout>
+                <Button
+                    android:id="@+id/btn_request_timeout_global"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12dp"
+                    android:text="TIMEOUT-GLOBAL"/>
 
             </LinearLayout>
 

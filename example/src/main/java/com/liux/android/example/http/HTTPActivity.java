@@ -1,18 +1,16 @@
 package com.liux.android.example.http;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.liux.android.example.ApplocationInstance;
 import com.liux.android.example.R;
 import com.liux.android.example.databinding.ActivityHttpBinding;
 import com.liux.android.http.Http;
 import com.liux.android.http.HttpUtil;
-import com.liux.android.http.JsonUtil;
+import com.liux.android.util.JacksonUtil;
 import com.liux.android.http.progress.OnProgressListener;
 import com.liux.android.http.progress.OnResponseProgressListener;
 import com.liux.android.http.request.Callback;
@@ -43,8 +41,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import io.reactivex.rxjava3.core.SingleObserver;
-import io.reactivex.rxjava3.observers.DisposableSingleObserver;
 import okhttp3.HttpUrl;
 import okhttp3.Response;
 
@@ -56,16 +52,15 @@ public class HTTPActivity extends AppCompatActivity {
     private static final String TAG = "HTTPActivity";
     
     private ActivityHttpBinding mViewbinding;
+    
+    private final Http mHttp = new Http();
+    private final RequestManager mRequestManager = RequestManager.Builder.build();
 
-    static {
-        // 初始化
-        Http.init(ApplocationInstance.getApplication(), "https://api.6xyun.cn/v1.0/");
-        // 动态规则
-        Http.get().putDomainRule("138", "http://api.ip138.com/");
-        // 动态设置全局BaseUrl
-        Http.get().setBaseUrl("http://api.6xyun.cn/");
-        // 拦截器
-        Http.get().setCallback(new com.liux.android.http.Callback() {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mHttp.setCallback(new com.liux.android.http.Callback() {
             @Override
             public void onHeaders(okhttp3.Request request, Map<String, String> headers) {
 
@@ -86,27 +81,10 @@ public class HTTPActivity extends AppCompatActivity {
 
             }
         });
-    }
-    private TestApiModel mTestApiModle = new TestApiModelImpl();
-    private RequestManager mRequestManager = RequestManager.Builder.build();
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
         mViewbinding = ActivityHttpBinding.inflate(getLayoutInflater());
         setContentView(mViewbinding.getRoot());
 
-        mViewbinding.btnRetorfitGet.setOnClickListener(this::onRetorfitClicked);
-        mViewbinding.btnRetorfitPostForm.setOnClickListener(this::onRetorfitClicked);
-        mViewbinding.btnRetorfitPostBody.setOnClickListener(this::onRetorfitClicked);
-        mViewbinding.btnRetorfitPostMultipart.setOnClickListener(this::onRetorfitClicked);
-        mViewbinding.btnRetorfitBaseHeader.setOnClickListener(this::onRetorfitClicked);
-        mViewbinding.btnRetorfitBaseHeaderRule.setOnClickListener(this::onRetorfitClicked);
-        mViewbinding.btnRetorfitBaseGlobal.setOnClickListener(this::onRetorfitClicked);
-        mViewbinding.btnRetorfitBaseGlobalRoot.setOnClickListener(this::onRetorfitClicked);
-        mViewbinding.btnRequestTimeoutHeader.setOnClickListener(this::onRetorfitClicked);
-        mViewbinding.btnRequestTimeoutGlobal.setOnClickListener(this::onRetorfitClicked);
         
         mViewbinding.btnRequestGet.setOnClickListener(this::onRequestClicked);
         mViewbinding.btnRequestPostForm.setOnClickListener(this::onRequestClicked);
@@ -123,83 +101,6 @@ public class HTTPActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mRequestManager.cancelAll();
-        Http.release();
-    }
-
-    public void onRetorfitClicked(View view) {
-        showData("");
-        String data = mViewbinding.etData.getText().toString();
-        SingleObserver<Object> observable = new DisposableSingleObserver<Object>() {
-            @Override
-            public void onSuccess(Object object) {
-                Log.d(TAG, "onSuccess" + JsonUtil.toJson(object));
-                showData(JsonUtil.toJson(object));
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.d(TAG, "onError", e);
-                TT.show("onError" + e);
-            }
-        };
-        switch (view.getId()) {
-            case R.id.btn_retorfit_get:
-                mTestApiModle.testGet(
-                        123,
-                        "liux",
-                        observable
-                );
-                break;
-            case R.id.btn_retorfit_post_body:
-                mTestApiModle.testPostBody(
-                        123,
-                        "liux",
-                        observable
-                );
-                break;
-            case R.id.btn_retorfit_post_form:
-                mTestApiModle.testPostForm(
-                        123,
-                        "liux",
-                        observable
-                );
-                break;
-            case R.id.btn_retorfit_post_multipart:
-                mTestApiModle.testPostMultipart(
-                        123,
-                        "liux",
-                        getTempFile(),
-                        getTempBytes(),
-                        getTempInputStream(),
-                        observable
-                );
-                break;
-            case R.id.btn_retorfit_base_header:
-                // 设置Base,正常获取数据
-                mTestApiModle.queryWeather(data, observable);
-                break;
-            case R.id.btn_retorfit_base_header_rule:
-                // 设置Base-Rule,正常获取数据
-                mTestApiModle.queryIP(data, observable);
-                break;
-            case R.id.btn_retorfit_base_global:
-                // 使用全局 Base, 404
-                mTestApiModle.queryMobile(data, observable);
-                break;
-            case R.id.btn_retorfit_base_global_root:
-                // 使用全局Base,并使用根路径, 404
-                mTestApiModle.queryExpress(data, observable);
-                break;
-            case R.id.btn_retorfit_timeout_header:
-                mTestApiModle.testTimeout(data, observable);
-                break;
-            case R.id.btn_retorfit_timeout_global:
-                Http.get().setOverallConnectTimeout(5, TimeUnit.SECONDS);
-                Http.get().setOverallWriteTimeout(20, TimeUnit.SECONDS);
-                Http.get().setOverallReadTimeout(20, TimeUnit.SECONDS);
-                mTestApiModle.testTimeoutGlobal(data, observable);
-                break;
-        }
     }
 
     public void onRequestClicked(View view) {
@@ -212,7 +113,7 @@ public class HTTPActivity extends AppCompatActivity {
         }
         switch (view.getId()) {
             case R.id.btn_request_get:
-                Http.get().get(url + "request-get")
+                mHttp.get(url + "request-get")
                         .addHeader("Request-Header-Id", "btn_request_get")
                         .addQuery("Request-Query-Id", "btn_request_get")
                         // 很多服务不支持
@@ -258,10 +159,10 @@ public class HTTPActivity extends AppCompatActivity {
             case R.id.btn_request_post_body:
                 Map<String, String> params = new HashMap<>();
                 params.put("Request-Body-Id", "btn_request_post_body");
-                Http.get().post(url + "request-post-body")
+                mHttp.post(url + "request-post-body")
                         .addHeader("Request-Header-Id", "btn_request_post_body")
                         .addQuery("Request-Query-Id", "btn_request_post_body")
-                        .body(HttpUtil.parseJsonBody(JsonUtil.toJson(params)))
+                        .body(HttpUtil.parseJsonBody(JacksonUtil.toJson(params)))
                         .manager(mRequestManager)
                         .async(new UICallback() {
                             @Override
@@ -279,7 +180,7 @@ public class HTTPActivity extends AppCompatActivity {
                         });
                 break;
             case R.id.btn_request_post_form:
-                Http.get().post(url + "request-post-form")
+                mHttp.post(url + "request-post-form")
                         .addHeader("Request-Header-Id", "btn_request_post_form")
                         .addQuery("Request-Query-Id", "btn_request_post_form")
                         .addParam("Request-Param-Id", "btn_request_post_form")
@@ -300,7 +201,7 @@ public class HTTPActivity extends AppCompatActivity {
                         });
                 break;
             case R.id.btn_request_post_multipart:
-                Http.get().post(url + "request-post-multipart")
+                mHttp.post(url + "request-post-multipart")
                         .addHeader("Request-Header-Id", "btn_request_post_multipart")
                         .addQuery("Request-Query-Id", "btn_request_post_multipart")
                         .addParam("Request-Param-Id", "btn_request_post_multipart")
@@ -349,7 +250,7 @@ public class HTTPActivity extends AppCompatActivity {
                         });
                 break;
             case R.id.btn_request_download:
-                Http.get().get(url)
+                mHttp.get(url)
                         .addQuery("t", String.valueOf(System.currentTimeMillis()))
                         .manager(mRequestManager)
                         .download(new File(getCacheDir(), String.valueOf(System.currentTimeMillis())), new DownloadCallback() {
@@ -377,7 +278,7 @@ public class HTTPActivity extends AppCompatActivity {
                 mViewbinding.tvLog.setText(null);
                 break;
             case R.id.btn_request_timeout_header:
-                Http.get().post(url + "request-timeout")
+                mHttp.post(url + "request-timeout")
                         .addHeader("Request-Header-Id", "btn_request_timeout_header")
                         .addQuery("Request-Query-Id", "btn_request_timeout_header")
                         .addParam("Request-Param-Id", "btn_request_timeout_header")
@@ -401,10 +302,10 @@ public class HTTPActivity extends AppCompatActivity {
                         });
                 break;
             case R.id.btn_request_timeout_global:
-                Http.get().setOverallConnectTimeout(5, TimeUnit.SECONDS);
-                Http.get().setOverallWriteTimeout(20, TimeUnit.SECONDS);
-                Http.get().setOverallReadTimeout(20, TimeUnit.SECONDS);
-                Http.get().post(url)
+                mHttp.setOverallConnectTimeout(5, TimeUnit.SECONDS);
+                mHttp.setOverallWriteTimeout(20, TimeUnit.SECONDS);
+                mHttp.setOverallReadTimeout(20, TimeUnit.SECONDS);
+                mHttp.post(url)
                         .addHeader("Request-Header-Id", "btn_request_timeout_header")
                         .addQuery("Request-Query-Id", "btn_request_timeout_header")
                         .addParam("Request-Param-Id", "btn_request_timeout_header")

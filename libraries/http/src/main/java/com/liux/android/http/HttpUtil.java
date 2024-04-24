@@ -2,6 +2,7 @@ package com.liux.android.http;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -20,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Locale;
 
 import libcore.net.MimeUtils;
 import okhttp3.MediaType;
@@ -28,7 +30,6 @@ import okhttp3.RequestBody;
 import okhttp3.internal.http.HttpMethod;
 import okio.BufferedSink;
 import okio.Okio;
-import retrofit2.CallAdapter;
 
 /**
  * Http 协议配套工具类
@@ -40,6 +41,41 @@ public class HttpUtil {
     public static final MediaType TYPE_TEXT = MediaType.parse("text/plain;charset=UTF-8");
     public static final MediaType TYPE_JSON = MediaType.parse("application/json;charset=UTF-8");
     public static final MediaType TYPE_XML = MediaType.parse("text/xml;charset=UTF-8");
+
+    /**
+     * Dalvik/2.1.0 (Linux; U; Android 6.0.1; MI 4LTE MIUI/7.11.9) App_packageName_versionName/versionCode
+     * @param context
+     * @return
+     */
+    public static String getDefaultUserAgent(Context context) {
+        // Mozilla/5.0 (Linux; Android 6.0.1; MI 4LTE Build/MMB29M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/57.0.2987.132 Mobile Safari/537.36
+        // WebSettings.getDefaultUserAgent(context);
+        //
+        // Dalvik/2.1.0 (Linux; U; Android 6.0.1; MI 4LTE MIUI/7.11.9)
+        // System.getProperty("http.agent");
+
+        int versionCode = -1;
+        try {
+            versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_CONFIGURATIONS).versionCode;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String versionName = "";
+        try {
+            versionName = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_CONFIGURATIONS).versionName;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return String.format(
+                Locale.getDefault(),
+                "%s App_%s_%s/%d",
+                System.getProperty("http.agent"),
+                context.getPackageName(),
+                versionName,
+                versionCode
+        );
+    }
 
     /**
      * 查询某字符串是否是HTTP请求方法(支持HTTP/1.1)
@@ -486,19 +522,6 @@ public class HttpUtil {
             }
         }
         return newValue;
-    }
-
-    /**
-     * 尝试获取 RxJava3 的Retrofit适配器
-     * @return
-     */
-    @Nullable
-    public static CallAdapter.Factory getRxJava3CallAdapterFactory() {
-        try {
-            Class.forName("io.reactivex.rxjava3.core.Observable");
-            return retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory.create();
-        } catch (Exception ignore) {}
-        return null;
     }
 
     /**

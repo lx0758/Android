@@ -30,8 +30,7 @@ android {
 }
 
 dependencies {
-    compileOnly(project(":libraries:http"))
-
+    compileOnly(libs.okhttp)
     api(libs.chrisbanes.photoview)
     api(libs.yalantis.ucrop) {
         exclude(group = "com.squareup.okhttp3")
@@ -46,5 +45,5 @@ dependencies {
 
 ext.apply {
     set("artifactId", "mediaer")
-    set("version", "0.2.2")
+    set("version", "0.2.3")
 }

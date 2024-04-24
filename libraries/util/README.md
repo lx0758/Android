@@ -12,6 +12,9 @@ implementation 'cn.6xyun.android:util:x.y.z'
 ### x.y.z_202x-xx-xx
     1. 
 
+### 0.2.8_2024-04-25
+    1. 迁移 Jackson 到 Util 模块
+
 ### 0.2.7_2024-04-22
     1. 移除自带权限声明
     2. 新增 CRC 计算方法
