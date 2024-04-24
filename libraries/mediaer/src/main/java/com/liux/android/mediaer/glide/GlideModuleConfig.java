@@ -34,6 +34,26 @@ import okhttp3.OkHttpClient;
 @GlideModule
 public class GlideModuleConfig extends AppGlideModule {
 
+    private static Call.Factory sFactory;
+
+    /**
+     * @return
+     */
+    public static Call.Factory getHttpClient() {
+        if (sFactory != null) {
+            return sFactory;
+        } else {
+            return new OkHttpClient();
+        }
+    }
+
+    /**
+     * @return
+     */
+    public static void setHttpClient(Call.Factory factory) {
+        sFactory = factory;
+    }
+
     @Override
     public void applyOptions(@NonNull Context context, GlideBuilder glideBuilder) {
         /* 自定义内存和图片池大小 */
@@ -73,15 +93,22 @@ public class GlideModuleConfig extends AppGlideModule {
      */
     @Override
     public void registerComponents(@NonNull Context context, @NonNull Glide glide, @NonNull Registry registry) {
-        Call.Factory callFactory = getHttpClient();
-        if (callFactory != null) {
-            OkHttpUrlLoader.Factory loaderFactory = new OkHttpUrlLoader.Factory(callFactory);
-            registry.replace(GlideUrl.class, InputStream.class, loaderFactory);
+        try {
+            Call.Factory factory = getHttpClient();
+            registry.replace(
+                    GlideUrl.class,
+                    InputStream.class,
+                    new OkHttpUrlLoader.Factory(factory)
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        // 注册视频获取缩略图的扩展
-        VideoModelLoader.Factory loaderFactory = new VideoModelLoader.Factory(context);
-        registry.append(Video.class, InputStream.class, loaderFactory);
+        registry.append(
+                Video.class,
+                InputStream.class,
+                new VideoModelLoader.Factory(context)
+        );
     }
 
     /**
@@ -92,16 +119,5 @@ public class GlideModuleConfig extends AppGlideModule {
     @Override
     public boolean isManifestParsingEnabled() {
         return false;
-    }
-
-    /**
-     * @return
-     */
-    private Call.Factory getHttpClient() {
-        try {
-            return com.liux.android.http.Http.get().getOkHttpClient();
-        } catch (Exception e) {
-            return new OkHttpClient();
-        }
     }
 }

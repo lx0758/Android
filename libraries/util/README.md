@@ -10,7 +10,7 @@ implementation 'cn.6xyun.android:util:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1. 
+    1. 迁移 Jackson 到 Util 模块
 
 ### 0.2.7_2024-04-22
     1. 移除自带权限声明

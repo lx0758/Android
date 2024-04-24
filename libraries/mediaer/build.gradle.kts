@@ -30,8 +30,7 @@ android {
 }
 
 dependencies {
-    compileOnly(project(":libraries:http"))
-
+    compileOnly(libs.okhttp)
     api(libs.chrisbanes.photoview)
     api(libs.yalantis.ucrop) {
         exclude(group = "com.squareup.okhttp3")

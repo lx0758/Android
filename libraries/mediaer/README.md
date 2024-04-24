@@ -10,7 +10,7 @@ implementation 'cn.6xyun.android:mediaer:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1. 
+    1. 移除对 Http 组件的依赖
 
 ### 0.2.2_2020-05-11
     1. 新增图片多选支持

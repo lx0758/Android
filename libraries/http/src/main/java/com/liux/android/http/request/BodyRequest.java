@@ -1,8 +1,5 @@
 package com.liux.android.http.request;
 
-import android.content.Context;
-import android.net.Uri;
-
 import com.liux.android.http.HttpUtil;
 import com.liux.android.http.progress.OnProgressListener;
 import com.liux.android.http.progress.OnRequestProgressListener;
@@ -34,8 +31,6 @@ public class BodyRequest<T extends BodyRequest> extends QueryRequest<T> {
 
     private int mType = TYPE_NORMAL;
 
-    private Context mContext;
-
     private String mBodyType;
     private Object mBodyObject;
 
@@ -44,9 +39,8 @@ public class BodyRequest<T extends BodyRequest> extends QueryRequest<T> {
 
     private OnRequestProgressListener mOnRequestProgressListener;
 
-    public BodyRequest(Context context, Call.Factory factory, Method method) {
+    public BodyRequest(Call.Factory factory, Method method) {
         super(factory, method);
-        mContext = context;
     }
 
     @Override
@@ -357,8 +351,6 @@ public class BodyRequest<T extends BodyRequest> extends QueryRequest<T> {
             return (RequestBody) mBodyObject;
         } else if (mBodyObject instanceof InputStream) {
             return HttpUtil.parseInputStreamBody(mBodyType, (InputStream) mBodyObject);
-        } else if (mBodyObject instanceof Uri) {
-            return HttpUtil.parseUriBody(mContext, mBodyType, (Uri) mBodyObject);
         }
         return null;
     }

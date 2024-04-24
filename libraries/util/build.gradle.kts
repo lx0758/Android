@@ -31,6 +31,7 @@ android {
 
 dependencies {
     compileOnly(libs.androidx.fragment)
+    compileOnly(libs.jackson.databind)
 
     testImplementation(project(":libraries:test"))
 }
