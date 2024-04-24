@@ -10,6 +10,9 @@ implementation 'cn.6xyun.android:util:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
+    1. 
+
+### 0.2.8_2024-04-25
     1. 迁移 Jackson 到 Util 模块
 
 ### 0.2.7_2024-04-22

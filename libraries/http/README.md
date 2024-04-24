@@ -73,6 +73,9 @@ implementation 'cn.6xyun.android:http:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
+    1. 
+
+### 0.2.23_2024-04-25
     1. 移除 Retorfit 组件 & 取消单例用法
 
 ### 0.2.22_2021-03-15

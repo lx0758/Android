@@ -45,5 +45,5 @@ dependencies {
 
 ext.apply {
     set("artifactId", "mediaer")
-    set("version", "0.2.2")
+    set("version", "0.2.3")
 }
