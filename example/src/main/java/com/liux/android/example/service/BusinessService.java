@@ -8,9 +8,9 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.liux.android.example.service.api.IBusinessInterface;
-import com.liux.android.service.api.AbstractService;
+import com.liux.android.sm.api.ModuleService;
 
-public class BusinessService extends AbstractService {
+public class BusinessService extends ModuleService {
     private static final String TAG = "BusinessService";
 
     private BusinessInterfaceImpl mBusinessInterfaceImpl;
@@ -30,8 +30,15 @@ public class BusinessService extends AbstractService {
     }
 
     @Override
-    public void onServiceReady() {
-        Log.i(TAG, "onServiceReady");
+    public void onModuleServiceReady() {
+        super.onModuleServiceReady();
+        Log.i(TAG, "onModuleServiceReady");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "onDestroy");
     }
 
     public static class BusinessInterfaceImpl extends IBusinessInterface.Stub {

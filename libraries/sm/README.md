@@ -1,0 +1,22 @@
+Service
+===
+
+使用说明
+---
+```
+implementation 'cn.6xyun.android:sm-api:x.y.z'
+implementation 'cn.6xyun.android:sm-service:x.y.z'
+```
+
+更新说明
+---
+### x.y.z_202x-xx-xx
+    1. 拆分为服务端和接口
+    2. 取消 SM 的进程设置
+    3. 增加组件服务生命广播
+    4. 支持 SM 多部署
+    5. 支持服务优先级
+    6. 调整包名
+
+### 0.1.0_2021-12-16
+    1. 构建初始版本

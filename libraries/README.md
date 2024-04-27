@@ -36,7 +36,7 @@
 # [qrcode](./qrcode/README.md)
 基于[Zxing](https://github.com/zxing/zxing)的一个二维码扫描/识别/生成库
 
-# [service](./service/README.md)
+# [sm](./sm/README.md)
 提供一个便捷的服务治理框架
 
 # [tool](./tool/README.md)/[util](/util/README.md)/[view](/view/README.md)

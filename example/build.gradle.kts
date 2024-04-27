@@ -30,6 +30,8 @@ android {
         versionCode = 1_00_00
         versionName = "1.0.0.0000"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders["smServiceComponentPrefix"] = applicationId!!
+        manifestPlaceholders["smModuleServiceComponentPrefix"] = applicationId!!
     }
     buildTypes {
         debug {
@@ -77,7 +79,8 @@ dependencies {
     implementation(project(":libraries:multimedia"))
     implementation(project(":libraries:qrcode"))
     implementation(project(":libraries:io"))
-    implementation(project(":libraries:service"))
+    implementation(project(":libraries:sm:api"))
+    implementation(project(":libraries:sm:service"))
     implementation(project(":libraries:test"))
     implementation(project(":libraries:util"))
     implementation(project(":libraries:view"))
