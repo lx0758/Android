@@ -22,7 +22,6 @@ import javax.xml.transform.stream.StreamSource;
  */
 
 public class Logger {
-    private static final String TAG = "[Logger]";
     private static final String SEPARATOR = System.getProperty("line.separator");
     private static final String DIVIDE_0 = "┃";
     private static final String DIVIDE_1 = "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
@@ -31,64 +30,64 @@ public class Logger {
 
     public static boolean DEBUG = true;
 
-    public static void v(String msg) {
+    public static void v(String tag, String msg) {
         if (!DEBUG) return;
-        print(msg, null, Log.VERBOSE);
+        print(tag, msg, null, Log.VERBOSE);
     }
 
-    public static void v(String msg, Throwable tr) {
+    public static void v(String tag, String msg, Throwable tr) {
         if (!DEBUG) return;
-        print(msg, tr, Log.VERBOSE);
+        print(tag, msg, tr, Log.VERBOSE);
     }
 
-    public static void d(String msg) {
+    public static void d(String tag, String msg) {
         if (!DEBUG) return;
-        print(msg, null, Log.DEBUG);
+        print(tag, msg, null, Log.DEBUG);
     }
 
-    public static void d(String msg, Throwable tr) {
+    public static void d(String tag, String msg, Throwable tr) {
         if (!DEBUG) return;
-        print(msg, tr, Log.DEBUG);
+        print(tag, msg, tr, Log.DEBUG);
     }
 
-    public static void i(String msg) {
+    public static void i(String tag, String msg) {
         if (!DEBUG) return;
-        print(msg, null, Log.INFO);
+        print(tag, msg, null, Log.INFO);
     }
 
-    public static void i(String msg, Throwable tr) {
+    public static void i(String tag, String msg, Throwable tr) {
         if (!DEBUG) return;
-        print(msg, tr, Log.INFO);
+        print(tag, msg, tr, Log.INFO);
     }
 
-    public static void w(String msg) {
+    public static void w(String tag, String msg) {
         if (!DEBUG) return;
-        print(msg, null, Log.WARN);
+        print(tag, msg, null, Log.WARN);
     }
 
-    public static void w(String msg, Throwable tr) {
+    public static void w(String tag, String msg, Throwable tr) {
         if (!DEBUG) return;
-        print(msg, tr, Log.WARN);
+        print(tag, msg, tr, Log.WARN);
     }
 
-    public static void e(String msg) {
+    public static void e(String tag, String msg) {
         if (!DEBUG) return;
-        print(msg, null, Log.ERROR);
+        print(tag, msg, null, Log.ERROR);
     }
 
-    public static void e(String msg, Throwable tr) {
+    public static void e(String tag, String msg, Throwable tr) {
         if (!DEBUG) return;
-        print(msg, tr, Log.ERROR);
+        print(tag, msg, tr, Log.ERROR);
     }
 
-    public static void a(String msg) {
+    public static void a(String tag, String msg) {
         if (!DEBUG) return;
-        print(msg, null, Log.ASSERT);
+        print(tag, msg, null, Log.ASSERT);
     }
 
-    public static void a(String msg, Throwable tr) {
+    public static void a(String tag, String msg, Throwable tr) {
         if (!DEBUG) return;
-        print(msg, tr, Log.ASSERT);
+        print(tag, msg, tr, Log.ASSERT);
     }
 
     /**
@@ -126,24 +125,24 @@ public class Logger {
      * @param priority
      * @return
      */
-    private synchronized static void print(String msg, Throwable tr, int priority) {
+    private synchronized static void print(String tag, String msg, Throwable tr, int priority) {
         String stackTrace = getStackTrace();
 
         msg = formatJson(msg);
         msg = formatXml(msg);
         msg = msg + SEPARATOR + Log.getStackTraceString(tr);
 
-        Log.println(priority, TAG, DIVIDE_1);
+        Log.println(priority, tag, DIVIDE_1);
         String[] stackTraces = stackTrace.split(SEPARATOR);
         for (String trace : stackTraces) {
-            Log.println(priority, TAG, DIVIDE_0 + trace);
+            Log.println(priority, tag, DIVIDE_0 + trace);
         }
-        Log.println(priority, TAG, DIVIDE_2);
+        Log.println(priority, tag, DIVIDE_2);
         String[] msgs = msg.split(SEPARATOR);
         for (String m : msgs) {
-            Log.println(priority, TAG, DIVIDE_0 + m);
+            Log.println(priority, tag, DIVIDE_0 + m);
         }
-        Log.println(priority, TAG, DIVIDE_3);
+        Log.println(priority, tag, DIVIDE_3);
     }
 
     /**

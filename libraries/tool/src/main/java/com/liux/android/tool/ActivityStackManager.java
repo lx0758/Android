@@ -8,9 +8,9 @@ import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.Stack;
 
-public class ActivitysManager {
+public class ActivityStackManager {
 
-    private static volatile ActivitysManager instance;
+    private static volatile ActivityStackManager sInstance;
 
     private static Application.ActivityLifecycleCallbacks activityLifecycleCallbacks = new Application.ActivityLifecycleCallbacks() {
         @Override
@@ -53,19 +53,19 @@ public class ActivitysManager {
         application.registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
     }
 
-    public static ActivitysManager getInstance() {
-        if (instance == null) {
-            synchronized (ActivitysManager.class) {
-                if (instance == null) {
-                    instance = new ActivitysManager();
+    public static ActivityStackManager getInstance() {
+        if (sInstance == null) {
+            synchronized (ActivityStackManager.class) {
+                if (sInstance == null) {
+                    sInstance = new ActivityStackManager();
                 }
             }
         }
-        return instance;
+        return sInstance;
     }
 
-    private WeakReference<Activity> topActivity = null;
-    private Stack<WeakReference<Activity>> activityStack = new Stack<>();
+    private WeakReference<Activity> mTopActivity = null;
+    private Stack<WeakReference<Activity>> mActivityStack = new Stack<>();
 
     /**
      * 取处于栈顶的 Activity
@@ -73,12 +73,12 @@ public class ActivitysManager {
      */
     public Activity getTopActivity() {
         // 先检查软引用
-        if (topActivity != null) {
-            Activity activity = topActivity.get();
+        if (mTopActivity != null) {
+            Activity activity = mTopActivity.get();
             if (activity != null) return activity;
         }
         // 再检查堆栈
-        for (Iterator<WeakReference<Activity>> iterator = activityStack.iterator(); iterator.hasNext(); ) {
+        for (Iterator<WeakReference<Activity>> iterator = mActivityStack.iterator(); iterator.hasNext(); ) {
             Activity weakActivity = iterator.next().get();
             if (weakActivity == null) {
                 iterator.remove();
@@ -93,8 +93,8 @@ public class ActivitysManager {
      * 结束指定的 Activity
      * @param classes
      */
-    public void finishActivity(Class... classes) {
-        for (Iterator<WeakReference<Activity>> iterator = activityStack.iterator(); iterator.hasNext(); ) {
+    public void finishActivity(Class<Activity>... classes) {
+        for (Iterator<WeakReference<Activity>> iterator = mActivityStack.iterator(); iterator.hasNext(); ) {
             Activity weakActivity = iterator.next().get();
             if (weakActivity == null) {
                 iterator.remove();
@@ -111,7 +111,7 @@ public class ActivitysManager {
      * @param activities
      */
     public void finishActivity(Activity... activities) {
-        for (Iterator<WeakReference<Activity>> iterator = activityStack.iterator(); iterator.hasNext(); ) {
+        for (Iterator<WeakReference<Activity>> iterator = mActivityStack.iterator(); iterator.hasNext(); ) {
             Activity weakActivity = iterator.next().get();
             if (weakActivity == null) {
                 iterator.remove();
@@ -127,7 +127,7 @@ public class ActivitysManager {
      * 结束所有 Activity
      */
     public void finishActivityAll() {
-        for (Iterator<WeakReference<Activity>> iterator = activityStack.iterator(); iterator.hasNext(); ) {
+        for (Iterator<WeakReference<Activity>> iterator = mActivityStack.iterator(); iterator.hasNext(); ) {
             Activity weakActivity = iterator.next().get();
             if (weakActivity == null) {
                 iterator.remove();
@@ -141,8 +141,8 @@ public class ActivitysManager {
      * 结束所有 Activity 但忽略指定的 Activity
      * @param classes
      */
-    public void finishActivityAll(Class... classes) {
-        for (Iterator<WeakReference<Activity>> iterator = activityStack.iterator(); iterator.hasNext(); ) {
+    public void finishActivityAll(Class<Activity>... classes) {
+        for (Iterator<WeakReference<Activity>> iterator = mActivityStack.iterator(); iterator.hasNext(); ) {
             Activity weakActivity = iterator.next().get();
             if (weakActivity == null) {
                 iterator.remove();
@@ -159,7 +159,7 @@ public class ActivitysManager {
      * @param activities
      */
     public void finishActivityAll(Activity... activities) {
-        for (Iterator<WeakReference<Activity>> iterator = activityStack.iterator(); iterator.hasNext(); ) {
+        for (Iterator<WeakReference<Activity>> iterator = mActivityStack.iterator(); iterator.hasNext(); ) {
             Activity weakActivity = iterator.next().get();
             if (weakActivity == null) {
                 iterator.remove();
@@ -172,11 +172,11 @@ public class ActivitysManager {
     }
 
     private void putActivity(Activity activity) {
-        activityStack.push(new WeakReference<>(activity));
+        mActivityStack.push(new WeakReference<>(activity));
     }
 
     private void removeActivity(Activity activity) {
-        for (Iterator<WeakReference<Activity>> iterator = activityStack.iterator(); iterator.hasNext();) {
+        for (Iterator<WeakReference<Activity>> iterator = mActivityStack.iterator(); iterator.hasNext();) {
             Activity weakActivity = iterator.next().get();
             if (weakActivity == activity) iterator.remove();
         }
@@ -184,16 +184,16 @@ public class ActivitysManager {
 
     private void updateTopActivity(Activity activity) {
         if (activity != null) {
-            topActivity = new WeakReference<>(activity);
+            mTopActivity = new WeakReference<>(activity);
         } else {
-            topActivity = null;
+            mTopActivity = null;
         }
     }
 
-    private boolean checkActivityInClassArray(Class[] classes, Activity activity) {
+    private boolean checkActivityInClassArray(Class<Activity>[] classes, Activity activity) {
         if (classes == null || activity == null) return false;
-        for (Class clazz : classes) {
-            if (activity.getClass().equals(clazz)) return true;
+        for (Class<Activity> activityClass : classes) {
+            if (activity.getClass().equals(activityClass)) return true;
         }
         return false;
     }
