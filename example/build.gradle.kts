@@ -74,7 +74,7 @@ dependencies {
     implementation(project(":libraries:tool"))
     implementation(project(":libraries:pay"))
     implementation(project(":libraries:permission"))
-    implementation(project(":libraries:mediaer"))
+    implementation(project(":libraries:multimedia"))
     implementation(project(":libraries:qrcode"))
     implementation(project(":libraries:io"))
     implementation(project(":libraries:service"))

@@ -14,7 +14,6 @@
 1. 然后在 `setting.gradle` 中按需添加模块.
    如果使用 `gradle` 则:
    ```gradle
-   include ':libraries:service'
    include ':libraries:http'
    include ':libraries:io'
    ...
@@ -30,7 +29,6 @@
    ```
    如果使用 `kts` 则:
    ```dsl
-   include(":libraries:service")
    include(":libraries:http")
    include(":libraries:io")
    ...
@@ -51,13 +49,11 @@
 1. 最后依赖使用.
    如果使用 `gradle` 则:
    ```gradle
-   implementation project(':libraries:service')
    implementation project(':libraries:http')
    implementation project(':libraries:io')
    ```
    如果使用 `kts` 则:
    ```dsl
-   implementation(project(":libraries:service"))
    implementation(project(":libraries:http"))
    implementation(project(":libraries:io"))
    ```
