@@ -1,0 +1,43 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <queries>
+        <intent>
+            <action android:name="${smModuleServiceComponentPrefix}.action.SM_MODULE_SERVICE" />
+        </intent>
+    </queries>
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <permission
+        android:name="${smServiceComponentPrefix}.permission.ACCESS_SM_SERVICE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="${smServiceComponentPrefix}.permission.ACCESS_SM_SERVICE" />
+
+    <application>
+
+        <receiver
+            android:name=".BootBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name=".BootContentProvider"
+            android:authorities="${smServiceComponentPrefix}.sm_boot_content_provider"
+            android:exported="false" />
+
+        <service
+            android:name=".SMService"
+            android:exported="true"
+            android:permission="${smServiceComponentPrefix}.permission.ACCESS_SM_SERVICE">
+            <intent-filter>
+                <action android:name="${smServiceComponentPrefix}.action.SM_SERVICE" />
+            </intent-filter>
+        </service>
+
+    </application>
+
+</manifest>

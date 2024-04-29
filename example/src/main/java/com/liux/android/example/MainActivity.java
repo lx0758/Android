@@ -20,9 +20,9 @@ import com.liux.android.example.list.ListActivity;
 import com.liux.android.example.other.ToolActivity;
 import com.liux.android.example.pay.PayActivity;
 import com.liux.android.example.permission.PermissionActivity;
-import com.liux.android.example.picturer.MediaerActivity;
+import com.liux.android.example.multimedia.MultimediaActivity;
 import com.liux.android.example.qrcode.QRCodeActivity;
-import com.liux.android.example.service.ServiceActivity;
+import com.liux.android.example.service.SMActivity;
 import com.liux.android.example.util.UtilActivity;
 import com.liux.android.example.view.ViewActivity;
 
@@ -67,12 +67,12 @@ public class MainActivity extends AppCompatActivity {
         add("HTTP", "基于 Retorfit/OkHttp 的封装", HTTPActivity.class);
         add("IO", "基于 Android中Linux内核 的 串口/GPIO/I2C 通信库类的封装", IOActivity.class);
         add("List", "基于 RecycleView 的封装", ListActivity.class);
-        add("Mediaer", "媒体文件选取/拍摄/录制/加载的库类", MediaerActivity.class);
+        add("Multimedia", "多媒体文件选取/拍摄/录制/加载的库类", MultimediaActivity.class);
         add("Pay", "封装支付宝/微信/银联支付过程", PayActivity.class);
         add("Permission", "运行时/悬浮窗/安装 权限申请过程封装", PermissionActivity.class);
         add("QRCode", "基于 ZXing 的一个 QRCode 扫描/生成库", QRCodeActivity.class);
         add("Tool", "一些工具类集合", ToolActivity.class);
-        add("Service", "服务治理框架", ServiceActivity.class);
+        add("SM", "服务治理框架", SMActivity.class);
         add("Util", "一些工具方法集合", UtilActivity.class);
         add("View", "一些自定义 View 集合", ViewActivity.class);
 

@@ -11,9 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.liux.android.example.R;
-import com.liux.android.mediaer.Mediaer;
-import com.liux.android.mediaer.MediaerException;
-import com.liux.android.mediaer.listener.OnSingleSelectListener;
+import com.liux.android.multimedia.Multimedia;
+import com.liux.android.multimedia.MultimediaException;
+import com.liux.android.multimedia.listener.OnSingleSelectListener;
 import com.liux.android.qrcode.QRCodeDecoder;
 import com.liux.android.qrcode.QRCodeScanningActivity;
 import com.liux.android.tool.ActivityStarter;
@@ -65,11 +65,11 @@ public class QRCodeActivity extends AppCompatActivity {
                 break;
             case R.id.btn_bitmap_decode:
                 // FIXME: memory overflow may occur here
-                Mediaer.with(this)
+                Multimedia.with(this)
                         .singleSelect()
                         .listener(new OnSingleSelectListener() {
                             @Override
-                            public void onFailure(MediaerException e) {
+                            public void onFailure(MultimediaException e) {
                                 TT.show("出错了!");
                             }
 
@@ -91,11 +91,11 @@ public class QRCodeActivity extends AppCompatActivity {
                         .start();
                 break;
             case R.id.btn_bytes_decode:
-                Mediaer.with(this)
+                Multimedia.with(this)
                         .singleSelect()
                         .listener(new OnSingleSelectListener() {
                             @Override
-                            public void onFailure(MediaerException e) {
+                            public void onFailure(MultimediaException e) {
                                 TT.show("出错了!");
                             }
 
@@ -130,11 +130,11 @@ public class QRCodeActivity extends AppCompatActivity {
                         .start();
                 break;
             case R.id.btn_file_decode:
-                Mediaer.with(this)
+                Multimedia.with(this)
                         .singleSelect()
                         .listener(new OnSingleSelectListener() {
                             @Override
-                            public void onFailure(MediaerException e) {
+                            public void onFailure(MultimediaException e) {
                                 TT.show("出错了!");
                             }
 
@@ -149,11 +149,11 @@ public class QRCodeActivity extends AppCompatActivity {
                         .start();
                 break;
             case R.id.btn_file_descriptor_decode:
-                Mediaer.with(this)
+                Multimedia.with(this)
                         .singleSelect()
                         .listener(new OnSingleSelectListener() {
                             @Override
-                            public void onFailure(MediaerException e) {
+                            public void onFailure(MultimediaException e) {
                                 TT.show("出错了!");
                             }
 
@@ -179,11 +179,11 @@ public class QRCodeActivity extends AppCompatActivity {
                         .start();
                 break;
             case R.id.btn_input_stream_decode:
-                Mediaer.with(this)
+                Multimedia.with(this)
                         .singleSelect()
                         .listener(new OnSingleSelectListener() {
                             @Override
-                            public void onFailure(MediaerException e) {
+                            public void onFailure(MultimediaException e) {
                                 TT.show("出错了!");
                             }
 

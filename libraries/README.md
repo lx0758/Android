@@ -9,9 +9,6 @@
 `AbstractsFragment` 实现了 `Fragment` 懒加载模型,处理某些情况下 `Fragment` 状态异常的问题
 `AbstractsDialog` 扩展沉浸式的 `Dialog`
 
-# [service](./service/README.md)
-提供一个便捷的服务治理框架
-
 # [banner](./banner/README.md)
 实现一个适配器模式的伪无限滚动的 `Banner`
 
@@ -27,8 +24,8 @@
 # [list](./list/README.md)
 `RecyclerView` 的 `Adapter`,`ItemDecoration` 和 `ViewHolder` 的扩展封装
 
-# [mediaer](./mediaer/README.md)
-媒体文件选取/拍摄/录制/加载的库类
+# [multimedia](./multimedia/README.md)
+多媒体文件选取/拍摄/录制/加载的库类
 
 # [pay](./pay/README.md)
 基于支付宝/微信支付/银联支付的支付逻辑封装
@@ -38,6 +35,9 @@
 
 # [qrcode](./qrcode/README.md)
 基于[Zxing](https://github.com/zxing/zxing)的一个二维码扫描/识别/生成库
+
+# [sm](./sm/README.md)
+提供一个便捷的服务治理框架
 
 # [tool](./tool/README.md)/[util](/util/README.md)/[view](/view/README.md)
 其他一些库类/组件/控件的集合

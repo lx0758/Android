@@ -7,9 +7,8 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid) apply false
 }
 
-val libraries = findProject(":libraries")
-allprojects.forEach {
-    it.applyIf(it.parent == libraries) {
+allprojects.forEach { project ->
+    project.applyIf(project.path.startsWith(":libraries") && project.childProjects.isEmpty()) {
         afterEvaluate {
             apply(from = rootProject.projectDir.path + "/gradle/release.gradle")
         }

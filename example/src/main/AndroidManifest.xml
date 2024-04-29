@@ -69,8 +69,8 @@
             android:label="List" />
 
         <activity
-            android:name=".picturer.MediaerActivity"
-            android:label="Mediaer" />
+            android:name=".multimedia.MultimediaActivity"
+            android:label="Multimedia" />
 
         <activity
             android:name=".pay.PayActivity"
@@ -106,15 +106,23 @@
             android:label="Other" />
 
         <activity
-            android:name=".service.ServiceActivity"
-            android:label="Service" />
+            android:name=".service.SMActivity"
+            android:label="SM" />
         <service
             android:name=".service.BusinessService"
             android:exported="false"
             android:process=":business">
-            <intent-filter>
-                <action android:name="com.liux.android.service.action.SERVICE_MANAGER_MODULE" />
-                <action android:name="com.liux.android.example.action.SERVICE_BUSINESS" />
+            <intent-filter android:priority="100">
+                <action android:name="${smModuleServiceComponentPrefix}.action.SM_MODULE_SERVICE" />
+                <action android:name="${applicationId}.action.BUSINESS_SERVICE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".service.BackgroundService"
+            android:exported="false"
+            android:process=":background">
+            <intent-filter android:priority="200">
+                <action android:name="${smModuleServiceComponentPrefix}.action.SM_MODULE_SERVICE" />
             </intent-filter>
         </service>
 

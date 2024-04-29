@@ -12,9 +12,12 @@ import com.liux.android.tool.Logger;
  */
 
 public class ToolActivity extends AppCompatActivity {
+
+    private static final String TAG = "ToolActivity";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Logger.i("");
+        Logger.i(TAG, "onCreate");
     }
 }

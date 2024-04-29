@@ -15,10 +15,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.liux.android.example.R;
 import com.liux.android.example.databinding.ActivityPermissionBinding;
-import com.liux.android.mediaer.Mediaer;
-import com.liux.android.mediaer.MediaerException;
-import com.liux.android.mediaer.glide.GlideApp;
-import com.liux.android.mediaer.listener.OnTakeListener;
+import com.liux.android.multimedia.Multimedia;
+import com.liux.android.multimedia.MultimediaException;
+import com.liux.android.multimedia.glide.GlideApp;
+import com.liux.android.multimedia.listener.OnTakeListener;
 import com.liux.android.permission.Authorizer;
 import com.liux.android.permission.Continue;
 import com.liux.android.permission.OnContinueListener;
@@ -117,7 +117,7 @@ public class PermissionActivity extends AppCompatActivity {
                             @Override
                             public void onRuntimePermission(List<String> allow, List<String> reject, List<String> prohibit) {
                                 if (allow.contains(Manifest.permission.CAMERA)) {
-                                    Mediaer.with(PermissionActivity.this)
+                                    Multimedia.with(PermissionActivity.this)
                                             .take()
                                             .listener(new OnTakeListener() {
                                                 @Override
@@ -129,7 +129,7 @@ public class PermissionActivity extends AppCompatActivity {
                                                 }
 
                                                 @Override
-                                                public void onFailure(MediaerException e) {
+                                                public void onFailure(MultimediaException e) {
 
                                                 }
                                             })
@@ -176,7 +176,7 @@ public class PermissionActivity extends AppCompatActivity {
                                 }
 
                                 if (allow.contains(Manifest.permission.CAMERA)) {
-                                    Mediaer.with(PermissionActivity.this)
+                                    Multimedia.with(PermissionActivity.this)
                                             .take()
                                             .listener(new OnTakeListener() {
                                                 @Override
@@ -188,7 +188,7 @@ public class PermissionActivity extends AppCompatActivity {
                                                 }
 
                                                 @Override
-                                                public void onFailure(MediaerException e) {
+                                                public void onFailure(MultimediaException e) {
 
                                                 }
                                             })

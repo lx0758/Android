@@ -8,7 +8,7 @@ InputStream inputStream = rootProject.file('local.properties').newDataInputStrea
 properties.load(inputStream)
 inputStream.close()
 
-// 组件信息
+// 组件信息 (cn.6xyun.android:xxx:0.0.1-SNAPSHOT)
 def projectGroupId = 'cn.6xyun.android'
 def projectArtifactId = ext.get("artifactId")
 def projectVersion = ext.get("version")

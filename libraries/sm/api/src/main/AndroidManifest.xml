@@ -1,0 +1,17 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="${smServiceComponentPrefix}.permission.ACCESS_SM_SERVICE" />
+
+    <application>
+
+        <meta-data
+            android:name="sm_service_component_prefix"
+            android:value="${smServiceComponentPrefix}" />
+
+        <meta-data
+            android:name="sm_module_service_component_prefix"
+            android:value="${smModuleServiceComponentPrefix}" />
+
+    </application>
+
+</manifest>
