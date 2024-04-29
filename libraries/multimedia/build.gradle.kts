@@ -45,5 +45,5 @@ dependencies {
 
 ext.apply {
     set("artifactId", "multimedia")
-    set("version", "0.2.3")
+    set("version", "0.2.4")
 }

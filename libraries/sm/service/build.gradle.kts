@@ -38,5 +38,5 @@ dependencies {
 
 ext.apply {
     set("artifactId", "sm-service")
-    set("version", "0.0.1")
+    set("version", "0.1.4")
 }

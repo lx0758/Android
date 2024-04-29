@@ -10,6 +10,9 @@ implementation 'cn.6xyun.android:multimedia:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
+    1. 
+
+### 0.2.4_2024-04-29
     1. Mediaer 重命名为 Multimedia
 
 ### 0.2.3_2024-04-25

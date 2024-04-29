@@ -10,6 +10,9 @@ implementation 'cn.6xyun.android:tool:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
+    1. 
+
+### 0.2.6_2024-04-29
     1. 工具更名
     2. 日志工具调整
 
