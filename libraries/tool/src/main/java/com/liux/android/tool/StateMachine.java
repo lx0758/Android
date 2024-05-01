@@ -5,13 +5,17 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 
+import androidx.annotation.NonNull;
+
 import java.util.HashMap;
 
+/** @noinspection unused*/
 public class StateMachine {
 
     private static final Object SM_HANDLER_OBJ = new Object();
     private static final int SM_QUIT_CMD = -1;
 
+    private SMLogger mSMLogger;
     private HandlerThread mHandlerThread;
     private SmHandler mHandler;
 
@@ -21,7 +25,7 @@ public class StateMachine {
     private State mCurrentState;
     private State mDestState;
 
-    private QuitState mQuitState = new QuitState();
+    private final QuitState mQuitState = new QuitState();
 
     public StateMachine(String name) {
         mHandlerThread = new HandlerThread(name);
@@ -31,34 +35,45 @@ public class StateMachine {
         );
     }
 
+    public void setLogger(SMLogger smLogger) {
+        mSMLogger = smLogger;
+    }
+
     public void start() {
+        logger("start");
         mIsStarted = true;
         transitionTo(mInitialState);
     }
 
     public void quit() {
+        logger("quit");
         sendMessage(SM_QUIT_CMD, 0 , 0, SM_HANDLER_OBJ);
     }
 
-    public final Handler getHandler() {
-        return mHandler;
-    }
-
     public final void sendMessage(int what) {
-        sendMessage(what, 0 , 0, null);
+        logger("sendMessage, what:" + getMessageDescription(what));
+        mHandler.sendMessage(
+                mHandler.obtainMessage(what)
+        );
     }
 
     public final void sendMessage(int what, int arg1, int arg2, Object obj) {
+        logger("sendMessage, what:" + getMessageDescription(what) + ", arg1:" + arg1 + ", arg2:" + arg2 + ", obj:" + obj);
         mHandler.sendMessage(
                 mHandler.obtainMessage(what, arg1, arg2, obj)
         );
     }
 
     public final void sendMessageDelayed(int what, long delayMillis) {
-        sendMessageDelayed(what, 0 , 0, null, delayMillis);
+        logger("sendMessageDelayed, what:" + getMessageDescription(what) + ", delayMillis:" + delayMillis);
+        mHandler.sendMessageDelayed(
+                mHandler.obtainMessage(what),
+                delayMillis
+        );
     }
 
     public final void sendMessageDelayed(int what, int arg1, int arg2, Object obj, long delayMillis) {
+        logger("sendMessage, what:" + getMessageDescription(what) + ", arg1:" + arg1 + ", arg2:" + arg2 + ", obj:" + obj + ", delayMillis:" + delayMillis);
         mHandler.sendMessageDelayed(
                 mHandler.obtainMessage(what, arg1, arg2, obj),
                 delayMillis
@@ -66,24 +81,36 @@ public class StateMachine {
     }
 
     public final void removeMessages(int what) {
+        logger("removeMessages, what:" + getMessageDescription(what));
         mHandler.removeMessages(what);
     }
 
     protected final void addState(State state, State parent) {
+        logger("addState, state:" + state + ", parent:" + parent);
         doAddState(state, parent);
     }
 
     protected final void setInitialState(State initialState) {
+        logger("setInitialState, initialState:" + initialState);
         mInitialState = initialState;
     }
 
     protected final void transitionTo(State destState) {
+        logger("transitionTo, destState:" + destState);
         if (!mIsStarted) {
             return;
         }
 
         mDestState = destState;
         mHandler.post(this::performTransitions);
+    }
+
+    protected final Handler getHandler() {
+        return mHandler;
+    }
+
+    protected final State getCurrentState() {
+        return mCurrentState;
     }
 
     private StateInfo doAddState(State state, State parent) {
@@ -116,8 +143,10 @@ public class StateMachine {
             while (true) {
                 if (currentState != null) {
                     currentState.exit();
+                    logger(currentState + "#exit");
                 }
                 destState.enter();
+                logger(destState + "#enter");
 
                 if (destState != mDestState) {
                     destState = mDestState;
@@ -146,6 +175,50 @@ public class StateMachine {
         mDestState = null;
     }
 
+    private void logger(String message) {
+        if (mSMLogger != null) {
+            mSMLogger.log(message);
+        }
+    }
+
+    private String getMessageDescription(int what) {
+        if (mSMLogger != null) {
+            return mSMLogger.getMessageDescription(what);
+        }
+        return String.valueOf(what);
+    }
+
+    public static class State {
+
+        protected State() {}
+
+        public void enter() {}
+
+        public void exit() {}
+
+        public boolean processMessage(@NonNull Message msg) {
+            return false;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return getName();
+        }
+
+        public String getName() {
+            String name = getClass().getName();
+            int lastDollar = name.lastIndexOf('$');
+            return name.substring(lastDollar + 1);
+        }
+    }
+
+    public interface SMLogger {
+        void log(@NonNull String message);
+
+        String getMessageDescription(int what);
+    }
+
     private class SmHandler extends Handler {
 
         private Message mMsg;
@@ -155,7 +228,7 @@ public class StateMachine {
         }
 
         @Override
-        public void handleMessage(Message msg) {
+        public void handleMessage(@NonNull Message msg) {
             if (!mIsStarted) {
                 throw new RuntimeException("MicroStateMachine.handleMessage: "
                         + "The start method not called, received msg: " + msg);
@@ -169,10 +242,13 @@ public class StateMachine {
             }
 
             StateInfo curStateInfo = mStateInfo.get(mCurrentState);
-            while (!curStateInfo.state.processMessage(msg)) {
-                if (curStateInfo != null) {
-                    curStateInfo = curStateInfo.parentStateInfo;
+            while (curStateInfo != null) {
+                if (curStateInfo.state.processMessage(msg)) {
+                    logger(curStateInfo.state + "#processMessage, msg:" + getMessageDescription(msg.what) + ", result:true");
+                    break;
                 }
+                logger(curStateInfo.state + "#processMessage, msg:" + getMessageDescription(msg.what) + ", result:false");
+                curStateInfo = curStateInfo.parentStateInfo;
             }
         }
 
@@ -181,26 +257,7 @@ public class StateMachine {
         }
     }
 
-    public static class State {
-
-        protected State() {}
-
-        public void enter() {}
-
-        public void exit() {}
-
-        public boolean processMessage(Message msg) {
-            return false;
-        }
-
-        public String getName() {
-            String name = getClass().getName();
-            int lastDollar = name.lastIndexOf('$');
-            return name.substring(lastDollar + 1);
-        }
-    }
-
-    private class StateInfo {
+    private static class StateInfo {
         State state;
         StateInfo parentStateInfo;
     }
@@ -208,7 +265,7 @@ public class StateMachine {
     private static class QuitState extends State {
         private static final boolean NOT_HANDLED = false;
         @Override
-        public boolean processMessage(Message msg) {
+        public boolean processMessage(@NonNull Message msg) {
             return NOT_HANDLED;
         }
     }

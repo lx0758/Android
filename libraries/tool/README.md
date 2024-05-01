@@ -10,7 +10,8 @@ implementation 'cn.6xyun.android:tool:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1. 
+    1. 增加状态机日志
+    1. 日志工具调整
 
 ### 0.2.6_2024-04-29
     1. 工具更名

@@ -3,7 +3,6 @@ package com.liux.android.tool;
 import android.util.Log;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.StringReader;
@@ -22,72 +21,137 @@ import javax.xml.transform.stream.StreamSource;
  */
 
 public class Logger {
+
+    public static final int LEVEL_NONE = 0;
+    public static final int LEVEL_BASIC = 1;
+    public static final int LEVEL_DETAIL = 2;
+
     private static final String SEPARATOR = System.getProperty("line.separator");
     private static final String DIVIDE_0 = "┃";
     private static final String DIVIDE_1 = "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
     private static final String DIVIDE_2 = "┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
     private static final String DIVIDE_3 = "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━";
 
-    public static boolean DEBUG = true;
+    private static int sLevel = LEVEL_BASIC;
+    private static int sElementIndex = 3;
+    private static boolean sFormatJson = true;
+    private static boolean sFormatXml = true;
+    private static boolean sPrintStackTrace = true;
+
+    public static void setLevel(int level) {
+        sLevel = level;
+    }
+
+    public static void setElementIndex(int elementIndex) {
+        sElementIndex = elementIndex;
+    }
+
+    public static void setFormatJson(boolean formatJson) {
+        sFormatJson = formatJson;
+    }
+
+    public static void setFormatXml(boolean formatXml) {
+        sFormatXml = formatXml;
+    }
+
+    public static void setPrintStackTrace(boolean printStackTrace) {
+        sPrintStackTrace = printStackTrace;
+    }
 
     public static void v(String tag, String msg) {
-        if (!DEBUG) return;
-        print(tag, msg, null, Log.VERBOSE);
+        print(Log.VERBOSE, tag, msg, null);
     }
 
     public static void v(String tag, String msg, Throwable tr) {
-        if (!DEBUG) return;
-        print(tag, msg, tr, Log.VERBOSE);
+        print(Log.VERBOSE, tag, msg, tr);
     }
 
     public static void d(String tag, String msg) {
-        if (!DEBUG) return;
-        print(tag, msg, null, Log.DEBUG);
+        print(Log.DEBUG, tag, msg, null);
     }
 
     public static void d(String tag, String msg, Throwable tr) {
-        if (!DEBUG) return;
-        print(tag, msg, tr, Log.DEBUG);
+        print(Log.DEBUG, tag, msg, tr);
     }
 
     public static void i(String tag, String msg) {
-        if (!DEBUG) return;
-        print(tag, msg, null, Log.INFO);
+        print(Log.INFO, tag, msg, null);
     }
 
     public static void i(String tag, String msg, Throwable tr) {
-        if (!DEBUG) return;
-        print(tag, msg, tr, Log.INFO);
+        print(Log.INFO, tag, msg, tr);
     }
 
     public static void w(String tag, String msg) {
-        if (!DEBUG) return;
-        print(tag, msg, null, Log.WARN);
+        print(Log.WARN, tag, msg, null);
     }
 
     public static void w(String tag, String msg, Throwable tr) {
-        if (!DEBUG) return;
-        print(tag, msg, tr, Log.WARN);
+        print(Log.WARN, tag, msg, tr);
     }
 
     public static void e(String tag, String msg) {
-        if (!DEBUG) return;
-        print(tag, msg, null, Log.ERROR);
+        print(Log.ERROR, tag, msg, null);
     }
 
     public static void e(String tag, String msg, Throwable tr) {
-        if (!DEBUG) return;
-        print(tag, msg, tr, Log.ERROR);
+        print(Log.ERROR, tag, msg, tr);
     }
 
     public static void a(String tag, String msg) {
-        if (!DEBUG) return;
-        print(tag, msg, null, Log.ASSERT);
+        print(Log.ASSERT, tag, msg, null);
     }
 
     public static void a(String tag, String msg, Throwable tr) {
-        if (!DEBUG) return;
-        print(tag, msg, tr, Log.ASSERT);
+        print(Log.ASSERT, tag, msg, tr);
+    }
+
+    public synchronized static void print(int priority, String tag, String msg, Throwable tr) {
+        switch (sLevel) {
+            case LEVEL_NONE: {
+                break;
+            }
+            case LEVEL_DETAIL: {
+                String stackTrace = getStackTrace();
+
+                if (sFormatJson) {
+                    msg = tryFormatJson(msg);
+                }
+                if (sFormatXml) {
+                    msg = tryFormatXml(msg);
+                }
+                if (sPrintStackTrace && tr != null) {
+                    msg = msg + SEPARATOR + Log.getStackTraceString(tr);
+                }
+
+                Log.println(priority, tag, DIVIDE_1);
+                String[] stackTraces = stackTrace.split(SEPARATOR);
+                for (String trace : stackTraces) {
+                    Log.println(priority, tag, DIVIDE_0 + trace);
+                }
+                Log.println(priority, tag, DIVIDE_2);
+                String[] msgs = msg.split(SEPARATOR);
+                for (String m : msgs) {
+                    Log.println(priority, tag, DIVIDE_0 + m);
+                }
+                Log.println(priority, tag, DIVIDE_3);
+                break;
+            }
+            case LEVEL_BASIC:
+            default: {
+                if (sFormatJson) {
+                    msg = tryFormatJson(msg);
+                }
+                if (sFormatXml) {
+                    msg = tryFormatXml(msg);
+                }
+                if (sPrintStackTrace && tr != null) {
+                    msg = msg + SEPARATOR + Log.getStackTraceString(tr);
+                }
+                Log.println(priority, tag, msg);
+                break;
+            }
+        }
     }
 
     /**
@@ -96,53 +160,16 @@ public class Logger {
      */
     private static String getStackTrace() {
         StackTraceElement[] stackTraceElements = new Throwable().getStackTrace();
-        StackTraceElement stackTraceElement = stackTraceElements[3];
-
-        String className = stackTraceElement.getClassName();
-        String[] classNameInfo = className.split("\\.");
-        if (classNameInfo.length > 0) {
-            className = classNameInfo[classNameInfo.length - 1];
-        }
-        if (className.contains("$")) {
-            className = className.split("\\$")[0];
-        }
-
+        StackTraceElement stackTraceElement = stackTraceElements[sElementIndex];
         return String.format(
                 Locale.getDefault(),
-                "%s" + SEPARATOR + "%s.%s(%s.java:%d)",
+                "%s" + SEPARATOR + "%s#%s(%s:%d)",
                 Thread.currentThread(),
                 stackTraceElement.getClassName(),
                 stackTraceElement.getMethodName(),
-                className,
+                stackTraceElement.getFileName(),
                 stackTraceElement.getLineNumber()
         );
-    }
-
-    /**
-     * 格式化文本
-     * @param msg
-     * @param tr
-     * @param priority
-     * @return
-     */
-    private synchronized static void print(String tag, String msg, Throwable tr, int priority) {
-        String stackTrace = getStackTrace();
-
-        msg = formatJson(msg);
-        msg = formatXml(msg);
-        msg = msg + SEPARATOR + Log.getStackTraceString(tr);
-
-        Log.println(priority, tag, DIVIDE_1);
-        String[] stackTraces = stackTrace.split(SEPARATOR);
-        for (String trace : stackTraces) {
-            Log.println(priority, tag, DIVIDE_0 + trace);
-        }
-        Log.println(priority, tag, DIVIDE_2);
-        String[] msgs = msg.split(SEPARATOR);
-        for (String m : msgs) {
-            Log.println(priority, tag, DIVIDE_0 + m);
-        }
-        Log.println(priority, tag, DIVIDE_3);
     }
 
     /**
@@ -150,16 +177,14 @@ public class Logger {
      * @param json
      * @return
      */
-    private static String formatJson(String json) {
+    private static String tryFormatJson(String json) {
         try {
             if (json.startsWith("{")) {
                 json = new JSONObject(json).toString(4);
             } else if (json.startsWith("[")) {
                 json = new JSONArray(json).toString(4);
             }
-        } catch (JSONException e) {
-
-        }
+        } catch (Exception ignored) {}
         return json;
     }
 
@@ -168,7 +193,7 @@ public class Logger {
      * @param xml
      * @return
      */
-    private static String formatXml(String xml) {
+    private static String tryFormatXml(String xml) {
         try {
             if (!xml.startsWith("<")) {
                 return xml;
@@ -180,9 +205,7 @@ public class Logger {
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
             transformer.transform(xmlInput, xmlOutput);
             xml = xmlOutput.getWriter().toString().replaceFirst(">", ">" + SEPARATOR);
-        } catch (Exception e) {
-
-        }
+        } catch (Exception ignored) {}
         return xml;
     }
 }
