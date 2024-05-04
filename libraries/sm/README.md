@@ -13,6 +13,9 @@ implementation 'cn.6xyun.android:sm-service:x.y.z'
 ### x.y.z_202x-xx-xx
     1. 
 
+### 0.1.5_2024-05-04
+    1. 接口方法名调整
+
 ### 0.1.4_2024-04-29
     1. 拆分为服务端和接口
     2. 取消 SM 的进程设置

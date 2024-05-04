@@ -90,6 +90,11 @@ public class StateMachine {
         doAddState(state, parent);
     }
 
+    protected final void removeState(State state) {
+        logger("removeState, state:" + state);
+        doRemoveState(state);
+    }
+
     protected final void setInitialState(State initialState) {
         logger("setInitialState, initialState:" + initialState);
         mInitialState = initialState;
@@ -133,7 +138,26 @@ public class StateMachine {
         }
         stateInfo.state = state;
         stateInfo.parentStateInfo = parentStateInfo;
+        stateInfo.active = false;
         return stateInfo;
+    }
+
+    private void doRemoveState(State state) {
+        StateInfo stateInfo = mStateInfo.get(state);
+        if (stateInfo == null || stateInfo.active) {
+            return;
+        }
+        boolean isParent = false;
+        for (StateInfo value : mStateInfo.values()) {
+            if (value.parentStateInfo == stateInfo) {
+                isParent = true;
+                break;
+            }
+        }
+        if (isParent) {
+            return;
+        }
+        mStateInfo.remove(state);
     }
 
     private void performTransitions() {
@@ -142,11 +166,9 @@ public class StateMachine {
         if (destState != null) {
             while (true) {
                 if (currentState != null) {
-                    currentState.exit();
-                    logger(currentState + "#exit");
+                    invokeExitMethods(currentState);
                 }
-                destState.enter();
-                logger(destState + "#enter");
+                invokeEnterMethods(destState);
 
                 if (destState != mDestState) {
                     destState = mDestState;
@@ -160,6 +182,26 @@ public class StateMachine {
 
         if (destState != null && destState == mQuitState) {
             cleanupAfterQuitting();
+        }
+    }
+
+    private void invokeExitMethods(State state) {
+        StateInfo curStateInfo = mStateInfo.get(state);
+        while (curStateInfo != null) {
+            logger(curStateInfo.state + "#exit");
+            curStateInfo.state.exit();
+            curStateInfo.active = false;
+            curStateInfo = curStateInfo.parentStateInfo;
+        }
+    }
+
+    private void invokeEnterMethods(State state) {
+        StateInfo curStateInfo = mStateInfo.get(state);
+        while (curStateInfo != null) {
+            logger(curStateInfo.state + "#enter");
+            curStateInfo.state.enter();
+            curStateInfo.active = true;
+            curStateInfo = curStateInfo.parentStateInfo;
         }
     }
 
@@ -177,7 +219,7 @@ public class StateMachine {
 
     private void logger(String message) {
         if (mSMLogger != null) {
-            mSMLogger.log(message);
+            mSMLogger.logger(message);
         }
     }
 
@@ -214,7 +256,7 @@ public class StateMachine {
     }
 
     public interface SMLogger {
-        void log(@NonNull String message);
+        void logger(@NonNull String message);
 
         String getMessageDescription(int what);
     }
@@ -243,13 +285,16 @@ public class StateMachine {
 
             StateInfo curStateInfo = mStateInfo.get(mCurrentState);
             while (curStateInfo != null) {
+                logger(curStateInfo.state + "#processMessage, msg:" + getMessageDescription(msg.what));
                 if (curStateInfo.state.processMessage(msg)) {
                     logger(curStateInfo.state + "#processMessage, msg:" + getMessageDescription(msg.what) + ", result:true");
-                    break;
+                    return;
                 }
                 logger(curStateInfo.state + "#processMessage, msg:" + getMessageDescription(msg.what) + ", result:false");
                 curStateInfo = curStateInfo.parentStateInfo;
             }
+
+            logger("unhandledMessage: msg:" + getMessageDescription(msg.what));
         }
 
         public Message getMsg() {
@@ -260,6 +305,7 @@ public class StateMachine {
     private static class StateInfo {
         State state;
         StateInfo parentStateInfo;
+        boolean active = false;
     }
 
     private static class QuitState extends State {
