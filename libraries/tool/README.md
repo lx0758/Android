@@ -10,7 +10,7 @@ implementation 'cn.6xyun.android:tool:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1. 
+    1. 优化 Activity 栈管理器
 
 ### 0.2.8_2024-05-04
     1. 日志打印完善
