@@ -39,5 +39,5 @@ dependencies {
 
 ext.apply {
     set("artifactId", "tool")
-    set("version", "0.2.7")
+    set("version", "0.2.8")
 }
