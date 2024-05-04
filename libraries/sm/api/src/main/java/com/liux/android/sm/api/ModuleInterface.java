@@ -19,7 +19,7 @@ public abstract class ModuleInterface<T extends IInterface> {
     private final Context mContext;
     private final ComponentName mComponentName;
 
-    private T mInterfaceCache;
+    private T mModuleInterfaceCache;
 
     public ModuleInterface(Context context, String action) {
         this(context, null, action);
@@ -34,8 +34,8 @@ public abstract class ModuleInterface<T extends IInterface> {
         mComponentName = componentName;
     }
 
-    public boolean isAvailable() {
-        return getInterface() != null;
+    public boolean isModuleAvailable() {
+        return getModuleInterface() != null;
     }
 
     public ComponentName getComponentName() {
@@ -43,8 +43,8 @@ public abstract class ModuleInterface<T extends IInterface> {
     }
 
     @Nullable
-    public T getInterface() {
-        if (mInterfaceCache == null) {
+    public T getModuleInterface() {
+        if (mModuleInterfaceCache == null) {
             IBinder iBinder = SMInterface.getInstance(mContext).getService(mComponentName);
             if (iBinder != null) {
                 T tInterface = onBinderToInterface(iBinder);
@@ -55,11 +55,11 @@ public abstract class ModuleInterface<T extends IInterface> {
                         return null;
                     }
                 }
-                mInterfaceCache = tInterface;
+                mModuleInterfaceCache = tInterface;
             }
         }
-        Log.d(TAG, "getInterface, result:" + (mInterfaceCache != null ? "not null" : "null"));
-        return mInterfaceCache;
+        Log.d(TAG, "getModuleInterface, result:" + (mModuleInterfaceCache != null ? "not null" : "null"));
+        return mModuleInterfaceCache;
     }
 
     @Nullable
@@ -69,11 +69,11 @@ public abstract class ModuleInterface<T extends IInterface> {
         @Override
         public void binderDied() {
             Log.w(TAG, "SelfDeathRecipient -> binderDied");
-            if (mInterfaceCache != null) {
+            if (mModuleInterfaceCache != null) {
                 try {
-                    mInterfaceCache.asBinder().unlinkToDeath(mDeathRecipient, 0);
+                    mModuleInterfaceCache.asBinder().unlinkToDeath(mDeathRecipient, 0);
                 } catch (NoSuchElementException ignored) {}
-                mInterfaceCache = null;
+                mModuleInterfaceCache = null;
             }
         }
     }

@@ -32,12 +32,12 @@ public class BusinessInterface extends ModuleInterface<IBusinessInterface> {
     }
 
     public String call(String param) {
-        if (getInterface() == null) {
+        if (!isModuleAvailable()) {
             return null;
         }
 
         try {
-            return getInterface().call(param);
+            return getModuleInterface().call(param);
         } catch (RemoteException ignored) {
             return null;
         }

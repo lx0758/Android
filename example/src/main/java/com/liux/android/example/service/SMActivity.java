@@ -24,7 +24,7 @@ public class SMActivity extends AppCompatActivity {
         setContentView(mViewBinding.getRoot());
 
         mViewBinding.btnCheck.setOnClickListener(v -> {
-            boolean isAvailable = BusinessInterface.getInstance(v.getContext()).isAvailable();
+            boolean isAvailable = BusinessInterface.getInstance(v.getContext()).isModuleAvailable();
             printLog("check:" + isAvailable);
         });
         mViewBinding.btnCall.setOnClickListener(v -> {
