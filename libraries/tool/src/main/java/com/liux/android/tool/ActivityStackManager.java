@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.lang.ref.WeakReference;
 import java.util.Iterator;
 import java.util.Stack;
@@ -11,48 +14,6 @@ import java.util.Stack;
 public class ActivityStackManager {
 
     private static volatile ActivityStackManager sInstance;
-
-    private static Application.ActivityLifecycleCallbacks activityLifecycleCallbacks = new Application.ActivityLifecycleCallbacks() {
-        @Override
-        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-            getInstance().putActivity(activity);
-        }
-
-        @Override
-        public void onActivityStarted(Activity activity) {
-
-        }
-
-        @Override
-        public void onActivityResumed(Activity activity) {
-            getInstance().updateTopActivity(activity);
-        }
-
-        @Override
-        public void onActivityPaused(Activity activity) {
-            getInstance().updateTopActivity(null);
-        }
-
-        @Override
-        public void onActivityStopped(Activity activity) {
-
-        }
-
-        @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
-        }
-
-        @Override
-        public void onActivityDestroyed(Activity activity) {
-            getInstance().removeActivity(activity);
-        }
-    };
-
-    public static void install(Application application) {
-        application.registerActivityLifecycleCallbacks(activityLifecycleCallbacks);
-    }
-
     public static ActivityStackManager getInstance() {
         if (sInstance == null) {
             synchronized (ActivityStackManager.class) {
@@ -64,20 +25,76 @@ public class ActivityStackManager {
         return sInstance;
     }
 
-    private WeakReference<Activity> mTopActivity = null;
-    private Stack<WeakReference<Activity>> mActivityStack = new Stack<>();
+    public static void install(Application application) {
+        application.registerActivityLifecycleCallbacks(
+                getInstance().mActivityLifecycleCallbacks
+        );
+    }
+
+    private final Application.ActivityLifecycleCallbacks mActivityLifecycleCallbacks = new Application.ActivityLifecycleCallbacks() {
+        @Override
+        public void onActivityCreated(@NonNull Activity activity, Bundle savedInstanceState) {
+            putActivity(activity);
+        }
+
+        @Override
+        public void onActivityStarted(@NonNull Activity activity) {
+
+        }
+
+        @Override
+        public void onActivityResumed(@NonNull Activity activity) {
+            updateVisibleActivity(activity);
+        }
+
+        @Override
+        public void onActivityPaused(@NonNull Activity activity) {
+            updateVisibleActivity(null);
+        }
+
+        @Override
+        public void onActivityStopped(@NonNull Activity activity) {
+
+        }
+
+        @Override
+        public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
+
+        }
+
+        @Override
+        public void onActivityDestroyed(@NonNull Activity activity) {
+            removeActivity(activity);
+        }
+    };
+
+    private final Stack<WeakReference<Activity>> mActivityStack = new Stack<>();
+    private WeakReference<Activity> mVisibleActivity = null;
+
+    /**
+     * 取可见的 Activity
+     * @return
+     */
+    @Nullable
+    public Activity getVisibleActivity() {
+        if (mVisibleActivity != null) {
+            return mVisibleActivity.get();
+        }
+        return null;
+    }
 
     /**
      * 取处于栈顶的 Activity
      * @return
      */
+    @Nullable
     public Activity getTopActivity() {
-        // 先检查软引用
-        if (mTopActivity != null) {
-            Activity activity = mTopActivity.get();
+        // 先检查可见引用
+        if (mVisibleActivity != null) {
+            Activity activity = mVisibleActivity.get();
             if (activity != null) return activity;
         }
-        // 再检查堆栈
+        // 然后检查堆栈
         for (Iterator<WeakReference<Activity>> iterator = mActivityStack.iterator(); iterator.hasNext(); ) {
             Activity weakActivity = iterator.next().get();
             if (weakActivity == null) {
@@ -171,6 +188,14 @@ public class ActivityStackManager {
         }
     }
 
+    private void updateVisibleActivity(Activity activity) {
+        if (activity != null) {
+            mVisibleActivity = new WeakReference<>(activity);
+        } else {
+            mVisibleActivity = null;
+        }
+    }
+
     private void putActivity(Activity activity) {
         mActivityStack.push(new WeakReference<>(activity));
     }
@@ -179,14 +204,6 @@ public class ActivityStackManager {
         for (Iterator<WeakReference<Activity>> iterator = mActivityStack.iterator(); iterator.hasNext();) {
             Activity weakActivity = iterator.next().get();
             if (weakActivity == activity) iterator.remove();
-        }
-    }
-
-    private void updateTopActivity(Activity activity) {
-        if (activity != null) {
-            mTopActivity = new WeakReference<>(activity);
-        } else {
-            mTopActivity = null;
         }
     }
 

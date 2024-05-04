@@ -12,6 +12,9 @@ implementation 'cn.6xyun.android:tool:x.y.z'
 ### x.y.z_202x-xx-xx
     1. 
 
+### 0.2.9_2024-05-04
+    1. 优化 Activity 栈管理器
+
 ### 0.2.8_2024-05-04
     1. 日志打印完善
     2. 完善状态链支持
