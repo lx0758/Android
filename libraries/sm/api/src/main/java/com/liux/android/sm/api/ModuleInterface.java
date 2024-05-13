@@ -31,7 +31,12 @@ public abstract class ModuleInterface<T extends IInterface> {
 
     public ModuleInterface(Context context, ComponentName componentName) {
         mContext = context.getApplicationContext();
-        mComponentName = componentName;
+        String className = componentName.getClassName();
+        if (className.charAt(0) == '.') {
+            mComponentName = new ComponentName(componentName.getPackageName(), componentName.getPackageName() + className);
+        } else {
+            mComponentName = componentName;
+        }
     }
 
     public boolean isModuleAvailable() {
