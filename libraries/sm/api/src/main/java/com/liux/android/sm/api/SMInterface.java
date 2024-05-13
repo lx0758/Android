@@ -11,6 +11,11 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 public class SMInterface {
     private static final String TAG = "SMInterface";
 
@@ -24,10 +29,10 @@ public class SMInterface {
     public static final String ACTION_SM_MODULE_INTERFACE_CHANGED_SUFFIX = ".action.SM_MODULE_INTERFACE_CHANGED";
     public static final String ACTION_SM_MODULE_SERVICE_SUFFIX = ".action.SM_MODULE_SERVICE";
 
-    public static final String EXTRA_COMPONENT_NAME = "EXTRA_OPTION";
+    public static final String EXTRA_COMPONENT_NAME = "EXTRA_COMPONENT_NAME";
     public static final String EXTRA_STATUS = "EXTRA_STATUS";
-    public static final int EXTRA_STATUS_READY = 1;
-    public static final int EXTRA_STATUS_UNREADY = 2;
+    public static final int EXTRA_STATUS_AVAILABLE = 1;
+    public static final int EXTRA_STATUS_UNAVAILABLE = 2;
 
     @SuppressLint("StaticFieldLeak")
     private volatile static SMInterface sInstance;
@@ -75,6 +80,7 @@ public class SMInterface {
     private final Context mContext;
     private final SMBroadcastReceiver mSMBroadcastReceiver = new SelfBroadcastReceiver();
     private final IBinder.DeathRecipient mDeathRecipient = new SelfDeathRecipient();
+    private final List<WeakReference<StatusListener>> mStatusListeners = new ArrayList<>();
 
     private ISMInterface mSMInterfaceCache;
 
@@ -160,8 +166,41 @@ public class SMInterface {
         }
     }
 
+    public void registerStatusListener(StatusListener listener) {
+        synchronized (mStatusListeners) {
+            Iterator<WeakReference<StatusListener>> iterator = mStatusListeners.iterator();
+            while (iterator.hasNext()) {
+                WeakReference<StatusListener> weakReference = iterator.next();
+                StatusListener statusListener = weakReference.get();
+                if (statusListener == null) {
+                    iterator.remove();
+                    continue;
+                }
+                if (statusListener == listener) return;
+            }
+            mStatusListeners.add(new WeakReference<>(listener));
+        }
+    }
+
+    public void unregisterStatusListener(StatusListener listener) {
+        synchronized (mStatusListeners) {
+            Iterator<WeakReference<StatusListener>> iterator = mStatusListeners.iterator();
+            while (iterator.hasNext()) {
+                WeakReference<StatusListener> weakReference = iterator.next();
+                StatusListener statusListener = weakReference.get();
+                if (statusListener == null || statusListener == listener) {
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
     private void registerSMBroadcastReceiver() {
         mSMBroadcastReceiver.registerReceiver(mContext);
+    }
+
+    private void unregisterSMBroadcastReceiver() {
+        mSMBroadcastReceiver.unregisterReceiver(mContext);
     }
 
     private ISMInterface getSMInterface() {
@@ -176,7 +215,7 @@ public class SMInterface {
                     getServiceAction(mContext)
             );
             if (componentName == null) {
-                Log.e(TAG, "getServiceManagerImpl, componentName is null");
+                Log.e(TAG, "getSMInterface, componentName is null");
                 break check;
             }
 
@@ -184,7 +223,7 @@ public class SMInterface {
             intent.setComponent(componentName);
             IBinder iBinder = mSMBroadcastReceiver.peekService(mContext, intent);
             if (iBinder == null) {
-                Log.w(TAG, "getServiceManagerImpl, iBinder is null");
+                Log.w(TAG, "getSMInterface, iBinder is null");
                 startServiceManagerService(intent);
                 break check;
             }
@@ -192,14 +231,14 @@ public class SMInterface {
             try {
                 iBinder.linkToDeath(mDeathRecipient, 0);
             } catch (RemoteException e) {
-                Log.e(TAG, "getServiceManagerImpl, linkToDeath exception", e);
+                Log.e(TAG, "getSMInterface, linkToDeath exception", e);
                 break check;
             }
 
             mSMInterfaceCache = ISMInterface.Stub.asInterface(iBinder);
         }
 
-        Log.d(TAG, "getServiceManagerImpl, result:" + (mSMInterfaceCache != null ? "not null" : "null"));
+        Log.d(TAG, "getSMInterface, result:" + (mSMInterfaceCache != null ? "not null" : "null"));
         return mSMInterfaceCache;
     }
 
@@ -212,6 +251,15 @@ public class SMInterface {
         }
     }
 
+    public interface StatusListener {
+
+        ComponentName getComponentName();
+
+        default void onInterfaceAvailable() {}
+
+        default void onInterfaceUnavailable() {}
+    }
+
     private class SelfBroadcastReceiver extends SMBroadcastReceiver {
         @Override
         public void onServiceManagerReady(Context context, Intent intent) {
@@ -220,6 +268,31 @@ public class SMInterface {
             mDeathRecipient.binderDied();
             getSMInterface();
         }
+
+        @Override
+        public void onModuleInterfaceChanged(Context context, Intent intent, ComponentName componentName, int status) {
+            synchronized (mStatusListeners) {
+                Iterator<WeakReference<StatusListener>> iterator = mStatusListeners.iterator();
+                while (iterator.hasNext()) {
+                    WeakReference<StatusListener> weakReference = iterator.next();
+                    StatusListener statusListener = weakReference.get();
+                    if (statusListener == null) {
+                        iterator.remove();
+                        continue;
+                    }
+                    if (statusListener.getComponentName().equals(componentName)) {
+                        switch (status) {
+                            case SMInterface.EXTRA_STATUS_AVAILABLE:
+                                statusListener.onInterfaceAvailable();
+                                break;
+                            case SMInterface.EXTRA_STATUS_UNAVAILABLE:
+                                statusListener.onInterfaceUnavailable();
+                                break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private class SelfDeathRecipient implements IBinder.DeathRecipient {
@@ -227,7 +300,7 @@ public class SMInterface {
         public void binderDied() {
             Log.w(TAG, "SelfDeathRecipient -> binderDied");
             if (mSMInterfaceCache != null) {
-                mSMInterfaceCache.asBinder().unlinkToDeath(mDeathRecipient, 0);
+                mSMInterfaceCache.asBinder().unlinkToDeath(this, 0);
                 mSMInterfaceCache = null;
             }
         }

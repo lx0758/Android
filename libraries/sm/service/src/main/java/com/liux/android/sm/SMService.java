@@ -103,7 +103,7 @@ public class SMService extends Service {
             moduleServiceComponent = resolveInfo.serviceInfo.packageName + "/" + resolveInfo.serviceInfo.name;
             moduleServiceIntent = new Intent().setClassName(resolveInfo.serviceInfo.packageName, resolveInfo.serviceInfo.name);
 
-            if (mSMInterfaceImpl.isServiceAlive(moduleServiceIntent.getComponent())) continue;
+            if (mSMInterfaceImpl.isModuleServiceAvailable(moduleServiceIntent.getComponent())) continue;
 
             try {
                 startService(moduleServiceIntent);

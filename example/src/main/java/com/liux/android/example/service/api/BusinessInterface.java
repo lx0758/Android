@@ -7,6 +7,8 @@ import android.os.RemoteException;
 
 import com.liux.android.sm.api.ModuleInterface;
 
+import java.util.Objects;
+
 public class BusinessInterface extends ModuleInterface<IBusinessInterface> {
 
     @SuppressLint("StaticFieldLeak")
@@ -37,8 +39,8 @@ public class BusinessInterface extends ModuleInterface<IBusinessInterface> {
         }
 
         try {
-            return getModuleInterface().call(param);
-        } catch (RemoteException ignored) {
+            return Objects.requireNonNull(getModuleInterface()).call(param);
+        } catch (Exception ignored) {
             return null;
         }
     }

@@ -55,17 +55,18 @@ public class SMInterfaceImpl extends ISMInterface.Stub {
         removeModuleService(componentName);
     }
 
-    boolean isServiceAlive(ComponentName componentName) {
+    boolean isModuleServiceAvailable(ComponentName componentName) {
         BinderWrapper binderWrapper = mBinderMap.get(componentName);
         return binderWrapper != null && binderWrapper.iBinder != null && binderWrapper.iBinder.isBinderAlive();
     }
 
     void addModuleService(ComponentName componentName, IBinder iBinder) {
         try {
+            if (isModuleServiceAvailable(componentName)) return;
             DeathRecipient deathRecipient = new SelfDeathRecipient(componentName);
             iBinder.linkToDeath(deathRecipient, 0);
             mBinderMap.put(componentName, new BinderWrapper(iBinder, deathRecipient));
-            notifyModuleServiceChanged(componentName, SMInterface.EXTRA_STATUS_READY);
+            notifyModuleServiceChanged(componentName, SMInterface.EXTRA_STATUS_AVAILABLE);
         } catch (RemoteException e) {
             Log.i(TAG, "addModuleService, exception", e);
         }
@@ -77,12 +78,12 @@ public class SMInterfaceImpl extends ISMInterface.Stub {
             try {
                 binderWrapper.iBinder.unlinkToDeath(binderWrapper.deathRecipient, 0);
             } catch (NoSuchElementException ignored) {}
+            notifyModuleServiceChanged(componentName, SMInterface.EXTRA_STATUS_UNAVAILABLE);
         }
-        notifyModuleServiceChanged(componentName, SMInterface.EXTRA_STATUS_UNREADY);
     }
 
     private void notifyModuleServiceChanged(ComponentName componentName, int status) {
-        Log.i(TAG, "notifyModuleServiceChanged, componentName:" + componentName + ", status:" + status + "(1:READY 2:UNREADY)");
+        Log.i(TAG, "notifyModuleServiceChanged, componentName:" + componentName + ", status:" + status + "(1:AVAILABLE 2:UNAVAILABLE)");
         Intent intent = new Intent(SMInterface.getModuleInterfaceChangedAction(mContext));
         intent.putExtra(SMInterface.EXTRA_COMPONENT_NAME, componentName);
         intent.putExtra(SMInterface.EXTRA_STATUS, status);

@@ -11,7 +11,8 @@ implementation 'cn.6xyun.android:sm-service:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1. 
+    1. 增加统一的状态回调, 避免广播接收器满天飞
+    2. 移除冗余的状态广播
 
 ### 0.1.5_2024-05-04
     1. 接口方法名调整
