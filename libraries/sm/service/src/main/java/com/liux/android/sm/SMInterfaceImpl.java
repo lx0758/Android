@@ -37,24 +37,6 @@ public class SMInterfaceImpl extends ISMInterface.Stub {
         return null;
     }
 
-    @Override
-    public void registerService(ComponentName componentName, IBinder iBinder) throws RemoteException {
-        Log.i(TAG, "registerService, componentName:" + componentName + ", iBinder:" + (iBinder != null ? "not null" : "null"));
-        SMUtil.checkPermission(mContext, SMInterface.getServicePermission(mContext));
-
-        if (iBinder != null) {
-            addModuleService(componentName, iBinder);
-        }
-    }
-
-    @Override
-    public void unregisterService(ComponentName componentName) throws RemoteException {
-        Log.i(TAG, "unregisterService, componentName:" + componentName);
-        SMUtil.checkPermission(mContext, SMInterface.getServicePermission(mContext));
-
-        removeModuleService(componentName);
-    }
-
     boolean isModuleServiceAvailable(ComponentName componentName) {
         BinderWrapper binderWrapper = mBinderMap.get(componentName);
         return binderWrapper != null && binderWrapper.iBinder != null && binderWrapper.iBinder.isBinderAlive();

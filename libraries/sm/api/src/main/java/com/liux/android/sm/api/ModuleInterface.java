@@ -10,6 +10,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public abstract class ModuleInterface<T extends IInterface> {
     protected final String TAG = getClass().getSimpleName() + "-MI";
@@ -26,7 +27,10 @@ public abstract class ModuleInterface<T extends IInterface> {
     }
 
     public ModuleInterface(Context context, String packageName, String action) {
-        this(context, SMUtil.getServiceComponentName(context, packageName, action));
+        this(
+                context,
+                Objects.requireNonNull(SMUtil.getServiceComponentName(context, packageName, action))
+        );
     }
 
     public ModuleInterface(Context context, ComponentName componentName) {

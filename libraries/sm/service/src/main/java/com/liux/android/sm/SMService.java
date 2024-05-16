@@ -24,17 +24,10 @@ public class SMService extends Service {
 
     private SMInterfaceImpl mSMInterfaceImpl;
 
-    public static void startService(Context context) {
-        Log.d(TAG, "startService");
-        context.startService(
-                new Intent(context, SMService.class)
-        );
-    }
-
     @Override
     public void onCreate() {
-        super.onCreate();
         Log.d(TAG, "onCreate");
+        super.onCreate();
 
         mSMInterfaceImpl = new SMInterfaceImpl(getApplicationContext());
 
@@ -45,7 +38,7 @@ public class SMService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(TAG, "onBind");
+        Log.d(TAG, "onBind, intent:" + intent);
         return mSMInterfaceImpl;
     }
 
@@ -57,9 +50,10 @@ public class SMService extends Service {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         Log.d(TAG, "onDestroy");
+        super.onDestroy();
 
+        unbindService(mServiceConnection);
         unregisterPackageChangedReceiver();
     }
 
@@ -87,53 +81,61 @@ public class SMService extends Service {
     private void notifyServiceManagerReady() {
         Log.d(TAG, "notifyServiceManagerReady");
         sendBroadcast(new Intent(SMInterface.getServiceReadyAction(this)), SMInterface.getServicePermission(this));
-        startModuleService();
+        bindAllModuleService();
     }
 
-    private void startModuleService() {
-        Log.i(TAG, "startModuleService");
+    private void bindAllModuleService() {
+        Log.i(TAG, "bindAllModuleService");
         Intent moduleActionIntent = new Intent(SMInterface.getModuleServiceAction(this));
         List<ResolveInfo> resolveInfoList = getPackageManager().queryIntentServices(moduleActionIntent, 0);
 
         Collections.sort(resolveInfoList, (o1, o2) -> o2.priority - o1.priority);
 
-        Intent moduleServiceIntent;
-        String moduleServiceComponent;
+        ComponentName componentName;
         for (ResolveInfo resolveInfo : resolveInfoList) {
-            moduleServiceComponent = resolveInfo.serviceInfo.packageName + "/" + resolveInfo.serviceInfo.name;
-            moduleServiceIntent = new Intent().setClassName(resolveInfo.serviceInfo.packageName, resolveInfo.serviceInfo.name);
+            componentName = new ComponentName(resolveInfo.serviceInfo.packageName, resolveInfo.serviceInfo.name);
 
-            if (mSMInterfaceImpl.isModuleServiceAvailable(moduleServiceIntent.getComponent())) continue;
+            if (mSMInterfaceImpl.isModuleServiceAvailable(componentName)) continue;
 
-            try {
-                startService(moduleServiceIntent);
-                Log.i(TAG, "startModuleService finish, component:" + moduleServiceComponent);
-            } catch (Exception e) {
-                Log.e(TAG, "startModuleService exception, component:" + moduleServiceComponent, e);
-            }
+            bindModuleService(componentName);
+        }
+    }
+
+    private void bindModuleService(ComponentName componentName) {
+        try {
+            Intent intent = new Intent();
+            intent.setComponent(componentName);
+            bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+            Log.i(TAG, "bindModuleService finish, component:" + componentName.toShortString());
+        } catch (Exception e) {
+            Log.e(TAG, "bindModuleService exception, component:" + componentName.toShortString(), e);
         }
     }
 
     private class SelfServiceConnection implements ServiceConnection {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.d(TAG, "SelfServiceConnection -> onServiceConnected");
+            Log.d(TAG, "SelfServiceConnection#onServiceConnected");
             mSMInterfaceImpl.addModuleService(name, service);
-            notifyServiceManagerReady();
+            if (SMService.this.getPackageName().equals(name.getPackageName()) &&
+                    SMService.this.getClass().getName().equals(name.getClassName())) {
+                notifyServiceManagerReady();
+            }
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Log.w(TAG, "SelfServiceConnection -> onServiceDisconnected");
+            Log.w(TAG, "SelfServiceConnection#onServiceDisconnected");
             mSMInterfaceImpl.removeModuleService(name);
+            bindModuleService(name);
         }
     }
 
     private class PackageChangedBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(TAG, "PackageChangedBroadcastReceiver -> onReceive");
-            startModuleService();
+            Log.i(TAG, "PackageChangedBroadcastReceiver#onReceive");
+            bindAllModuleService();
         }
     }
 }

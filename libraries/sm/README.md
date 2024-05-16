@@ -11,7 +11,7 @@ implementation 'cn.6xyun.android:sm-service:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
-    1. 
+    1. 启动服务改变为绑定服务，规避 Android O 不允许后台启动服务的问题
 
 ### 0.1.6_2024-05-13
     1. 增加统一的状态回调, 避免广播接收器满天飞

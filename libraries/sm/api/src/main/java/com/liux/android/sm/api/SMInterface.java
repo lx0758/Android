@@ -119,53 +119,6 @@ public class SMInterface {
         return result;
     }
 
-    public void registerService(ComponentName componentName, IBinder iBinder) {
-        Log.d(TAG, "registerService, componentName:" + componentName + ", iBinder:" + (iBinder != null ? "not null" : "null"));
-
-        if (componentName == null) {
-            Log.e(TAG, "registerService, componentName is null");
-            return;
-        }
-
-        if (iBinder == null) {
-            Log.e(TAG, "registerService, iBinder is null");
-            return;
-        }
-
-        ISMInterface iSMInterface = getSMInterface();
-        if (iSMInterface == null) {
-            Log.e(TAG, "registerService, server is null");
-            return;
-        }
-
-        try {
-            iSMInterface.registerService(componentName, iBinder);
-        } catch (RemoteException e) {
-            Log.e(TAG, "registerService, exception", e);
-        }
-    }
-
-    public void unregisterService(ComponentName componentName) {
-        Log.d(TAG, "unregisterService, componentName:" + componentName);
-
-        if (componentName == null) {
-            Log.e(TAG, "unregisterService, componentName is null");
-            return;
-        }
-
-        ISMInterface iSMInterface = getSMInterface();
-        if (iSMInterface == null) {
-            Log.e(TAG, "unregisterService, server is null");
-            return;
-        }
-
-        try {
-            iSMInterface.unregisterService(componentName);
-        } catch (RemoteException e) {
-            Log.e(TAG, "unregisterService, exception", e);
-        }
-    }
-
     public void registerStatusListener(StatusListener listener) {
         synchronized (mStatusListeners) {
             Iterator<WeakReference<StatusListener>> iterator = mStatusListeners.iterator();
