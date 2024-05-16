@@ -103,6 +103,13 @@ public class SMInterface {
                 break check;
             }
 
+            // 优先尝试 peekService
+            result = SMUtil.peekService(mContext, componentName);
+            if (result != null) {
+                Log.i(TAG, "getService, peekService succeed");
+                break check;
+            }
+
             ISMInterface iSMInterface = getSMInterface();
             if (iSMInterface == null) {
                 Log.e(TAG, "getService, server is null");
@@ -117,53 +124,6 @@ public class SMInterface {
         }
         Log.d(TAG, "getService, componentName:" + componentName + ", result:" + (result != null ? "not null" : "null"));
         return result;
-    }
-
-    public void registerService(ComponentName componentName, IBinder iBinder) {
-        Log.d(TAG, "registerService, componentName:" + componentName + ", iBinder:" + (iBinder != null ? "not null" : "null"));
-
-        if (componentName == null) {
-            Log.e(TAG, "registerService, componentName is null");
-            return;
-        }
-
-        if (iBinder == null) {
-            Log.e(TAG, "registerService, iBinder is null");
-            return;
-        }
-
-        ISMInterface iSMInterface = getSMInterface();
-        if (iSMInterface == null) {
-            Log.e(TAG, "registerService, server is null");
-            return;
-        }
-
-        try {
-            iSMInterface.registerService(componentName, iBinder);
-        } catch (RemoteException e) {
-            Log.e(TAG, "registerService, exception", e);
-        }
-    }
-
-    public void unregisterService(ComponentName componentName) {
-        Log.d(TAG, "unregisterService, componentName:" + componentName);
-
-        if (componentName == null) {
-            Log.e(TAG, "unregisterService, componentName is null");
-            return;
-        }
-
-        ISMInterface iSMInterface = getSMInterface();
-        if (iSMInterface == null) {
-            Log.e(TAG, "unregisterService, server is null");
-            return;
-        }
-
-        try {
-            iSMInterface.unregisterService(componentName);
-        } catch (RemoteException e) {
-            Log.e(TAG, "unregisterService, exception", e);
-        }
     }
 
     public void registerStatusListener(StatusListener listener) {
@@ -219,12 +179,9 @@ public class SMInterface {
                 break check;
             }
 
-            Intent intent = new Intent();
-            intent.setComponent(componentName);
-            IBinder iBinder = mSMBroadcastReceiver.peekService(mContext, intent);
+            IBinder iBinder = SMUtil.peekService(mContext, componentName);
             if (iBinder == null) {
                 Log.w(TAG, "getSMInterface, iBinder is null");
-                startServiceManagerService(intent);
                 break check;
             }
 
@@ -240,15 +197,6 @@ public class SMInterface {
 
         Log.d(TAG, "getSMInterface, result:" + (mSMInterfaceCache != null ? "not null" : "null"));
         return mSMInterfaceCache;
-    }
-
-    private void startServiceManagerService(Intent intent) {
-        Log.d(TAG, "startServiceManagerService");
-        try {
-            mContext.startService(intent);
-        } catch (Exception e) {
-            Log.e(TAG, "startServiceManagerService, exception", e);
-        }
     }
 
     public interface StatusListener {

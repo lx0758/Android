@@ -16,16 +16,16 @@
     <application>
 
         <receiver
-            android:name=".BootBroadcastReceiver"
+            android:name=".SMBroadcastReceiver"
             android:exported="false">
-            <intent-filter>
+            <intent-filter android:priority="100">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
         <provider
-            android:name=".BootContentProvider"
+            android:name=".SMContentProvider"
             android:authorities="${smServiceComponentPrefix}.sm_boot_content_provider"
             android:exported="false" />
 

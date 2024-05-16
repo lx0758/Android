@@ -13,6 +13,10 @@ implementation 'cn.6xyun.android:sm-service:x.y.z'
 ### x.y.z_202x-xx-xx
     1. 
 
+### 0.1.7_2024-05-16
+    1. 启动服务改变为绑定服务，规避 Android O 不允许后台启动服务的问题
+    2. 优先尝试 peekService
+
 ### 0.1.6_2024-05-13
     1. 增加统一的状态回调, 避免广播接收器满天飞
     2. 移除冗余的状态广播
