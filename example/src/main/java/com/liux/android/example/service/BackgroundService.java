@@ -9,19 +9,13 @@ public class BackgroundService extends ModuleService {
 
     @Override
     public void onCreate() {
-        super.onCreate();
         Log.i(TAG, "onCreate");
-    }
-
-    @Override
-    public void onModuleServiceReady() {
-        super.onModuleServiceReady();
-        Log.i(TAG, "onModuleServiceReady");
+        super.onCreate();
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         Log.i(TAG, "onDestroy");
+        super.onDestroy();
     }
 }
