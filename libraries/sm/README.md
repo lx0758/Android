@@ -11,6 +11,9 @@ implementation 'cn.6xyun.android:sm-service:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
+    1. 
+
+### 0.1.7_2024-05-16
     1. 启动服务改变为绑定服务，规避 Android O 不允许后台启动服务的问题
     2. 优先尝试 peekService
 
