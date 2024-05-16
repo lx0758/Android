@@ -1,5 +1,6 @@
 package com.liux.android.sm.api;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Binder;
+import android.os.IBinder;
 import android.os.Process;
 
 import androidx.annotation.NonNull;
@@ -19,6 +21,7 @@ import java.util.Map;
 public class SMUtil {
 
     private static final Map<String, String> sMetaDataCache = new HashMap<>();
+    private static final PeekServiceBR sPeekServiceBR = new PeekServiceBR();
 
     @Nullable
     public static String getMetaData(Context context, String key) {
@@ -70,5 +73,19 @@ public class SMUtil {
         }
 
         return new ComponentName(resolveInfo.serviceInfo.packageName, resolveInfo.serviceInfo.name);
+    }
+
+    @Nullable
+    public static IBinder peekService(Context context, ComponentName componentName) {
+        Intent intent = new Intent();
+        intent.setComponent(componentName);
+        return sPeekServiceBR.peekService(context, intent);
+    }
+
+    private static class PeekServiceBR extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+        }
     }
 }

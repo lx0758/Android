@@ -103,6 +103,13 @@ public class SMInterface {
                 break check;
             }
 
+            // 优先尝试 peekService
+            result = SMUtil.peekService(mContext, componentName);
+            if (result != null) {
+                Log.i(TAG, "getService, peekService succeed");
+                break check;
+            }
+
             ISMInterface iSMInterface = getSMInterface();
             if (iSMInterface == null) {
                 Log.e(TAG, "getService, server is null");
@@ -172,12 +179,9 @@ public class SMInterface {
                 break check;
             }
 
-            Intent intent = new Intent();
-            intent.setComponent(componentName);
-            IBinder iBinder = mSMBroadcastReceiver.peekService(mContext, intent);
+            IBinder iBinder = SMUtil.peekService(mContext, componentName);
             if (iBinder == null) {
                 Log.w(TAG, "getSMInterface, iBinder is null");
-                startServiceManagerService(intent);
                 break check;
             }
 
@@ -193,15 +197,6 @@ public class SMInterface {
 
         Log.d(TAG, "getSMInterface, result:" + (mSMInterfaceCache != null ? "not null" : "null"));
         return mSMInterfaceCache;
-    }
-
-    private void startServiceManagerService(Intent intent) {
-        Log.d(TAG, "startServiceManagerService");
-        try {
-            mContext.startService(intent);
-        } catch (Exception e) {
-            Log.e(TAG, "startServiceManagerService, exception", e);
-        }
     }
 
     public interface StatusListener {
