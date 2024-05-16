@@ -6,6 +6,12 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.text.TextUtils;
+
+import androidx.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.List;
@@ -172,6 +178,24 @@ public class AppUtil {
         return null;
     }
 
+    @Nullable
+    public static byte[] getSignature(@NotNull Context context, @NotNull String packageName) {
+        byte[] result = null;
+        label:{
+            try {
+                PackageManager packageManager = context.getPackageManager();
+                PackageInfo packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES);
+                if (packageInfo == null) break label;
+
+                Signature[] signatures = packageInfo.signatures;
+                if (signatures == null || signatures.length == 0) break label;
+
+                result = signatures[0].toByteArray();
+            } catch (PackageManager.NameNotFoundException ignore) {}
+        }
+        return result;
+    }
+
     /**
      * 获取apk文件的包名
      * @param context
@@ -184,5 +208,53 @@ public class AppUtil {
             return info.applicationInfo.packageName;
         }
         return null;
+    }
+
+    /**
+     * 获取apk文件的版本号
+     * @param context
+     * @param apkFile
+     **/
+    public static long getApkVersionCode(Context context, File apkFile) {
+        PackageManager pm = context.getPackageManager();
+        PackageInfo info = pm.getPackageArchiveInfo(apkFile.getPath(), PackageManager.GET_ACTIVITIES);
+        if (info != null) {
+            return info.versionCode;
+        }
+        return -1;
+    }
+
+    /**
+     * 获取apk文件的版本名称
+     * @param context
+     * @param apkFile
+     **/
+    public static String getApkVersionName(Context context, File apkFile) {
+        PackageManager pm = context.getPackageManager();
+        PackageInfo info = pm.getPackageArchiveInfo(apkFile.getPath(), PackageManager.GET_ACTIVITIES);
+        if (info != null) {
+            return info.versionName;
+        }
+        return null;
+    }
+
+    /**
+     * 获取apk文件的签名
+     * @param context
+     * @param apkFile
+     **/
+    public static byte[] getApkSignature(Context context, File apkFile) {
+        byte[] result = null;
+        label: {
+            PackageManager pm = context.getPackageManager();
+            PackageInfo info = pm.getPackageArchiveInfo(apkFile.getPath(), PackageManager.GET_SIGNATURES);
+            if (info == null) break label;
+
+            Signature[] signatures = info.signatures;
+            if (signatures == null || signatures.length == 0) break label;
+
+            result = signatures[0].toByteArray();
+        }
+        return result;
     }
 }

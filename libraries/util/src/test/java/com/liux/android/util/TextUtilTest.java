@@ -11,35 +11,35 @@ public class TextUtilTest extends RobolectricTest {
 
     @Test
     public void MD5() {
-        assertEquals("d41d8cd98f00b204e9800998ecf8427e", TextUtil.MD5(""));
-        assertEquals("033bd94b1168d7e4f0d644c3c95e35bf", TextUtil.MD5("TEST"));
+        assertEquals("d41d8cd98f00b204e9800998ecf8427e", TextUtil.md5(""));
+        assertEquals("033bd94b1168d7e4f0d644c3c95e35bf", TextUtil.md5("TEST"));
     }
 
     @Test
     public void SHA1() {
-        assertEquals("da39a3ee5e6b4b0d3255bfef95601890afd80709", TextUtil.SHA1(""));
-        assertEquals("984816fd329622876e14907634264e6f332e9fb3", TextUtil.SHA1("TEST"));
+        assertEquals("da39a3ee5e6b4b0d3255bfef95601890afd80709", TextUtil.sha1(""));
+        assertEquals("984816fd329622876e14907634264e6f332e9fb3", TextUtil.sha1("TEST"));
     }
 
     @Test
     public void SHA224() {
-        assertEquals("917ecca24f3e6ceaf52375d8083381f1f80a21e6e49fbadc40afeb8e", TextUtil.SHA224("TEST"));
+        assertEquals("917ecca24f3e6ceaf52375d8083381f1f80a21e6e49fbadc40afeb8e", TextUtil.sha224("TEST"));
     }
 
     @Test
     public void SHA256() {
-        assertEquals("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", TextUtil.SHA256(""));
-        assertEquals("94ee059335e587e501cc4bf90613e0814f00a7b08bc7c648fd865a2af6a22cc2", TextUtil.SHA256("TEST"));
+        assertEquals("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", TextUtil.sha256(""));
+        assertEquals("94ee059335e587e501cc4bf90613e0814f00a7b08bc7c648fd865a2af6a22cc2", TextUtil.sha256("TEST"));
     }
 
     @Test
     public void SHA384() {
-        assertEquals("4f37c49c0024445f91977dbc47bd4da9c4de8d173d03379ee19c2bb15435c2c7e624ea42f7cc1689961cb7aca50c7d17", TextUtil.SHA384("TEST"));
+        assertEquals("4f37c49c0024445f91977dbc47bd4da9c4de8d173d03379ee19c2bb15435c2c7e624ea42f7cc1689961cb7aca50c7d17", TextUtil.sha384("TEST"));
     }
 
     @Test
     public void SHA512() {
-        assertEquals("7bfa95a688924c47c7d22381f20cc926f524beacb13f84e203d4bd8cb6ba2fce81c57a5f059bf3d509926487bde925b3bcee0635e4f7baeba054e5dba696b2bf", TextUtil.SHA512("TEST"));
+        assertEquals("7bfa95a688924c47c7d22381f20cc926f524beacb13f84e203d4bd8cb6ba2fce81c57a5f059bf3d509926487bde925b3bcee0635e4f7baeba054e5dba696b2bf", TextUtil.sha512("TEST"));
     }
 
     @Test
@@ -58,32 +58,32 @@ public class TextUtilTest extends RobolectricTest {
 
     //@Test
     public void hmacMD5() {
-        assertEquals("1aee732e9c1d3faa20775d1438af9472", TextUtil.HmacMD5("TEST", "KEY"));
+        assertEquals("1aee732e9c1d3faa20775d1438af9472", TextUtil.hmacMD5("TEST", "KEY"));
     }
 
     //@Test
     public void hmacSHA1() {
-        assertEquals("7403a7476a1758ff716b8bd405d0ef5574e9cd0a", TextUtil.HmacSHA1("TEST", "KEY"));
+        assertEquals("7403a7476a1758ff716b8bd405d0ef5574e9cd0a", TextUtil.hmacSHA1("TEST", "KEY"));
     }
 
     //@Test
     public void hmacSHA224() {
-        assertEquals("e802b12b9dbfca2785fb1d93864eb984494e110acefe468fea6a3f79", TextUtil.HmacSHA224("TEST", "KEY"));
+        assertEquals("e802b12b9dbfca2785fb1d93864eb984494e110acefe468fea6a3f79", TextUtil.hmacSHA224("TEST", "KEY"));
     }
 
     //@Test
     public void hmacSHA256() {
-        assertEquals("615dac1c53c9396d8f69a419a0b2d9393a0461d7ad5f7f3d9beb57264129ef12", TextUtil.HmacSHA256("TEST", "KEY"));
+        assertEquals("615dac1c53c9396d8f69a419a0b2d9393a0461d7ad5f7f3d9beb57264129ef12", TextUtil.hmacSHA256("TEST", "KEY"));
     }
 
     //@Test
     public void hmacSHA384() {
-        assertEquals("03ae3f1ba7a6626b24de55db51dbaa498c2baaa58b4a2617f48c8f7eae58a31e70f2d9f82241e1bbb287d89902f2fe3a", TextUtil.HmacSHA384("TEST", "KEY"));
+        assertEquals("03ae3f1ba7a6626b24de55db51dbaa498c2baaa58b4a2617f48c8f7eae58a31e70f2d9f82241e1bbb287d89902f2fe3a", TextUtil.hmacSHA384("TEST", "KEY"));
     }
 
     //@Test
     public void hmacSHA512() {
-        assertEquals("c0fcb3918e49a7f5af5af7881b9b89951efa39ae1f276237f483d19e0dbc504aaf6febe7e3af4a1dd3bd06ba9de8737b61b903b584d50b78a549a65fa0806100", TextUtil.HmacSHA512("TEST", "KEY"));
+        assertEquals("c0fcb3918e49a7f5af5af7881b9b89951efa39ae1f276237f483d19e0dbc504aaf6febe7e3af4a1dd3bd06ba9de8737b61b903b584d50b78a549a65fa0806100", TextUtil.hmacSHA512("TEST", "KEY"));
     }
 
     @Test
