@@ -10,6 +10,9 @@ implementation 'cn.6xyun.android:util:x.y.z'
 更新说明
 ---
 ### x.y.z_202x-xx-xx
+    1. 
+
+### 0.2.9_2024-05-17
     1. 新增获取APK文件信息方法
     2. 方法名格式调整
 
