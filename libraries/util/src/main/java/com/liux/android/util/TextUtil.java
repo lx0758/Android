@@ -22,28 +22,52 @@ public class TextUtil {
         return text == null || text.isEmpty();
     }
 
-    public static String MD5(String content) {
-        return bytes2Hex(digest(content.getBytes(), "MD5"));
+    public static String md5(String content) {
+        return md5(content.getBytes());
     }
 
-    public static String SHA1(String content) {
-        return bytes2Hex(digest(content.getBytes(), "SHA-1"));
+    public static String md5(byte[] bytes) {
+        return bytes2Hex(digest(bytes, "MD5"));
     }
 
-    public static String SHA224(String content) {
-        return bytes2Hex(digest(content.getBytes(), "SHA-224"));
+    public static String sha1(String content) {
+        return sha1(content.getBytes());
     }
 
-    public static String SHA256(String content) {
-        return bytes2Hex(digest(content.getBytes(), "SHA-256"));
+    public static String sha1(byte[] bytes) {
+        return bytes2Hex(digest(bytes, "SHA-1"));
     }
 
-    public static String SHA384(String content) {
-        return bytes2Hex(digest(content.getBytes(), "SHA-384"));
+    public static String sha224(String content) {
+        return sha224(content.getBytes());
     }
 
-    public static String SHA512(String content) {
-        return bytes2Hex(digest(content.getBytes(), "SHA-512"));
+    public static String sha224(byte[] bytes) {
+        return bytes2Hex(digest(bytes, "SHA-224"));
+    }
+
+    public static String sha256(String content) {
+        return sha256(content.getBytes());
+    }
+
+    public static String sha256(byte[] bytes) {
+        return bytes2Hex(digest(bytes, "SHA-256"));
+    }
+
+    public static String sha384(String content) {
+        return sha384(content.getBytes());
+    }
+
+    public static String sha384(byte[] bytes) {
+        return bytes2Hex(digest(bytes, "SHA-384"));
+    }
+
+    public static String sha512(String content) {
+        return sha512(content.getBytes());
+    }
+
+    public static String sha512(byte[] bytes) {
+        return bytes2Hex(digest(bytes, "SHA-512"));
     }
 
     /**
@@ -53,7 +77,7 @@ public class TextUtil {
      * @return
      */
     public static byte[] digest(byte[] data, String algorithm) {
-        if (data == null) throw new NullPointerException();
+        if (data == null) return null;
         try {
             MessageDigest messageDigest = MessageDigest.getInstance(algorithm);
             messageDigest.update(data);
@@ -95,31 +119,31 @@ public class TextUtil {
         return bytes2Hex(bytes);
     }
 
-    public static String HmacMD5(String content, String key) {
-        return bytes2Hex(Hmac(content.getBytes(), "HmacMD5", key.getBytes()));
+    public static String hmacMD5(String content, String key) {
+        return bytes2Hex(hmac(content.getBytes(), "HmacMD5", key.getBytes()));
     }
 
-    public static String HmacSHA1(String content, String key) {
-        return bytes2Hex(Hmac(content.getBytes(), "HmacSHA1", key.getBytes()));
+    public static String hmacSHA1(String content, String key) {
+        return bytes2Hex(hmac(content.getBytes(), "HmacSHA1", key.getBytes()));
     }
 
-    public static String HmacSHA224(String content, String key) {
-        return bytes2Hex(Hmac(content.getBytes(), "HmacSHA224", key.getBytes()));
+    public static String hmacSHA224(String content, String key) {
+        return bytes2Hex(hmac(content.getBytes(), "HmacSHA224", key.getBytes()));
     }
 
-    public static String HmacSHA256(String content, String key) {
-        return bytes2Hex(Hmac(content.getBytes(), "HmacSHA256", key.getBytes()));
+    public static String hmacSHA256(String content, String key) {
+        return bytes2Hex(hmac(content.getBytes(), "HmacSHA256", key.getBytes()));
     }
 
-    public static String HmacSHA384(String content, String key) {
-        return bytes2Hex(Hmac(content.getBytes(), "HmacSHA384", key.getBytes()));
+    public static String hmacSHA384(String content, String key) {
+        return bytes2Hex(hmac(content.getBytes(), "HmacSHA384", key.getBytes()));
     }
 
-    public static String HmacSHA512(String content, String key) {
-        return bytes2Hex(Hmac(content.getBytes(), "HmacSHA512", key.getBytes()));
+    public static String hmacSHA512(String content, String key) {
+        return bytes2Hex(hmac(content.getBytes(), "HmacSHA512", key.getBytes()));
     }
 
-    public static byte[] Hmac(byte[] data, String algorithm, byte[] key) {
+    public static byte[] hmac(byte[] data, String algorithm, byte[] key) {
         SecretKey secretKey = new SecretKeySpec(key, algorithm);
         try {
             Mac mac = Mac.getInstance(algorithm);

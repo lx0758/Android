@@ -12,6 +12,10 @@ implementation 'cn.6xyun.android:util:x.y.z'
 ### x.y.z_202x-xx-xx
     1. 
 
+### 0.2.9_2024-05-17
+    1. 新增获取APK文件信息方法
+    2. 方法名格式调整
+
 ### 0.2.8_2024-04-25
     1. 迁移 Jackson 到 Util 模块
 

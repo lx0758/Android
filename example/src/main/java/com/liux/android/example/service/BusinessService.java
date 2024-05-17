@@ -17,8 +17,8 @@ public class BusinessService extends ModuleService {
 
     @Override
     public void onCreate() {
-        super.onCreate();
         Log.i(TAG, "onCreate");
+        super.onCreate();
         mBusinessInterfaceImpl = new BusinessInterfaceImpl();
     }
 
@@ -30,15 +30,9 @@ public class BusinessService extends ModuleService {
     }
 
     @Override
-    public void onModuleServiceReady() {
-        super.onModuleServiceReady();
-        Log.i(TAG, "onModuleServiceReady");
-    }
-
-    @Override
     public void onDestroy() {
-        super.onDestroy();
         Log.i(TAG, "onDestroy");
+        super.onDestroy();
     }
 
     public static class BusinessInterfaceImpl extends IBusinessInterface.Stub {
