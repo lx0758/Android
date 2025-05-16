@@ -40,74 +40,119 @@ public class StateMachine {
     }
 
     public void start() {
-        logger("start");
+        log("start");
         mIsStarted = true;
         transitionTo(mInitialState);
     }
 
     public void quit() {
-        logger("quit");
+        log("quit");
         sendMessage(SM_QUIT_CMD, 0 , 0, SM_HANDLER_OBJ);
     }
 
     public final void sendMessage(int what) {
-        logger("sendMessage, what:" + getMessageDescription(what));
-        mHandler.sendMessage(
+        log("sendMessage, what:" + getMessageDescription(what));
+        SmHandler smHandler = mHandler;
+        if (smHandler == null) {
+            return;
+        }
+        smHandler.sendMessage(
                 mHandler.obtainMessage(what)
         );
     }
 
     public final void sendMessage(int what, int arg1, int arg2, Object obj) {
-        logger("sendMessage, what:" + getMessageDescription(what) + ", arg1:" + arg1 + ", arg2:" + arg2 + ", obj:" + obj);
-        mHandler.sendMessage(
+        log("sendMessage, what:" + getMessageDescription(what) + ", arg1:" + arg1 + ", arg2:" + arg2 + ", obj:" + obj);
+        SmHandler smHandler = mHandler;
+        if (smHandler == null) {
+            return;
+        }
+        smHandler.sendMessage(
                 mHandler.obtainMessage(what, arg1, arg2, obj)
         );
     }
 
     public final void sendMessageDelayed(int what, long delayMillis) {
-        logger("sendMessageDelayed, what:" + getMessageDescription(what) + ", delayMillis:" + delayMillis);
-        mHandler.sendMessageDelayed(
+        log("sendMessageDelayed, what:" + getMessageDescription(what) + ", delayMillis:" + delayMillis);
+        SmHandler smHandler = mHandler;
+        if (smHandler == null) {
+            return;
+        }
+        smHandler.sendMessageDelayed(
                 mHandler.obtainMessage(what),
                 delayMillis
         );
     }
 
     public final void sendMessageDelayed(int what, int arg1, int arg2, Object obj, long delayMillis) {
-        logger("sendMessage, what:" + getMessageDescription(what) + ", arg1:" + arg1 + ", arg2:" + arg2 + ", obj:" + obj + ", delayMillis:" + delayMillis);
-        mHandler.sendMessageDelayed(
+        log("sendMessageDelayed, what:" + getMessageDescription(what) + ", arg1:" + arg1 + ", arg2:" + arg2 + ", obj:" + obj + ", delayMillis:" + delayMillis);
+        SmHandler smHandler = mHandler;
+        if (smHandler == null) {
+            return;
+        }
+        smHandler.sendMessageDelayed(
                 mHandler.obtainMessage(what, arg1, arg2, obj),
                 delayMillis
         );
     }
 
+    public final void sendMessageAtFrontOfQueue(int what, long delayMillis) {
+        log("sendMessageAtFrontOfQueue, what:" + getMessageDescription(what) + ", delayMillis:" + delayMillis);
+        SmHandler smHandler = mHandler;
+        if (smHandler == null) {
+            return;
+        }
+        smHandler.sendMessageAtFrontOfQueue(
+                mHandler.obtainMessage(what)
+        );
+    }
+
+    public final void sendMessageAtFrontOfQueue(int what, int arg1, int arg2, Object obj, long delayMillis) {
+        log("sendMessageAtFrontOfQueue, what:" + getMessageDescription(what) + ", arg1:" + arg1 + ", arg2:" + arg2 + ", obj:" + obj + ", delayMillis:" + delayMillis);
+        SmHandler smHandler = mHandler;
+        if (smHandler == null) {
+            return;
+        }
+        smHandler.sendMessageAtFrontOfQueue(
+                mHandler.obtainMessage(what, arg1, arg2, obj)
+        );
+    }
+
     public final void removeMessages(int what) {
-        logger("removeMessages, what:" + getMessageDescription(what));
-        mHandler.removeMessages(what);
+        log("removeMessages, what:" + getMessageDescription(what));
+        SmHandler smHandler = mHandler;
+        if (smHandler == null) {
+            return;
+        }
+        smHandler.removeMessages(what);
     }
 
     protected final void addState(State state, State parent) {
-        logger("addState, state:" + state + ", parent:" + parent);
+        log("addState, state:" + state + ", parent:" + parent);
         doAddState(state, parent);
     }
 
     protected final void removeState(State state) {
-        logger("removeState, state:" + state);
+        log("removeState, state:" + state);
         doRemoveState(state);
     }
 
     protected final void setInitialState(State initialState) {
-        logger("setInitialState, initialState:" + initialState);
+        log("setInitialState, initialState:" + initialState);
         mInitialState = initialState;
     }
 
     protected final void transitionTo(State destState) {
-        logger("transitionTo, destState:" + destState);
+        log("transitionTo, destState:" + destState);
         if (!mIsStarted) {
             return;
         }
-
+        SmHandler smHandler = mHandler;
+        if (smHandler == null) {
+            return;
+        }
         mDestState = destState;
-        mHandler.post(this::performTransitions);
+        smHandler.post(this::performTransitions);
     }
 
     protected final Handler getHandler() {
@@ -188,7 +233,7 @@ public class StateMachine {
     private void invokeExitMethods(State state) {
         StateInfo curStateInfo = mStateInfo.get(state);
         while (curStateInfo != null) {
-            logger(curStateInfo.state + "#exit");
+            log(curStateInfo.state + "#exit");
             curStateInfo.state.exit();
             curStateInfo.active = false;
             curStateInfo = curStateInfo.parentStateInfo;
@@ -198,7 +243,7 @@ public class StateMachine {
     private void invokeEnterMethods(State state) {
         StateInfo curStateInfo = mStateInfo.get(state);
         while (curStateInfo != null) {
-            logger(curStateInfo.state + "#enter");
+            log(curStateInfo.state + "#enter");
             curStateInfo.state.enter();
             curStateInfo.active = true;
             curStateInfo = curStateInfo.parentStateInfo;
@@ -217,7 +262,7 @@ public class StateMachine {
         mDestState = null;
     }
 
-    private void logger(String message) {
+    private void log(String message) {
         if (mSMLogger != null) {
             mSMLogger.logger(message);
         }
@@ -285,16 +330,16 @@ public class StateMachine {
 
             StateInfo curStateInfo = mStateInfo.get(mCurrentState);
             while (curStateInfo != null) {
-                logger(curStateInfo.state + "#processMessage, msg:" + getMessageDescription(msg.what));
+                log(curStateInfo.state + "#processMessage, msg:" + getMessageDescription(msg.what));
                 if (curStateInfo.state.processMessage(msg)) {
-                    logger(curStateInfo.state + "#processMessage, msg:" + getMessageDescription(msg.what) + ", result:true");
+                    log(curStateInfo.state + "#processMessage, msg:" + getMessageDescription(msg.what) + ", result:true");
                     return;
                 }
-                logger(curStateInfo.state + "#processMessage, msg:" + getMessageDescription(msg.what) + ", result:false");
+                log(curStateInfo.state + "#processMessage, msg:" + getMessageDescription(msg.what) + ", result:false");
                 curStateInfo = curStateInfo.parentStateInfo;
             }
 
-            logger("unhandledMessage: msg:" + getMessageDescription(msg.what));
+            log("unhandledMessage: msg:" + getMessageDescription(msg.what));
         }
 
         public Message getMsg() {
