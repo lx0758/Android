@@ -23,25 +23,19 @@ public class AbstractsActivity extends AppCompatActivity {
 
     public void onClick(View view) {
         Intent intent = null;
-        switch (view.getId()) {
-            case R.id.btn_activity_transparent:
-                intent = new Intent(this, TransparentTitleBarActivity.class);
-                break;
-            case R.id.btn_activity_default:
-                intent = new Intent(this, DefaultTitleBarActivity.class);
-                break;
-            case R.id.btn_activity_white:
-                intent = new Intent(this, WhiteTitleBarActivity.class);
-                break;
-            case R.id.btn_activity_no:
-                intent = new Intent(this, NoTitleBarActivity.class);
-                break;
-            case R.id.btn_fragment:
-                intent = new Intent(this, FragmentActivity.class);
-                break;
-            case R.id.btn_fragment_nesting:
-                intent = new Intent(this, NestingFragmentActivity.class);
-                break;
+        int id = view.getId();
+        if (id == R.id.btn_activity_transparent) {
+            intent = new Intent(this, TransparentTitleBarActivity.class);
+        } else if (id == R.id.btn_activity_default) {
+            intent = new Intent(this, DefaultTitleBarActivity.class);
+        } else if (id == R.id.btn_activity_white) {
+            intent = new Intent(this, WhiteTitleBarActivity.class);
+        } else if (id == R.id.btn_activity_no) {
+            intent = new Intent(this, NoTitleBarActivity.class);
+        } else if (id == R.id.btn_fragment) {
+            intent = new Intent(this, FragmentActivity.class);
+        } else if (id == R.id.btn_fragment_nesting) {
+            intent = new Intent(this, NestingFragmentActivity.class);
         }
         startActivity(intent);
     }

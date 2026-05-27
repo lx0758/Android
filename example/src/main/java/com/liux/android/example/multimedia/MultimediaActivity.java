@@ -77,156 +77,151 @@ public class MultimediaActivity extends AppCompatActivity {
     }
 
     public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.btn_select_pic:
-                Multimedia
-                        .with(this)
-                        .singleSelect()
-                        .useCrop(true)
-                        .listener(() -> TT.show("操作已取消"))
-                        .listener(new OnSingleSelectListener() {
-                            @Override
-                            public void onFailure(MultimediaException e) {
-                                switch (e.getType()) {
-                                    case MultimediaException.TYPE_UNKNOWN:
-                                        TT.show("未知错误");
-                                        break;
-                                    case MultimediaException.TYPE_INTENT:
-                                        TT.show("没有找到对应程序");
-                                        break;
-                                    case MultimediaException.TYPE_PERMISSION:
-                                        TT.show("权限不足");
-                                        break;
-                                }
+        int id = view.getId();
+        if (id == R.id.btn_select_pic) {
+            Multimedia
+                    .with(this)
+                    .singleSelect()
+                    .useCrop(true)
+                    .listener(() -> TT.show("操作已取消"))
+                    .listener(new OnSingleSelectListener() {
+                        @Override
+                        public void onFailure(MultimediaException e) {
+                            switch (e.getType()) {
+                                case MultimediaException.TYPE_UNKNOWN:
+                                    TT.show("未知错误");
+                                    break;
+                                case MultimediaException.TYPE_INTENT:
+                                    TT.show("没有找到对应程序");
+                                    break;
+                                case MultimediaException.TYPE_PERMISSION:
+                                    TT.show("权限不足");
+                                    break;
                             }
+                        }
 
-                            @Override
-                            public void onSingleSelect(Uri uri) {
-                                mMultipleAdapter.getData().add(uri);
-                                mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getData().size() - 1);
+                        @Override
+                        public void onSingleSelect(Uri uri) {
+                            mMultipleAdapter.getData().add(uri);
+                            mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getData().size() - 1);
+                        }
+                    })
+                    .start();
+        } else if (id == R.id.btn_select_pics) {
+            Multimedia
+                    .with(this)
+                    .multipleSelect(5)
+                    .listener(() -> TT.show("操作已取消"))
+                    .listener(new OnMultiSelectListener() {
+                        @Override
+                        public void onFailure(MultimediaException e) {
+                            switch (e.getType()) {
+                                case MultimediaException.TYPE_UNKNOWN:
+                                    TT.show("未知错误");
+                                    break;
+                                case MultimediaException.TYPE_INTENT:
+                                    TT.show("没有找到对应程序");
+                                    break;
+                                case MultimediaException.TYPE_PERMISSION:
+                                    TT.show("权限不足");
+                                    break;
                             }
-                        })
-                        .start();
-                break;
-            case R.id.btn_select_pics:
-                Multimedia
-                        .with(this)
-                        .multipleSelect(5)
-                        .listener(() -> TT.show("操作已取消"))
-                        .listener(new OnMultiSelectListener() {
-                            @Override
-                            public void onFailure(MultimediaException e) {
-                                switch (e.getType()) {
-                                    case MultimediaException.TYPE_UNKNOWN:
-                                        TT.show("未知错误");
-                                        break;
-                                    case MultimediaException.TYPE_INTENT:
-                                        TT.show("没有找到对应程序");
-                                        break;
-                                    case MultimediaException.TYPE_PERMISSION:
-                                        TT.show("权限不足");
-                                        break;
-                                }
-                            }
+                        }
 
-                            @Override
-                            public void onMultiSelect(List<Uri> uris) {
-                                mMultipleAdapter.getData().addAll(uris);
-                                mMultipleAdapter.notifyDataSetChanged();
+                        @Override
+                        public void onMultiSelect(List<Uri> uris) {
+                            mMultipleAdapter.getData().addAll(uris);
+                            mMultipleAdapter.notifyDataSetChanged();
+                        }
+                    })
+                    .start();
+        } else if (id == R.id.btn_select_video) {
+            Multimedia
+                    .with(this)
+                    .videoSelect()
+                    .listener(() -> TT.show("操作已取消"))
+                    .listener(new OnVideoSelectListener() {
+                        @Override
+                        public void onFailure(MultimediaException e) {
+                            switch (e.getType()) {
+                                case MultimediaException.TYPE_UNKNOWN:
+                                    TT.show("未知错误");
+                                    break;
+                                case MultimediaException.TYPE_INTENT:
+                                    TT.show("没有找到对应程序");
+                                    break;
+                                case MultimediaException.TYPE_PERMISSION:
+                                    TT.show("权限不足");
+                                    break;
                             }
-                        })
-                        .start();
-                break;
-            case R.id.btn_select_video:
-                Multimedia
-                        .with(this)
-                        .videoSelect()
-                        .listener(() -> TT.show("操作已取消"))
-                        .listener(new OnVideoSelectListener() {
-                            @Override
-                            public void onFailure(MultimediaException e) {
-                                switch (e.getType()) {
-                                    case MultimediaException.TYPE_UNKNOWN:
-                                        TT.show("未知错误");
-                                        break;
-                                    case MultimediaException.TYPE_INTENT:
-                                        TT.show("没有找到对应程序");
-                                        break;
-                                    case MultimediaException.TYPE_PERMISSION:
-                                        TT.show("权限不足");
-                                        break;
-                                }
-                            }
+                        }
 
-                            @Override
-                            public void onVideoSelect(Uri uri) {
-                                mMultipleAdapter.getData().add(uri);
-                                mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getData().size() - 1);
+                        @Override
+                        public void onVideoSelect(Uri uri) {
+                            mMultipleAdapter.getData().add(uri);
+                            mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getData().size() - 1);
+                        }
+                    })
+                    .start();
+        } else if (id == R.id.btn_take) {
+            Multimedia
+                    .with(MultimediaActivity.this)
+                    .take()
+                    .useCrop(true)
+                    .listener(() -> TT.show("操作已取消"))
+                    .listener(new OnTakeListener() {
+                        @Override
+                        public void onFailure(MultimediaException e) {
+                            switch (e.getType()) {
+                                case MultimediaException.TYPE_UNKNOWN:
+                                    TT.show("未知错误");
+                                    break;
+                                case MultimediaException.TYPE_INTENT:
+                                    TT.show("没有找到对应程序");
+                                    break;
+                                case MultimediaException.TYPE_PERMISSION:
+                                    TT.show("权限不足");
+                                    break;
                             }
-                        })
-                        .start();
-                break;
-            case R.id.btn_take:
-                Multimedia
-                        .with(MultimediaActivity.this)
-                        .take()
-                        .useCrop(true)
-                        .listener(() -> TT.show("操作已取消"))
-                        .listener(new OnTakeListener() {
-                            @Override
-                            public void onFailure(MultimediaException e) {
-                                switch (e.getType()) {
-                                    case MultimediaException.TYPE_UNKNOWN:
-                                        TT.show("未知错误");
-                                        break;
-                                    case MultimediaException.TYPE_INTENT:
-                                        TT.show("没有找到对应程序");
-                                        break;
-                                    case MultimediaException.TYPE_PERMISSION:
-                                        TT.show("权限不足");
-                                        break;
-                                }
-                            }
+                        }
 
-                            @Override
-                            public void onSucceed(Uri uri) {
-                                mMultipleAdapter.getData().add(uri);
-                                mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getData().size() - 1);
+                        @Override
+                        public void onSucceed(Uri uri) {
+                            mMultipleAdapter.getData().add(uri);
+                            mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getData().size() - 1);
+                        }
+                    })
+                    .start();
+        } else if (id == R.id.btn_record) {
+            Multimedia.with(this)
+                    .record()
+                    .duration(30)
+                    .size(2 * 1024 * 1024)
+                    .quality(0)
+                    .listener(() -> TT.show("操作已取消"))
+                    .listener(new OnRecordListener() {
+                        @Override
+                        public void onFailure(MultimediaException e) {
+                            switch (e.getType()) {
+                                case MultimediaException.TYPE_UNKNOWN:
+                                    TT.show("未知错误");
+                                    break;
+                                case MultimediaException.TYPE_INTENT:
+                                    TT.show("没有找到对应程序");
+                                    break;
+                                case MultimediaException.TYPE_PERMISSION:
+                                    TT.show("权限不足");
+                                    break;
                             }
-                        })
-                        .start();
-                break;
-            case R.id.btn_record:
-                Multimedia.with(this)
-                        .record()
-                        .duration(30)
-                        .size(2 * 1024 * 1024)
-                        .quality(0)
-                        .listener(() -> TT.show("操作已取消"))
-                        .listener(new OnRecordListener() {
-                            @Override
-                            public void onFailure(MultimediaException e) {
-                                switch (e.getType()) {
-                                    case MultimediaException.TYPE_UNKNOWN:
-                                        TT.show("未知错误");
-                                        break;
-                                    case MultimediaException.TYPE_INTENT:
-                                        TT.show("没有找到对应程序");
-                                        break;
-                                    case MultimediaException.TYPE_PERMISSION:
-                                        TT.show("权限不足");
-                                        break;
-                                }
-                            }
+                        }
 
-                            @Override
-                            public void onSucceed(Uri uri) {
-                                mMultipleAdapter.getData().add(uri);
-                                mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getData().size() - 1);
-                            }
-                        })
-                        .start();
-                break;
+                        @Override
+                        public void onSucceed(Uri uri) {
+                            mMultipleAdapter.getData().add(uri);
+                            mMultipleAdapter.notifyItemInserted(mMultipleAdapter.getData().size() - 1);
+                        }
+                    })
+                    .start();
         }
     }
 }

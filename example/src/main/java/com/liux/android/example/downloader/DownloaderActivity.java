@@ -206,41 +206,39 @@ public class DownloaderActivity extends AppCompatActivity {
             return super.onOptionsItemSelected(item);
         }
 
-        switch (item.getItemId()) {
-            case R.id.action_general:
-                createTaskDialog
-                        .lintener(new CreateTaskDialog.OnFinishListener() {
-                            @Override
-                            public void onFinish(String url, String method, String fileName) {
-                                Task task = Downloader.createTaskBuilder(url)
-                                        .method(method)
-                                        .fileName(fileName)
-                                        .build();
-                                taskMultipleAdapter.getData().add(task);
-                                taskMultipleAdapter.notifyItemInserted(
-                                        taskMultipleAdapter.getData().size() - 1
-                                );
-                            }
-                        })
-                        .show();
-                break;
-            case R.id.action_temporary:
-                createTaskDialog
-                        .lintener(new CreateTaskDialog.OnFinishListener() {
-                            @Override
-                            public void onFinish(String url, String method, String fileName) {
-                                Task task = Downloader.createTaskBuilder(url)
-                                        .method(method)
-                                        .fileName(fileName)
-                                        .temporary(true)
-                                        .build();
-                                DownloadTaskDialog downloadTaskDialog = new DownloadTaskDialog(DownloaderActivity.this, task);
-                                downloadTaskDialog.setOwnerActivity(DownloaderActivity.this);
-                                downloadTaskDialog.show();
-                            }
-                        })
-                        .show();
-                break;
+        int id = item.getItemId();
+        if (id == R.id.action_general) {
+            createTaskDialog
+                    .lintener(new CreateTaskDialog.OnFinishListener() {
+                        @Override
+                        public void onFinish(String url, String method, String fileName) {
+                            Task task = Downloader.createTaskBuilder(url)
+                                    .method(method)
+                                    .fileName(fileName)
+                                    .build();
+                            taskMultipleAdapter.getData().add(task);
+                            taskMultipleAdapter.notifyItemInserted(
+                                    taskMultipleAdapter.getData().size() - 1
+                            );
+                        }
+                    })
+                    .show();
+        } else if (id == R.id.action_temporary) {
+            createTaskDialog
+                    .lintener(new CreateTaskDialog.OnFinishListener() {
+                        @Override
+                        public void onFinish(String url, String method, String fileName) {
+                            Task task = Downloader.createTaskBuilder(url)
+                                    .method(method)
+                                    .fileName(fileName)
+                                    .temporary(true)
+                                    .build();
+                            DownloadTaskDialog downloadTaskDialog = new DownloadTaskDialog(DownloaderActivity.this, task);
+                            downloadTaskDialog.setOwnerActivity(DownloaderActivity.this);
+                            downloadTaskDialog.show();
+                        }
+                    })
+                    .show();
         }
         return super.onOptionsItemSelected(item);
     }

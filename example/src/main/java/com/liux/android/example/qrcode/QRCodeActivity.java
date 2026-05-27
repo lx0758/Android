@@ -44,188 +44,179 @@ public class QRCodeActivity extends AppCompatActivity {
     }
 
     public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.btn_default_scan:
-                ActivityStarter.startActivityForResult(
-                        this,
-                        new Intent(this, QRCodeScanningActivity.class),
-                        new ActivityStarter.Callback() {
-                            @Override
-                            public void onActivityResult(int resultCode, Intent data) {
-                                if (resultCode != RESULT_OK) return;
-                                TT.show(QRCodeScanningActivity.resolveQRCode(data));
+        int id = view.getId();
+        if (id == R.id.btn_default_scan) {
+            ActivityStarter.startActivityForResult(
+                    this,
+                    new Intent(this, QRCodeScanningActivity.class),
+                    new ActivityStarter.Callback() {
+                        @Override
+                        public void onActivityResult(int resultCode, Intent data) {
+                            if (resultCode != RESULT_OK) return;
+                            TT.show(QRCodeScanningActivity.resolveQRCode(data));
+                        }
+                    }
+            );
+        } else if (id == R.id.btn_customize_scan) {
+            startActivity(
+                    new Intent(this, QRCodeCustomizeScanningActivity.class)
+            );
+        } else if (id == R.id.btn_bitmap_decode) {
+            Multimedia.with(this)
+                    .singleSelect()
+                    .listener(new OnSingleSelectListener() {
+                        @Override
+                        public void onFailure(MultimediaException e) {
+                            TT.show("出错了!");
+                        }
+
+                        @Override
+                        public void onSingleSelect(Uri uri) {
+                            File file = new File(uri.getPath());
+
+                            BitmapFactory.Options opts = new BitmapFactory.Options();
+                            opts.inPreferredConfig = Bitmap.Config.RGB_565;
+                            opts.inJustDecodeBounds = false;
+                            opts.inSampleSize = 1;
+                            Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), opts);
+
+                            String result = QRCodeDecoder.decode(bitmap);
+                            if (bitmap != null) bitmap.recycle();
+                            TT.show(result != null ? ("解码成功:\n" + result) : "解码失败");
+                        }
+                    })
+                    .start();
+        } else if (id == R.id.btn_bytes_decode) {
+            Multimedia.with(this)
+                    .singleSelect()
+                    .listener(new OnSingleSelectListener() {
+                        @Override
+                        public void onFailure(MultimediaException e) {
+                            TT.show("出错了!");
+                        }
+
+                        @Override
+                        public void onSingleSelect(Uri uri) {
+                            File file = new File(uri.getPath());
+
+                            FileInputStream fileInputStream = null;
+                            ByteArrayOutputStream byteArrayOutputStream = null;
+                            try {
+                                fileInputStream = new FileInputStream(file);
+                                byteArrayOutputStream = new ByteArrayOutputStream();
+
+                                byte[] buffer = new byte[1024];
+                                int len;
+                                while ((len = fileInputStream.read(buffer)) > -1 ) {
+                                    byteArrayOutputStream.write(buffer, 0, len);
+                                }
+
+                                String result = QRCodeDecoder.decode(byteArrayOutputStream.toByteArray());
+                                TT.show(result != null ? ("解码成功:\n" + result) : "解码失败");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } finally {
+                                try {
+                                    if (fileInputStream != null) fileInputStream.close();
+                                    if (byteArrayOutputStream != null) byteArrayOutputStream.close();
+                                } catch (Exception ignore) {}
                             }
                         }
-                );
-                break;
-            case R.id.btn_customize_scan:
-                startActivity(
-                        new Intent(this, QRCodeCustomizeScanningActivity.class)
-                );
-                break;
-            case R.id.btn_bitmap_decode:
-                // FIXME: memory overflow may occur here
-                Multimedia.with(this)
-                        .singleSelect()
-                        .listener(new OnSingleSelectListener() {
-                            @Override
-                            public void onFailure(MultimediaException e) {
-                                TT.show("出错了!");
-                            }
+                    })
+                    .start();
+        } else if (id == R.id.btn_file_decode) {
+            Multimedia.with(this)
+                    .singleSelect()
+                    .listener(new OnSingleSelectListener() {
+                        @Override
+                        public void onFailure(MultimediaException e) {
+                            TT.show("出错了!");
+                        }
 
-                            @Override
-                            public void onSingleSelect(Uri uri) {
-                                File file = new File(uri.getPath());
+                        @Override
+                        public void onSingleSelect(Uri uri) {
+                            File file = new File(uri.getPath());
 
-                                BitmapFactory.Options opts = new BitmapFactory.Options();
-                                opts.inPreferredConfig = Bitmap.Config.RGB_565;
-                                opts.inJustDecodeBounds = false;
-                                opts.inSampleSize = 1;
-                                Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), opts);
+                            String result = QRCodeDecoder.decode(file);
+                            TT.show(result != null ? ("解码成功:\n" + result) : "解码失败");
+                        }
+                    })
+                    .start();
+        } else if (id == R.id.btn_file_descriptor_decode) {
+            Multimedia.with(this)
+                    .singleSelect()
+                    .listener(new OnSingleSelectListener() {
+                        @Override
+                        public void onFailure(MultimediaException e) {
+                            TT.show("出错了!");
+                        }
 
-                                String result = QRCodeDecoder.decode(bitmap);
-                                if (bitmap != null) bitmap.recycle();
+                        @Override
+                        public void onSingleSelect(Uri uri) {
+                            File file = new File(uri.getPath());
+
+                            FileInputStream fileInputStream = null;
+                            try {
+                                fileInputStream = new FileInputStream(file);
+
+                                String result = QRCodeDecoder.decode(fileInputStream.getFD());
                                 TT.show(result != null ? ("解码成功:\n" + result) : "解码失败");
-                            }
-                        })
-                        .start();
-                break;
-            case R.id.btn_bytes_decode:
-                Multimedia.with(this)
-                        .singleSelect()
-                        .listener(new OnSingleSelectListener() {
-                            @Override
-                            public void onFailure(MultimediaException e) {
-                                TT.show("出错了!");
-                            }
-
-                            @Override
-                            public void onSingleSelect(Uri uri) {
-                                File file = new File(uri.getPath());
-
-                                FileInputStream fileInputStream = null;
-                                ByteArrayOutputStream byteArrayOutputStream = null;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } finally {
                                 try {
-                                    fileInputStream = new FileInputStream(file);
-                                    byteArrayOutputStream = new ByteArrayOutputStream();
+                                    if (fileInputStream != null) fileInputStream.close();
+                                } catch (Exception ignore) {}
+                            }
+                        }
+                    })
+                    .start();
+        } else if (id == R.id.btn_input_stream_decode) {
+            Multimedia.with(this)
+                    .singleSelect()
+                    .listener(new OnSingleSelectListener() {
+                        @Override
+                        public void onFailure(MultimediaException e) {
+                            TT.show("出错了!");
+                        }
 
-                                    byte[] buffer = new byte[1024];
-                                    int len;
-                                    while ((len = fileInputStream.read(buffer)) > -1 ) {
-                                        byteArrayOutputStream.write(buffer, 0, len);
-                                    }
+                        @Override
+                        public void onSingleSelect(Uri uri) {
+                            File file = new File(uri.getPath());
 
-                                    String result = QRCodeDecoder.decode(byteArrayOutputStream.toByteArray());
-                                    TT.show(result != null ? ("解码成功:\n" + result) : "解码失败");
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                } finally {
-                                    try {
-                                        if (fileInputStream != null) fileInputStream.close();
-                                        if (byteArrayOutputStream != null) byteArrayOutputStream.close();
-                                    } catch (Exception ignore) {}
+                            InputStream inputStream = null;
+                            FileInputStream fileInputStream = null;
+                            ByteArrayOutputStream byteArrayOutputStream = null;
+                            try {
+                                fileInputStream = new FileInputStream(file);
+                                byteArrayOutputStream = new ByteArrayOutputStream();
+
+                                byte[] buffer = new byte[1024];
+                                int len;
+                                while ((len = fileInputStream.read(buffer)) > -1 ) {
+                                    byteArrayOutputStream.write(buffer, 0, len);
                                 }
-                            }
-                        })
-                        .start();
-                break;
-            case R.id.btn_file_decode:
-                Multimedia.with(this)
-                        .singleSelect()
-                        .listener(new OnSingleSelectListener() {
-                            @Override
-                            public void onFailure(MultimediaException e) {
-                                TT.show("出错了!");
-                            }
 
-                            @Override
-                            public void onSingleSelect(Uri uri) {
-                                File file = new File(uri.getPath());
+                                inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
 
-                                String result = QRCodeDecoder.decode(file);
+                                String result = QRCodeDecoder.decode(inputStream);
                                 TT.show(result != null ? ("解码成功:\n" + result) : "解码失败");
-                            }
-                        })
-                        .start();
-                break;
-            case R.id.btn_file_descriptor_decode:
-                Multimedia.with(this)
-                        .singleSelect()
-                        .listener(new OnSingleSelectListener() {
-                            @Override
-                            public void onFailure(MultimediaException e) {
-                                TT.show("出错了!");
-                            }
-
-                            @Override
-                            public void onSingleSelect(Uri uri) {
-                                File file = new File(uri.getPath());
-
-                                FileInputStream fileInputStream = null;
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            } finally {
                                 try {
-                                    fileInputStream = new FileInputStream(file);
-
-                                    String result = QRCodeDecoder.decode(fileInputStream.getFD());
-                                    TT.show(result != null ? ("解码成功:\n" + result) : "解码失败");
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                } finally {
-                                    try {
-                                        if (fileInputStream != null) fileInputStream.close();
-                                    } catch (Exception ignore) {}
-                                }
+                                    if (inputStream != null) inputStream.close();
+                                    if (fileInputStream != null) fileInputStream.close();
+                                    if (byteArrayOutputStream != null) byteArrayOutputStream.close();
+                                } catch (Exception ignore) {}
                             }
-                        })
-                        .start();
-                break;
-            case R.id.btn_input_stream_decode:
-                Multimedia.with(this)
-                        .singleSelect()
-                        .listener(new OnSingleSelectListener() {
-                            @Override
-                            public void onFailure(MultimediaException e) {
-                                TT.show("出错了!");
-                            }
-
-                            @Override
-                            public void onSingleSelect(Uri uri) {
-                                File file = new File(uri.getPath());
-
-                                InputStream inputStream = null;
-                                FileInputStream fileInputStream = null;
-                                ByteArrayOutputStream byteArrayOutputStream = null;
-                                try {
-                                    fileInputStream = new FileInputStream(file);
-                                    byteArrayOutputStream = new ByteArrayOutputStream();
-
-                                    byte[] buffer = new byte[1024];
-                                    int len;
-                                    while ((len = fileInputStream.read(buffer)) > -1 ) {
-                                        byteArrayOutputStream.write(buffer, 0, len);
-                                    }
-
-                                    inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-
-                                    String result = QRCodeDecoder.decode(inputStream);
-                                    TT.show(result != null ? ("解码成功:\n" + result) : "解码失败");
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                } finally {
-                                    try {
-                                        if (inputStream != null) inputStream.close();
-                                        if (fileInputStream != null) fileInputStream.close();
-                                        if (byteArrayOutputStream != null) byteArrayOutputStream.close();
-                                    } catch (Exception ignore) {}
-                                }
-                            }
-                        })
-                        .start();
-                break;
-            case R.id.btn_generate:
-                startActivity(
-                        new Intent(this, QRCodeGenerateActivity.class)
-                );
-                break;
+                        }
+                    })
+                    .start();
+        } else if (id == R.id.btn_generate) {
+            startActivity(
+                    new Intent(this, QRCodeGenerateActivity.class)
+            );
         }
     }
 }

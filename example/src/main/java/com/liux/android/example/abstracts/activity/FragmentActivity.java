@@ -88,21 +88,14 @@ public class FragmentActivity extends AbstractsActivity {
         mViewBinding.rgSelect.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                switch (checkedId) {
-                    case R.id.rb_one:
-                        mViewBinding.vpContent.setCurrentItem(0);
-                        break;
-                    case R.id.rb_two:
-                        mViewBinding.vpContent.setCurrentItem(1);
-                        break;
-                    case R.id.rb_three:
-                        mViewBinding.vpContent.setCurrentItem(2);
-                        break;
-                    case R.id.rb_four:
-                        mViewBinding.vpContent.setCurrentItem(3);
-                        break;
-                    default:
-                        break;
+                if (checkedId == R.id.rb_one) {
+                    mViewBinding.vpContent.setCurrentItem(0);
+                } else if (checkedId == R.id.rb_two) {
+                    mViewBinding.vpContent.setCurrentItem(1);
+                } else if (checkedId == R.id.rb_three) {
+                    mViewBinding.vpContent.setCurrentItem(2);
+                } else if (checkedId == R.id.rb_four) {
+                    mViewBinding.vpContent.setCurrentItem(3);
                 }
             }
         });

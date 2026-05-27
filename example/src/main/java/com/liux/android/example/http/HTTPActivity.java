@@ -50,9 +50,9 @@ import okhttp3.Response;
 
 public class HTTPActivity extends AppCompatActivity {
     private static final String TAG = "HTTPActivity";
-    
+
     private ActivityHttpBinding mViewbinding;
-    
+
     private final Http mHttp = new Http();
     private final RequestManager mRequestManager = RequestManager.Builder.build();
 
@@ -85,7 +85,7 @@ public class HTTPActivity extends AppCompatActivity {
         mViewbinding = ActivityHttpBinding.inflate(getLayoutInflater());
         setContentView(mViewbinding.getRoot());
 
-        
+
         mViewbinding.btnRequestGet.setOnClickListener(this::onRequestClicked);
         mViewbinding.btnRequestPostForm.setOnClickListener(this::onRequestClicked);
         mViewbinding.btnRequestPostBody.setOnClickListener(this::onRequestClicked);
@@ -111,220 +111,211 @@ public class HTTPActivity extends AppCompatActivity {
             mViewbinding.etData.setText("http://api.6xyun.cn/");
             return;
         }
-        switch (view.getId()) {
-            case R.id.btn_request_get:
-                mHttp.get(url + "request-get")
-                        .addHeader("Request-Header-Id", "btn_request_get")
-                        .addQuery("Request-Query-Id", "btn_request_get")
-                        // 很多服务不支持
-                        //.fragment("testFragment")
-                        .progress(new OnResponseProgressListener() {
-                            @Override
-                            public void onResponseProgress(final HttpUrl httpUrl, final long downloadLength, final long totalLength, final boolean completed) {
-                                System.out.println("onResponseProgress:" + httpUrl + "," + downloadLength + "," + totalLength + "," + completed);
-                                mViewbinding.etData.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        TT.show("onResponseProgress:" + httpUrl + "," + downloadLength + "," + totalLength + "," + completed);
-                                    }
-                                });
-                            }
-                        })
-                        .manager(mRequestManager)
-                        .async(new Callback() {
-                            @Override
-                            public void onSucceed(Request request, Response response) throws IOException {
-                                final String result = response.body().string();
-                                System.out.println("onSucceed:" + result.length());
-                                mViewbinding.etData.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        showData(result);
-                                    }
-                                });
-                            }
+        int id = view.getId();
+        if (id == R.id.btn_request_get) {
+            mHttp.get(url + "request-get")
+                    .addHeader("Request-Header-Id", "btn_request_get")
+                    .addQuery("Request-Query-Id", "btn_request_get")
+                    .progress(new OnResponseProgressListener() {
+                        @Override
+                        public void onResponseProgress(final HttpUrl httpUrl, final long downloadLength, final long totalLength, final boolean completed) {
+                            System.out.println("onResponseProgress:" + httpUrl + "," + downloadLength + "," + totalLength + "," + completed);
+                            mViewbinding.etData.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    TT.show("onResponseProgress:" + httpUrl + "," + downloadLength + "," + totalLength + "," + completed);
+                                }
+                            });
+                        }
+                    })
+                    .manager(mRequestManager)
+                    .async(new Callback() {
+                        @Override
+                        public void onSucceed(Request request, Response response) throws IOException {
+                            final String result = response.body().string();
+                            System.out.println("onSucceed:" + result.length());
+                            mViewbinding.etData.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showData(result);
+                                }
+                            });
+                        }
 
-                            @Override
-                            public void onFailure(Request request, IOException e) {
-                                System.out.println("onFailure:" + e);
-                                mViewbinding.etData.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        TT.show("onFailure:" + e);
-                                    }
-                                });
-                            }
-                        });
-                break;
-            case R.id.btn_request_post_body:
-                Map<String, String> params = new HashMap<>();
-                params.put("Request-Body-Id", "btn_request_post_body");
-                mHttp.post(url + "request-post-body")
-                        .addHeader("Request-Header-Id", "btn_request_post_body")
-                        .addQuery("Request-Query-Id", "btn_request_post_body")
-                        .body(HttpUtil.parseJsonBody(JacksonUtil.toJson(params)))
-                        .manager(mRequestManager)
-                        .async(new UICallback() {
-                            @Override
-                            protected void onUISucceed(Request request, Response response) throws IOException {
-                                String result = response.body().string();
-                                System.out.println("onSucceed:" + result.length());
-                                showData(result);
-                            }
+                        @Override
+                        public void onFailure(Request request, IOException e) {
+                            System.out.println("onFailure:" + e);
+                            mViewbinding.etData.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    TT.show("onFailure:" + e);
+                                }
+                            });
+                        }
+                    });
+        } else if (id == R.id.btn_request_post_body) {
+            Map<String, String> params = new HashMap<>();
+            params.put("Request-Body-Id", "btn_request_post_body");
+            mHttp.post(url + "request-post-body")
+                    .addHeader("Request-Header-Id", "btn_request_post_body")
+                    .addQuery("Request-Query-Id", "btn_request_post_body")
+                    .body(HttpUtil.parseJsonBody(JacksonUtil.toJson(params)))
+                    .manager(mRequestManager)
+                    .async(new UICallback() {
+                        @Override
+                        protected void onUISucceed(Request request, Response response) throws IOException {
+                            String result = response.body().string();
+                            System.out.println("onSucceed:" + result.length());
+                            showData(result);
+                        }
 
-                            @Override
-                            protected void onUIFailure(Request request, IOException e) {
-                                System.out.println("onFailure:" + e);
-                                TT.show("onFailure:" + e);
-                            }
-                        });
-                break;
-            case R.id.btn_request_post_form:
-                mHttp.post(url + "request-post-form")
-                        .addHeader("Request-Header-Id", "btn_request_post_form")
-                        .addQuery("Request-Query-Id", "btn_request_post_form")
-                        .addParam("Request-Param-Id", "btn_request_post_form")
-                        .manager(mRequestManager)
-                        .async(new UICallback() {
-                            @Override
-                            public void onUISucceed(Request request, Response response) throws IOException {
-                                String result = response.body().string();
-                                System.out.println("onSucceed:" + result.length());
-                                showData(result);
-                            }
+                        @Override
+                        protected void onUIFailure(Request request, IOException e) {
+                            System.out.println("onFailure:" + e);
+                            TT.show("onFailure:" + e);
+                        }
+                    });
+        } else if (id == R.id.btn_request_post_form) {
+            mHttp.post(url + "request-post-form")
+                    .addHeader("Request-Header-Id", "btn_request_post_form")
+                    .addQuery("Request-Query-Id", "btn_request_post_form")
+                    .addParam("Request-Param-Id", "btn_request_post_form")
+                    .manager(mRequestManager)
+                    .async(new UICallback() {
+                        @Override
+                        public void onUISucceed(Request request, Response response) throws IOException {
+                            String result = response.body().string();
+                            System.out.println("onSucceed:" + result.length());
+                            showData(result);
+                        }
 
-                            @Override
-                            public void onUIFailure(Request request, IOException e) {
-                                System.out.println("onFailure:" + e);
-                                TT.show("onFailure:" + e);
-                            }
-                        });
-                break;
-            case R.id.btn_request_post_multipart:
-                mHttp.post(url + "request-post-multipart")
-                        .addHeader("Request-Header-Id", "btn_request_post_multipart")
-                        .addQuery("Request-Query-Id", "btn_request_post_multipart")
-                        .addParam("Request-Param-Id", "btn_request_post_multipart")
-                        .addParam("id", "3")
-                        .addParam("name", "liux")
-                        .addParam("file", getTempFile())
-                        .addParam("bytes", getTempBytes())
-                        .addParam("stream", getTempInputStream())
-                        .progress(new OnProgressListener() {
-                            @Override
-                            public void onRequestProgress(final HttpUrl httpUrl, long transmittedLength, long totalLength, final boolean done) {
-                                System.out.println("onRequestProgress:" + httpUrl + "," + transmittedLength + "," + totalLength + "," + done);
-                                mViewbinding.etData.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        TT.show("onRequestProgress:" + httpUrl + "," + transmittedLength + "," + totalLength + "," + done);
-                                    }
-                                });
-                            }
+                        @Override
+                        public void onUIFailure(Request request, IOException e) {
+                            System.out.println("onFailure:" + e);
+                            TT.show("onFailure:" + e);
+                        }
+                    });
+        } else if (id == R.id.btn_request_post_multipart) {
+            mHttp.post(url + "request-post-multipart")
+                    .addHeader("Request-Header-Id", "btn_request_post_multipart")
+                    .addQuery("Request-Query-Id", "btn_request_post_multipart")
+                    .addParam("Request-Param-Id", "btn_request_post_multipart")
+                    .addParam("id", "3")
+                    .addParam("name", "liux")
+                    .addParam("file", getTempFile())
+                    .addParam("bytes", getTempBytes())
+                    .addParam("stream", getTempInputStream())
+                    .progress(new OnProgressListener() {
+                        @Override
+                        public void onRequestProgress(final HttpUrl httpUrl, long transmittedLength, long totalLength, final boolean done) {
+                            System.out.println("onRequestProgress:" + httpUrl + "," + transmittedLength + "," + totalLength + "," + done);
+                            mViewbinding.etData.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    TT.show("onRequestProgress:" + httpUrl + "," + transmittedLength + "," + totalLength + "," + done);
+                                }
+                            });
+                        }
 
-                            @Override
-                            public void onResponseProgress(final HttpUrl httpUrl, long transmittedLength, long totalLength, final boolean completed) {
-                                System.out.println("onResponseProgress:" + httpUrl + "," + transmittedLength + "," + totalLength + "," + completed);
-                                mViewbinding.etData.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        TT.show("onResponseProgress:" + httpUrl + "," + transmittedLength + "," + totalLength + "," + completed);
-                                    }
-                                });
-                            }
-                        })
-                        .manager(mRequestManager)
-                        .async(new UICallback() {
-                            @Override
-                            public void onUISucceed(Request request, Response response) throws IOException {
-                                String result = response.body().string();
-                                System.out.println("onSucceed:" + result.length());
-                                showData(result);
-                            }
+                        @Override
+                        public void onResponseProgress(final HttpUrl httpUrl, long transmittedLength, long totalLength, final boolean completed) {
+                            System.out.println("onResponseProgress:" + httpUrl + "," + transmittedLength + "," + totalLength + "," + completed);
+                            mViewbinding.etData.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    TT.show("onResponseProgress:" + httpUrl + "," + transmittedLength + "," + totalLength + "," + completed);
+                                }
+                            });
+                        }
+                    })
+                    .manager(mRequestManager)
+                    .async(new UICallback() {
+                        @Override
+                        public void onUISucceed(Request request, Response response) throws IOException {
+                            String result = response.body().string();
+                            System.out.println("onSucceed:" + result.length());
+                            showData(result);
+                        }
 
-                            @Override
-                            public void onUIFailure(Request request, IOException e) {
-                                System.out.println("onFailure:" + e);
-                                TT.show("onFailure:" + e);
-                            }
-                        });
-                break;
-            case R.id.btn_request_download:
-                mHttp.get(url)
-                        .addQuery("t", String.valueOf(System.currentTimeMillis()))
-                        .manager(mRequestManager)
-                        .download(new File(getCacheDir(), String.valueOf(System.currentTimeMillis())), new DownloadCallback() {
-                            @Override
-                            public void onProgress(long transmittedLength, long totalLength) {
-                                System.out.println("onProgress:" + transmittedLength + ", " + totalLength);
-                                mViewbinding.tvLog.append("onProgress:" + transmittedLength + ", " + totalLength);
-                                mViewbinding.tvLog.append("\n");
-                            }
+                        @Override
+                        public void onUIFailure(Request request, IOException e) {
+                            System.out.println("onFailure:" + e);
+                            TT.show("onFailure:" + e);
+                        }
+                    });
+        } else if (id == R.id.btn_request_download) {
+            mHttp.get(url)
+                    .addQuery("t", String.valueOf(System.currentTimeMillis()))
+                    .manager(mRequestManager)
+                    .download(new File(getCacheDir(), String.valueOf(System.currentTimeMillis())), new DownloadCallback() {
+                        @Override
+                        public void onProgress(long transmittedLength, long totalLength) {
+                            System.out.println("onProgress:" + transmittedLength + ", " + totalLength);
+                            mViewbinding.tvLog.append("onProgress:" + transmittedLength + ", " + totalLength);
+                            mViewbinding.tvLog.append("\n");
+                        }
 
-                            @Override
-                            public void onSucceed(File file) {
-                                System.out.println("onSucceed:" + file.getAbsolutePath());
-                                mViewbinding.tvLog.append("onSucceed:" + file.getAbsolutePath());
-                                mViewbinding.tvLog.append("\n");
-                            }
+                        @Override
+                        public void onSucceed(File file) {
+                            System.out.println("onSucceed:" + file.getAbsolutePath());
+                            mViewbinding.tvLog.append("onSucceed:" + file.getAbsolutePath());
+                            mViewbinding.tvLog.append("\n");
+                        }
 
-                            @Override
-                            public void onFailure(IOException e) {
-                                System.out.println("onFailure:" + e);
-                                mViewbinding.tvLog.append("onFailure:" + e);
-                                mViewbinding.tvLog.append("\n");
-                            }
-                        });
-                mViewbinding.tvLog.setText(null);
-                break;
-            case R.id.btn_request_timeout_header:
-                mHttp.post(url + "request-timeout")
-                        .addHeader("Request-Header-Id", "btn_request_timeout_header")
-                        .addQuery("Request-Query-Id", "btn_request_timeout_header")
-                        .addParam("Request-Param-Id", "btn_request_timeout_header")
-                        .connectTimeout(5, TimeUnit.SECONDS)
-                        .writeTimeout(10, TimeUnit.SECONDS)
-                        .readTimeout(10, TimeUnit.SECONDS)
-                        .manager(mRequestManager)
-                        .async(new UICallback() {
-                            @Override
-                            public void onUISucceed(Request request, Response response) throws IOException {
-                                String result = response.body().string();
-                                System.out.println("onSucceed:" + result.length());
-                                showData(result);
-                            }
+                        @Override
+                        public void onFailure(IOException e) {
+                            System.out.println("onFailure:" + e);
+                            mViewbinding.tvLog.append("onFailure:" + e);
+                            mViewbinding.tvLog.append("\n");
+                        }
+                    });
+            mViewbinding.tvLog.setText(null);
+        } else if (id == R.id.btn_request_timeout_header) {
+            mHttp.post(url + "request-timeout")
+                    .addHeader("Request-Header-Id", "btn_request_timeout_header")
+                    .addQuery("Request-Query-Id", "btn_request_timeout_header")
+                    .addParam("Request-Param-Id", "btn_request_timeout_header")
+                    .connectTimeout(5, TimeUnit.SECONDS)
+                    .writeTimeout(10, TimeUnit.SECONDS)
+                    .readTimeout(10, TimeUnit.SECONDS)
+                    .manager(mRequestManager)
+                    .async(new UICallback() {
+                        @Override
+                        public void onUISucceed(Request request, Response response) throws IOException {
+                            String result = response.body().string();
+                            System.out.println("onSucceed:" + result.length());
+                            showData(result);
+                        }
 
-                            @Override
-                            public void onUIFailure(Request request, IOException e) {
-                                System.out.println("onFailure:" + e);
-                                TT.show("onFailure:" + e);
-                            }
-                        });
-                break;
-            case R.id.btn_request_timeout_global:
-                mHttp.setOverallConnectTimeout(5, TimeUnit.SECONDS);
-                mHttp.setOverallWriteTimeout(20, TimeUnit.SECONDS);
-                mHttp.setOverallReadTimeout(20, TimeUnit.SECONDS);
-                mHttp.post(url)
-                        .addHeader("Request-Header-Id", "btn_request_timeout_header")
-                        .addQuery("Request-Query-Id", "btn_request_timeout_header")
-                        .addParam("Request-Param-Id", "btn_request_timeout_header")
-                        .manager(mRequestManager)
-                        .async(new UICallback() {
-                            @Override
-                            public void onUISucceed(Request request, Response response) throws IOException {
-                                String result = response.body().string();
-                                System.out.println("onSucceed:" + result.length());
-                                showData(result);
-                            }
+                        @Override
+                        public void onUIFailure(Request request, IOException e) {
+                            System.out.println("onFailure:" + e);
+                            TT.show("onFailure:" + e);
+                        }
+                    });
+        } else if (id == R.id.btn_request_timeout_global) {
+            mHttp.setOverallConnectTimeout(5, TimeUnit.SECONDS);
+            mHttp.setOverallWriteTimeout(20, TimeUnit.SECONDS);
+            mHttp.setOverallReadTimeout(20, TimeUnit.SECONDS);
+            mHttp.post(url)
+                    .addHeader("Request-Header-Id", "btn_request_timeout_header")
+                    .addQuery("Request-Query-Id", "btn_request_timeout_header")
+                    .addParam("Request-Param-Id", "btn_request_timeout_header")
+                    .manager(mRequestManager)
+                    .async(new UICallback() {
+                        @Override
+                        public void onUISucceed(Request request, Response response) throws IOException {
+                            String result = response.body().string();
+                            System.out.println("onSucceed:" + result.length());
+                            showData(result);
+                        }
 
-                            @Override
-                            public void onUIFailure(Request request, IOException e) {
-                                System.out.println("onFailure:" + e);
-                                TT.show("onFailure:" + e);
-                            }
-                        });
-                break;
+                        @Override
+                        public void onUIFailure(Request request, IOException e) {
+                            System.out.println("onFailure:" + e);
+                            TT.show("onFailure:" + e);
+                        }
+                    });
         }
     }
 
@@ -352,7 +343,8 @@ public class HTTPActivity extends AppCompatActivity {
                     httpsURLConnection.setSSLSocketFactory(SSLCreator.getSSLSocketFactory());
                 }
 
-                if (httpURLConnection.getResponseCode() != 200) throw new IOException("Could not retrieve response code from HttpUrlConnection.");
+                if (httpURLConnection.getResponseCode() != 200)
+                    throw new IOException("Could not retrieve response code from HttpUrlConnection.");
 
                 byte[] bytes = StreamUtil.readStream(httpURLConnection.getInputStream());
 
@@ -467,6 +459,7 @@ public class HTTPActivity extends AppCompatActivity {
 
     /**
      * 格式化 Json
+     *
      * @param json
      * @return
      */

@@ -1,12 +1,11 @@
 [versions]
-agp = "8.4.0"
-kotlin = "1.9.22"
+agp = "9.2.1"
 
+targetSdk = "36"
+compileSdk = "36"
+buildTools = "36.0.0"
 minSdk = "21"
-targetSdk = "31"
-compileSdk = "34"
 ndk = "21.4.7075529"
-buildTools = "34.0.0"
 
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -37,7 +36,6 @@ rxandroid = "3.0.0"
 [plugins]
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
-jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
 [libraries]
 androidx-core = { group = "androidx.core", name = "core", version.ref = "androidx-core" }
